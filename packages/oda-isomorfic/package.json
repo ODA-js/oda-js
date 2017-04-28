@@ -1,0 +1,24 @@
+{
+  "name": "oda-isomorfic",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "./compile.sh"
+  },
+  "typescript": {
+    "definition": "dist/index.d.ts"
+  },
+  "typings": "dist/index.d.ts",
+  "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "graphql-relay": "^0.5.1",
+    "md5-hex": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "^0.9.0",
+    "@types/node": "^6.0.48",
+    "typescript": "^2.2.1"
+  }
+}
