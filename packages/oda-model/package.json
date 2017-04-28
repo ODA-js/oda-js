@@ -1,6 +1,6 @@
 {
   "name": "oda-model",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/model/index.js",
   "typescript": {
@@ -15,8 +15,8 @@
   "devDependencies": {
     "@types/camelcase": "0.0.30",
     "@types/decamelize": "0.0.30",
-    "@types/inflected": "^1.1.29",
     "@types/graphql": "^0.9.0",
+    "@types/inflected": "^1.1.29",
     "@types/node": "^7.0.12",
     "tslint": "^4.4.2",
     "typescript": "^2.2.1"

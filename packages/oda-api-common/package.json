@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -40,8 +40,8 @@
   "devDependencies": {
     "@types/graphql": "^0.9.0",
     "@types/node": "^7.0.12",
-    "@types/passport-local": "^1.0.29",
     "@types/passport": "^0.3.0",
+    "@types/passport-local": "^1.0.29",
     "typescript": "^2.2.1"
   }
 }
