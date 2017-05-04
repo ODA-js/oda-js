@@ -36,7 +36,9 @@ export default () => {
     #{field}: #{index.fields[field]},<#}#>
   }, {
 <#- for(let field in index.options){#>
+<#- if(index.options[field]){#>
     #{field}: 1,<# }#>
+<#-}#>
   });
 <#}-#>
 
