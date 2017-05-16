@@ -111,15 +111,16 @@ export default class MongooseApi<RegisterConnectors> {
   protected initSchema(name, schema) {
     this.schema = schema;
     if (!this.mongoose.models[name]) {
+      // init once
+      if (this.user) {
+        this.schema.pre('save', this.logUser());
+      }
+      if (this._viewer) {
+        this.schema.pre('save', this.initOwner());
+      }
       this.model = this.mongoose.model(name, schema);
     } else {
       this.model = this.mongoose.model(name);
-    }
-    if (this.user) {
-      this.schema.pre('save', this.logUser());
-    }
-    if (this._viewer) {
-      this.schema.pre('save', this.initOwner());
     }
   }
 
