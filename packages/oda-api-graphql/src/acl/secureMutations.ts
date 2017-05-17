@@ -8,7 +8,10 @@ export interface Acls {
 }
 
 export interface Rules {
-  [group: string]: RegExp[];
+  [group: string]: {
+    match: RegExp;
+    key: string;
+  }[];
 }
 
 
@@ -22,9 +25,8 @@ export class SecureMutation {
     this.rules = {};
     Object.keys(acls).forEach(i => {
       let rule = acls[i];
-      this.rules[i] = Object.keys(rule).filter(o => o !== '*').map(o => new RegExp(o, 'ig'));
+      this.rules[i] = Object.keys(rule).filter(o => o !== '*').map(o => ({ match: new RegExp(o, 'ig'), key: o }));
     });
-
   }
 
   public getMutationInfo(info) {
@@ -37,8 +39,12 @@ export class SecureMutation {
   public allow(group: string, mutation: string) {
     if (this.acl[group]) {
       let result = (this.acl[group] && this.acl[group]['*']) || this.defaultAccess;
-      if (this.rules[group].some(r => !!mutation.match(r))) {
-        result = this.acl[group][mutation];
+      let last = '';
+      if (this.rules[group].some(r => {
+        last = r.key;
+        return !!mutation.match(r.match);
+      })) {
+        result = this.acl[group][last];
       }
       return result;
     } else {
