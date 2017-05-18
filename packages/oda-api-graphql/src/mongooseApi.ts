@@ -100,10 +100,11 @@ export default class MongooseApi<RegisterConnectors> {
     }
   }
 
-  constructor({ mongoose, connectors, user, owner }) {
+  constructor({ mongoose, connectors, user, owner, canView }) {
     this.connectors = connectors;
     this.mongoose = mongoose;
     this.user = user;
+    this.canView = canView || this.canView;
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
   }
