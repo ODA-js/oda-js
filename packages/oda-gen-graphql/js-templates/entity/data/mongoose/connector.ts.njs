@@ -53,7 +53,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
 <#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
     let loaderName = entity.loaders[i];
 #>
-      by#{loaderName}: new Dataloader(keys => Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{loaderName}.bind(this)))
+      by#{loaderName}: new Dataloader(keys =>
+        Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{loaderName}.bind(this)) as Promise<#{entity.name}Model>[])
         .then(this.updaters.by#{loaderName})
 <#- if(loaderName === 'Id'){#>, {
           cacheKeyFn: key => typeof key !== 'object' ? key : key.toString(),
@@ -65,7 +66,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   let loadArgs = f.fields.map(f=>`key.${f.name}`).join(' + ');
   let withArgsTypeof = f.fields.map(f=>'${'+`typeof ${f.name}`+'}').join(', ');
     #>
-      by#{findBy}: new Dataloader(keys => Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{findBy}.bind(this)))
+      by#{findBy}: new Dataloader(keys => Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{findBy}.bind(this)) as Promise<#{entity.name}Model>[])
         .then(this.updaters.by#{findBy}), {
           cacheKeyFn: key => typeof key === 'object' ? (#{loadArgs}) : key.toString(),
         }),
