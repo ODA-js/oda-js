@@ -10,9 +10,9 @@ import * as Dataloader from 'dataloader';
 import { #{ entity.name } as #{ entity.name }Model } from '../types/model';
 
 export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
-  constructor({mongoose, connectors, user, owner, acls}) {
+  constructor({mongoose, connectors, user, owner, acls, userGroup}) {
     logger.trace('constructor');
-    super({mongoose, connectors, user, acls
+    super({mongoose, connectors, user, acls, userGroup
 <#-if( entity.needOwner ){-#>
 , owner
 <#-} else {-#>

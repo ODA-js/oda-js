@@ -1,9 +1,10 @@
 import pagination from './pagination';
 import { fromGlobalId } from 'graphql-relay';
-import { Secure, ACLCRUD } from './acl/secureAny';
+import { ACLCRUD } from './acl/secureAny';
 
 export default class MongooseApi<RegisterConnectors> {
   protected user;
+  protected userGroup;
   protected _viewer: {
     id?: string;
     owner?: string;
@@ -17,9 +18,13 @@ export default class MongooseApi<RegisterConnectors> {
   public updaters: any;
   public loaderKeys: any;
   public storeToCache: any;
-  public acls: ACLCRUD<(object) => object>;
+  protected acls: ACLCRUD<(object) => object>;
 
   protected canView(obj) {
+    return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj);
+  }
+
+  protected _canView(obj) {
     let result = obj;
     if (this.user && !this.user.isSystem) {
       if (typeof obj === 'object' && obj !== null && obj !== undefined) {
@@ -102,11 +107,15 @@ export default class MongooseApi<RegisterConnectors> {
     }
   }
 
-  constructor({ mongoose, connectors, user, owner, acls }) {
+  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
     this.connectors = connectors;
     this.mongoose = mongoose;
     this.user = user;
+    this.userGroup = userGroup;
     this.acls = acls;
+    if (!this.acls.read.defaultAccess) {
+      this.acls.read.defaultAccess = this._canView;
+    }
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
   }
@@ -170,7 +179,7 @@ export default class MongooseApi<RegisterConnectors> {
   }
 
   public async getList(args, checkExtraCriteria?) {
-    let hasExtraCondition = typeof checkExtraCriteria !== 'undefined'
+    let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
     let query = this.getFilter(args);
     let sort = this.getSort(args);
     let cursor = pagination(args);
