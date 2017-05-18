@@ -1,3 +1,4 @@
+import * as secureAny from './secureAny';
 import * as secureMutations from './secureMutations';
 import fixResults from './fixResult';
 import fixInput from './fixInput';
@@ -9,6 +10,7 @@ import secureMethod from './secureMethod';
 import securityLayer from './securityLayer';
 
 export {
+  secureAny,
   fixInput,
   fixResults,
   post,
