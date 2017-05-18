@@ -3,11 +3,13 @@
 import #{entity.name} from './#{entity.name}/mongoose/connector';
 <#- }#>
 
+import { acl } from 'oda-api-graphql';
+
 export default class {
 <#- for(let entity of pack.entities){#>
   public get #{entity.name}(): #{entity.name} {
     if (!this._#{entity.name}) {
-      this._#{entity.name} = new #{entity.name}({ mongoose: this.mongoose, connectors: this, user: this.user, owner: this.owner });
+      this._#{entity.name} = new #{entity.name}({ mongoose: this.mongoose, connectors: this, user: this.user, owner: this.owner, acls: this.acls });
     }
     return this._#{entity.name};
   }
@@ -21,10 +23,25 @@ export default class {
   protected mongoose;
   protected user;
   protected owner;
+  protected acls: acl.secureAny.ACLCRUD<(object) => object>;
 
-  constructor(context) {
-    this.user = context.user;
-    this.owner = context.owner;
-    this.mongoose = context.mongoose;
+  constructor({
+    user,
+    owner,
+    mongoose,
+    acls,
+    userGroup,
+  }:
+    {
+      user?: any,
+      owner?: any,
+      mongoose?: any,
+      acls?: acl.secureAny.Acls<(object) => object>;
+      userGroup?: (context) => string;
+    }) {
+    this.user = user;
+    this.owner = owner;
+    this.mongoose = mongoose;
+    this.acls = { read: new acl.secureAny.Secure<(object) => object>({ acls, userGroup }) };
   }
 };

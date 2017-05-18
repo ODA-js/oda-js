@@ -1,5 +1,6 @@
 import pagination from './pagination';
 import { fromGlobalId } from 'graphql-relay';
+import { Secure, ACLCRUD } from './acl/secureAny';
 
 export default class MongooseApi<RegisterConnectors> {
   protected user;
@@ -16,6 +17,7 @@ export default class MongooseApi<RegisterConnectors> {
   public updaters: any;
   public loaderKeys: any;
   public storeToCache: any;
+  public acls: ACLCRUD<(object) => object>;
 
   protected canView(obj) {
     let result = obj;
@@ -100,11 +102,11 @@ export default class MongooseApi<RegisterConnectors> {
     }
   }
 
-  constructor({ mongoose, connectors, user, owner, canView }) {
+  constructor({ mongoose, connectors, user, owner, acls }) {
     this.connectors = connectors;
     this.mongoose = mongoose;
     this.user = user;
-    this.canView = canView || this.canView;
+    this.acls = acls;
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
   }
