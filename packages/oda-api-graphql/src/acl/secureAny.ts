@@ -23,18 +23,14 @@ export interface Rules {
 }
 
 export class Secure<T> {
-  protected acl: Acls<T>;
-  protected rules: Rules;
-  protected defaultAccess: T;
-  protected userGroup: (context) => string;
+  public acl: Acls<T>;
+  public rules: Rules;
+  public defaultAccess: T;
 
-  constructor({ acls = {},
-    userGroup = context => context.user.profileName,
-  }: {
-      acls: Acls<T>;
-      userGroup?: (context) => string
-    }) {
-    this.userGroup = userGroup;
+
+  constructor({ acls = {} }: {
+    acls: Acls<T>;
+  }) {
     this.defaultAccess = acls['*'] as T;
     this.acl = acls;
     this.rules = {};
