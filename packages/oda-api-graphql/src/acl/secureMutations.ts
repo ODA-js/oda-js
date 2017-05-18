@@ -19,7 +19,16 @@ export class SecureMutation {
   private acl: Acls;
   private rules: Rules;
   private defaultAccess: boolean;
-  constructor(acls: Acls, defaultAccess = false) {
+  userGroup: (context) => string;
+  constructor({ acls,
+    userGroup = context => context.user.profileName,
+    defaultAccess = false
+  }: {
+      acls: Acls;
+      defaultAccess: boolean;
+      userGroup: (context) => string
+    }) {
+    this.userGroup = userGroup;
     this.defaultAccess = defaultAccess;
     this.acl = acls;
     this.rules = {};
@@ -55,8 +64,9 @@ export class SecureMutation {
   public secureMutation() {
     const getMutationInfo = this.getMutationInfo.bind(this);
     const allow = this.allow.bind(this);
+    const getACLGroup = this.userGroup;
     return (source, args, context, info) => {
-      const group = context.user.profileName;
+      const group = getACLGroup(context);
       let descriptor = getMutationInfo(info);
       if (descriptor.opType === 'mutation') {
         if (!allow(group, descriptor.name)) {
