@@ -25,8 +25,8 @@ export class SecureMutation {
     defaultAccess = false
   }: {
       acls: Acls;
-      defaultAccess: boolean;
-      userGroup: (context) => string
+      defaultAccess?: boolean;
+      userGroup?: (context) => string
     }) {
     this.userGroup = userGroup;
     this.defaultAccess = defaultAccess;
