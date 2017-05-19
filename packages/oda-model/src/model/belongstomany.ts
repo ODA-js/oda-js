@@ -118,7 +118,6 @@ export class BelongsToMany extends RelationBase {
           hash.set(curr.name, curr as FieldInput);
           return hash;
         }, new Map<string, FieldInput>());
-        debugger;
         update.fields = Array.from(fieldsMap.values());
         using.updateWith(update);
       }
