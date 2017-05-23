@@ -439,9 +439,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
 <#- } else if(f.type == 'number') {-#>  if (args.#{f.name} !== undefined && !isNaN(Number(args.#{f.name}))) {
       result.#{f.name} = { $eq: Number(args.#{f.name})};
     }
-<#- } else if(f.type == 'boolean'){-#>  if (args.#{f.name} !== undefined && args.#{f.name} !== ''
-      && (!!args.#{f.name}.match(/true/i) || !!args.#{f.name}.match(/false/i))) {
-      result.#{f.name} = { $eq: !!args.#{f.name}.match(/true/i) };
+<#- } else if(f.type == 'boolean'){-#>  if (args.#{f.name} !== undefined ) {
+      result.#{f.name} = { $eq: !!args.#{f.name} };
     }
 <#}-#>
 <#}#>
