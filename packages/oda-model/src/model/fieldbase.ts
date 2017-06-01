@@ -35,9 +35,14 @@ export class FieldBase extends ModelBase {
       let $args = obj.args;
 
       // wheather it is explicitly defined or has arguments
-      this.setMetadata('storage.derived', obj.derived || (Array.isArray(obj.args) && obj.args.length > 0));
-      this.setMetadata('storage.persistent', obj.persistent || !(obj.derived || (Array.isArray(obj.args) && obj.args.length > 0)));
+      // if (obj.name === 'isLiked') debugger;
 
+      this.setMetadata('storage.derived', obj.derived || (Array.isArray(obj.args) && obj.args.length > 0) ||
+        this.getMetadata('storage.derived'));
+      this.setMetadata('storage.persistent', obj.persistent || !((obj.derived || this.getMetadata('storage.derived')) ||
+        (Array.isArray(obj.args) && obj.args.length > 0)));
+
+      // if (obj.name === 'isLiked') debugger;
       result.entity = entity;
       result.entity_ = $entity;
 
@@ -58,11 +63,13 @@ export class FieldBase extends ModelBase {
           {},
           res,
           {
+            derived: this.derived,
+            persistent: this.persistent,
             entity: props.entity || props.entity_,
             args: props.args || props.args_,
-          }
-        )
-      )
+          },
+        ),
+      ),
     );
   }
 
@@ -76,10 +83,12 @@ export class FieldBase extends ModelBase {
           {},
           res,
           {
+            derived: this.derived,
+            persistent: this.persistent,
             args: props.args_,
-          }
-        )
-      )
+          },
+        ),
+      ),
     );
   }
 }

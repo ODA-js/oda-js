@@ -78,7 +78,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           let refe = pack.entities.get(ref.entity);
           let opposite = getRelationNames(refe)
             // по одноименному классу ассоциации
-            .filter(r => (current.opposite && current.opposite == r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
+            .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
               && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
             .map(r => refe.fields.get(r).relation)
             .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
