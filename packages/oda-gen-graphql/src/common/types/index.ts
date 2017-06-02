@@ -5,6 +5,7 @@ import { DateType } from './date';
 import { IdType } from './id';
 import { ImageSizeType } from './imageSize';
 import { JSONType } from './json';
+import { FileType } from './file';
 import { GQLModule } from './empty';
 
 export {
@@ -16,6 +17,7 @@ export {
   IdType,
   ImageSizeType,
   JSONType,
+  FileType,
 }
 
 export class DefaultTypes extends GQLModule {
@@ -27,5 +29,6 @@ export class DefaultTypes extends GQLModule {
     new IdType({}),
     new ImageSizeType({}),
     new JSONType({}),
+    new FileType({}),
   ];
 }
