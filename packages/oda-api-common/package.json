@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -20,16 +20,16 @@
     "express": "^4.15.2",
     "fs-extra": "^3.0.1",
     "fte.js": "^0.4.8",
-    "graphql": "^0.9.2",
+    "graphql": "^0.10.1",
     "graphql-anywhere": "^3.0.1",
-    "graphql-relay": "^0.5.1",
-    "graphql-server-core": "^0.7.0",
-    "graphql-server-express": "^0.7.0",
-    "graphql-tag": "^2.0.0",
-    "graphql-tools": "^0.11.0",
-    "http-proxy": "^1.12.0",
+    "graphql-relay": "^0.5.2",
+    "graphql-server-core": "^0.8.0",
+    "graphql-server-express": "^0.8.0",
+    "graphql-tag": "^2.2.1",
+    "graphql-tools": "^1.0.0",
+    "http-proxy": "^1.16.2",
     "isomorphic-fetch": "^2.2.1",
-    "jsonwebtoken": "^7.3.0",
+    "jsonwebtoken": "^7.4.1",
     "log4js": "^1.1.1",
     "mongoose": "^4.9.4",
     "muri": "^1.2.1",
@@ -38,9 +38,9 @@
     "pretty-error": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^7.0.18",
+    "@types/node": "^7.0.23",
     "@types/passport": "^0.3.3",
     "@types/passport-local": "^1.0.30",
-    "typescript": "^2.3.2"
+    "typescript": "^2.3.4"
   }
 }

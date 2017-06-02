@@ -1,6 +1,6 @@
 {
   "name": "oda-isomorfic",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "graphql-relay": "^0.5.1",
+    "graphql-relay": "^0.5.2",
     "md5-hex": "^2.0.0"
   },
   "devDependencies": {

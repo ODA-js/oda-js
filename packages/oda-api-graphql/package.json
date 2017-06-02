@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,15 +13,15 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "graphql": "^0.9.6",
+    "graphql": "^0.10.1",
     "graphql-anywhere": "^3.0.1",
-    "graphql-relay": "^0.5.1",
-    "graphql-server-core": "^0.7.0",
+    "graphql-relay": "^0.5.2",
+    "graphql-server-core": "^0.8.0",
     "graphql-tag": "^2.1.0",
     "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
-    "@types/node": "^7.0.18",
-    "typescript": "^2.3.2"
+    "@types/node": "^7.0.23",
+    "typescript": "^2.3.4"
   }
 }
