@@ -183,11 +183,12 @@ export default class MongooseApi<RegisterConnectors> {
     let query = this.getFilter(args);
     let sort = this.getSort(args);
     let cursor = pagination(args);
-
+    let resultMethod = 'push';
     let result = [];
 
     if (cursor.before) {
       query = { $and: [{ _id: { $lt: cursor.before } }, query] };
+      resultMethod = 'unshift';
     } else if (cursor.after) {
       query = { $and: [{ _id: { $gt: cursor.after } }, query] };
 
@@ -201,10 +202,10 @@ export default class MongooseApi<RegisterConnectors> {
       if (this.canView(item)) {
         if (hasExtraCondition) {
           if (await checkExtraCriteria(item)) {
-            result.push(item);
+            result[resultMethod](item);
           }
         } else {
-          result.push(item);
+          result[resultMethod](item);
         }
       }
     }
