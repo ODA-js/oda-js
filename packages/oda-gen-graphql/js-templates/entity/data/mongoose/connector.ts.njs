@@ -395,7 +395,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     }
 <# } #>
     // must be last
-    if(args.before){
+    if(args.last || args.before){
       result._id = -1;
     } else {
       result._id = 1;
