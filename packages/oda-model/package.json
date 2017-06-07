@@ -22,8 +22,8 @@
     "@types/camelcase": "0.0.30",
     "@types/decamelize": "0.0.30",
     "@types/inflected": "^1.1.29",
-    "@types/node": "^7.0.23",
-    "tslint": "^5.4.2",
+    "@types/node": "^7.0.28",
+    "tslint": "^5.4.3",
     "typescript": "^2.3.4"
   }
 }
