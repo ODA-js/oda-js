@@ -186,14 +186,13 @@ export default class MongooseApi<RegisterConnectors> {
     let resultMethod = 'push';
     let result = [];
 
-    if (cursor.last && cursor.before) {
+    if (cursor.before) {
       query = { $and: [{ _id: { $lt: cursor.before } }, query] };
-    } else if (cursor.first && cursor.after) {
+      resultMethod = 'unshift';
+    } else if (cursor.after) {
       query = { $and: [{ _id: { $gt: cursor.after } }, query] };
     }
-    if (cursor.last || cursor.before) {
-      resultMethod = 'unshift';
-    }
+
     let answer = this.model.find(query).sort(sort).skip(cursor.skip)
       .cursor();
 
