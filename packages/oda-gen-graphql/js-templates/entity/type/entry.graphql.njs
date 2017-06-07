@@ -23,7 +23,7 @@ type #{entity.name} implements Node{
   <#if(rel.derived){#>
   #{rel.name}(#{rel.args} ): #{rel.connectionName}
   <#} else {#>
-  #{rel.name}(after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, filter:String #{rel.indexed} #{rel.args} ): #{rel.connectionName}
+  #{rel.name}(after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{rel.entity}SortOrder], filter:String #{rel.indexed} #{rel.args} ): #{rel.connectionName}
   <#-}-#>
   <#-}-#>
 <#-})#>
