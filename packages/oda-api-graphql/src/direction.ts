@@ -10,10 +10,10 @@ export default function direction({ orderBy, last }: CursorType): { [key: string
     for (let i = 0, len = orderBy.length; i < len; i++) {
       const ob = orderBy[i];
       if (ob.match(/Asc$/)) {
-        let fieldName = ob.substring(0, orderBy.length - 3);
+        let fieldName = ob.substring(0, ob.length - 3);
         result[fieldName] = DIRECTION.FORWARD;
       } else if (ob.match(/Desc$/)) {
-        let fieldName = ob.substring(0, orderBy.length - 4);
+        let fieldName = ob.substring(0, ob.length - 4);
         result[fieldName] = DIRECTION.BACKWARD;
       }
     }

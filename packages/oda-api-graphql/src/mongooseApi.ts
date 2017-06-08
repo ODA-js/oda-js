@@ -196,18 +196,30 @@ export default class MongooseApi<RegisterConnectors> {
 
 
     if (cursor.after || cursor.before) {
-      const detect = (name, value) => {
-        move[name] = (sort[name] === DIRECTION.BACKWARD) ?
-          { [cursor.after ? '$lt' : '$gt']: value } :
-          { [cursor.before ? '$lt' : '$gt']: value };
-      };
+      const detect = (name: string, value: any) =>
+        ({
+          [name]: (sort[name] === DIRECTION.BACKWARD) ?
+            { [cursor.after ? '$lt' : '$gt']: value } :
+            { [cursor.before ? '$lt' : '$gt']: value }
+        });
+      ;
       let sortKeys = Object.keys(sort);
       if (sortKeys.length > 1) {
         let current = await this.findOneById(cursor.after || cursor.before);
-        let find = [];
-        sortKeys.filter(f => f != '_id').forEach(f => detect(f, current[f]));
-        move._id = { $gt: cursor.after || cursor.before };
-        move = { $or: find };
+        let find = sortKeys.filter(f => f != '_id').map(f => detect(f, current[f]));
+        find.push({ _id: { $gt: cursor.after || cursor.before } });
+        const or = [];
+        while (find.length > 0) {
+          or.push(find.reduce((prev, curr) => {
+            prev = {
+              ...prev,
+              ...curr,
+            }
+            return prev;
+          }, {}));
+          find.pop();
+        }
+        move = { $or: or };
       } else {
         // ??? Проверить что это так!!!
         detect('_id', cursor.after || cursor.before);

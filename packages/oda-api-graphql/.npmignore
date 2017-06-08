@@ -8,3 +8,4 @@ todo.md
 yarn.lock
 tslint.json
 tsconfig.json
+package-lock.json
