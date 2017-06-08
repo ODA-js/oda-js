@@ -374,35 +374,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     return entity;
   }
 
-  public getSort(args) {
-    let result: any = {};
-<#- if(entity.filterAndSort.length > 0){ -#>
-    if (Array.isArray(args.orderBy) && args.orderBy.length > 0) {
-      for (let i = 0, len = args.orderBy.length; i < len; i++) {
-      let orderBy = args.orderBy[i];
-      // tslint:disable-next-line:switch-default
-        switch (orderBy) {
-  <#- for( let f of entity.filterAndSort){ #>
-          case '#{f.name}Asc':
-            result.#{f.name} = 1 ;
-            break;
-          case '#{f.name}Desc':
-            result.#{f.name} = -1;
-            break;
-  <#- } -#>
-        }
-      }
-    }
-<# } #>
-    // must be last
-    if(args.last || args.before){
-      result._id = -1;
-    } else {
-      result._id = 1;
-    }
-    return result;
-  }
-
   public  getFilter(args) {
     let result: any = {};
 <#- if(entity.filterAndSort.length > 0){ #>

@@ -8,6 +8,7 @@ import {
 
 import RegisterConnectors from '../../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
+import {PubSubEngine} from 'graphql-subscriptions';
 
 export const mutation = {
 <#- for (let connection of entity.connections) {#>
@@ -18,7 +19,7 @@ export const mutation = {
         #{f.name}?: #{f.type},
     <#-}#>
       },
-      context: { connectors: RegisterConnectors },
+      context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
       info
     ) => {
       logger.trace('addTo#{connection.relationName}');
@@ -36,15 +37,36 @@ for (let fname of connection.ref.fields){
 }#>
       });
 
-      let item = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+      let source = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+      let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
       // let #{entity.ownerFieldName}Edge = {
       //   cursor: idToCursor(item._id),
       //   node: item,
       // };
 
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'LINK',
+          node: source,
+          payload: {
+            //название ассоциации
+          }
+        }
+      });
+
+      context.pubsub.publish('#{connection.refEntity}', {
+        #{connection.refEntity}: {
+          mutation: 'LINK',
+          node: dest,
+          payload: {
+            //название ассоциации если такая есть.... смотри opposite
+          }
+        }
+      });
+
       return {
         // #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
-        #{entity.ownerFieldName}: item,
+        #{entity.ownerFieldName}: source,
       };
     },
   ),
@@ -56,7 +78,7 @@ for (let fname of connection.ref.fields){
         #{f.name}?: #{f.type},
       <#-}#>
       },
-      context: { connectors: RegisterConnectors },
+      context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
       info
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
@@ -68,6 +90,14 @@ for (let fname of connection.ref.fields){
       });
 
       let item = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'UNLINK',
+          node: item,
+        }
+      });
+
       return {
         #{entity.ownerFieldName}: item,
       };
