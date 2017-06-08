@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
