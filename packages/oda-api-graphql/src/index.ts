@@ -13,6 +13,8 @@ import * as acl from './acl';
 import * as utils from './utils';
 import * as dataPump from './dataPump';
 import MongooseApi from './mongooseApi';
+import { CursorType } from './cursor';
+import detectCursorDirection from './direction';
 
 export {
   acl,
@@ -24,6 +26,8 @@ export {
   emptyConnection,
   getWithType,
   idToCursor,
+  CursorType,
+  detectCursorDirection,
   isType,
   mutateAndGetPayload,
   pagination,

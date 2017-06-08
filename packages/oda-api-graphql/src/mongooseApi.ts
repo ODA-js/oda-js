@@ -1,4 +1,7 @@
 import pagination from './pagination';
+import cursorDirection from './direction';
+import { DIRECTION } from './consts';
+
 import { fromGlobalId } from 'graphql-relay';
 import { ACLCRUD } from './acl/secureAny';
 
@@ -66,9 +69,8 @@ export default class MongooseApi<RegisterConnectors> {
   //   }
   // };
 
-  public getFilter(args) { return args; };
-  public getSort(args) { return args; };
-  public getPayload(args) { return args; };
+  public getFilter(args) { return {}; };
+  public getPayload(args) { return {}; };
 
   public setupViewer(viewer?: {
     id?: string,
@@ -159,7 +161,7 @@ export default class MongooseApi<RegisterConnectors> {
 
   public async getFirst(args) {
     let query = this.getFilter(args);
-    let sort = this.getSort(args);
+    let sort = cursorDirection(args);
     return this.ensureId(await this.model
       .findOne(query, { _id: 1 })
       .sort(sort)
@@ -178,18 +180,53 @@ export default class MongooseApi<RegisterConnectors> {
     }
   }
 
+  public async findOneById(id?: string) {
+    throw new Error('must be overriden');
+  }
+
   public async getList(args, checkExtraCriteria?) {
     let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
-    let query = this.getFilter(args);
-    let sort = this.getSort(args);
+    let query: any = this.getFilter(args);
+    let sort = cursorDirection(args);
     let cursor = pagination(args);
 
     let result = [];
 
-    if (cursor.before) {
-      query = { $and: [{ _id: { $lt: cursor.before } }, query] };
-    } else if (cursor.after) {
-      query = { $and: [{ _id: { $gt: cursor.after } }, query] };
+    let move: any = {};
+
+
+    if (cursor.after || cursor.before) {
+      const detect = (name, value) => {
+        move[name] = (sort[name] === DIRECTION.BACKWARD) ?
+          { [cursor.after ? '$lt' : '$gt']: value } :
+          { [cursor.before ? '$lt' : '$gt']: value };
+      };
+      let sortKeys = Object.keys(sort);
+      if (sortKeys.length > 1) {
+        let current = await this.findOneById(cursor.after || cursor.before);
+        let find = [];
+        sortKeys.filter(f => f != '_id').forEach(f => detect(f, current[f]));
+        move._id = { $gt: cursor.after || cursor.before };
+        move = { $or: find };
+      } else {
+        // ??? Проверить что это так!!!
+        detect('_id', cursor.after || cursor.before);
+      }
+    }
+
+    if (Object.keys(query).length > 0) {
+      if (Object.keys(move).length > 0) {
+        query = {
+          $and: [
+            move,
+            query
+          ]
+        }
+      }
+    } else {
+      if (Object.keys(move).length > 0) {
+        query = move;
+      }
     }
 
     let answer = this.model.find(query).sort(sort).skip(cursor.skip)
