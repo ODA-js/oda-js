@@ -33,12 +33,14 @@ export const mutation = {
 
     let result = await context.connectors.#{entity.name}.create(create);
 
-    context.pubsub.publish('#{entity.name}', {
-      #{entity.name}: {
-        mutation: 'CREATE',
-        node: result,
-      }
-    });
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'CREATE',
+          node: result,
+        }
+      });
+    }
 
     let #{entity.ownerFieldName}Edge = {
       cursor: idToCursor(result._id),
@@ -70,7 +72,7 @@ export const mutation = {
       result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(fromGlobalId(args.id).id, payload);
     <#- for (let f of entity.args.update.find) {#>
     } else if (args.#{f.name}) {
-      delete payload.{f.name};
+      delete payload.#{f.name};
       result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndUpdate(args.#{f.name}, payload);
     <#-}#>
     <#- for (let f of entity.complexUnique) {
@@ -86,13 +88,15 @@ export const mutation = {
     <#-}#>
     }
 
-    context.pubsub.publish('#{entity.name}', {
-      #{entity.name}: {
-        mutation: 'UPDATE',
-        node: result,
-        payload,
-      }
-    });
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'UPDATE',
+          node: result,
+          payload,
+        }
+      });
+    }
 
     return {
       #{entity.ownerFieldName}: result,
@@ -131,12 +135,14 @@ export const mutation = {
     <#-}#>
     }
 
-    context.pubsub.publish('#{entity.name}', {
-      #{entity.name}: {
-        mutation: 'DELETE',
-        node: result,
-      }
-    });
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'DELETE',
+          node: result,
+        }
+      });
+    }
 
     return {
       deletedItemId: toGlobalId('#{entity.name}', result.id),

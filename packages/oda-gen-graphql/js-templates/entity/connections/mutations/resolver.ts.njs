@@ -25,7 +25,7 @@ export const mutation = {
       logger.trace('addTo#{connection.relationName}');
       let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
       let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
-      await context.connectors.#{entity.name}.addTo#{connection.shortName}({
+      let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
 <#-
@@ -35,37 +35,40 @@ for (let fname of connection.ref.fields){
 <#-
   }
 }#>
-      });
+      };
+
+      await context.connectors.#{entity.name}.addTo#{connection.shortName}(payload);
 
       let source = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
-      let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
-      // let #{entity.ownerFieldName}Edge = {
-      //   cursor: idToCursor(item._id),
-      //   node: item,
-      // };
 
-      context.pubsub.publish('#{entity.name}', {
-        #{entity.name}: {
-          mutation: 'LINK',
-          node: source,
-          payload: {
-            //название ассоциации
+      if (context.pubsub) {
+        context.pubsub.publish('#{entity.name}', {
+          #{entity.name}: {
+            mutation: 'LINK',
+            node: source,
+            payload: {
+              args: payload,
+              relation: '#{connection.name}'
+            }
           }
-        }
-      });
+        });
+      <#if(connection.opposite){#>
+        let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
 
-      context.pubsub.publish('#{connection.refEntity}', {
-        #{connection.refEntity}: {
-          mutation: 'LINK',
-          node: dest,
-          payload: {
-            //название ассоциации если такая есть.... смотри opposite
+        context.pubsub.publish('#{connection.refEntity}', {
+          #{connection.refEntity}: {
+            mutation: 'LINK',
+            node: dest,
+            payload: {
+              args: payload,
+              relation: '#{connection.opposite}'
+            }
           }
-        }
-      });
+        });
+      }
+      <#}#>
 
       return {
-        // #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
         #{entity.ownerFieldName}: source,
       };
     },
@@ -84,22 +87,44 @@ for (let fname of connection.ref.fields){
       logger.trace('removeFrom#{connection.relationName}');
       let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
       let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
-      await context.connectors.#{entity.name}.removeFrom#{connection.shortName}({
+      let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
-      });
+      };
+      await context.connectors.#{entity.name}.removeFrom#{connection.shortName}(payload);
 
-      let item = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+      let source = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
 
-      context.pubsub.publish('#{entity.name}', {
-        #{entity.name}: {
-          mutation: 'UNLINK',
-          node: item,
-        }
-      });
+      if (context.pubsub) {
+        context.pubsub.publish('#{entity.name}', {
+          #{entity.name}: {
+            mutation: 'UNLINK',
+            node: source,
+            payload: {
+              args: payload,
+              relation: '#{connection.name}'
+            }
+          }
+        });
+
+      <#if(connection.opposite){#>
+        let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
+
+        context.pubsub.publish('#{connection.refEntity}', {
+          #{connection.refEntity}: {
+            mutation: 'UNLINK',
+            node: dest,
+            payload: {
+              args: payload,
+              relation: '#{connection.opposite}'
+            }
+          }
+        });
+      }
+      <#}#>
 
       return {
-        #{entity.ownerFieldName}: item,
+        #{entity.ownerFieldName}: source,
       };
     },
   ),

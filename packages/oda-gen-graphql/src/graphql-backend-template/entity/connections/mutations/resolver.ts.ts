@@ -13,6 +13,7 @@ export interface MapperOutupt {
   name: string;
   ownerFieldName: string;
   connections: {
+    opposite: string;
     relationName: string,
     name: string;
     refEntity: string;
@@ -65,10 +66,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           }
         }
         return {
+          opposite: f.relation.opposite,
           refEntity,
           relationName: f.relation.fullName,
           shortName: f.relation.shortName,
-          name: capitalize(f.name),
+          name: f.name,
           refFieldName: decapitalize(refFieldName),
           addArgs,
           removeArgs,
