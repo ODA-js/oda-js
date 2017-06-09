@@ -13,12 +13,12 @@ export interface MapperOutput {
 }
 
 import {
-  searchParamsForAcl,
+  getOrderBy,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutput {
   return {
     name: entity.name,
-    fields: searchParamsForAcl(allowAcl)(role)(entity),
+    fields: getOrderBy(allowAcl, role, entity),
   };
 }
