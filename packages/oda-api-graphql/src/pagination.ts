@@ -1,6 +1,6 @@
 import cursorToId from './cursorToId';
 
-export default function (args): {
+export default function (args, resolver = cursorToId): {
   after?: string;
   before?: string;
   limit: number;
@@ -10,18 +10,12 @@ export default function (args): {
   if (args.first) {
     result.limit = args.first;
     if (args.after) {
-      let id = cursorToId(args.after);
-      if (id) {
-        result.after = id;
-      }
+      result.after = resolver(args.after);
     }
   } else if (args.last) {
     result.limit = args.last;
     if (args.before) {
-      let id = cursorToId(args.before);
-      if (id) {
-        result.before = id;
-      }
+      result.before = resolver(args.before);
     }
   } else if (args.limit || args.skip) {
     result.limit = args.limit;
