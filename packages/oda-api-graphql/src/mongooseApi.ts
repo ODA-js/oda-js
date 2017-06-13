@@ -194,7 +194,6 @@ export default class MongooseApi<RegisterConnectors> {
 
     let move: any = {};
 
-
     if (cursor.after || cursor.before) {
       const detect = (name: string, value: any) =>
         ({
