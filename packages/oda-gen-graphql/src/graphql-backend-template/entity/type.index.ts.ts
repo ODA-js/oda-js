@@ -16,8 +16,12 @@ export interface MapperOutupt {
     'connections.types': schema.connections.types.MapperOutput;
     'connections.mutation': schema.connections.mutations.types.MapperOutput;
     'connections.mutation.entry': schema.connections.mutations.entry.MapperOutput;
+    'connections.subscription': schema.connections.mutations.types.MapperOutput;
+    'connections.subscription.entry': schema.connections.mutations.entry.MapperOutput;
     'mutation.types': schema.mutations.types.MapperOutput;
     'mutation.entry': schema.mutations.entry.MapperOutput;
+    'subscription.types': schema.mutations.types.MapperOutput;
+    'subscription.entry': schema.mutations.entry.MapperOutput;
     'query.entry': schema.query.entry.MapperOutput;
     'viewer.entry': schema.viewer.entry.MapperOutput;
   };
@@ -32,8 +36,12 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       'connections.types': schema.connections.types.mapper(entity, pack, role, allowAcl),
       'connections.mutation': schema.connections.mutations.types.mapper(entity, pack, role, allowAcl),
       'connections.mutation.entry': schema.connections.mutations.entry.mapper(entity, pack, role, allowAcl),
+      'connections.subscription': schema.connections.subscriptions.types.mapper(entity, pack, role, allowAcl),
+      'connections.subscription.entry': schema.connections.subscriptions.entry.mapper(entity, pack, role, allowAcl),
       'mutation.types': schema.mutations.types.mapper(entity, pack, role, allowAcl),
       'mutation.entry': schema.mutations.entry.mapper(entity, pack, role, allowAcl),
+      'subscription.types': schema.subscriptions.types.mapper(entity, pack, role, allowAcl),
+      'subscription.entry': schema.subscriptions.entry.mapper(entity, pack, role, allowAcl),
       'query.entry': schema.query.entry.mapper(entity, pack, role, allowAcl),
       'viewer.entry': schema.viewer.entry.mapper(entity, pack, role, allowAcl),
     },

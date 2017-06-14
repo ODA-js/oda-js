@@ -7,6 +7,7 @@ import { ImageSizeType } from './imageSize';
 import { JSONType } from './json';
 import { FileType } from './file';
 import { GQLModule } from './empty';
+import { MutationKindType } from './mutationType';
 
 export {
   GQLModule,
@@ -30,5 +31,6 @@ export class DefaultTypes extends GQLModule {
     new ImageSizeType({}),
     new JSONType({}),
     new FileType({}),
+    new MutationKindType({}),
   ];
 }
