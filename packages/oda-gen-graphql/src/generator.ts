@@ -57,9 +57,8 @@ export type GeneratorConfigPackage = {
         resolver?: boolean | string[];
       }
       subscriptions?: boolean | string[] | {
-        entry?: boolean | string[];
-        types?: boolean | string[];
         resolver?: boolean | string[];
+        types?: boolean | string[];
       }
       types?: boolean | string[];
     }
@@ -144,9 +143,8 @@ const def = {
           resolver: true,
         },
         subscriptions: {
-          entry: true,
-          types: true,
           resolver: true,
+          types: true,
         },
         types: true,
       },
@@ -507,12 +505,11 @@ export default (args: Generator) => {
       if (config.graphql) {
         generate(entities, curConfig, 'entity', 'connections.mutations.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'connections.mutations.types', 'graphql');
-        generate(entities, curConfig, 'entity', 'connections.subscriptions.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'connections.subscriptions.types', 'graphql');
         generate(entities, curConfig, 'entity', 'connections.types', 'graphql');
         generate(entities, curConfig, 'entity', 'mutations.entry', 'graphql');
-        generate(entities, curConfig, 'entity', 'mutations.entry', 'graphql');
-        generate(entities, curConfig, 'entity', 'subscriptions.types', 'graphql');
+        generate(entities, curConfig, 'entity', 'mutations.types', 'graphql');
+        generate(entities, curConfig, 'entity', 'subscriptions.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'subscriptions.types', 'graphql');
         generate(entities, curConfig, 'entity', 'query.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'viewer.entry', 'graphql');

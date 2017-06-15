@@ -31,9 +31,9 @@ export class MutationKindType extends GQLModule {
     entry: [`
       # Mutation type
       enum MutationKind {
-        CREATED
-        UPDATED
-        DELETED
+        CREATE
+        UPDATE
+        DELETE
         LINK
         UNLINK
       }

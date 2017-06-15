@@ -1,30 +1,19 @@
 <#@ context 'entity' -#>
 <#-for ( let connection of entity.connections ) {#>
-input addTo#{connection.name}Input {
-  clientMutationId: String
+type #{connection.name}SubscriptionPayload {
   #{entity.ownerFieldName}:ID!
   #{connection.refFieldName}:ID!
+<#- if (connection.fields.length > 0){#>
   #additional Edge fields
 <# connection.fields.forEach(f=>{-#>
   #{f.name}: #{f.type}
 <# });-#>
+<#-}#>
 }
-
-type addTo#{connection.name}Payload {
-  clientMutationId: String
-  viewer: Viewer
-  #{entity.ownerFieldName}: #{entity.name}
- }
-
-input removeFrom#{connection.name}Input {
-  clientMutationId: String
-  #{connection.refFieldName}:ID!
-  #{entity.ownerFieldName}:ID!
- }
-
-type removeFrom#{connection.name}Payload {
-  clientMutationId: String
-  viewer: Viewer
-  #{entity.ownerFieldName}: #{entity.name}
- }
 <# }-#>
+<#- if(entity.connections.length > 0) {#>
+union #{entity.name}ConnectionsSubscriptionPayload = <# entity.connections.forEach(function(item, index){-#>
+<#- if(index > 0){#> | <#} -#>
+#{item.name}SubscriptionPayload
+<#- })-#>
+<#}-#>

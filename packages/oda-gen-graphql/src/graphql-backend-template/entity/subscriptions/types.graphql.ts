@@ -13,15 +13,8 @@ export interface MapperOutput {
   name: string;
   plural: string;
   payloadName: string;
-  create: {
-    name: string;
-    type: string;
-  }[];
+  hasConnections: boolean;
   update: {
-    name: string;
-    type: string;
-  }[];
-  unique: {
     name: string;
     type: string;
   }[];
@@ -40,28 +33,14 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     name: entity.name,
     plural: entity.plural,
     payloadName: decapitalize(entity.name),
-    create: [
-      { name: 'id', type: 'ID', required: false },
-      ...fieldsAcl
-        .filter(mutableFields)]
-      .map(f => ({
-        name: f.name,
-        type: `${mapToGraphqlTypes(f.type)}${printRequired(f)}`,
-      })),
+    hasConnections: entity.relations.size > 0,
     update: fieldsAcl
       .filter(updatePaylopadFields)
       .map(f => ({
         name: f.name,
         type: `${mapToGraphqlTypes(f.type)}`,
       })),
-    unique: [
-      { name: 'id', type: 'ID' },
-      ...fieldsAcl
-        .filter(identityFields)
-        .map(f => ({
-          name: f.name,
-          type: mapToGraphqlTypes(f.type),
-        }))],
+
   };
 }
 

@@ -65,14 +65,13 @@ for (let fname of connection.ref.fields){
             }
           }
         });
-      }
       <#}#>
 
       return {
         #{entity.ownerFieldName}: source,
       };
-    },
-  ),
+      }
+    }),
 
   removeFrom#{connection.relationName}: mutateAndGetPayload(
     async (
@@ -120,14 +119,13 @@ for (let fname of connection.ref.fields){
             }
           }
         });
-      }
       <#}#>
 
       return {
         #{entity.ownerFieldName}: source,
       };
-    },
-  ),
+    }
+  }),
 
 <#- } #>
 };
