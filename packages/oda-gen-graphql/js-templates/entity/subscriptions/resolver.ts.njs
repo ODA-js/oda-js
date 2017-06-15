@@ -22,3 +22,23 @@ export const subscriptions = {
     }),
   },
 };
+
+export const resolver = {
+  <#if(entity.connections.length > 0){#>
+  #{entity.name}SubscriptionPayload : {
+    __resolveType(obj, context, info) {
+      if (
+  <#-entity.unionCheck.forEach((fname, index)=>{-#><#-if(index > 0){#> || <#}-#>obj.#{fname}
+  <#-})-#>) {
+        return "Update#{entity.name}SubscriptionPayload";
+      }
+  <#-for ( let connection of entity.connections ) {#>
+      if (obj.args && obj.args.#{entity.ownerFieldName} && obj.args.#{connection.refFieldName}) {
+        return "#{connection.name}SubscriptionPayload";
+      }
+  <#-}#>
+      return null;
+    }
+  },
+  <#}#>
+};

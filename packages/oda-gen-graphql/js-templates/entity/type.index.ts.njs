@@ -4,7 +4,6 @@
 <#@ requireAs ('entity/connections/types.graphql.njs', 'connections.types') #>
 <#@ requireAs ('entity/connections/mutations/types.graphql.njs', 'connections.mutation') #>
 <#@ requireAs ('entity/connections/mutations/entry.graphql.njs', 'connections.mutation.entry') #>
-<#@ requireAs ('entity/connections/subscriptions/types.graphql.njs', 'connections.subscription') #>
 <#@ requireAs ('entity/mutations/types.graphql.njs', 'mutation.types') #>
 <#@ requireAs ('entity/mutations/entry.graphql.njs', 'mutation.entry') #>
 <#@ requireAs ('entity/subscriptions/types.graphql.njs', 'subscription.types') #>
@@ -20,16 +19,15 @@ import { query } from './query/resolver';
 import { viewer } from './viewer/resolver';
 import { resolver } from './type/resolver';
 import { mutation as connectionMutation } from './connections/mutations/resolver';
-import { unionResover as connectionSubscriptionsUnions} from './connections/subscriptions/resolver';
 import { mutation as entityMutation } from './mutations/resolver';
-import { subscriptions as entitySubscription } from './subscriptions/resolver';
+import { subscriptions as entitySubscription, resolver as subscriptionsUnions } from './subscriptions/resolver';
 
 export class #{entity.name}Entity extends common.types.GQLModule {
   constructor(_args) {
     super(_args);
     this._query = fillDefaults(this._query, query);
     this._viewer = fillDefaults(this._viewer, viewer);
-    this._resolver = fillDefaults(this._resolver, resolver, connectionSubscriptionsUnions);
+    this._resolver = fillDefaults(this._resolver, resolver, subscriptionsUnions);
 
     this._typeDef = fillDefaults(this._typeDef, {
       'enums': [`#{partial(entity.partials['enums'], 'enums')}`],
@@ -38,7 +36,6 @@ export class #{entity.name}Entity extends common.types.GQLModule {
       'subscriptionsTypes': [`#{partial(entity.partials['subscription.types'], 'subscription.types')}`],
       'connectionsTypes': [`#{partial(entity.partials['connections.types'], 'connections.types')}`],
       'connectionsMutation': [`#{partial(entity.partials['connections.mutation'], 'connections.mutation')}`],
-      'subscriptionsMutation': [`#{partial(entity.partials['connections.subscription'], 'connections.subscription')}`],
     });
 
     this._mutationEntry = fillDefaults(this._mutationEntry, {

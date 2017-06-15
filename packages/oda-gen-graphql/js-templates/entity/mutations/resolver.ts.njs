@@ -38,6 +38,7 @@ export const mutation = {
         #{entity.name}: {
           mutation: 'CREATE',
           node: result,
+          payload:{},
         }
       });
     }
@@ -140,6 +141,7 @@ export const mutation = {
         #{entity.name}: {
           mutation: 'DELETE',
           node: result,
+          payload:{},
         }
       });
     }

@@ -1,5 +1,5 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { capitalize, decapitalize, mapToTSTypes } from '../../utils';
+import { capitalize, decapitalize, mapToTSTypes, mapToGraphqlTypes, printRequired } from '../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/subscriptions/resolver.ts.njs';
@@ -11,22 +11,15 @@ export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: 
 export interface MapperOutupt {
   name: string;
   ownerFieldName: string;
-  complexUnique: { name: string, fields: { name: string, uName: string, type: string }[] }[];
-  args: {
-    create: {
-      args: { name: string; type: string; }[];
-      find: { name: string; type: string; }[];
-    };
-    update: {
-      args: { name: string; type: string; }[];
-      find: { name: string; type: string; cName: string }[];
-      payload: { name: string; type: string; }[];
-    };
-    remove: {
-      args: { name: string; type: string; }[]
-      find: { name: string; type: string; cName: string }[],
-    };
-  };
+  unionCheck: string[];
+  connections: {
+    refFieldName: string;
+    name: string;
+    fields: {
+      name: string;
+      type: string;
+    }[];
+  }[];
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -39,6 +32,8 @@ import {
   identityFields,
   oneUniqueInIndex,
   complexUniqueIndex,
+  updatePaylopadFields,
+  persistentRelations,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
@@ -47,85 +42,30 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
-    complexUnique: complexUniqueIndex(entity).map(i => {
-      let fields = Object.keys(i.fields)
-        .map(fn => entity.fields.get(fn))
-        .map(f => ({
-          name: f.name,
-          uName: capitalize(f.name),
-          type: mapToTSTypes(f.type),
-        })).sort((a, b) => {
-          if (a.name > b.name) return 1
-          else if (a.name < b.name) return -1;
-          else return 0;
-        });;
-      return {
-        name: i.name,
-        fields,
-      };
-    }),
-    args: {
-      create: {
-        args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(f => singleStoredRelations(f) || mutableFields(f))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: fieldsAcl
-          .filter(f => singleStoredRelations(f) || mutableFields(f))
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          })),
+    unionCheck: fieldsAcl
+      .filter(updatePaylopadFields)
+      .map(f => f.name),
+    connections: fieldsAcl
+      .filter(persistentRelations(pack))
+      .map(f => {
+        let relFields = [];
+        if (f.relation.fields && f.relation.fields.length > 0) {
+          f.relation.fields.forEach(field => {
+            relFields.push({
+              name: field.name,
+              type: `${mapToGraphqlTypes(field.type)}${printRequired(field)}`,
+            });
+          });
+        }
+        let sameEntity = entity.name === f.relation.ref.entity;
+        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        return {
+          refFieldName: decapitalize(refFieldName),
+          name: f.relation.fullName,
+          fields: relFields,
+          single: f.relation.single,
+        };
       },
-      update: {
-        args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(f => singleStoredRelations(f) || mutableFields(f))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: [
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-              cName: capitalize(f.name),
-            }))],
-        payload: fieldsAcl
-          .filter(f => singleStoredRelations(f) || mutableFields(f))
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          })),
-      },
-      remove: {
-        args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: [
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-              cName: capitalize(f.name),
-            }))],
-      },
-    },
+    ),
   };
 }

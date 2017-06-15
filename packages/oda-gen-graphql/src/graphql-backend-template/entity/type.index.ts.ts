@@ -16,7 +16,6 @@ export interface MapperOutupt {
     'connections.types': schema.connections.types.MapperOutput;
     'connections.mutation': schema.connections.mutations.types.MapperOutput;
     'connections.mutation.entry': schema.connections.mutations.entry.MapperOutput;
-    'connections.subscription': schema.connections.subscriptions.types.MapperOutput;
     'mutation.types': schema.mutations.types.MapperOutput;
     'mutation.entry': schema.mutations.entry.MapperOutput;
     'subscription.types': schema.subscriptions.types.MapperOutput;
@@ -35,7 +34,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       'connections.types': schema.connections.types.mapper(entity, pack, role, allowAcl),
       'connections.mutation': schema.connections.mutations.types.mapper(entity, pack, role, allowAcl),
       'connections.mutation.entry': schema.connections.mutations.entry.mapper(entity, pack, role, allowAcl),
-      'connections.subscription': schema.connections.subscriptions.types.mapper(entity, pack, role, allowAcl),
       'mutation.types': schema.mutations.types.mapper(entity, pack, role, allowAcl),
       'mutation.entry': schema.mutations.entry.mapper(entity, pack, role, allowAcl),
       'subscription.types': schema.subscriptions.types.mapper(entity, pack, role, allowAcl),
