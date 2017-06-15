@@ -4,11 +4,12 @@ let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 
 import {
   fromGlobalId,
+  toGlobalId,
 } from 'graphql-relay';
 
 import RegisterConnectors from '../../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
-import {PubSubEngine} from 'graphql-subscriptions';
+import { PubSubEngine } from 'graphql-subscriptions';
 
 export const mutation = {
 <#- for (let connection of entity.connections) {#>
@@ -47,7 +48,10 @@ for (let fname of connection.ref.fields){
             mutation: 'LINK',
             node: source,
             payload: {
-              args: payload,
+              args: {
+                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
+                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+              },
               relation: '#{connection.name}'
             }
           }
@@ -60,7 +64,10 @@ for (let fname of connection.ref.fields){
             mutation: 'LINK',
             node: dest,
             payload: {
-              args: payload,
+              args: {
+                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
+                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+              },
               relation: '#{connection.opposite}'
             }
           }

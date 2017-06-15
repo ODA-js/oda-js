@@ -20,7 +20,8 @@ type #{entity.name}Subscription {
 }
 
 input #{entity.name}SubscriptionFilter {
-  mutation: MutationKind!
+  mutation: MutationKind
+  id: ID
 }
 
 <#- if(entity.connections.length > 0) {#>
