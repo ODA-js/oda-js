@@ -9,6 +9,7 @@ import {
 
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
+import { PubSubEngine } from 'graphql-subscriptions';
 
 export const mutation = {
   create#{entity.name}: mutateAndGetPayload( async (args: {
@@ -16,7 +17,7 @@ export const mutation = {
       #{f.name}?: #{f.type},
       <#-}#>
     },
-    context: { connectors: RegisterConnectors },
+    context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
   ) => {
     logger.trace('create#{entity.name}');
@@ -30,11 +31,21 @@ export const mutation = {
       create.id = fromGlobalId(args.id).id;
     }
 
-    let #{entity.ownerFieldName} = await context.connectors.#{entity.name}.create(create);
+    let result = await context.connectors.#{entity.name}.create(create);
+
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'CREATE',
+          node: result,
+          payload:{},
+        }
+      });
+    }
 
     let #{entity.ownerFieldName}Edge = {
-      cursor: idToCursor(#{entity.ownerFieldName}._id),
-      node: #{entity.ownerFieldName},
+      cursor: idToCursor(result._id),
+      node: result,
     };
 
     return {
@@ -47,7 +58,7 @@ export const mutation = {
       #{f.name}?: #{f.type},
     <#-}#>
     },
-    context: { connectors: RegisterConnectors },
+    context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
   ) => {
     logger.trace('update#{entity.name}');
@@ -62,6 +73,7 @@ export const mutation = {
       result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(fromGlobalId(args.id).id, payload);
     <#- for (let f of entity.args.update.find) {#>
     } else if (args.#{f.name}) {
+      delete payload.#{f.name};
       result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndUpdate(args.#{f.name}, payload);
     <#-}#>
     <#- for (let f of entity.complexUnique) {
@@ -70,8 +82,21 @@ export const mutation = {
       let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
     #>
     } else if (#{condArgs}) {
+      <# for(let fn in f.fields){#>
+      delete args.#{fn};
+      <#}#>
       result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
     <#-}#>
+    }
+
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'UPDATE',
+          node: result,
+          payload,
+        }
+      });
     }
 
     return {
@@ -90,7 +115,7 @@ export const mutation = {
       #{args},
     <#-}#>
     },
-    context: { connectors: RegisterConnectors },
+    context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
   ) => {
     logger.trace('delete#{entity.name}');
@@ -109,6 +134,16 @@ export const mutation = {
     } else if (#{condArgs}) {
       result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
     <#-}#>
+    }
+
+    if (context.pubsub) {
+      context.pubsub.publish('#{entity.name}', {
+        #{entity.name}: {
+          mutation: 'DELETE',
+          node: result,
+          payload:{},
+        }
+      });
     }
 
     return {

@@ -220,7 +220,6 @@ export default class MongooseApi<RegisterConnectors> {
         }
         move = { $or: or };
       } else {
-        // ??? Проверить что это так!!!
         detect('_id', cursor.after || cursor.before);
       }
     }

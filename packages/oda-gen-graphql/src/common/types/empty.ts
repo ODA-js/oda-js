@@ -31,11 +31,17 @@ export class GQLModule {
   public get mutation(): { [key: string]: any } {
     return this._mutation || {};
   };
+  public get subscription(): { [key: string]: any } {
+    return this._subscription || {};
+  }
   public get typeDef(): string[] {
     return hashToString(this._typeDef);
   };
   public get mutationEntry(): string[] {
     return hashToString(this._mutationEntry);
+  };
+  public get subscriptionEntry(): string[] {
+    return hashToString(this._subscriptionEntry);
   };
   public get queryEntry(): string[] {
     return hashToString(this._queryEntry);
@@ -52,8 +58,10 @@ export class GQLModule {
   protected _query: { [key: string]: any };
   protected _viewer: { [key: string]: any };
   protected _mutation: { [key: string]: any };
+  protected _subscription: { [key: string]: any };
   protected _typeDef: { [key: string]: string[] };
   protected _mutationEntry: { [key: string]: string[] };
+  protected _subscriptionEntry: { [key: string]: string[] };
   protected _queryEntry: { [key: string]: string[] };
   protected _viewerEntry: { [key: string]: string[] };
   protected _hooks: { [key: string]: any }[];
@@ -83,9 +91,11 @@ export class GQLModule {
     viewer,
     typeDef,
     mutationEntry,
+    subscriptionEntry,
     queryEntry,
     viewerEntry,
     mutation,
+    subscription,
     hooks,
     extend,
   }: {
@@ -94,8 +104,10 @@ export class GQLModule {
       query?: { [key: string]: any };
       viewer?: { [key: string]: any };
       mutation?: { [key: string]: any };
+      subscription?: { [key: string]: any };
       typeDef?: { [key: string]: string[] };
       mutationEntry?: { [key: string]: string[] };
+      subscriptionEntry?: { [key: string]: string[] };
       queryEntry?: { [key: string]: string[] };
       viewerEntry?: { [key: string]: string[] };
       hooks?: { [key: string]: any }[];
@@ -106,8 +118,10 @@ export class GQLModule {
     this._query = query;
     this._viewer = viewer;
     this._mutation = mutation;
+    this._subscription = subscription;
     this._typeDef = typeDef;
     this._mutationEntry = mutationEntry;
+    this._subscriptionEntry = subscriptionEntry;
     this._queryEntry = queryEntry;
     this._viewerEntry = viewerEntry;
     this._hooks = hooks;
@@ -150,8 +164,10 @@ export class GQLModule {
       this._query = deepMerge(this._query, obj.query);
       this._viewer = deepMerge(this._viewer, obj.viewer);
       this._mutation = deepMerge(this._mutation, obj.mutation);
+      this._subscription = deepMerge(this._subscription, obj.subscription);
       this._typeDef = deepMerge(this._typeDef, obj._typeDef);
       this._mutationEntry = deepMerge(this._mutationEntry, obj._mutationEntry);
+      this._subscriptionEntry = deepMerge(this._subscriptionEntry, obj._subscriptionEntry);
       this._queryEntry = deepMerge(this._queryEntry, obj._queryEntry);
       this._viewerEntry = deepMerge(this._viewerEntry, obj._viewerEntry);
       this._hooks = [...this._hooks || [], ...obj.hooks || []];
@@ -168,8 +184,10 @@ export class GQLModule {
       this._query = fillDefaults(obj._query, this.query);
       this._viewer = fillDefaults(obj._viewer, this.viewer);
       this._mutation = fillDefaults(obj._mutation, this.mutation);
+      this._subscription = fillDefaults(obj._subscription, this.subscription);
       this._typeDef = fillDefaults(obj._typeDef, this._typeDef);
       this._mutationEntry = fillDefaults(obj._mutationEntry, this._mutationEntry);
+      this._subscriptionEntry = fillDefaults(obj._subscriptionEntry, this._subscriptionEntry);
       this._queryEntry = fillDefaults(obj._queryEntry, this._queryEntry);
       this._viewerEntry = fillDefaults(obj._viewerEntry, this._viewerEntry);
       this._hooks = fillDefaults(obj._hooks, this.hooks);

@@ -36,6 +36,11 @@ export type GeneratorConfigPackage = {
       types?: boolean | string[];
       resolver?: boolean | string[];
     },
+    subscriptions?: boolean | string[] | {
+      entry?: boolean | string[];
+      types?: boolean | string[];
+      resolver?: boolean | string[];
+    },
     data?: boolean | string[] | {
       mongoose?: {
         connector?: boolean | string[];
@@ -109,6 +114,11 @@ const def = {
         resolver: true,
       },
       mutations: {
+        entry: true,
+        types: true,
+        resolver: true,
+      },
+      subscriptions: {
         entry: true,
         types: true,
         resolver: true,
@@ -490,6 +500,8 @@ export default (args: Generator) => {
         generate(entities, curConfig, 'entity', 'connections.types', 'graphql');
         generate(entities, curConfig, 'entity', 'mutations.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'mutations.types', 'graphql');
+        generate(entities, curConfig, 'entity', 'subscriptions.entry', 'graphql');
+        generate(entities, curConfig, 'entity', 'subscriptions.types', 'graphql');
         generate(entities, curConfig, 'entity', 'query.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'viewer.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'type.entry', 'graphql');
@@ -501,6 +513,7 @@ export default (args: Generator) => {
       if (config.ts) {
         generate(entities, curConfig, 'entity', 'connections.mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'mutations.resolver', 'ts');
+        generate(entities, curConfig, 'entity', 'subscriptions.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'query.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'viewer.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'type.resolver', 'ts');

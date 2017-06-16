@@ -13,8 +13,10 @@ export interface MapperOutupt {
   name: string;
   ownerFieldName: string;
   connections: {
+    opposite: string;
     relationName: string,
     name: string;
+    refEntity: string;
     addArgs: { name: string; type: string; }[];
     removeArgs: { name: string; type: string; }[];
     ref: {
@@ -39,6 +41,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         };
         let sameEntity = entity.name === f.relation.ref.entity;
         let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        let refEntity = f.relation.ref.entity;
         let addArgs = [
           {
             name: decapitalize(entity.name),
@@ -63,9 +66,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           }
         }
         return {
+          opposite: f.relation.opposite,
+          refEntity,
           relationName: f.relation.fullName,
           shortName: f.relation.shortName,
-          name: capitalize(f.name),
+          name: f.name,
           refFieldName: decapitalize(refFieldName),
           addArgs,
           removeArgs,

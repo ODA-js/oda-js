@@ -4,10 +4,12 @@ let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 
 import {
   fromGlobalId,
+  toGlobalId,
 } from 'graphql-relay';
 
 import RegisterConnectors from '../../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
+import { PubSubEngine } from 'graphql-subscriptions';
 
 export const mutation = {
 <#- for (let connection of entity.connections) {#>
@@ -18,13 +20,13 @@ export const mutation = {
         #{f.name}?: #{f.type},
     <#-}#>
       },
-      context: { connectors: RegisterConnectors },
+      context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
       info
     ) => {
       logger.trace('addTo#{connection.relationName}');
       let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
       let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
-      await context.connectors.#{entity.name}.addTo#{connection.shortName}({
+      let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
 <#-
@@ -34,20 +36,49 @@ for (let fname of connection.ref.fields){
 <#-
   }
 }#>
-      });
+      };
 
-      let item = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
-      // let #{entity.ownerFieldName}Edge = {
-      //   cursor: idToCursor(item._id),
-      //   node: item,
-      // };
+      await context.connectors.#{entity.name}.addTo#{connection.shortName}(payload);
+
+      let source = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+
+      if (context.pubsub) {
+        context.pubsub.publish('#{entity.name}', {
+          #{entity.name}: {
+            mutation: 'LINK',
+            node: source,
+            payload: {
+              args: {
+                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
+                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+              },
+              relation: '#{connection.name}'
+            }
+          }
+        });
+      <#if(connection.opposite){#>
+        let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
+
+        context.pubsub.publish('#{connection.refEntity}', {
+          #{connection.refEntity}: {
+            mutation: 'LINK',
+            node: dest,
+            payload: {
+              args: {
+                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
+                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+              },
+              relation: '#{connection.opposite}'
+            }
+          }
+        });
+      <#}#>
 
       return {
-        // #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
-        #{entity.ownerFieldName}: item,
+        #{entity.ownerFieldName}: source,
       };
-    },
-  ),
+      }
+    }),
 
   removeFrom#{connection.relationName}: mutateAndGetPayload(
     async (
@@ -56,23 +87,52 @@ for (let fname of connection.ref.fields){
         #{f.name}?: #{f.type},
       <#-}#>
       },
-      context: { connectors: RegisterConnectors },
+      context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
       info
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
       let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
       let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
-      await context.connectors.#{entity.name}.removeFrom#{connection.shortName}({
+      let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
-      });
-
-      let item = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
-      return {
-        #{entity.ownerFieldName}: item,
       };
-    },
-  ),
+      await context.connectors.#{entity.name}.removeFrom#{connection.shortName}(payload);
+
+      let source = await context.connectors.#{entity.name}.findOneById(#{entity.ownerFieldName});
+
+      if (context.pubsub) {
+        context.pubsub.publish('#{entity.name}', {
+          #{entity.name}: {
+            mutation: 'UNLINK',
+            node: source,
+            payload: {
+              args: payload,
+              relation: '#{connection.name}'
+            }
+          }
+        });
+
+      <#if(connection.opposite){#>
+        let dest = await context.connectors.#{connection.refEntity}.findOneById(#{connection.refFieldName});
+
+        context.pubsub.publish('#{connection.refEntity}', {
+          #{connection.refEntity}: {
+            mutation: 'UNLINK',
+            node: dest,
+            payload: {
+              args: payload,
+              relation: '#{connection.opposite}'
+            }
+          }
+        });
+      <#}#>
+
+      return {
+        #{entity.ownerFieldName}: source,
+      };
+    }
+  }),
 
 <#- } #>
 };

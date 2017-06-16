@@ -27,7 +27,7 @@ export interface MapperOutupt {
   loaders: string[];
   fields: string[];
   filterAndSort: { type: string, name: string, gqlType: string }[];
-  search: { type: string, name: string, gqlType: string, rel: boolean }[];
+  search: { type: string, name: string, gqlType: string, rel: boolean, _name?: string }[];
   updatableRels: string[];
   ownerFieldName: string;
   cOwnerFieldName: string;
@@ -115,7 +115,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
       { name: 'id', _name: '_id', type: 'string', relation: false },
       ...getFields(entity)
         .filter(f => indexedFields(f) || singleStoredRelations(f))]
-      .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type, rel: !!f.relation, _name: (f._name || f.name) })),
+      .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type, rel: !!f.relation, _name: (f['_name'] || f.name) })),
     ownerFieldName: decapitalize(entity.name),
     cOwnerFieldName: capitalize(entity.name),
     description: entity.description,
