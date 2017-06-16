@@ -1,5 +1,6 @@
 import pagination from './pagination';
 import cursorDirection from './direction';
+import { Filter } from './filter';
 import { DIRECTION } from './consts';
 
 import { fromGlobalId } from 'graphql-relay';
@@ -69,7 +70,13 @@ export default class MongooseApi<RegisterConnectors> {
   //   }
   // };
 
-  public getFilter(args) { return {}; };
+  public getFilter(args) {
+    if (args.filter) {
+      return Filter.parse(args.filter)
+    } else {
+      return {};
+    }
+  };
   public getPayload(args) { return {}; };
 
   public setupViewer(viewer?: {

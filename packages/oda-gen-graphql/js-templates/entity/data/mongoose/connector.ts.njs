@@ -215,8 +215,14 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   }-#>
 
       let connection = await this.connectors.#{connection.ref.using.entity}.getList({
-        #{connection.ref.using.field}: current.#{connection.ref.backField},
-        #{connection.ref.usingField}: opposite.#{connection.ref.field},
+        filter: {
+          #{connection.ref.using.field}: {
+            eq: current.#{connection.ref.backField}
+          },
+          #{connection.ref.usingField}: {
+            eq: opposite.#{connection.ref.field}
+          },
+        }
       });
 
       if (connection.length > 0) {
@@ -247,8 +253,14 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     let opposite = await this.connectors.#{connection.ref.entity}.findOneById( args.#{connection.refFieldName} );
     if (current && opposite) {
       let connection = await this.connectors.#{connection.ref.using.entity}.getList({
-        #{connection.ref.using.field}: current.#{connection.ref.backField},
-        #{connection.ref.usingField}: opposite.#{connection.ref.field},
+        filter: {
+          #{connection.ref.using.field}: {
+            eq: current.#{connection.ref.backField}
+          },
+          #{connection.ref.usingField}: {
+            eq: opposite.#{connection.ref.field}
+          },
+        }
       });
 
       if (connection.length > 0) {
@@ -350,7 +362,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
 
 <#-});-#>
 
-
   public getPayload(args: {
     <#- for (let f of entity.args.create) {#>
       #{f.name}?: #{f.type},
@@ -372,53 +383,5 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
       }
     }
     return entity;
-  }
-
-  public  getFilter(args) {
-    let result: any = {};
-<#- if(entity.filterAndSort.length > 0){ #>
-    if (args.filter) {
-      result = { $or: [ ] };
-<# for( let i = 0, len = entity.filterAndSort.length; i < len; i++) {
-  let f = entity.filterAndSort[i]; #>
-<#- if(f.type == 'string' && f.gqlType != 'ID'){-#>
-      result.$or.push({ #{f.name}: { $regex: `^${args.filter}`, $options: 'im' }});
-<#- } else if(f.type == 'string' && f.gqlType == 'ID'){-#>
-      result.$or.push({ #{f.name}: args.filter});
-<#- } else if (f.type == 'number') {-#>
-      if (!isNaN(Number(args.filter))) {
-        result.$or.push({ #{f.name}: { $eq: Number(args.filter)}});
-      }
-<#- } else if (f.type == 'boolean'){-#>
-      if ((!!args.filter.match(/true/i) || !!args.filter.match(/false/i))) {
-        result.$or.push({ #{f.name}: { $eq: !!args.filter.match(/true/i)}});
-      }
-<#- }#>
-<#}-#>
-    }
-<#- } #>
-
-<#- for( let f of entity.search){ #>
-    if (args.#{f.name} !== undefined
-      && args.#{f.name} !== null
-      && typeof args.#{f.name} === 'object'
-      && args.#{f.name}.constructor === Object) {
-      result.#{f._name || f.name} = args.#{f.name};
-    } else
-<#- if(f.type == 'string' && !(f.gqlType == 'ID' || f.rel) ){ -#>  if (args.#{f.name} !== undefined && args.#{f.name} !== '') {
-      result.#{f.name} = { $regex: `^${args.#{f.name}}`, $options: 'im' };
-    }
-<#- } else if(f.type == 'string' && (f.gqlType == 'ID' || f.rel)){-#> if (args.#{f.name} !== undefined && args.#{f.name} !== '') {
-      result.#{f.name} = args.#{f.name};
-    }
-<#- } else if(f.type == 'number') {-#>  if (args.#{f.name} !== undefined && !isNaN(Number(args.#{f.name}))) {
-      result.#{f.name} = { $eq: Number(args.#{f.name})};
-    }
-<#- } else if(f.type == 'boolean'){-#>  if (args.#{f.name} !== undefined ) {
-      result.#{f.name} = { $eq: !!args.#{f.name} };
-    }
-<#}-#>
-<#}#>
-    return result;
   }
 };

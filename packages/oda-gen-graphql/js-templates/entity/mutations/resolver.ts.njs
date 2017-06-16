@@ -27,7 +27,7 @@ export const mutation = {
     <#-}#>
     };
 
-    if(args.id){
+    if(args.id) {
       create.id = fromGlobalId(args.id).id;
     }
 

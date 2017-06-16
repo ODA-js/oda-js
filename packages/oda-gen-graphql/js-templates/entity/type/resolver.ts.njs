@@ -29,12 +29,21 @@ export const resolver: { [key: string]: any } = {
 <#- if (connection.verb === 'HasOne') {#>
       //HasOne
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
-        let #{connection.refFieldName} = await context.connectors.#{connection.ref.entity}.getList({ #{connection.ref.field} : #{entity.ownerFieldName}.#{connection.ref.backField} });
+        let #{connection.refFieldName} = await context.connectors.#{connection.ref.entity}.getList({ filter: {
+          #{connection.ref.field} : {
+            eq: #{entity.ownerFieldName}.#{connection.ref.backField}}
+          }
+        });
         result = #{connection.refFieldName}[0];
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
-        args.#{connection.ref.field} =  #{entity.ownerFieldName}.#{connection.ref.backField};
+        if(!args.filter){
+          args.filter = {};
+        }
+        args.filter.#{connection.ref.field} =  {
+          eq: #{entity.ownerFieldName}.#{connection.ref.backField}
+        };
         let list = await context.connectors.#{connection.ref.entity}.getList(args);
         if (list.length > 0) {
           let cursor = pagination(args);
@@ -69,8 +78,11 @@ export const resolver: { [key: string]: any } = {
         const cursor = _.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before']);
         const _args = {
           ..._.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before']),
-           #{connection.ref.using.field}: #{entity.ownerFieldName}.#{connection.ref.backField}
         };
+        if(!_args.filter){
+          _args.filter = {};
+        }
+        _args.filter.#{connection.ref.using.field}: #{entity.ownerFieldName}.#{connection.ref.backField}
         // все хитрее чем тут
         // let count = await context.connectors.Like.getCount(_args);
         // let first = await context.connectors.Like.getFirst(_args);
@@ -88,11 +100,15 @@ export const resolver: { [key: string]: any } = {
           }
         );
         if (links.length > 0) {
-          let res = await context.connectors.#{connection.ref.entity}.getList({
+          let _args2 = {
             ..._.omit(args, ['limit', 'skip', 'first', 'after', 'last', 'before']),
             limit: links.length,
-            #{connection.ref.field}: { $in: links.map(i => i.#{connection.ref.usingField}) }
-          });
+          };
+          if(!_args2.filter){
+            _args2.filter = {};
+          }
+          _args2.filter.#{connection.ref.field}: { $in: links.map(i => i.#{connection.ref.usingField}) }
+          let res = await context.connectors.#{connection.ref.entity}.getList(_args2);
 
           if (res.length > 0) {
             let hItems = res.reduce((hash, item) => {

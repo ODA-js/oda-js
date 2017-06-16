@@ -15,12 +15,9 @@ export const query: { [key: string]: any } = {
       before: string,
       last: number,
       orderBy: string[],
-      filter: string,
+      filter: object,
       limit: number,
       skip: number,
-    <#- for (let f of entity.indexed.args) {#>
-      #{f.name}?: #{f.type},
-    <#-}#>
     },
     context: { connectors: RegisterConnectors },
     info

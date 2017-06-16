@@ -12,6 +12,7 @@ export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: 
 export interface MapperOutput {
   name: string;
   description: string;
+  filter: string[];
   fields: {
     name: string;
     description: string;
@@ -26,24 +27,31 @@ export interface MapperOutput {
     connectionName: string;
     single: boolean;
     args: string;
-    indexed: string;
   }[];
 }
 
 import {
   getFieldsForAcl,
-  searchParamsForAcl,
+  filterForAcl,
   fields,
   relationFieldsExistsIn,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutput {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
+  let filter = filterForAcl(allowAcl)(role)(entity)
+    .map(k => ({
+      name: k,
+      type: `Where${mapToGraphqlTypes(entity.fields.get(k).type)}`,
+    }))
+    .map(i => `${i.name}: ${i.type}`);
+
   return {
     name: entity.name,
     description: entity.description ? entity.description.split('\n').map(d => {
       return (d.trim().match(/#/)) ? d : `# ${d}`;
     }).join('\n') : entity.description,
+    filter,
     fields: fieldsAcl
       .filter(fields)
       .map(f => {
@@ -71,11 +79,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
         }
 
         let refe = pack.entities.get(f.relation.ref.entity);
-        let indexed = searchParamsForAcl(allowAcl)(role)(refe)
-          .map(k => ({
-            name: k,
-            type: mapToGraphqlTypes(refe.fields.get(k).type),
-          })).map(i => `${i.name}: ${i.type}`).join(', ');
 
         return {
           entity: f.relation.ref.entity,
@@ -85,7 +88,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           }).join('\n') : f.description,
           single,
           args,
-          indexed: indexed ? `, ${indexed}` : indexed,
           type: `${mapToGraphqlTypes(f.relation.ref.entity)}${printRequired(f)}`,
           connectionName: `${f.derived ? refe.plural : f.relation.fullName}Connection${printRequired(f)}`,
         };
