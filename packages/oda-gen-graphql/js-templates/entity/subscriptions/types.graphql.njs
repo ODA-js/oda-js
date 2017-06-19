@@ -19,11 +19,6 @@ type #{entity.name}Subscription {
   payload: #{entity.name}SubscriptionPayload
 }
 
-input #{entity.name}SubscriptionFilter {
-  mutation: MutationKind
-  id: ID
-}
-
 <#- if(entity.connections.length > 0) {#>
 <#-for ( let connection of entity.connections ) {#>
 type #{connection.name}ArgsSubscriptionPayload {

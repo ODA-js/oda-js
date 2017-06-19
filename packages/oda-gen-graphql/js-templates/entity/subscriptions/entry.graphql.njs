@@ -1,2 +1,2 @@
 <#@ context 'entity' -#>
-#{entity.name}(filter: #{entity.name}SubscriptionFilter): #{entity.name}Subscription
+#{entity.name}(mutation: MutationKind, filter: #{entity.name}Filter): #{entity.name}Subscription

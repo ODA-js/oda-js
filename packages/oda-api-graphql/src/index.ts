@@ -15,6 +15,7 @@ import * as dataPump from './dataPump';
 import MongooseApi from './mongooseApi';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
+import * as Filter from './filter';
 
 export {
   acl,
@@ -34,4 +35,5 @@ export {
   projection,
   dataPump,
   MongooseApi,
+  Filter,
 };

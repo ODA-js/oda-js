@@ -7,26 +7,26 @@ import {
   toGlobalId,
 } from 'graphql-relay';
 
-import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
+import { mutateAndGetPayload, idToCursor, Filter } from 'oda-api-graphql';
 import { pubsub } from '../../../../../model/pubsub';
 import { withFilter } from 'graphql-subscriptions';
 
-function filterIt(filter, payload) {
+function filterIt(args, payload, queryCheck) {
   let res = false;
-  if (filter && filter.id) {
-    res = filter.id === toGlobalId('#{entity.name}', payload.node.id);
+  if (args && args.mutation) {
+    res = payload.mutation === args.mutation;
   } else {
     res = true;
   }
-  if (res && filter && filter.mutation) {
-    res = payload.mutation === filter.mutation;
+  if (res) {
+    res = queryCheck(payload.node);
   }
   return res;
 }
 
 export const subscriptions = {
   #{entity.name}: {
-    subscribe: withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args) => filterIt(args.filter, #{entity.name})),
+    subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) => filterIt(args, #{entity.name}, context.queryCheck))),
   },
 };
 
