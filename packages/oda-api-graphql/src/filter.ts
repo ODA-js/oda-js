@@ -4,8 +4,10 @@ export function getValue(value, id) {
   if (id) {
     if (Array.isArray(value)) {
       return value.map(v => getValue(v, id))
-    } else {
+    } if (typeof value === 'string') {
       return fromGlobalId(value).id;
+    } else {
+      return value;
     }
   } else {
     return value;
