@@ -17,7 +17,6 @@ export interface #{entity.name}Connection {
     hasPreviousPage: boolean;
     startCursor?: string;
     endCursor?: string;
-    count?: number;
   };
   edges: #{entity.name}Edge[];
 }

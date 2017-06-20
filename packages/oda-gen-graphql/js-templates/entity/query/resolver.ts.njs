@@ -4,7 +4,7 @@ let logger = log4js.getLogger('graphql:query');
 
 import { fromGlobalId } from 'graphql-relay';
 import RegisterConnectors from '../../../../data/registerConnectors';
-import { emptyConnection, idToCursor, pagination } from 'oda-api-graphql';
+import { emptyConnection, idToCursor, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
 
 export const query: { [key: string]: any } = {
   #{entity.plural}: async (
@@ -27,8 +27,7 @@ export const query: { [key: string]: any } = {
     let list = await context.connectors.#{entity.name}.getList(args);
     if (list.length > 0) {
       let cursor = pagination(args);
-      let count = await context.connectors.#{entity.name}.getCount(args);
-      let first = await context.connectors.#{entity.name}.getFirst(args);
+      let direction = detectCursorDirection(args)._id;
       let edges = list.map(l => {
         return {
           cursor: idToCursor(l._id),
@@ -38,11 +37,10 @@ export const query: { [key: string]: any } = {
       result = {
         edges,
         pageInfo: {
-          count: count || 0,
           startCursor: edges[0].cursor,
           endCursor: edges[edges.length - 1].cursor,
-          hasPreviousPage: edges[0].node.id.toString() !== first.id.toString(),
-          hasNextPage: list.length === cursor.limit && list.length !== count,
+          hasPreviousPage: direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false,
+          hasNextPage: direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false,
         },
       };
     } else {
