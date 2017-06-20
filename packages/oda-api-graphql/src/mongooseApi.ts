@@ -40,36 +40,6 @@ export default class MongooseApi<RegisterConnectors> {
     return result;
   };
 
-  // protected canUpdate(obj) {
-  //   if (this.user.isSystem) {
-  //     return true;
-  //   } else if (obj.owner) {
-  //     return this.owner === obj.owner;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-
-  // protected canDelete(obj) {
-  //   if (this.user.isSystem) {
-  //     return true;
-  //   } else if (obj.owner) {
-  //     return this.owner === obj.owner;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-
-  // protected canCreate(obj) {
-  //   if (this.user.isSystem) {
-  //     return true;
-  //   } else if (obj.owner) {
-  //     return this.owner === obj.owner;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-
   public getFilter(args) {
     if (args.filter) {
       return Filter.parse(args.filter)
@@ -77,6 +47,7 @@ export default class MongooseApi<RegisterConnectors> {
       return {};
     }
   };
+
   public getPayload(args) { return {}; };
 
   public setupViewer(viewer?: {
@@ -161,21 +132,6 @@ export default class MongooseApi<RegisterConnectors> {
     };
   }
 
-  public async getCount(args) {
-    let query = this.getFilter(args);
-    return (await this.model.count(query));
-  }
-
-  public async getFirst(args) {
-    let query = this.getFilter(args);
-    let sort = cursorDirection(args);
-    return this.ensureId(await this.model
-      .findOne(query, { _id: 1 })
-      .sort(sort)
-      .lean(true)
-      .exec());
-  }
-
   public ensureId = (obj) => {
     if (obj) {
       return {
@@ -227,7 +183,9 @@ export default class MongooseApi<RegisterConnectors> {
         }
         move = { $or: or };
       } else {
-        detect('_id', cursor.after || cursor.before);
+        move = {
+          _id: { [sort._id == DIRECTION.FORWARD ? '$gt' : '$lt']: cursor.after || cursor.before }
+        }
       }
     }
 
