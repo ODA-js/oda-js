@@ -82,7 +82,7 @@ export const resolver: { [key: string]: any } = {
         if(!_args.filter){
           _args.filter = {};
         }
-        _args.filter.#{connection.ref.using.field}: #{entity.ownerFieldName}.#{connection.ref.backField}
+        _args.filter.#{connection.ref.using.field} = #{entity.ownerFieldName}.#{connection.ref.backField}
 
         let links = await context.connectors.#{connection.ref.using.entity}.getList(
            _args,
@@ -103,7 +103,7 @@ export const resolver: { [key: string]: any } = {
           if(!_args2.filter){
             _args2.filter = {};
           }
-          _args2.filter.#{connection.ref.field}: { $in: links.map(i => i.#{connection.ref.usingField}) }
+          _args2.filter.#{connection.ref.field} = { in: links.map(i => i.#{connection.ref.usingField}) }
           let res = await context.connectors.#{connection.ref.entity}.getList(_args2);
 
           if (res.length > 0) {
@@ -127,8 +127,8 @@ export const resolver: { [key: string]: any } = {
               pageInfo: {
                 startCursor: edges[0].cursor,
                 endCursor: edges[edges.length - 1].cursor,
-                hasPreviousPage: direction === consts.DIRECTION.BACKWARD ? ? edges.length === cursor.limit : false
-                hasNextPage: direction === consts.DIRECTION.FORWARD ? ? edges.length === cursor.limit : false,
+                hasPreviousPage: direction === consts.DIRECTION.BACKWARD ? edges.length === cursor.limit : false,
+                hasNextPage: direction === consts.DIRECTION.FORWARD ? edges.length === cursor.limit : false,
               },
             };
           } else {
