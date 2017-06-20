@@ -8,7 +8,6 @@ export class PageInfoType extends GQLModule {
       hasPreviousPage: Boolean!
       startCursor: String
       endCursor: String
-      count: Int
     }
   `],
   };
