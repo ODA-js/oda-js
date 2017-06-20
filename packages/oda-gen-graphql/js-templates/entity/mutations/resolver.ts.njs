@@ -82,9 +82,9 @@ export const mutation = {
       let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
     #>
     } else if (#{condArgs}) {
-      <# for(let fn in f.fields){#>
-      delete args.#{fn};
-      <#}#>
+      <#-for(let fn of f.fields){#>
+      delete payload.#{fn.name};
+      <#-}#>
       result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
     <#-}#>
     }
