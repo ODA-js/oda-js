@@ -1,7 +1,7 @@
 import { CursorType } from './cursor';
 import { DIRECTION } from './consts';
 
-export default function direction({ orderBy, last }: CursorType): { [key: string]: DIRECTION } {
+export default function direction({ orderBy, last, before }: CursorType): { [key: string]: DIRECTION } {
   const result: { [key: string]: DIRECTION } = {};
   if (orderBy) {
     if (!Array.isArray(orderBy)) {
@@ -20,7 +20,7 @@ export default function direction({ orderBy, last }: CursorType): { [key: string
 
     result._id = DIRECTION.FORWARD;
   } else {
-    if (last) {
+    if (last || before) {
       result._id = DIRECTION.BACKWARD;
     } else {
       result._id = DIRECTION.FORWARD;
