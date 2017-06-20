@@ -7,13 +7,13 @@ export default function (args, resolver = cursorToId): {
   skip: number;
 } {
   let result: any = { limit: 10, skip: 0 };
-  if (args.first) {
-    result.limit = args.first;
+  if (args.first || args.after) {
+    result.limit = args.first || 10;
     if (args.after) {
       result.after = resolver(args.after);
     }
-  } else if (args.last) {
-    result.limit = args.last;
+  } else if (args.last || args.before) {
+    result.limit = args.last || 10;
     if (args.before) {
       result.before = resolver(args.before);
     }
