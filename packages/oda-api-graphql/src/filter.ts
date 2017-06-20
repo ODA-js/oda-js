@@ -84,7 +84,7 @@ export class Filter {
   public static parse(node, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => Filter.parse(n, id));
-    } if (typeof node === 'object' && node.constructor === Object) {
+    } if (typeof node === 'object' && (node.constructor === Object || node.constructor === undefined)) {
       let result = {};
       let keys = Object.keys(node);
       keys.forEach((key, index) => {
@@ -185,7 +185,7 @@ export class Process {
   private static go(node: object[] | object, id: boolean = false, result?) {
     if (Array.isArray(node)) {
       return node.map(n => Process.go(n, id, result));
-    } else if (typeof node === 'object' && node.constructor === Object) {
+    } else if (typeof node === 'object' && (node.constructor === Object || node.constructor === undefined)) {
       if (!result) {
         result = [];
       }
