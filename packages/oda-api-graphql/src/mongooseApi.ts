@@ -132,6 +132,11 @@ export default class MongooseApi<RegisterConnectors> {
     };
   }
 
+  public async getCount(args) {
+    let query = this.getFilter(args);
+    return (await this.model.count(query));
+  }
+
   public ensureId = (obj) => {
     if (obj) {
       return {
