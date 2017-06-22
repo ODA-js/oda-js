@@ -24,7 +24,7 @@ export default class MongooseApi<RegisterConnectors> {
   public storeToCache: any;
   protected acls: ACLCRUD<(object) => object>;
 
-  protected canView(obj) {
+  public canView(obj) {
     return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj);
   }
 
