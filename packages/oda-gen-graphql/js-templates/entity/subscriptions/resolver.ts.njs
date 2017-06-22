@@ -26,7 +26,15 @@ function filterIt(args, payload, queryCheck) {
 
 export const subscriptions = {
   #{entity.name}: {
-    subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) => filterIt(args, #{entity.name}, context.queryCheck))),
+    subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) =>
+    {
+      let allow = context.connectors.#{entity.name}.canView(#{entity.name}.node);
+      if (allow) {
+        filterIt(args, #{entity.name}, context.queryCheck))),
+      } else {
+        return false;
+      }
+    }
   },
 };
 
