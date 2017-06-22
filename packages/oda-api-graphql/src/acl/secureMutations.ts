@@ -28,6 +28,9 @@ export class SecureMutation extends Secure<boolean> {
           throw new Error('operation not allowed');
         }
       }
+      if (descriptor.opType === 'subscription') {
+        return source;
+      }
     };
   }
 };
