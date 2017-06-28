@@ -1,5 +1,5 @@
-import { Entity, ModelPackage } from 'oda-model';
-import { mapToGraphqlTypes, printRequired, decapitalize } from './../../utils';
+import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
+import { mapToGraphqlTypes, printRequired, decapitalize, capitalize } from './../../utils';
 
 import { Factory } from 'fte.js';
 
@@ -13,6 +13,15 @@ export interface MapperOutput {
   name: string;
   plural: string;
   payloadName: string;
+  relations: {
+    derived: boolean;
+    persistent: boolean;
+    field: string;
+    single: boolean,
+    ref: {
+      entity: string;
+    }
+  }[];
   create: {
     name: string;
     type: string;
@@ -32,6 +41,8 @@ import {
   identityFields,
   mutableFields,
   updatePaylopadFields,
+  relationFieldsExistsIn,
+  getRelationNames,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
@@ -40,6 +51,20 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     name: entity.name,
     plural: entity.plural,
     payloadName: decapitalize(entity.name),
+    relations: fieldsAcl
+      .filter(relationFieldsExistsIn(pack))
+      .map(f => {
+        let verb = f.relation.verb;
+        return {
+          persistent: f.persistent,
+          derived: f.derived,
+          field: f.name,
+          single: (verb === 'BelongsTo' || verb === 'HasOne'),
+          ref: {
+            entity: f.relation.ref.entity,
+          },
+        };
+      }),
     create: [
       { name: 'id', type: 'ID', required: false },
       ...fieldsAcl

@@ -11,11 +11,151 @@ import RegisterConnectors from '../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 
+<#- for (let relEntity of entity.relEntities){#>
+async function ensure#{relEntity.name}({
+  args, context, create
+}) {
+  // find
+  let filter;
+  let fArgs;
+  let variables;
+  if (args.id) {
+    fArgs = '$id: ID';
+    filter = 'id: $id';
+    variables = {
+      id: args.id,
+    };
+
+  <#- for (let f of relEntity.unique.find) {#>
+  } else if (args.#{f.name}) {
+    fArgs = '$#{f.name}: #{f.type}';
+    filter = '#{f.name}: $#{f.name}';
+    variables = {
+      #{f.name}: args.#{f.name},
+    };
+  <#-}#>
+  <#- for (let f of relEntity.unique.complex) {
+    let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
+    let fArgs = f.fields.map(fld=>`${fld.name}: ${fld.type}`).join(', ');
+    let filter = f.fields.map(fld=>`${fld.name}: $${fld.name}`).join(', ');
+    #>
+  } else if (#{condArgs}) {
+    fArgs = '#{fArgs}';
+    filter  ='#{filter}';
+    variables = {
+    <#- f.fields.forEach((fld, indx)=>{#>
+      #{fld.name}: args.#{fld.name},
+    <#-})#>
+    };
+  <#-}#>
+  }
+  let #{relEntity.findQuery};
+  if (filter) {
+    #{relEntity.findQuery} = await context.userGQL({
+      query: `query find#{relEntity.name}(${fArgs}){
+            #{relEntity.findQuery}(${filter}){
+              id
+            }
+          }
+          `,
+      variables,
+    }).then(r => r.data.#{relEntity.findQuery});
+  }
+
+  if (!#{relEntity.findQuery}) {
+    if (create) {
+      #{relEntity.findQuery} = await context.userGQL({
+        query: `mutation create#{relEntity.name}($#{relEntity.findQuery}: create#{relEntity.name}Input!) {
+            create#{relEntity.name}(input: $#{relEntity.findQuery}) {
+              #{relEntity.findQuery} {
+                node {
+                  id
+                }
+              }
+            }
+          }
+          `,
+        variables: {
+          #{relEntity.findQuery}: args,
+        }
+      }).then(r => r.data.create#{relEntity.name}.#{relEntity.findQuery}.node);
+    }
+  } else {
+    // update
+    #{relEntity.findQuery} = await context.userGQL({
+      query: `mutation update#{relEntity.name}($#{relEntity.findQuery}: update#{relEntity.name}Input!) {
+            update#{relEntity.name}(input: $#{relEntity.findQuery}) {
+              #{relEntity.findQuery} {
+                id
+              }
+            }
+          }
+          `,
+      variables: {
+        #{relEntity.findQuery}: args,
+      }
+    }).then(r => r.data.update#{relEntity.name}.#{relEntity.findQuery});
+  }
+  return #{relEntity.findQuery};
+}
+<#-}#>
+
+<#- for (let r of entity.relations) {#>
+
+async function linkTo#{r.cField}({
+  context, #{r.field},  #{entity.ownerFieldName},
+}) {
+  if (#{r.field}) {
+    await context.userGQL({
+      query: `mutation addTo#{r.name}($input:addTo#{r.name}Input!) {
+          addTo#{r.name}(input:$input){
+            #{entity.ownerFieldName} {
+              id
+            }
+          }
+        }`,
+      variables: {
+        input: {
+          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{r.ref.filedName}: #{r.field}.id,
+        }
+      }
+    });
+  }
+}
+
+async function unlinkFrom#{r.cField}({
+  context, #{r.field},  #{entity.ownerFieldName},
+}) {
+  if (#{r.field}) {
+    await context.userGQL({
+      query: `mutation removeFrom#{r.name}($input: removeFrom#{r.name}Input!) {
+          removeFrom#{r.name}(input:$input){
+            #{entity.ownerFieldName} {
+              id
+            }
+          }
+        }`,
+      variables: {
+        input: {
+          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{r.ref.filedName}: #{r.field}.id,
+        }
+      }
+    });
+  }
+}
+
+<#-}#>
+
 export const mutation = {
   create#{entity.name}: mutateAndGetPayload( async (args: {
     <#- for (let f of entity.args.create.args) {#>
       #{f.name}?: #{f.type},
-      <#-}#>
+    <#-}#>
+    <#- for (let r of entity.relations) {#>
+      #{r.field}?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
+    <#-}#>
     },
     context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
@@ -48,6 +188,29 @@ export const mutation = {
       node: result,
     };
 
+    <#- for (let r of entity.relations) {#>
+
+    if (args.#{r.field}<#if(!r.single){#> && Array.isArray(args.#{r.field}) && args.#{r.field}.length > 0<#}#> ) {
+    <#if(!r.single){#>
+      for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
+    <#}#>
+      let #{r.field} = await ensure#{r.ref.entity}({
+        args: args.#{r.field}<#if(!r.single){#>[i]<#}#>,
+        context,
+        create: true,
+      });
+
+      await linkTo#{r.cField}({
+        context,
+        #{r.field},
+        #{entity.ownerFieldName}: result,
+      });
+    <#if(!r.single){#>
+      }
+    <#}#>
+    }
+
+    <#-}#>
     return {
       #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
     };
@@ -56,6 +219,10 @@ export const mutation = {
   update#{entity.name}:  mutateAndGetPayload( async (args:  {
     <#- for (let f of entity.args.update.args) {#>
       #{f.name}?: #{f.type},
+    <#-}#>
+    <#- for (let r of entity.relations) {#>
+      #{r.field}?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
+      #{r.field}Unlink?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
     <#-}#>
     },
     context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
@@ -99,6 +266,36 @@ export const mutation = {
       });
     }
 
+    <#- for (let r of entity.relations) {#>
+    if (args.#{r.field}Unlink) {
+      let #{r.field} = await ensure#{r.ref.entity}({
+        args: args.#{r.field}Unlink,
+        context,
+        create: false,
+      });
+
+      await unlinkFrom#{r.cField}({
+        context,
+        #{r.field},
+        #{entity.ownerFieldName}: result,
+      });
+    }
+
+    if (args.#{r.field}) {
+      let #{r.field} = await ensure#{r.ref.entity}({
+        args: args.#{r.field},
+        context,
+        create: false,
+      });
+
+      await linkTo#{r.cField}({
+        context,
+        #{r.field},
+        #{entity.ownerFieldName}: result,
+      });
+    }
+
+    <#-}#>
     return {
       #{entity.ownerFieldName}: result,
     };

@@ -70,6 +70,7 @@ import {
   mutableFields,
   identityFields,
   persistentRelations,
+  oneUniqueInIndex,
   getRelationNames,
   complexUniqueIndex,
 } from '../../../queries';
@@ -84,6 +85,8 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
   } else {
     needOwner = aclRead !== 'public';
   }
+  let singleUnique = oneUniqueInIndex(entity);
+
   return {
     name: entity.name,
     needOwner: get(entity.metadata, 'acl.read') !== 'public',
@@ -136,6 +139,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
           { name: 'id', type: 'string', cName: 'Id' },
           ...getFields(entity)
             .filter(identityFields)
+            .filter(singleUnique)
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
@@ -152,6 +156,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
         { name: 'id', type: 'string', cName: 'Id' },
         ...getFields(entity)
           .filter(identityFields)
+          .filter(singleUnique)
           .map(f => ({
             name: f.name,
             type: mapToTSTypes(f.type),

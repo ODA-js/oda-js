@@ -99,7 +99,9 @@ export const updatePaylopadFields = (f: Field): boolean => fields(f) && f.persis
 
 export const getUniqueFieldNames = (entity: Entity) => [
   'id',
-  ...getFields(entity).filter(identityFields).map(f => f.name),
+  ...getFields(entity)
+    .filter(oneUniqueInIndex(entity))
+    .filter(identityFields).map(f => f.name),
 ];
 
 export const indexes = (e: Entity) => {

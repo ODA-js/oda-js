@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/fs-extra": "^3.0.3",
     "@types/inflected": "^1.1.29",
-    "@types/node": "^7.0.28",
+    "@types/node": "^8.0.3",
     "typescript": "^2.3.4"
   }
 }
