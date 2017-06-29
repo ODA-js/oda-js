@@ -1,6 +1,6 @@
 {
   "name": "oda-isomorfic",
-  "version": "0.0.5",
+  "version": "0.0.6-0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "md5-hex": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^7.0.38",
+    "@types/node": "^8.0.3",
     "typescript": "^2.3.4"
   }
 }
