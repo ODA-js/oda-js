@@ -153,7 +153,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           single: (verb === 'BelongsTo' || verb === 'HasOne'),
           ref: {
             entity: f.relation.ref.entity,
-            filedName: decapitalize(f.relation.ref.entity),
+            fieldName: decapitalize(f.relation.ref.entity),
           },
         };
       }),

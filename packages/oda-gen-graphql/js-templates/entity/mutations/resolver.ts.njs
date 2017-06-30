@@ -117,7 +117,7 @@ async function linkTo#{r.cField}({
       variables: {
         input: {
           #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
-          #{r.ref.filedName}: #{r.field}.id,
+          #{r.ref.fieldName}: #{r.field}.id,
         }
       }
     });
@@ -139,7 +139,7 @@ async function unlinkFrom#{r.cField}({
       variables: {
         input: {
           #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
-          #{r.ref.filedName}: #{r.field}.id,
+          #{r.ref.fieldName}: #{r.field}.id,
         }
       }
     });

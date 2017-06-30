@@ -31,6 +31,10 @@ export type GeneratorConfigPackage = {
       entry?: boolean | string[];
       resolver?: boolean | string[];
     };
+    dataPump?: boolean | string[] | {
+      queries?: boolean | string[];
+      config?: boolean | string[];
+    },
     mutations?: boolean | string[] | {
       entry?: boolean | string[];
       types?: boolean | string[];
@@ -112,6 +116,10 @@ const def = {
       viewer: {
         entry: true,
         resolver: true,
+      },
+      dataPump: {
+        queries: true,
+        config: true,
       },
       mutations: {
         entry: true,
@@ -275,16 +283,27 @@ function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allo
     }
 
     let parts = route.split('.');
-    if (!fileName) {
-      parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
-    } else {
-      parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
-    }
     for (let entity of list) {
       let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow);
-      let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
-      fs.ensureFileSync(fn);
-      fs.writeFileSync(fn, source);
+      if (typeof source === 'string') {
+        let parts = route.split('.');
+        if (!fileName) {
+          parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
+        } else {
+          parts[parts.length - 1] = fileName;
+        }
+        let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
+        fs.ensureFileSync(fn);
+        fs.writeFileSync(fn, source);
+      } else if (Array.isArray(source)) {
+        let parts = route.split('.');
+        source.forEach(f => {
+          parts[parts.length - 1] = `${f.file}.${ext}`;
+          let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
+          fs.ensureFileSync(fn);
+          fs.writeFileSync(fn, f.content);
+        });
+      }
     }
   }
 }
@@ -300,17 +319,27 @@ function $generateData(pkg, raw: Factory, rootDir: string,
       list = collection;
     }
 
-    let parts = route.split('.').slice(1); // it is always `data`, at least here
-    if (!fileName) {
-      parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
-    } else {
-      parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
-    }
     for (let entity of list) {
       let source = get(template, `${type}.${route}`).generate(raw, entity, pkg);
-      let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
-      fs.ensureFileSync(fn);
-      fs.writeFileSync(fn, source);
+      if (typeof source === 'string') {
+        let parts = route.split('.').slice(1); // it is always `data`, at least here
+        if (!fileName) {
+          parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
+        } else {
+          parts[parts.length - 1] = fileName;
+        }
+        let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
+        fs.ensureFileSync(fn);
+        fs.writeFileSync(fn, source);
+      } else if (Array.isArray(source)) {
+        let parts = route.split('.').slice(1); // it is always `data`, at least here
+        source.forEach(f => {
+          parts[parts.length - 1] = `${f.file}.${ext}`;
+          let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
+          fs.ensureFileSync(fn);
+          fs.writeFileSync(fn, f.content);
+        });
+      }
     }
   }
 }
@@ -500,6 +529,7 @@ export default (args: Generator) => {
         generate(entities, curConfig, 'entity', 'connections.types', 'graphql');
         generate(entities, curConfig, 'entity', 'mutations.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'mutations.types', 'graphql');
+        generate(entities, curConfig, 'entity', 'dataPump.queries', 'graphql');
         generate(entities, curConfig, 'entity', 'subscriptions.entry', 'graphql');
         generate(entities, curConfig, 'entity', 'subscriptions.types', 'graphql');
         generate(entities, curConfig, 'entity', 'query.entry', 'graphql');
@@ -513,6 +543,7 @@ export default (args: Generator) => {
       if (config.ts) {
         generate(entities, curConfig, 'entity', 'connections.mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'mutations.resolver', 'ts');
+        generate(entities, curConfig, 'entity', 'dataPump.config', 'ts');
         generate(entities, curConfig, 'entity', 'subscriptions.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'query.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'viewer.resolver', 'ts');
