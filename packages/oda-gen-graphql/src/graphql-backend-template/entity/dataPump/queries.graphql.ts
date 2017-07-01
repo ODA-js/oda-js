@@ -5,7 +5,7 @@ import { Factory } from 'fte.js';
 export const template = 'entity/dataPump/queries.graphql.njs';
 
 export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.blocksToFiles(mapper(entity, pack, role, aclAllow), template);
+  return te.run(mapper(entity, pack, role, aclAllow), template);
 }
 
 export interface MapperOutupt {

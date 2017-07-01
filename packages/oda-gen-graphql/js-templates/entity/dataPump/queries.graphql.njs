@@ -1,6 +1,7 @@
 <#@ context 'entity' -#>
+<#@ chunks '$$$main$$$' -#>
 
-<# block "create" : #>
+<# chunkStart('create'); #>
 # Create #{entity.name}
 mutation create#{entity.name}($#{entity.ownerFieldName}: create#{entity.name}Input!){
   create#{entity.name}(input:$#{entity.ownerFieldName}){
@@ -11,9 +12,8 @@ mutation create#{entity.name}($#{entity.ownerFieldName}: create#{entity.name}Inp
     }
   }
 }
-<# end #>
 
-<# block "update" : #>
+<# chunkStart('update'); #>
 # Update #{entity.name}
 mutation update#{entity.name}($#{entity.ownerFieldName}: update#{entity.name}Input!){
   update#{entity.name}(input:$#{entity.ownerFieldName}){
@@ -22,9 +22,8 @@ mutation update#{entity.name}($#{entity.ownerFieldName}: update#{entity.name}Inp
     }
   }
 }
-<# end #>
 
-<# block "list" : #>
+<# chunkStart('update'); #>
 # List of #{entity.plural}
 query #{entity.plural} {
   viewer{
@@ -37,9 +36,8 @@ query #{entity.plural} {
     }
   }
 }
-<# end #>
 
-<# block "fragments" : #>
+<# chunkStart('fragments'); #>
 # fragments for single unique keys
 <#- for (let f of entity.unique) {#>
 fragment Embed#{entity.name}With#{f.cName} on #{entity.name} {
@@ -88,25 +86,28 @@ fragment View#{entity.name}Full on #{entity.name} {
   <#-}#>
 }
 
-<# end #>
-
-<# block "findBy" : #>
-# fragments for single unique keys
+<#
+//queries for single unique keys
+#>
 <#- for (let f of entity.unique) {#>
+<# chunkStart(`findBy${f.cName}`); #>
 query find#{entity.name}By#{f.cName}( $#{f.name}: #{f.type}) {
-  #{entity.ownerFieldName}(#{f.name}:$#{f.name}:) {
+  #{entity.ownerFieldName}(#{f.name}:$#{f.name}) {
     ...View#{entity.name}Full
   }
 }
 <#-}#>
 
 <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
-# fragments for complex unique keys
+<#
+// # queries for complex unique keys
+#>
 <#- for (let f of entity.complexUnique) {
   let findBy = f.fields.map(f=>f.uName).join('And');
   let loadArgs = `${f.fields.map(f=>`$${f.name}: ${f.type}`).join(', ')}`;
   let condArgs = `${f.fields.map(f=>`${f.name}: ${f.name}`).join(', ')}`;
 #>
+<# chunkStart(`findBy${findBy}`); #>
 query find#{entity.name}By#{findBy}(#{loadArgs}) {
   #{entity.dcPlural}(#{condArgs}){
     ...View#{entity.name}Full
@@ -114,5 +115,3 @@ query find#{entity.name}By#{findBy}(#{loadArgs}) {
 }
 <#-}#>
 <#-}#>
-<# end #>
-

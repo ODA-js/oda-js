@@ -298,7 +298,7 @@ function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allo
       } else if (Array.isArray(source)) {
         let parts = route.split('.');
         source.forEach(f => {
-          parts[parts.length - 1] = `${f.file}.${ext}`;
+          parts[parts.length - 1] = `${f.name}.${ext}`;
           let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
           fs.ensureFileSync(fn);
           fs.writeFileSync(fn, f.content);
@@ -334,7 +334,7 @@ function $generateData(pkg, raw: Factory, rootDir: string,
       } else if (Array.isArray(source)) {
         let parts = route.split('.').slice(1); // it is always `data`, at least here
         source.forEach(f => {
-          parts[parts.length - 1] = `${f.file}.${ext}`;
+          parts[parts.length - 1] = `${f.name}.${ext}`;
           let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
           fs.ensureFileSync(fn);
           fs.writeFileSync(fn, f.content);
