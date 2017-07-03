@@ -105,11 +105,13 @@ export let restoreDataDirect = async (config, queries, data, schema, context) =>
       ...importQueries[entityName].uploader,
     };
 
-    await processItemsDirect({
-      data: fields[entityName],
-      ...uploader,
-      queries: queries,
-    }, schema, context);
+    if (fields.hasOwnProperty(entityName) && Array.isArray(fields[entityName]) && fields[entityName].length > 0) {
+      await processItemsDirect({
+        data: fields[entityName],
+        ...uploader,
+        queries: queries,
+      }, schema, context);
+    }
   }
 };
 
@@ -129,83 +131,88 @@ export let restoreData = async (config, queries, client, data) => {
       ...importQueries[entityName].uploader,
     };
 
-    await processItems({
-      data: fields[entityName],
-      ...uploader,
-      queries: queries,
-    }, client);
+    if (fields.hasOwnProperty(entityName) && Array.isArray(fields[entityName]) && fields[entityName].length > 0) {
+      await processItems({
+        data: fields[entityName],
+        ...uploader,
+        queries: queries,
+      }, client);
+    }
   }
 };
 
 export let relateDataDirect = async (config, queries, data, schema, context) => {
   let rel = config.import.relations;
-  let importQueries = config.import.queries;
+  if (rel && typeof rel === 'object') {
 
-  let entitiesNames = Object.keys(data);
+    let importQueries = config.import.queries;
 
-  for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
-    let entityName = entitiesNames[iEnt];
-    // relations
-    let entRels = rel[entityName];
-    let relKeys = entRels ? Object.keys(entRels) : [];
-    for (let iEntRel = 0, iEntRelLen = relKeys.length; iEntRel < iEntRelLen; iEntRel++) {
-      let relname = relKeys[iEntRel];
-      let relType = entRels[relname].type;
-      let result = filter(gql`{ ${entityName} ${entRels[relname].filter} }`, data);
+    let entitiesNames = Object.keys(data);
 
-      for (let i = 0, len = result[entityName].length; i < len; i++) {
-        let item = result[entityName][i];
-        let itemId = await runQuery({
-          query: queries[importQueries[entityName].uploader.findQuery],
-          variables: importQueries[entityName].uploader.findVars(item),
-          schema,
-          context,
-        }).then(res => {
-          if (importQueries[entityName].uploader.process) {
-            return importQueries[entityName].uploader.process(res.data);
-          } else {
-            return res.data[importQueries[entityName].uploader.dataPropName].id;
-          }
-        });
+    for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
+      let entityName = entitiesNames[iEnt];
+      // relations
+      let entRels = `rel`[entityName];
+      let relKeys = entRels ? Object.keys(entRels) : [];
+      for (let iEntRel = 0, iEntRelLen = relKeys.length; iEntRel < iEntRelLen; iEntRel++) {
+        let relname = relKeys[iEntRel];
+        let relType = entRels[relname].type;
+        let result = filter(gql`{ ${entityName} ${entRels[relname].filter} }`, data);
 
-        let propName = entRels[relname].singular || relname;
-        let relatee = item[relname];
-        if (relatee) {
-          if (relatee && !Array.isArray(relatee)) {
-            relatee = [relatee];
-          }
-
-          for (let j = 0, jLen = relatee.length; j < jLen; j++) {
-            let relId;
-            let curRel = relatee[j];
-            if (curRel && curRel.id) {
-              relId = curRel.id;
+        for (let i = 0, len = result[entityName].length; i < len; i++) {
+          let item = result[entityName][i];
+          let itemId = await runQuery({
+            query: queries[importQueries[entityName].uploader.findQuery],
+            variables: importQueries[entityName].uploader.findVars(item),
+            schema,
+            context,
+          }).then(res => {
+            if (importQueries[entityName].uploader.process) {
+              return importQueries[entityName].uploader.process(res.data);
             } else {
-              relId = await runQuery({
-                query: queries[importQueries[relType].uploader.findQuery],
-                variables: importQueries[relType].uploader.findVars(curRel),
-                schema,
-                context,
-              }).then(res => {
-                if (importQueries[relType].uploader.process) {
-                  return importQueries[relType].uploader.process(res.data);
-                } else {
-                  return res.data[propName].id;
-                }
-              });
+              return res.data[importQueries[entityName].uploader.dataPropName].id;
+            }
+          });
+
+          let propName = entRels[relname].singular || relname;
+          let relatee = item[relname];
+          if (relatee) {
+            if (relatee && !Array.isArray(relatee)) {
+              relatee = [relatee];
             }
 
-            await runQuery({
-              query: queries[entRels[relname].relate],
-              variables: {
-                connection: {
-                  [importQueries[entityName].uploader.dataPropName]: itemId,
-                  [propName]: relId,
+            for (let j = 0, jLen = relatee.length; j < jLen; j++) {
+              let relId;
+              let curRel = relatee[j];
+              if (curRel && curRel.id) {
+                relId = curRel.id;
+              } else {
+                relId = await runQuery({
+                  query: queries[importQueries[relType].uploader.findQuery],
+                  variables: importQueries[relType].uploader.findVars(curRel),
+                  schema,
+                  context,
+                }).then(res => {
+                  if (importQueries[relType].uploader.process) {
+                    return importQueries[relType].uploader.process(res.data);
+                  } else {
+                    return res.data[propName].id;
+                  }
+                });
+              }
+
+              await runQuery({
+                query: queries[entRels[relname].relate],
+                variables: {
+                  connection: {
+                    [importQueries[entityName].uploader.dataPropName]: itemId,
+                    [propName]: relId,
+                  },
                 },
-              },
-              schema,
-              context,
-            });
+                schema,
+                context,
+              });
+            }
           }
         }
       }
@@ -215,67 +222,70 @@ export let relateDataDirect = async (config, queries, data, schema, context) => 
 
 export let relateData = async (config, queries, client, data) => {
   let rel = config.import.relations;
-  let importQueries = config.import.queries;
+  if (rel && typeof rel === 'object') {
 
-  let entitiesNames = Object.keys(data);
+    let importQueries = config.import.queries;
 
-  for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
-    let entityName = entitiesNames[iEnt];
-    // relations
-    let entRels = rel[entityName];
-    let relKeys = entRels ? Object.keys(entRels) : [];
-    for (let iEntRel = 0, iEntRelLen = relKeys.length; iEntRel < iEntRelLen; iEntRel++) {
-      let relname = relKeys[iEntRel];
-      let relType = entRels[relname].type;
-      let result = filter(gql`{ ${entityName} ${entRels[relname].filter} }`, data);
+    let entitiesNames = Object.keys(data);
 
-      for (let i = 0, len = result[entityName].length; i < len; i++) {
-        let item = result[entityName][i];
-        let itemId = await client.query({
-          query: queries[importQueries[entityName].uploader.findQuery],
-          variables: importQueries[entityName].uploader.findVars(item),
-        }).then(res => {
-          if (importQueries[entityName].uploader.process) {
-            return importQueries[entityName].uploader.process(res.data);
-          } else {
-            return res.data[importQueries[entityName].uploader.dataPropName].id;
-          }
-        });
+    for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
+      let entityName = entitiesNames[iEnt];
+      // relations
+      let entRels = rel[entityName];
+      let relKeys = entRels ? Object.keys(entRels) : [];
+      for (let iEntRel = 0, iEntRelLen = relKeys.length; iEntRel < iEntRelLen; iEntRel++) {
+        let relname = relKeys[iEntRel];
+        let relType = entRels[relname].type;
+        let result = filter(gql`{ ${entityName} ${entRels[relname].filter} }`, data);
 
-        let propName = entRels[relname].singular || relname;
-        let relatee = item[relname];
-        if (relatee) {
-          if (relatee && !Array.isArray(relatee)) {
-            relatee = [relatee];
-          }
-
-          for (let j = 0, jLen = relatee.length; j < jLen; j++) {
-            let relId;
-            let curRel = relatee[j];
-            if (curRel && curRel.id) {
-              relId = curRel.id;
+        for (let i = 0, len = result[entityName].length; i < len; i++) {
+          let item = result[entityName][i];
+          let itemId = await client.query({
+            query: queries[importQueries[entityName].uploader.findQuery],
+            variables: importQueries[entityName].uploader.findVars(item),
+          }).then(res => {
+            if (importQueries[entityName].uploader.process) {
+              return importQueries[entityName].uploader.process(res.data);
             } else {
-              relId = await client.query({
-                query: queries[importQueries[relType].uploader.findQuery],
-                variables: importQueries[relType].uploader.findVars(curRel),
-              }).then(res => {
-                if (importQueries[relType].uploader.process) {
-                  return importQueries[relType].uploader.process(res.data);
-                } else {
-                  return res.data[propName].id;
-                }
-              });
+              return res.data[importQueries[entityName].uploader.dataPropName].id;
+            }
+          });
+
+          let propName = entRels[relname].singular || relname;
+          let relatee = item[relname];
+          if (relatee) {
+            if (relatee && !Array.isArray(relatee)) {
+              relatee = [relatee];
             }
 
-            await client.mutate({
-              mutation: queries[entRels[relname].relate],
-              variables: {
-                connection: {
-                  [importQueries[entityName].uploader.dataPropName]: itemId,
-                  [propName]: relId,
+            for (let j = 0, jLen = relatee.length; j < jLen; j++) {
+              let relId;
+              let curRel = relatee[j];
+              if (curRel && curRel.id) {
+                relId = curRel.id;
+              } else {
+                relId = await client.query({
+                  query: queries[importQueries[relType].uploader.findQuery],
+                  variables: importQueries[relType].uploader.findVars(curRel),
+                }).then(res => {
+                  if (importQueries[relType].uploader.process) {
+                    return importQueries[relType].uploader.process(res.data);
+                  } else {
+                    return res.data[propName].id;
+                  }
+                });
+              }
+
+              await client.mutate({
+                mutation: queries[entRels[relname].relate],
+                variables: {
+                  connection: {
+                    [importQueries[entityName].uploader.dataPropName]: itemId,
+                    [propName]: relId,
+                  },
                 },
-              },
-            });
+              });
+            }
           }
         }
       }
