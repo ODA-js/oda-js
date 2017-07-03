@@ -67,6 +67,7 @@ export const searchParamsForAcl = (allow) => (role: string) => (entity: Entity) 
   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
 export const filterForAcl = (allow) => (role: string) => (entity: Entity) => getIndexedFieldNames(entity)
+  .filter(i => entity.fields.get(i).persistent)
   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
 export const getRelationNames = (entity: Entity) => Array.from(entity.relations);

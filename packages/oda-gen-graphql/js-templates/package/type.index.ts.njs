@@ -1,4 +1,7 @@
 <#@ context 'pack' -#>
+<#@ chunks '$$$main$$$' -#>
+
+<# chunkStart(`index.ts`); #>
 import { common } from 'oda-gen-graphql';
 import { NodeEntity } from './node';
 import { ViewerEntity } from './viewer';
@@ -16,3 +19,17 @@ export class #{pack.name}Entities extends common.types.GQLModule {
 <#}-#>
   ];
 }
+
+<# chunkStart(`../dataPump/index.ts`); -#>
+import * as _ from 'lodash';
+<# for(let entity of pack.entities){-#>
+import * as #{entity.name} from './#{entity.name}';
+<#}-#>
+
+const result = _.merge (
+<# for(let entity of pack.entities){-#>
+    #{entity.name},
+<#}-#>
+)
+
+export default result;

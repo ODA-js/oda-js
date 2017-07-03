@@ -347,16 +347,34 @@ function $generateData(pkg, raw: Factory, rootDir: string,
 function $generateDataPkg(raw: Factory, rootDir: string,
   pkg: { name: string }, route: string, fileName?: string) {
   let source = get(template, `packages.${route}`).generate(raw, pkg);
-  let fn = path.join(rootDir, 'data', fileName);
-  fs.ensureFileSync(fn);
-  fs.writeFileSync(fn, source);
+  if (typeof source === 'string') {
+    let fn = path.join(rootDir, 'data', fileName);
+    fs.ensureFileSync(fn);
+    fs.writeFileSync(fn, source);
+  } else if (Array.isArray(source)) {
+    let parts = route.split('.').slice(1); // it is always `data`, at least here
+    source.forEach(f => {
+      let fn = path.join(rootDir, 'data', f.name);
+      fs.ensureFileSync(fn);
+      fs.writeFileSync(fn, f.content);
+    });
+  }
 }
 
 function $generatePkg(raw: Factory, rootDir: string, pkg: { name: string }, type: string, route: string, fileName?: string) {
   let source = get(template, `packages.${route}`).generate(raw, pkg);
-  let fn = type ? path.join(rootDir, pkg.name, type, fileName) : path.join(rootDir, pkg.name, fileName);
-  fs.ensureFileSync(fn);
-  fs.writeFileSync(fn, source);
+  if (typeof source === 'string') {
+    let fn = type ? path.join(rootDir, pkg.name, type, fileName) : path.join(rootDir, pkg.name, fileName);
+    fs.ensureFileSync(fn);
+    fs.writeFileSync(fn, source);
+  } else if (Array.isArray(source)) {
+    let parts = route.split('.').slice(1); // it is always `data`, at least here
+    source.forEach(f => {
+      let fn = type ? path.join(rootDir, pkg.name, type, f.name) : path.join(rootDir, pkg.name, f.name);
+      fs.ensureFileSync(fn);
+      fs.writeFileSync(fn, f.content);
+    });
+  }
 }
 
 // function $generateDataModel(raw, rootDir, model, route: string, fileName: string) {
@@ -369,6 +387,20 @@ function $generatePkg(raw: Factory, rootDir: string, pkg: { name: string }, type
 function $generateModel(raw, rootDir, model, route: string, fileName: string) {
   let source = get(template, `model.${route}`).generate(raw, model);
   let fn = path.join(rootDir, fileName);
+
+  if (typeof source === 'string') {
+    let fn = path.join(rootDir, fileName);
+    fs.ensureFileSync(fn);
+    fs.writeFileSync(fn, source);
+  } else if (Array.isArray(source)) {
+    let parts = route.split('.').slice(1); // it is always `data`, at least here
+    source.forEach(f => {
+      let fn = path.join(rootDir, f.name);
+      fs.ensureFileSync(fn);
+      fs.writeFileSync(fn, f.content);
+    });
+  }
+
   fs.ensureFileSync(fn);
   fs.writeFileSync(fn, source);
 }

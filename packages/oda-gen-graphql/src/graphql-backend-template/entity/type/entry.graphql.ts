@@ -40,10 +40,19 @@ import {
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutput {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
   let filter = filterForAcl(allowAcl)(role)(entity)
-    .map(k => ({
-      name: k,
-      type: `Where${mapToGraphqlTypes(entity.fields.get(k).type)}`,
-    }))
+    .map(k => {
+      let field = entity.fields.get(k);
+      let type;
+      if (field.relation) {
+        type = pack.entities.get(field.relation.ref.entity).fields.get(field.relation.ref.field).type;
+      } else {
+        type = field.type;
+      }
+      return {
+        name: k,
+        type: `Where${mapToGraphqlTypes(type)}`,
+      }
+    })
     .map(i => `${i.name}: ${i.type}`);
 
   return {
