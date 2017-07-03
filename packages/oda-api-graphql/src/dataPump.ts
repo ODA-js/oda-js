@@ -1,8 +1,13 @@
 import { runQuery } from 'graphql-server-core';
 import { filter } from 'graphql-anywhere';
 import gql from 'graphql-tag';
+
 // tslint:disable-next-line:no-var-requires
 require('isomorphic-fetch');
+
+export function decapitalize(name: string): string {
+  return name[0].toLowerCase() + name.slice(1);
+}
 
 async function processItems<I>({ data, findQuery, createQuery, updateQuery, dataPropName, findVars, queries }:
   {
@@ -17,30 +22,27 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
   for (let i = 0, len = data.length; i < len; i++) {
     let variables = findVars(data[i]);
     //1. проверить что объект есть
-    await client.query({
+    let res = await client.query({
       query: queries[findQuery],
       variables,
-    }).then(res => {
-      let result;
-      if (!res.data[dataPropName]) {
-        //2. если нет создать
-        result = client.mutate({
-          mutation: queries[createQuery],
-          variables: {
-            [dataPropName]: data[i],
-          },
-        });
-      } else {
-        //3. если есть обновить текущими данными из набора.
-        result = client.mutate({
-          mutation: queries[updateQuery],
-          variables: {
-            [dataPropName]: data[i],
-          },
-        });
-      }
-      return result;
     });
+    if (!res.data[dataPropName]) {
+      //2. если нет создать
+      await client.mutate({
+        mutation: queries[createQuery],
+        variables: {
+          [dataPropName]: data[i],
+        },
+      });
+    } else {
+      //3. если есть обновить текущими данными из набора.
+      await client.mutate({
+        mutation: queries[updateQuery],
+        variables: {
+          [dataPropName]: data[i],
+        },
+      });
+    }
   }
 }
 
@@ -57,36 +59,33 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
   for (let i = 0, len = data.length; i < len; i++) {
     let variables = findVars(data[i]);
     //1. проверить что объект есть
-    await runQuery({
+    const res = await runQuery({
       query: queries[findQuery],
       variables,
       schema,
       context,
-    }).then(res => {
-      let result;
-      if (!res.data[dataPropName]) {
-        //2. если нет создать
-        result = runQuery({
-          query: queries[createQuery],
-          variables: {
-            [dataPropName]: data[i],
-          },
-          schema,
-          context,
-        });
-      } else {
-        //3. если есть обновить текущими данными из набора.
-        result = runQuery({
-          query: queries[updateQuery],
-          variables: {
-            [dataPropName]: data[i],
-          },
-          schema,
-          context,
-        });
-      }
-      return result;
     });
+    if (!res.data[dataPropName]) {
+      //2. если нет создать
+      await runQuery({
+        query: queries[createQuery],
+        variables: {
+          [dataPropName]: data[i],
+        },
+        schema,
+        context,
+      });
+    } else {
+      //3. если есть обновить текущими данными из набора.
+      await runQuery({
+        query: queries[updateQuery],
+        variables: {
+          [dataPropName]: data[i],
+        },
+        schema,
+        context,
+      });
+    }
   }
 }
 
@@ -96,10 +95,19 @@ export let restoreDataDirect = async (config, queries, data, schema, context) =>
 
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
     let entityName = entitiesNames[iEnt];
-    let fields = filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data);
+    let fields = importQueries[entityName].filter ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data) : data;
+    let uploader = {
+      findQuery: `${entityName}/findById.graphql`,
+      createQuery: `${entityName}/create.graphql`,
+      updateQuery: `${entityName}/update.graphql`,
+      dataPropName: `${decapitalize(entityName)}`,
+      findVars: f => ({ id: f.id }),
+      ...importQueries[entityName].uploader,
+    };
+
     await processItemsDirect({
       data: fields[entityName],
-      ...importQueries[entityName].uploader,
+      ...uploader,
       queries: queries,
     }, schema, context);
   }
@@ -111,10 +119,19 @@ export let restoreData = async (config, queries, client, data) => {
 
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
     let entityName = entitiesNames[iEnt];
-    let fields = filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data);
+    let fields = importQueries[entityName].filter ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data) : data;
+    let uploader = {
+      findQuery: `${entityName}/findById.graphql`,
+      createQuery: `${entityName}/create.graphql`,
+      updateQuery: `${entityName}/update.graphql`,
+      dataPropName: `${decapitalize(entityName)}`,
+      findVars: f => ({ id: f.id }),
+      ...importQueries[entityName].uploader,
+    };
+
     await processItems({
       data: fields[entityName],
-      ...importQueries[entityName].uploader,
+      ...uploader,
       queries: queries,
     }, client);
   }
