@@ -5,11 +5,10 @@
 import imp from './import'
 import exp from './export'
 
-export const res = {
+export default {
   ...imp,
   ...exp
 }
-
 
 <# chunkStart(`../../../dataPump/${entity.name}/import`); #>
 export default {
@@ -24,30 +23,34 @@ export default {
             #{fld.field}
           <#-}#>`,
         uploader: {
+          findQuery: {
     <#- for (let f of entity.unique) {#>
-          // findQuery: '#{entity.name}/findBy#{f.cName}.graphql',
+            #{f.name}: '#{entity.name}/findBy#{f.cName}.graphql',
     <#-}#>
     <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
     <#- for (let f of entity.complexUnique) {
       let findBy = f.fields.map(f=>f.uName).join('And');
     #>
-          // findQuery: '#{entity.name}/findBy#{findBy}.graphql',
+            #{f.name}: '#{entity.name}/findBy#{findBy}.graphql',
     <#-}#>
     <#-}#>
+          },
           // createQuery: '#{entity.name}/create.graphql',
           // updateQuery: '#{entity.name}/update.graphql',
           // dataPropName: '#{entity.ownerFieldName}',
+          findVars: {
     <#- for (let f of entity.unique) {#>
-          // findVars: (f) => ({ #{f.name}: f.#{f.name} }),
+            #{f.name} : (f) => f.hasOwnProperty('#{f.name}') ? { #{f.name}: f.#{f.name} } : null,
     <#-}#>
     <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
     <#- for (let f of entity.complexUnique) {
-        let condArgs = `{ ${f.fields.map(f=>`${f.name}: f.${f.name}`).join(', ')} }`;
-
+        let resultArgs = `{ ${f.fields.map(f=>`${f.name}: f.${f.name}`).join(', ')} }`;
+        let condArgs = `( ${f.fields.map(f=>`f.hasOwnProperty('${f.name}')`).join(' && ')} )`;
     #>
-          // findVars: (f) => (#{condArgs}),
+            #{f.name} : (f) => #{condArgs} ? #{resultArgs} : null,
     <#-}#>
     <#-}#>
+          }
         }
       }
     },

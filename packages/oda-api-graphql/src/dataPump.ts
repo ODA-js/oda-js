@@ -12,18 +12,27 @@ export function decapitalize(name: string): string {
 async function processItems<I>({ data, findQuery, createQuery, updateQuery, dataPropName, findVars, queries }:
   {
     data: I[],
-    findQuery,
+    findQuery: { [key: string]: string },
     createQuery,
     updateQuery,
     dataPropName,
     queries,
-    findVars: (f: I) => any,
+    findVars: { [key: string]: (f: I) => any },
   }, client) {
   for (let i = 0, len = data.length; i < len; i++) {
-    let variables = findVars(data[i]);
+    const keys = Object.keys(findVars);
+    let variables;
+    var key;
+    for (let k = 0, kLen = keys.length; k < kLen; k++) {
+      key = keys[k];
+      variables = findVars[key](data[i]);
+      if (variables) {
+        break;
+      }
+    }
     //1. проверить что объект есть
     let res = await client.query({
-      query: queries[findQuery],
+      query: queries[findQuery[key]],
       variables,
     });
     if (!res.data[dataPropName]) {
@@ -49,18 +58,27 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
 async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery, dataPropName, findVars, queries }:
   {
     data: I[],
-    findQuery,
+    findQuery: { [key: string]: string },
     createQuery,
     updateQuery,
     dataPropName,
     queries,
-    findVars: (f: I) => any,
+    findVars: { [key: string]: (f: I) => any },
   }, schema, context) {
   for (let i = 0, len = data.length; i < len; i++) {
-    let variables = findVars(data[i]);
+    const keys = Object.keys(findVars);
+    let variables;
+    var key;
+    for (let k = 0, kLen = keys.length; k < kLen; k++) {
+      key = keys[k];
+      variables = findVars[key](data[i]);
+      if (variables) {
+        break;
+      }
+    }
     //1. проверить что объект есть
     const res = await runQuery({
-      query: queries[findQuery],
+      query: queries[findQuery[key]],
       variables,
       schema,
       context,

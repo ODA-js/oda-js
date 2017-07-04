@@ -23,7 +23,7 @@ export class #{pack.name}Entities extends common.types.GQLModule {
 <# chunkStart(`../dataPump/index.ts`); -#>
 import * as _ from 'lodash';
 <# for(let entity of pack.entities){-#>
-import * as #{entity.name} from './#{entity.name}';
+import #{entity.name} from './#{entity.name}';
 <#}-#>
 
 const result = _.merge (
@@ -32,4 +32,6 @@ const result = _.merge (
 <#}-#>
 )
 
-export default result;
+export default {
+  ...result
+};
