@@ -40,12 +40,27 @@ import {
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutput {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
   let filter = filterForAcl(allowAcl)(role)(entity)
+    .filter(k => {
+      let f = entity.fields.get(k);
+      if (!f.relation) {
+        return true;
+      }
+      let ref = pack.relations.get(entity.name).get(f.name);
+      if (!ref) {
+        return false;
+      }
+      let ent = pack.entities.get(ref.relation.ref.entity);
+      return !!ent;
+    })
     .map(k => {
       let field = entity.fields.get(k);
       let type;
       if (field.relation) {
-        type = pack.entities.get(field.relation.ref.entity).fields.get(field.relation.ref.field).type;
-      } else {
+        let ref = pack.relations.get(entity.name).get(field.name);
+        let ent = pack.entities.get(ref.relation.ref.entity);
+        type = ent.fields.get(ref.relation.ref.field).type;
+      }
+      else {
         type = field.type;
       }
       return {
