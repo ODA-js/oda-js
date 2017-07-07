@@ -267,9 +267,12 @@ export const mutation = {
     }
 
     <#- for (let r of entity.relations) {#>
-    if (args.#{r.field}Unlink) {
+    if (args.#{r.field}Unlink<#if(!r.single){#> && Array.isArray(args.#{r.field}Unlink) && args.#{r.field}Unlink.length > 0<#}#> ) {
+    <#if(!r.single){#>
+      for (let i = 0, len = args.#{r.field}Unlink.length; i < len; i++) {
+    <#}#>
       let #{r.field} = await ensure#{r.ref.entity}({
-        args: args.#{r.field}Unlink,
+        args: args.#{r.field}Unlink<#if(!r.single){#>[i]<#}#>,
         context,
         create: false,
       });
@@ -279,11 +282,17 @@ export const mutation = {
         #{r.field},
         #{entity.ownerFieldName}: result,
       });
+    <#if(!r.single){#>
+      }
+    <#}#>
     }
 
-    if (args.#{r.field}) {
+    if (args.#{r.field}<#if(!r.single){#> && Array.isArray(args.#{r.field}) && args.#{r.field}.length > 0<#}#> ) {
+    <#if(!r.single){#>
+      for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
+    <#}#>
       let #{r.field} = await ensure#{r.ref.entity}({
-        args: args.#{r.field},
+        args: args.#{r.field}<#if(!r.single){#>[i]<#}#>,
         context,
         create: false,
       });
@@ -293,6 +302,9 @@ export const mutation = {
         #{r.field},
         #{entity.ownerFieldName}: result,
       });
+    <#if(!r.single){#>
+      }
+    <#}#>
     }
 
     <#-}#>
