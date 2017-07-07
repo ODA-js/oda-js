@@ -144,6 +144,8 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       .filter(relationFieldsExistsIn(pack))
       .map(f => {
         let verb = f.relation.verb;
+        let sameEntity = entity.name === f.relation.ref.entity;
+        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
         return {
           persistent: f.persistent,
           derived: f.derived,
@@ -153,7 +155,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           single: (verb === 'BelongsTo' || verb === 'HasOne'),
           ref: {
             entity: f.relation.ref.entity,
-            fieldName: decapitalize(f.relation.ref.entity),
+            fieldName: decapitalize(refFieldName),
           },
         };
       }),
