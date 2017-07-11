@@ -1,6 +1,7 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
+import * as _ from 'lodash';
 
 import { fromGlobalId } from 'graphql-relay';
 import RegisterConnectors from '../../../../data/registerConnectors';
@@ -24,7 +25,21 @@ export const query: { [key: string]: any } = {
   ) => {
     logger.trace('#{entity.plural}');
     let result;
-    let list = await context.connectors.#{entity.name}.getList(args);
+<# let relFields = entity.
+  relations
+  .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
+  .map(f=>f.field);#>
+    let idMap = {
+      id: '_id',
+<#- relFields.forEach(f=>{#>
+      #{f}: '#{f}',
+<#})-#>
+    }
+
+    let list = await context.connectors.#{entity.name}.getList({
+      ...args,
+      idMap,
+    });
     if (list.length > 0) {
       let cursor = pagination(args);
       let direction = detectCursorDirection(args)._id;

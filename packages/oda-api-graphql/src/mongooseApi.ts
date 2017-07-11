@@ -40,9 +40,9 @@ export default class MongooseApi<RegisterConnectors> {
     return result;
   };
 
-  public getFilter(args) {
+  public getFilter(args: { filter: any, idMap: any }) {
     if (args.filter) {
-      return Filter.parse(args.filter)
+      return Filter.parse(args.filter, args.idMap)
     } else {
       return {};
     }

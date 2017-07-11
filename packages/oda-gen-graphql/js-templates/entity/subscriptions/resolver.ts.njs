@@ -33,7 +33,16 @@ export const subscriptions = {
       } else {
         return false;
       }
-    })),
+    }),{
+<# let relFields = entity.
+  relations
+  .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
+  .map(f=>f.field);-#>
+      id: '_id',
+<# relFields.forEach(f=>{-#>
+      #{f}: '#{f}',
+<#})-#>
+    }),
   },
 };
 

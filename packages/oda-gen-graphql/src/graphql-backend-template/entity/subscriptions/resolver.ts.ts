@@ -1,4 +1,4 @@
-import { Entity, ModelPackage } from 'oda-model';
+import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize, mapToTSTypes, mapToGraphqlTypes, printRequired } from '../../utils';
 import { Factory } from 'fte.js';
 
@@ -20,6 +20,7 @@ export interface MapperOutupt {
       type: string;
     }[];
   }[];
+  relations: any
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -34,6 +35,8 @@ import {
   complexUniqueIndex,
   updatePaylopadFields,
   persistentRelations,
+  relationFieldsExistsIn,
+  getRelationNames,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
@@ -67,5 +70,63 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         };
       },
     ),
+    relations: fieldsAcl
+      .filter(relationFieldsExistsIn(pack))
+      .map(f => {
+        let verb = f.relation.verb;
+        let ref = {
+          usingField: '',
+          backField: f.relation.ref.backField,
+          entity: f.relation.ref.entity,
+          field: f.relation.ref.field,
+          type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type,
+          cField: capitalize(f.relation.ref.field),
+          fields: [],
+          using: {
+            backField: '',
+            entity: '',
+            field: '',
+          },
+        };
+        if (verb === 'BelongsToMany') {
+          let current = (f.relation as BelongsToMany);
+          ref.using.entity = current.using.entity;
+          ref.using.field = current.using.field;
+          ref.backField = current.using.backField;
+          //from oda-model/model/belongstomany.ts ensure relation class
+          let refe = pack.entities.get(ref.entity);
+          let opposite = getRelationNames(refe)
+            // по одноименному классу ассоциации
+            .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
+              && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
+            .map(r => refe.fields.get(r).relation)
+            .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
+          /// тут нужно получить поле по которому opposite выставляет свое значение,
+          // и значение
+          if (opposite) {
+            ref.usingField = opposite.using.field;
+            ref.backField = opposite.ref.field;
+          } else {
+            ref.usingField = decapitalize(ref.entity);
+          }
+          if (f.relation.fields && f.relation.fields.length > 0) {
+            f.relation.fields.forEach(field => {
+              ref.fields.push(field.name);
+            });
+          }
+        }
+        let sameEntity = entity.name === f.relation.ref.entity;
+        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        return {
+          derived: f.derived,
+          field: f.name,
+          name: capitalize(f.name),
+          refFieldName: decapitalize(refFieldName),
+          verb,
+          ref,
+        };
+      }),
+
+
   };
 }

@@ -13,6 +13,8 @@ export interface MapperOutput {
   name: string;
   description: string;
   filter: string[];
+  filterSubscriptions: string[];
+  filterEmbed: string[];
   fields: {
     name: string;
     description: string;
@@ -33,6 +35,7 @@ export interface MapperOutput {
 import {
   getFieldsForAcl,
   filterForAcl,
+  //filterSubscriptionsForAcl,
   fields,
   relationFieldsExistsIn,
 } from '../../queries';
@@ -44,6 +47,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       let f = entity.fields.get(k);
       if (!f.relation) {
         return true;
+      }
+      if (!f.relation.emdebbed) {
+        return false;
       }
       let ref = pack.relations.get(entity.name).get(f.name);
       if (!ref) {
@@ -70,12 +76,59 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
     })
     .map(i => `${i.name}: ${i.type}`);
 
+  let filterEmbed = filterForAcl(allowAcl)(role)(entity)
+    .filter(k => {
+      let f = entity.fields.get(k);
+      if (!f.relation) {
+        return true;
+      }
+      let ref = pack.relations.get(entity.name).get(f.name);
+      if (!ref) {
+        return false;
+      }
+      let ent = pack.entities.get(ref.relation.ref.entity);
+      return !!ent;
+    })
+    .map(k => {
+      let field = entity.fields.get(k);
+      let type;
+      if (field.relation) {
+        let ref = pack.relations.get(entity.name).get(field.name);
+        let ent = pack.entities.get(ref.relation.ref.entity);
+        field.relation.single
+        type = `${field.relation.single ? '' : 'Embed'}${ent.name}Filter`;
+      }
+      else {
+        type = `Where${mapToGraphqlTypes(field.type)}`;
+      }
+      return {
+        name: k,
+        type,
+      }
+    })
+    .map(i => `${i.name}: ${i.type}`);
+
+  let filterSubscriptions = filterForAcl(allowAcl)(role)(entity)
+    .map(k => {
+      // если что можно восстановить поиск по встроенным полям от реляций
+      // нужно продумать.
+      let field = entity.fields.get(k);
+      let type = `Where${mapToGraphqlTypes(field.type)}`;
+      return {
+        name: k,
+        type,
+      }
+    })
+    .map(i => `${i.name}: ${i.type}`);
+
   return {
     name: entity.name,
     description: entity.description ? entity.description.split('\n').map(d => {
       return (d.trim().match(/#/)) ? d : `# ${d}`;
     }).join('\n') : entity.description,
     filter,
+    filterEmbed,
+    filterSubscriptions,
     fields: fieldsAcl
       .filter(fields)
       .map(f => {

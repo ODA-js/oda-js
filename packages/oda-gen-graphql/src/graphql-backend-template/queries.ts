@@ -66,10 +66,21 @@ export const searchParamsForAcl = (allow) => (role: string) => (entity: Entity) 
   .filter(i => i !== 'id')
   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
-export const filterForAcl = (allow) => (role: string) => (entity: Entity) => getIndexedFieldNames(entity)
-  .filter(i => entity.fields.get(i).persistent)
-  .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
+export const filterForAcl = (allow) => (role: string) => (entity: Entity) =>
+  Object.keys(getIndexedFieldNames(entity).concat(Array.from(entity.relations))
+    .reduce((res, cur) => {
+      res[cur] = 1;
+      return res;
+    }, {}))
+    .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
+/*
+export const filterSubscriptionsForAcl = (allow) => (role: string) => (entity: Entity) =>
+  Array.from(entity.fields.values())
+    .filter(f => !f.relation)
+    .map(f => f.name)
+    .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
+*/
 export const getRelationNames = (entity: Entity) => Array.from(entity.relations);
 
 export const derivedFields = (f: Field): boolean => fields(f) && f.derived;
