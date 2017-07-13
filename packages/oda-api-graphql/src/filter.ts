@@ -3,7 +3,7 @@ import { fromGlobalId } from 'graphql-relay';
 export function getValue(value, idMap, id) {
   if (id) {
     if (Array.isArray(value)) {
-      return value.map(v => getValue(v, idMap, id))
+      return value.map(v => getValue(v, idMap, id));
     } if (typeof value === 'string') {
       return fromGlobalId(value).id;
     } else {
@@ -15,74 +15,74 @@ export function getValue(value, idMap, id) {
 }
 
 export class Filter {
-  static operations = {
+  private static operations = {
     eq(value, idMap, id) {
-      return { $eq: getValue(value, idMap, id) }
+      return { $eq: getValue(value, idMap, id) };
     },
     gt(value, idMap, id) {
-      return { $gt: getValue(value, idMap, id) }
+      return { $gt: getValue(value, idMap, id) };
     },
     gte(value, idMap, id) {
-      return { $gte: getValue(value, idMap, id) }
+      return { $gte: getValue(value, idMap, id) };
     },
     lt(value, idMap, id) {
-      return { $lt: getValue(value, idMap, id) }
+      return { $lt: getValue(value, idMap, id) };
     },
     lte(value, idMap, id) {
-      return { $lte: getValue(value, idMap, id) }
+      return { $lte: getValue(value, idMap, id) };
     },
     ne(value, idMap, id) {
-      return { $ne: getValue(value, idMap, id) }
+      return { $ne: getValue(value, idMap, id) };
     },
     in(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for in operation');
       }
-      return { $in: getValue(value, idMap, id) }
+      return { $in: getValue(value, idMap, id) };
     },
     nin(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for nin operation');
       }
-      return { $nin: getValue(value, idMap, id) }
+      return { $nin: getValue(value, idMap, id) };
     },
     or(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for or operation');
       }
-      return { $or: Filter.parse(value, idMap, id) }
+      return { $or: Filter.parse(value, idMap, id) };
     },
     and(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for and operation');
       }
-      return { $and: Filter.parse(value, idMap, id) }
+      return { $and: Filter.parse(value, idMap, id) };
     },
     nor(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for nor operation');
       }
-      return { $nor: Filter.parse(value, idMap, id) }
+      return { $nor: Filter.parse(value, idMap, id) };
     },
     not(value, idMap, id) {
       if (!Array.isArray(value)) {
         throw new Error('expected array type for not operation');
       }
-      return { $not: Filter.parse(value, idMap, id) }
+      return { $not: Filter.parse(value, idMap, id) };
     },
     exists(value, idMap, id) {
       if (typeof value !== 'boolean') {
         throw new Error('expected boolean type for exists operation');
       }
-      return { $exists: value }
+      return { $exists: value };
     },
     match(value, idMap, id) {
       if (typeof value !== 'string') {
         throw new Error('expected string type for exists operation');
       }
-      return { $regex: new RegExp(value) }
-    }
-  }
+      return { $regex: new RegExp(value) };
+    },
+  };
   public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => Filter.parse(n, idMap, id));
@@ -93,7 +93,7 @@ export class Filter {
         if (Filter.operations.hasOwnProperty(key)) {
           result = {
             ...result,
-            ...Filter.operations[key](node[key], idMap, id)
+            ...Filter.operations[key](node[key], idMap, id),
           };
         } else {
           let idKey = idMap.hasOwnProperty(key);
@@ -108,47 +108,47 @@ export class Filter {
 }
 
 export class Process {
-  static operations = {
+  private static operations = {
     eq(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf == ${value.valueOf()}`
+        return `value.valueOf == ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} == ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} == ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     gt(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf > ${value.valueOf()}`
+        return `value.valueOf > ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} > ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} > ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     gte(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf >= ${value.valueOf()}`
+        return `value.valueOf >= ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} >= ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} >= ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     lt(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf < ${value.valueOf()}`
+        return `value.valueOf < ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} < ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} < ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     lte(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf <= ${value.valueOf()}`
+        return `value.valueOf <= ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} <= ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} <= ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     ne(value, idMap, id) {
       if (value instanceof Date) {
-        return `value.valueOf !== ${value.valueOf()}`
+        return `value.valueOf !== ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} !== ${JSON.stringify(getValue(value, idMap, id))}`
+        return `value${id ? '.toString()' : ''} !== ${JSON.stringify(getValue(value, idMap, id))}`;
       }
     },
     in(value, idMap, id) {
@@ -182,7 +182,13 @@ export class Process {
     },
     match(value, idMap, id) {
       return `(new RegExp(${value})).test(value.toString())`;
-    }
+    },
+  };
+
+  public static create(obj, idMap: { [key: string]: any } = { id: '_id' }) {
+    let filter = Process.go(obj, idMap);
+    // tslint:disable-next-line:no-eval
+    return eval(`(v)=>${filter.join('&&') || 'true'}`);
   }
 
   private static go(node: object[] | object, idMap: { [key: string]: any } = { id: '_id' }, id: boolean = false, result?) {
@@ -206,17 +212,14 @@ export class Process {
       return Process.operations.eq(node, idMap, id);
     }
   }
-  public static create(obj, idMap: { [key: string]: any } = { id: '_id' }) {
-    let filter = Process.go(obj, idMap);
-    return eval(`(v)=>${filter.join('&&') || 'true'}`);
-  }
+
 }
 
 export function withContext(subscriptionHandler, idMap: { [key: string]: any } = { id: '_id' }) {
   return (root, args, context, info) => {
     return subscriptionHandler(root, args, {
       queryCheck: Process.create(args.filter || {}, idMap),
-      ...context
+      ...context,
     }, info);
-  }
+  };
 }
