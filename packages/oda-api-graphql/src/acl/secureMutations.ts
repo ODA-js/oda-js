@@ -3,8 +3,8 @@ import { Secure } from './secureAny';
 export class SecureMutation extends Secure<boolean> {
   public userGroup: (context) => string;
   constructor(args) {
-    super(args)
-    this.userGroup = args.userGroup
+    super(args);
+    this.userGroup = args.userGroup;
     if (!this.userGroup) {
       this.userGroup = (context) => context.user.profileName;
     }

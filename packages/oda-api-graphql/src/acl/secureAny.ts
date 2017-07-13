@@ -44,10 +44,11 @@ export class Secure<T> {
     if (this.acl[group]) {
       let result = (this.acl[group] && this.acl[group]['*']) || this.defaultAccess;
       let last = '';
-      if (this.rules[group].some(r => {
+      let found = this.rules[group].some(r => {
         last = r.key;
         return !!mutation.match(r.match);
-      })) {
+      });
+      if (found) {
         result = this.acl[group][last];
       }
       return result;
