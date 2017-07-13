@@ -207,14 +207,12 @@ export class Process {
     }
   }
   public static create(obj, idMap: { [key: string]: any } = { id: '_id' }) {
-    debugger;
     let filter = Process.go(obj, idMap);
     return eval(`(v)=>${filter.join('&&') || 'true'}`);
   }
 }
 
 export function withContext(subscriptionHandler, idMap: { [key: string]: any } = { id: '_id' }) {
-  debugger;
   return (root, args, context, info) => {
     return subscriptionHandler(root, args, {
       queryCheck: Process.create(args.filter || {}, idMap),
