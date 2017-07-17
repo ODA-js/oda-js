@@ -6,7 +6,7 @@ export default function (args, resolver = cursorToId): {
   limit: number;
   skip: number;
 } {
-  let result: any = { limit: 10, skip: 0 };
+  let result: any = { limit: 0, skip: 0 };
   if (args.first || args.after) {
     result.limit = args.first || result.limit;
     if (args.after) {

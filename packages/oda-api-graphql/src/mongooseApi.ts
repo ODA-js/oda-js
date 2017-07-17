@@ -212,7 +212,7 @@ export default class MongooseApi<RegisterConnectors> {
     let answer = this.model.find(query).sort(sort).skip(cursor.skip)
       .cursor();
 
-    while (result.length < cursor.limit) {
+    while ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
       let item = await answer.next();
       if (item == null) { break; }
       if (this.canView(item)) {
