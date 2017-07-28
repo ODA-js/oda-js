@@ -11,25 +11,16 @@ import { mutateAndGetPayload, idToCursor, Filter } from 'oda-api-graphql';
 import { pubsub } from '../../../../../model/pubsub';
 import { withFilter } from 'graphql-subscriptions';
 
-function filterIt(args, payload, queryCheck) {
-  let res = false;
-  if (args && args.mutation) {
-    res = payload.mutation === args.mutation;
-  } else {
-    res = true;
-  }
-  if (res) {
-    res = queryCheck(payload.node);
-  }
-  return res;
+function filterIt(payload, queryCheck) {
+  return queryCheck(payload);
 }
 
 export const subscriptions = {
   #{entity.name}: {
-    subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) =>  {
+    subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) => {
       let allow = context.connectors.#{entity.name}.canView(#{entity.name}.node);
       if (allow) {
-        return filterIt(args, #{entity.name}, context.queryCheck);
+        return filterIt(#{entity.name}, context.queryCheck);
       } else {
         return false;
       }
