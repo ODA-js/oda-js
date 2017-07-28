@@ -12,7 +12,10 @@ import * as projection from './projection';
 import * as acl from './acl';
 import * as utils from './utils';
 import * as dataPump from './dataPump';
-import MongooseApi from './mongooseApi';
+import MongooseApi from './connectors/mongoose';
+import SequelizeApi from './connectors/sequelize';
+import ConnectorsApiBase from './connectors/api';
+import { Connector } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
 import * as Filter from './filter';
@@ -28,6 +31,7 @@ export {
   getWithType,
   idToCursor,
   CursorType,
+  Connector,
   detectCursorDirection,
   isType,
   mutateAndGetPayload,
@@ -35,5 +39,7 @@ export {
   projection,
   dataPump,
   MongooseApi,
+  SequelizeApi,
+  ConnectorsApiBase,
   Filter,
 };
