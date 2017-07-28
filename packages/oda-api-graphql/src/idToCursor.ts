@@ -5,6 +5,6 @@ export default (id) => {
   let result;
   try {
     result = base64(PREFIX + id);
-  } catch(e){}
+  } catch (e) { }
   return result;
 };

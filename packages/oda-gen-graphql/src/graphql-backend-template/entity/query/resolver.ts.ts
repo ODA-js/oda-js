@@ -2,7 +2,7 @@ import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import * as inflect from 'inflected';
 
 import { Factory } from 'fte.js';
-import { capitalize, mapToTSTypes, decapitalize } from '../../utils';
+import { capitalize, mapToTSTypes, decapitalize, mapToGraphqlTypes } from '../../utils';
 
 export const template = 'entity/query/resolver.ts.njs';
 
@@ -17,7 +17,14 @@ export interface MapperOutupt {
   unique: {
     args: { name: string, type: string }[];
     find: { name: string, type: string, cName: string }[];
-    complex: { name: string, fields: { name: string, uName: string, type: string }[] }[];
+    complex: {
+      name: string, fields: {
+        name: string,
+        uName: string,
+        type: string,
+        gqlType?: string,
+      }[]
+    }[];
   };
   relations: {
     derived: boolean;
@@ -86,6 +93,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
             name: f.name,
             uName: capitalize(f.name),
             type: mapToTSTypes(f.type),
+            gqlType: mapToGraphqlTypes(f.type),
           })).sort((a, b) => {
             if (a.name > b.name) return 1
             else if (a.name < b.name) return -1;

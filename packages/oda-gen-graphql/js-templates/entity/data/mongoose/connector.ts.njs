@@ -1,4 +1,28 @@
 <#@ context 'entity' -#>
+<#@ chunks '$$$main$$$' -#>
+
+<# chunkStart(`interface`); #>
+import { Connector } from 'oda-api-graphql';
+import { I#{ entity.name } } from '../types/model';
+
+export interface #{ entity.name }Connector extends Connector<I#{ entity.name }>{
+<#- for (let f of entity.args.update.find) {
+  let ukey = f.name;
+  let type = f.type;
+#>
+  findOneBy#{f.cName}AndUpdate: (#{ukey}: #{type}, payload: I#{entity.name})=> Promise<I#{entity.name}>
+  findOneBy#{f.cName}AndRemove: (#{ukey}: #{type})=> Promise<I#{entity.name}>
+<#}-#>
+<#- entity.complexUniqueIndex.forEach(f=> {
+  let findBy = f.fields.map(f=>f.uName).join('And');
+  let findArgs = f.fields.map(f=>`${f.name}: ${f.type}`).join(', ');
+    #>
+  findOneBy#{findBy}AndUpdate:(#{findArgs}, payload: I#{entity.name}) => Promise<I#{entity.name}>
+  findOneBy#{findBy}AndRemove:(#{findArgs}) => Promise<I#{entity.name}>
+  <#});-#>
+}
+
+<# chunkStart('connector'); #>
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
@@ -7,9 +31,10 @@ import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
 
-import { #{ entity.name } as #{ entity.name }Model } from '../types/model';
+import { I#{ entity.name } } from '../types/model';
+import { #{ entity.name }Connector } from './interface';
 
-export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
+export default class #{ entity.name } extends MongooseApi<RegisterConnectors> implements #{ entity.name }Connector {
   constructor({mongoose, connectors, user, owner, acls, userGroup}) {
     logger.trace('constructor');
     super({mongoose, connectors, user, acls, userGroup
@@ -20,11 +45,10 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
 <#-}-#>
     });
     this.initSchema('#{entity.name}', #{ entity.name }Schema());
-    this.storeToCache = this.updateLoaders('All Fields');
 
     this.loaderKeys = {
 <#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
-    let loaderName = entity.loaders[i];
+    let loaderName = entity.loaders[i].loader;
 #>
       by#{loaderName}: '#{entity.unique[i]}',
 <#-}#>
@@ -38,7 +62,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
 
     this.updaters = {
 <#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
-    let loaderName = entity.loaders[i];
+    let loaderName = entity.loaders[i].loader;
 #>
       by#{loaderName}: this.updateLoaders('by#{loaderName}'),
 <#-}#>
@@ -46,15 +70,43 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   let findBy = f.fields.map(f=>f.uName).join('And');
     #>
       by#{findBy}: this.updateLoaders('by#{findBy}'),
-<#});#>
+<#-});#>
     };
+<#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
+    let loaderName = entity.loaders[i].loader;
+    let field = entity.loaders[i].field;
+#>
+
+    const by#{loaderName} = async (keys) => {
+      let result = await this._getList({ filter: { #{field}: { in: keys } } });
+      let map = result.reduce((_map, item) => {
+        _map[item.#{field}] = item;
+        return _map;
+      }, {});
+      return keys.map(id => map[id]);
+    };
+<#-}-#>
+<#- entity.complexUniqueIndex.forEach(f=> {
+  let findBy = f.fields.map(f=>f.uName).join('And');
+  let loadArgs = f.fields.map(f=>`key.${f.name}`).join(' + ');
+  let withArgsTypeof = f.fields.map(f=>'${'+`typeof ${f.name}`+'}').join(', ');
+#>
+
+    const by#{findBy} = async (keys) => {
+      let result = await this._getList({ filter: { or: keys  } });
+      let map = result.reduce((_map, item) => {
+        _map[this.loaderKeys.by#{findBy}(item)] = item;
+        return _map;
+      }, {});
+      return keys.map(item => map[this.loaderKeys.by#{findBy}(item)]);
+    };
+<#-});#>
 
     this.loaders = {
 <#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
-    let loaderName = entity.loaders[i];
+    let loaderName = entity.loaders[i].loader;
 #>
-      by#{loaderName}: new Dataloader(keys =>
-        Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{loaderName}.bind(this)) as Promise<#{entity.name}Model>[])
+      by#{loaderName}: new Dataloader(keys => by#{loaderName}(keys)
         .then(this.updaters.by#{loaderName})
 <#- if(loaderName === 'Id'){#>, {
           cacheKeyFn: key => typeof key !== 'object' ? key : key.toString(),
@@ -66,7 +118,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   let loadArgs = f.fields.map(f=>`key.${f.name}`).join(' + ');
   let withArgsTypeof = f.fields.map(f=>'${'+`typeof ${f.name}`+'}').join(', ');
     #>
-      by#{findBy}: new Dataloader(keys => Promise.all<#{entity.name}Model>(keys.map(this._findOneBy#{findBy}.bind(this)) as Promise<#{entity.name}Model>[])
+      by#{findBy}: new Dataloader(keys => by#{findBy}(keys)
         .then(this.updaters.by#{findBy}), {
           cacheKeyFn: key => typeof key === 'object' ? (#{loadArgs}) : key.toString(),
         }),
@@ -74,12 +126,12 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     };
   }
 
-  public async create(payload) {
+  public async create(payload: I#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
     let result = await  (new (this.model)(entity)).save();
     this.storeToCache([result]);
-    return this.ensureId(result ? result.toJSON() : result);
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 <#- for (let f of entity.args.update.find) {
   let ukey = f.name;
@@ -98,7 +150,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
       }
       result = await result.save();
       this.storeToCache([result]);
-      return this.ensureId(result ? result.toJSON() : result);
+      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
       return result;
     }
@@ -125,7 +177,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
       }
       result = await result.save();
       this.storeToCache([result]);
-      return this.ensureId(result ? result.toJSON() : result);
+      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
       return result;
     }
@@ -143,7 +195,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     if( result ){
       result = await result.remove();
       this.storeToCache([result]);
-      return this.ensureId(result ? result.toJSON() : result);
+      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
       return result;
     }
@@ -164,7 +216,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     if( result ){
       result = await result.remove();
       this.storeToCache([result]);
-      return this.ensureId(result ? result.toJSON() : result);
+      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
       return result;
     }
@@ -278,10 +330,10 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   public async findOneBy#{f.cName}(#{ukey}?: #{type}) {
     logger.trace(`findOneBy#{f.cName} with ${#{ukey}} `);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
-    return this.ensureId(result ? result.toJSON() : result);
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 
-  public async _findOneBy#{f.cName}(#{ukey}?: #{type}) {
+/*   public async _findOneBy#{f.cName}(#{ukey}?: #{type}) {
     logger.trace(`_findOneBy#{f.cName} with ${#{ukey}} ${typeof #{ukey}} `);
     let condition: any;
     if (
@@ -309,7 +361,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     let result = await this.model.findOne(condition).exec();
     <#-}#>
     return result;
-  }
+  } */
 
 <#-}-#>
 
@@ -324,16 +376,16 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
   public async findOneBy#{findBy}(#{findArgs}) {
     logger.trace(`findOneBy#{findBy} with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
-    return this.ensureId(result ? result.toJSON() : result);
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 
-  public async _findOneBy#{findBy}(args: {#{findArgs}}) {
+/*   public async _findOneBy#{findBy}(args: {#{findArgs}}) {
     logger.trace(`_findOneBy#{findBy} with #{withArgs2} #{withArgsTypeof} `);
     let condition: any = {};
-<# for (let i=0, len = f.fields.length; i < len; i++ ){
-  let ukey = f.fields[i].name;
-  let type = f.fields[i].type;
-  #>
+    <# for (let i=0, len = f.fields.length; i < len; i++ ){
+    let ukey = f.fields[i].name;
+    let type = f.fields[i].type;
+    #>
     if (
     <#- if(type == 'string') { #>
         args.#{ukey} !== undefined
@@ -354,19 +406,15 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors> {
     } else {
       throw new Error('All parameters required for findOneBy#{findBy}! "#{entity.name}"');
     }
-<#}#>
+  <#}#>
     let result = await this.model.findOne(condition).exec();
 
     return result;
-  }
+  } */
 
 <#-});-#>
 
-  public getPayload(args: {
-    <#- for (let f of entity.args.create) {#>
-      #{f.name}?: #{f.type},
-    <#-}#>
-  }, update?: boolean) {
+  public getPayload(args: I#{entity.name}, update?: boolean) {
     let entity: any = {};
     <#- for (let f of entity.args.create) {#>
       if (args.#{f.name} !== undefined) {

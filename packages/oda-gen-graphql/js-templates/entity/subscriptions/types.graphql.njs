@@ -17,6 +17,12 @@ type #{entity.name}Subscription {
   mutation: MutationKind!
   node: #{entity.name}!
   payload: #{entity.name}SubscriptionPayload
+  updatedFields: [String]
+  <#-if(entity.connections.length > 0){#>
+  previous: Update#{entity.name}SubscriptionPayload
+  <#-} else {#>
+  previous: #{entity.name}SubscriptionPayload
+  <#-}#>
 }
 
 <#- if(entity.connections.length > 0) {#>

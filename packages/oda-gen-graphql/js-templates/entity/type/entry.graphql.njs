@@ -26,8 +26,8 @@ input #{entity.name}Filter {
 }
 
 input #{entity.name}ComplexFilter {
-  or: [#{entity.name}FilterItem]
-  and: [#{entity.name}FilterItem]
+  or: [#{entity.name}ComplexFilter]
+  and: [#{entity.name}ComplexFilter]
 <#-entity.filterEmbed.forEach((item, index)=>{#>
   #{item}
 <#-})#>
@@ -39,12 +39,19 @@ input #{entity.name}FilterItem {
 <#-})#>
 }
 
-input #{entity.name}FilterSubscriptions {
-  or: [#{entity.name}FilterSubscriptions]
-  and: [#{entity.name}FilterSubscriptions]
+input #{entity.name}FilterSubscriptionsItem {
 <#-entity.filter.forEach((item, index)=>{#>
   #{item}
 <#-})#>
+}
+
+input #{entity.name}FilterSubscriptions {
+  or: [#{entity.name}FilterSubscriptions]
+  and: [#{entity.name}FilterSubscriptions]
+  mutation: WhereMutationKind
+  node: #{entity.name}FilterSubscriptionsItem
+  previous: #{entity.name}FilterSubscriptionsItem
+  updatedFields: WhereListOfStrings
 }
 
 type #{entity.name} implements Node{

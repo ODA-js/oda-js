@@ -89,7 +89,7 @@ export const query: { [key: string]: any } = {
     <#-}#>
     <#- for (let f of entity.unique.complex) {
       let findBy = f.fields.map(f=>f.uName).join('And');
-      let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
+      let loadArgs = `${f.fields.map(f=>f.gqlType === 'ID' ? `fromGlobalId(args.${f.name}).id` : `args.${f.name}`).join(', ')}`;
       let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
 #>
     } else if (#{condArgs}) {

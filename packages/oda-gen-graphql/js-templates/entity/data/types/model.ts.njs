@@ -1,24 +1,24 @@
 <#@ context 'entity' -#>
 
- export interface #{entity.name} {
+ export interface I#{entity.name} {
   <#- entity.fields.forEach(field => { #>
   #{field.name}<#- if(!field.required){#>?<#-}#>: #{field.type};
   <#- })#>
 }
 
-export interface #{entity.name}Edge {
+export interface I#{entity.name}Edge {
   cursor: String;
-  node: #{entity.name};
+  node: I#{entity.name};
 }
 
-export interface #{entity.name}Connection {
+export interface I#{entity.name}Connection {
   pageInfo: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
     startCursor?: string;
     endCursor?: string;
   };
-  edges: #{entity.name}Edge[];
+  edges: I#{entity.name}Edge[];
 }
 
 

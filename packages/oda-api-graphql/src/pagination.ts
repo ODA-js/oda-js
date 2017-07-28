@@ -18,8 +18,8 @@ export default function (args, resolver = cursorToId): {
       result.before = resolver(args.before);
     }
   } else if (args.limit || args.skip) {
-    result.limit = args.limit;
-    result.skip = args.skip;
+    result.limit = args.limit || result.limit;
+    result.skip = args.skip || result.skip;
   }
   return result;
 }

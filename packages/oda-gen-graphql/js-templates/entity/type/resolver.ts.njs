@@ -20,7 +20,16 @@ export const resolver: { [key: string]: any } = {
 <# for (let connection of entity.relations) {-#>
     #{connection.field}: async (
       {_id: id}, // owner id
-      args,
+      args:{
+        limit?: number;
+        skip?: number;
+        first?: number;
+        after?: string;
+        last?: number;
+        before?: string;
+        filter?: object;
+        orderBy?: object;
+      },
       context: { connectors: RegisterConnectors },
       info) => {
       let result;
@@ -82,7 +91,7 @@ export const resolver: { [key: string]: any } = {
         if(!_args.filter){
           _args.filter = {};
         }
-        _args.filter.#{connection.ref.using.field} = #{entity.ownerFieldName}.#{connection.ref.backField}
+        _args.filter.#{connection.ref.using.field} = #{entity.ownerFieldName}.#{connection.ref.backField};
 
         let links = await context.connectors.#{connection.ref.using.entity}.getList(
            _args,
@@ -96,15 +105,8 @@ export const resolver: { [key: string]: any } = {
           }
         );
         if (links.length > 0) {
-          let _args2 = {
-            ..._.omit(args, ['limit', 'skip', 'first', 'after', 'last', 'before']),
-            limit: links.length,
-          };
-          if(!_args2.filter){
-            _args2.filter = {};
-          }
-          _args2.filter.#{connection.ref.field} = { in: links.map(i => i.#{connection.ref.usingField}) }
-          let res = await context.connectors.#{connection.ref.entity}.getList(_args2);
+
+          let res = await Promise.all(links.map(i => context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.usingIndex}(i.#{connection.ref.usingField})));
 
           if (res.length > 0) {
             let hItems = res.reduce((hash, item) => {

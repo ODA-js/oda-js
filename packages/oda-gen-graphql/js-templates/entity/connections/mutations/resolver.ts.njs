@@ -47,10 +47,12 @@ for (let fname of connection.ref.fields){
           #{entity.name}: {
             mutation: 'LINK',
             node: source,
+            previous: null,
+            updatedFields: [],
             payload: {
               args: {
-                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
-                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+                #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                #{connection.refFieldName}: args.#{connection.refFieldName},
               },
               relation: '#{connection.name}'
             }
@@ -63,10 +65,12 @@ for (let fname of connection.ref.fields){
           #{connection.refEntity}: {
             mutation: 'LINK',
             node: dest,
+            previous: null,
+            updatedFields: [],
             payload: {
               args: {
-                #{entity.ownerFieldName}: toGlobalId('#{entity.name}',#{entity.ownerFieldName}),
-                #{connection.refFieldName}: toGlobalId('#{connection.refEntity}',#{connection.refFieldName}),
+                #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                #{connection.refFieldName}: args.#{connection.refFieldName},
               },
               relation: '#{connection.opposite}'
             }
@@ -106,8 +110,13 @@ for (let fname of connection.ref.fields){
           #{entity.name}: {
             mutation: 'UNLINK',
             node: source,
+            previous: null,
+            updatedFields: [],
             payload: {
-              args: payload,
+              args: {
+                #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                #{connection.refFieldName}: args.#{connection.refFieldName},
+              },
               relation: '#{connection.name}'
             }
           }
@@ -120,8 +129,13 @@ for (let fname of connection.ref.fields){
           #{connection.refEntity}: {
             mutation: 'UNLINK',
             node: dest,
+            previous: null,
+            updatedFields: [],
             payload: {
-              args: payload,
+              args: {
+                #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                #{connection.refFieldName}: args.#{connection.refFieldName},
+              },
               relation: '#{connection.opposite}'
             }
           }

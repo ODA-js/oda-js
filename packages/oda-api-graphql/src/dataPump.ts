@@ -22,7 +22,7 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
     let variables;
-    var key;
+    let key;
     for (let k = 0, kLen = keys.length; k < kLen; k++) {
       key = keys[k];
       variables = findVars[key](data[i]);
@@ -68,7 +68,7 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
     let variables;
-    var key;
+    let key;
     for (let k = 0, kLen = keys.length; k < kLen; k++) {
       key = keys[k];
       variables = findVars[key](data[i]);
