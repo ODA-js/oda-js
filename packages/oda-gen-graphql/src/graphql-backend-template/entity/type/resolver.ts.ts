@@ -22,6 +22,7 @@ export interface MapperOutupt {
     ref: {
       backField: string;
       usingField: string;
+      usingIndex: string;
       field: string;
       cField: string;
       entity: string;
@@ -60,6 +61,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           usingField: '',
           backField: f.relation.ref.backField,
           entity: f.relation.ref.entity,
+          usingIndex: '',
           field: f.relation.ref.field,
           cField: capitalize(f.relation.ref.field),
           fields: [],
@@ -90,6 +92,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           } else {
             ref.usingField = decapitalize(ref.entity);
           }
+          ref.usingIndex = capitalize(ref.backField);
           if (f.relation.fields && f.relation.fields.length > 0) {
             f.relation.fields.forEach(field => {
               ref.fields.push(field.name);
