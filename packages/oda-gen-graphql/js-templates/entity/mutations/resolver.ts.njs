@@ -178,7 +178,9 @@ export const mutation = {
         #{entity.name}: {
           mutation: 'CREATE',
           node: result,
-          payload: result,
+          previous: null,
+          updatedFields: [],
+          payload: args,
         }
       });
     }
@@ -236,11 +238,14 @@ export const mutation = {
     };
 
     let result;
+    let previous;
     if (args.id) {
+      previous = await context.connectors.#{entity.name}.findOneById(fromGlobalId(args.id).id);
       result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(fromGlobalId(args.id).id, payload);
     <#- for (let f of entity.args.update.find) {#>
     } else if (args.#{f.name}) {
       delete payload.#{f.name};
+      previous = await context.connectors.#{entity.name}.findOneBy#{f.cName}(args.#{f.name});
       result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndUpdate(args.#{f.name}, payload);
     <#-}#>
     <#- for (let f of entity.complexUnique) {
@@ -252,6 +257,7 @@ export const mutation = {
       <#-for(let fn of f.fields){#>
       delete payload.#{fn.name};
       <#-}#>
+      previous = await context.connectors.#{entity.name}.findOneBy#{findBy}(#{loadArgs});
       result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
     <#-}#>
     }
@@ -261,7 +267,9 @@ export const mutation = {
         #{entity.name}: {
           mutation: 'UPDATE',
           node: result,
-          payload,
+          previous,
+          updatedFields: Object.keys(payload).filter(f => payload[f]!== undefined),
+          payload: args,
         }
       });
     }
@@ -294,7 +302,7 @@ export const mutation = {
       let #{r.field} = await ensure#{r.ref.entity}({
         args: args.#{r.field}<#if(!r.single){#>[i]<#}#>,
         context,
-        create: false,
+        create: true,
       });
 
       await linkTo#{r.cField}({
@@ -350,7 +358,9 @@ export const mutation = {
         #{entity.name}: {
           mutation: 'DELETE',
           node: result,
-          payload: result,
+          previous: null,
+          updatedFields: [],
+          payload: args,
         }
       });
     }
