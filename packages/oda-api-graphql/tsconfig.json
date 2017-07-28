@@ -2,6 +2,9 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "lib": [
+      "esnext"
+    ],
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
