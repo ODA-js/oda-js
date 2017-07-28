@@ -14,25 +14,16 @@ export interface MapperOutput {
   plural: string;
   pluralEntry: string;
   singularEntry: string;
-  indexed: string;
   unique: string;
 }
 
 // tslint:disable:o-unused-variable
 import {
-  searchParamsForAcl,
   getFieldsForAcl,
   identityFields,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
-  let indexed = searchParamsForAcl(aclAllow)(role)(entity)
-    .map(k => ({
-      name: k,
-      type: mapToGraphqlTypes(entity.fields.get(k).type),
-    }))
-    .map(i => `${i.name}: ${i.type}`).join(', ');
-
   let unique = [
     { name: 'id', type: 'ID' },
     ...getFieldsForAcl(aclAllow)(role)(entity)
@@ -48,7 +39,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     plural: entity.plural,
     singularEntry: inflect.camelize(entity.name, false),
     pluralEntry: inflect.camelize(entity.plural, false),
-    indexed: indexed ? `, ${indexed}` : indexed,
     unique,
   };
 }
