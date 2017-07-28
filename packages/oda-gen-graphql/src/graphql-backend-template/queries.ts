@@ -54,7 +54,7 @@ export const complexUniqueFields = (entity: Entity) => complexUniqueIndex(entity
 // ]
 //   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
-export const getIndexedFieldNames = (entity: Entity) => Array.from(entity.indexed);
+export const getFieldNames = (entity: Entity) => Array.from(entity.fields.values()).map(f => f.name);
 
 export const getOrderBy = (allow, role: string, entity: Entity) => searchParamsForAcl(allow)(role)(entity)
   .filter(f => {
@@ -62,12 +62,12 @@ export const getOrderBy = (allow, role: string, entity: Entity) => searchParamsF
     return field.persistent && !field.relation;
   });
 
-export const searchParamsForAcl = (allow) => (role: string) => (entity: Entity) => getIndexedFieldNames(entity)
-  .filter(i => i !== 'id')
+export const searchParamsForAcl = (allow) => (role: string) => (entity: Entity) => getFieldNames(entity)
+  // .filter(i => i !== 'id')
   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
 export const filterForAcl = (allow) => (role: string) => (entity: Entity) =>
-  Object.keys(getIndexedFieldNames(entity).concat(Array.from(entity.relations))
+  Object.keys(getFieldNames(entity).concat(Array.from(entity.relations))
     .reduce((res, cur) => {
       res[cur] = 1;
       return res;
