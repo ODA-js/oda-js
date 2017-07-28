@@ -21,21 +21,26 @@ export interface MapperOutupt {
 import {
   getFields,
   persistentFields,
+  singleStoredRelationsExistingIn,
+  mutableFields
 } from '../../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
+  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   return {
     name: entity.name,
     plural: entity.plural,
     description: entity.description,
-    fields: getFields(entity)
-      .filter(f => persistentFields(f))
-      .map(f => {
-        return {
-          name: f.name,
-          type: mapToTSTypes(f.type),
-          required: f.required,
-        };
-      }),
+    fields: [
+      { name: 'id', type: 'string' },
+      ...getFields(entity)
+        .filter(f => singleStoredRelations(f) || mutableFields(f))
+        .map(f => {
+          return {
+            name: f.name,
+            type: mapToTSTypes(f.type),
+            required: f.required,
+          };
+        })],
   };
 }

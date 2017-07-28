@@ -24,7 +24,7 @@ export interface MapperOutupt {
       unique: boolean,
     };
   };*/
-  loaders: string[];
+  loaders: any[];
   fields: string[];
   filterAndSort: { type: string, name: string, gqlType: string }[];
   search: { type: string, name: string, gqlType: string, rel: boolean, _name?: string }[];
@@ -99,7 +99,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
           uName: capitalize(f.name),
           type: mapToTSTypes(f.type),
         })).sort((a, b) => {
-          if (a.name > b.name) return 1
+          if (a.name > b.name) return 1;
           else if (a.name < b.name) return -1;
           else return 0;
         });
@@ -107,7 +107,10 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
         fields,
       };
     }),
-    loaders: getUniqueFieldNames(entity).map(capitalize),
+    loaders: getUniqueFieldNames(entity).map(i => ({
+      loader: capitalize(i),
+      field: i,
+    })),
     fields: getFields(entity)
       .filter(persistentFields)
       .map(f => f.name),
@@ -211,7 +214,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
           let refe = pack.entities.get(ref.entity);
           let opposite = getRelationNames(refe)
             // по одноименному классу ассоциации
-            .filter(r => (current.opposite && current.opposite == r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
+            .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
               && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
             .map(r => refe.fields.get(r).relation)
             .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
