@@ -1,11 +1,17 @@
+let mongoose = require('mongoose');
 import { fromGlobalId } from 'graphql-relay';
+
+function validId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
 
 export function getValue(value, idMap, id) {
   if (id) {
     if (Array.isArray(value)) {
       return value.map(v => getValue(v, idMap, id));
     } if (typeof value === 'string') {
-      return fromGlobalId(value).id || value;
+      return validId(value) ? value : fromGlobalId(value).id;
     } else {
       return value;
     }
