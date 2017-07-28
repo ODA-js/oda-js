@@ -5,6 +5,6 @@ export default (cursor) => {
   let result;
   try {
     result = unbase64(cursor).substring(PREFIX.length);
-  } catch(e){}
+  } catch (e) { }
   return result;
-}
+};
