@@ -23,10 +23,12 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
   protected initSchema(name, schema) {
     this.schema = schema;
     if (!this.sequelize.isDefined(name)) {
+      /// TODO: переделать под sequilize
       // init once
       if (this.user) {
         this.schema.pre('save', this.logUser());
       }
+      /// TODO: переделать под sequilize
       if (this._viewer) {
         this.schema.pre('save', this.initOwner());
       }
@@ -61,7 +63,6 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
   }
 
   protected async _getList(args, checkExtraCriteria?) {
-    debugger;
     let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
     let query: any = this.getFilter(args);
     let sort = cursorDirection(args);
@@ -119,7 +120,6 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
     }
 
     let pageSize = 10;
-    debugger;
     let iterator = forward(async (step: number) => {
       return await this.model.findAll({
         offset: cursor.skip + step * pageSize,
@@ -152,12 +152,12 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
 
     return result;
   }
-
+  /// TODO: Переделать под sequelize
   protected logUser() {
     let _user = () => this.user;
     return function (next) {
       let user = _user();
-      if (this.isNew) {
+      if (this.isNewRecord) {
         this.set('createdAt', new Date());
         this.set('createdBy', fromGlobalId(user.id).id);
       } else {
@@ -171,7 +171,7 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
   protected initOwner() {
     let _owner = () => this._viewer;
     return function (next) {
-      if (this.isNew && !this.get('owner')) {
+      if (this.isNewRecord && !this.get('owner')) {
         let owner = _owner();
         if (owner.owner) {
           this.set('owner', owner.owner);

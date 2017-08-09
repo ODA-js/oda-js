@@ -110,7 +110,6 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
 export let restoreDataDirect = async (config, queries, data, schema, context) => {
   let importQueries = config.import.queries;
   let entitiesNames = Object.keys(importQueries);
-
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
     let entityName = entitiesNames[iEnt];
     let fields = importQueries[entityName].filter ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data) : data;
