@@ -33,20 +33,29 @@ import {
   identityFields,
   oneUniqueInIndex,
   complexUniqueIndex,
-  updatePaylopadFields,
   persistentRelations,
   relationFieldsExistsIn,
   getRelationNames,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
-    unionCheck: fieldsAcl
-      .filter(updatePaylopadFields)
+    unionCheck: [
+      ...ids.map(f => ({
+        name: f.name,
+        type: 'ID',
+        required: false,
+      })),
+      ...fieldsAcl
+        .filter(mutableFields)]
       .map(f => f.name),
     connections: fieldsAcl
       .filter(persistentRelations(pack))

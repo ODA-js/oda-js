@@ -73,6 +73,7 @@ import {
   oneUniqueInIndex,
   getRelationNames,
   complexUniqueIndex,
+  idField,
 } from '../../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
@@ -86,6 +87,8 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
     needOwner = aclRead !== 'public';
   }
   let singleUnique = oneUniqueInIndex(entity);
+
+  let ids = getFields(entity).filter(idField);
 
   return {
     name: entity.name,
@@ -118,7 +121,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
       .filter(f => persistentFields(f) && indexedFields(f))
       .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type })),
     search: [
-      { name: 'id', _name: '_id', type: 'string', relation: false },
+      ...ids,
       ...getFields(entity)
         .filter(f => indexedFields(f) || singleStoredRelations(f))]
       .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type, rel: !!f.relation, _name: (f['_name'] || f.name) })),
@@ -130,19 +133,21 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
       .map(f => f.name),
     args: {
       create: [
-        { name: 'id', type: 'string' },
-        ...getFields(entity)
-          .filter(f => singleStoredRelations(f) || mutableFields(f))
+        ...[
+          ...ids,
+          ...getFields(entity)
+            .filter(f => singleStoredRelations(f) || mutableFields(f))]
           .map(f => ({
             name: f.name,
             type: mapToTSTypes(f.type),
           }))],
       update: {
         find: [
-          { name: 'id', type: 'string', cName: 'Id' },
-          ...getFields(entity)
-            .filter(identityFields)
-            .filter(singleUnique)
+          ...[
+            ...ids,
+            ...getFields(entity)
+              .filter(identityFields)
+              .filter(singleUnique)]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
@@ -156,24 +161,24 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
           })),
       },
       remove: [
-        { name: 'id', type: 'string', cName: 'Id' },
+        ...ids,
         ...getFields(entity)
           .filter(identityFields)
-          .filter(singleUnique)
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-            cName: capitalize(f.name),
-          }))],
+          .filter(singleUnique)]
+        .map(f => ({
+          name: f.name,
+          type: mapToTSTypes(f.type),
+          cName: capitalize(f.name),
+        })),
       getOne: [
-        { name: 'id', type: 'string', cName: 'Id' },
+        ...ids,
         ...getFields(entity)
-          .filter(identityFields)
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-            cName: capitalize(f.name),
-          }))],
+          .filter(identityFields)]
+        .map(f => ({
+          name: f.name,
+          type: mapToTSTypes(f.type),
+          cName: capitalize(f.name),
+        })),
     },
     relations: getFields(entity)
       .filter(persistentRelation)

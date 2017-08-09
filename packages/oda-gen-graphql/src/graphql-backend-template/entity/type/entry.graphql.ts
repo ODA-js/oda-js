@@ -38,6 +38,7 @@ import {
   //filterSubscriptionsForAcl,
   fields,
   relationFieldsExistsIn,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutput {
@@ -71,7 +72,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       }
       return {
         name: k,
-        type: `Where${mapToGraphqlTypes(type)}`,
+        type: `Where${idField(field) ? 'ID' : mapToGraphqlTypes(type)}`,
       }
     })
     .map(i => `${i.name}: ${i.type}`);
@@ -99,7 +100,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
         type = `${field.relation.single ? '' : 'Embed'}${ent.name}Filter`;
       }
       else {
-        type = `Where${mapToGraphqlTypes(field.type)}`;
+        type = `Where${idField(field) ? 'ID' : mapToGraphqlTypes(field.type)}`;
       }
       return {
         name: k,
@@ -113,7 +114,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       // если что можно восстановить поиск по встроенным полям от реляций
       // нужно продумать.
       let field = entity.fields.get(k);
-      let type = `Where${mapToGraphqlTypes(field.type)}`;
+      let type = `Where${idField(field) ? 'ID' : mapToGraphqlTypes(field.type)}`;
       return {
         name: k,
         type,
@@ -138,7 +139,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           description: f.description ? f.description.split('\n').map(d => {
             return (d.trim().match(/#/)) ? d : `# ${d}`;
           }).join('\n') : f.description,
-          type: `${mapToGraphqlTypes(f.type)}${printRequired(f)}`,
+          type: `${idField(f) ? 'ID' : mapToGraphqlTypes(f.type)}${printRequired(f)}`,
           args: args ? `(${args})` : '',
         };
       }),

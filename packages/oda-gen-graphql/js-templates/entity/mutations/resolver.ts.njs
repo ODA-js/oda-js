@@ -196,17 +196,20 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
     <#}#>
-      let #{r.field} = await ensure#{r.ref.entity}({
-        args: args.#{r.field}<#if(!r.single){#>[i]<#}#>,
-        context,
-        create: true,
-      });
+      let item = args.#{r.field}<#if(!r.single){#>[i]<#}#>;
+      if (item) {
+        let #{r.field} = await ensure#{r.ref.entity}({
+          args: item,
+          context,
+          create: true,
+        });
 
-      await linkTo#{r.cField}({
-        context,
-        #{r.field},
-        #{entity.ownerFieldName}: result,
-      });
+        await linkTo#{r.cField}({
+          context,
+          #{r.field},
+          #{entity.ownerFieldName}: result,
+        });
+      }
     <#if(!r.single){#>
       }
     <#}#>
@@ -279,6 +282,7 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}Unlink.length; i < len; i++) {
     <#}#>
+      let item = args.#{r.field}Unlink<#if(!r.single){#>[i]<#}#>;
       let #{r.field} = await ensure#{r.ref.entity}({
         args: args.#{r.field}Unlink<#if(!r.single){#>[i]<#}#>,
         context,
@@ -299,17 +303,20 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
     <#}#>
-      let #{r.field} = await ensure#{r.ref.entity}({
-        args: args.#{r.field}<#if(!r.single){#>[i]<#}#>,
-        context,
-        create: true,
-      });
+      let item = args.#{r.field}<#if(!r.single){#>[i]<#}#>;
+      if (item) {
+        let #{r.field} = await ensure#{r.ref.entity}({
+          args: item,
+          context,
+          create: true,
+        });
 
-      await linkTo#{r.cField}({
-        context,
-        #{r.field},
-        #{entity.ownerFieldName}: result,
-      });
+        await linkTo#{r.cField}({
+          context,
+          #{r.field},
+          #{entity.ownerFieldName}: result,
+        });
+      }
     <#if(!r.single){#>
       }
     <#}#>

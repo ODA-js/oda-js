@@ -54,7 +54,7 @@ export const complexUniqueFields = (entity: Entity) => complexUniqueIndex(entity
 // ]
 //   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
 
-export const getFieldNames = (entity: Entity) => Array.from(entity.fields.values()).map(f => f.name);
+export const getFieldNames = (entity: Entity) => Array.from(entity.fields.values()).map((f: { name: string }) => f.name);
 
 export const getOrderBy = (allow, role: string, entity: Entity) => searchParamsForAcl(allow)(role)(entity)
   .filter(f => {
@@ -89,6 +89,8 @@ export const derivedFieldsAndRelations = (f: Field): boolean => f.derived;
 
 export const getFields = (entity: Entity): Field[] => Array.from(entity.fields.values());
 
+export const idField = (f: Field): boolean => fields(f) && (f.name === 'id' || f.name === '_id');
+
 export const getFieldsForAcl = (allow) => (role: string) => (entity: Entity): Field[] => getFields(entity)
   .filter(f => allow(role, f.getMetadata('acl.read', role)));
 
@@ -99,15 +101,13 @@ export const relationFieldsExistsIn = (pack: ModelPackage) =>
 
 export const persistentFields = (f: Field): boolean => fields(f) && f.persistent;
 
-export const indexedFields = (f: Field): boolean => fields(f) && f.indexed && f.name !== 'id';
+export const indexedFields = (f: Field): boolean => fields(f) && f.indexed && !idField(f);
 
-export const indexedRelations = (f: Field): boolean => relations(f) && f.indexed && f.name !== 'id';
+export const indexedRelations = (f: Field): boolean => relations(f) && f.indexed && !idField(f);
 
-export const identityFields = (f: Field): boolean => fields(f) && f.identity && f.name !== 'id';
+export const identityFields = (f: Field): boolean => fields(f) && f.identity && !idField(f);
 
-export const mutableFields = (f: Field): boolean => fields(f) && f.name !== 'id' && f.persistent;
-
-export const updatePaylopadFields = (f: Field): boolean => fields(f) && f.persistent;
+export const mutableFields = (f: Field): boolean => fields(f) && !idField(f) && f.persistent;
 
 export const getUniqueFieldNames = (entity: Entity) => [
   'id',

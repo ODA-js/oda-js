@@ -40,13 +40,16 @@ import {
   getFieldsForAcl,
   identityFields,
   mutableFields,
-  updatePaylopadFields,
   relationFieldsExistsIn,
   getRelationNames,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     plural: entity.plural,
@@ -66,23 +69,37 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         };
       }),
     create: [
-      { name: 'id', type: 'ID', required: false },
+      ...ids.map(f => ({
+        name: f.name,
+        type: 'ID',
+        required: false,
+      })),
       ...fieldsAcl
         .filter(mutableFields)]
       .map(f => ({
         name: f.name,
         type: `${mapToGraphqlTypes(f.type)}${printRequired(f)}`,
       })),
-    update: fieldsAcl
-      .filter(updatePaylopadFields)
+    update: [
+      ...ids.map(f => ({
+        name: f.name,
+        type: 'ID',
+        required: false,
+      })),
+      ...fieldsAcl
+        .filter(mutableFields)]
       .map(f => ({
         name: f.name,
         type: `${mapToGraphqlTypes(f.type)}`,
       })),
     unique: [
-      { name: 'id', type: 'ID' },
-      ...fieldsAcl
-        .filter(identityFields)
+      ...[
+        ...ids.map(f => ({
+          name: f.name,
+          type: 'ID',
+        })),
+        ...fieldsAcl
+          .filter(identityFields)]
         .map(f => ({
           name: f.name,
           type: mapToGraphqlTypes(f.type),

@@ -37,17 +37,25 @@ import {
   mutableFields,
   singleStoredRelationsExistingIn,
   indexes,
+  idField,
 } from '../../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
+  let ids = getFields(entity).filter(idField);
   return {
     name: entity.name,
     plural: entity.plural,
     strict: get(entity.metadata, 'storage.schema.strict'),
     collectionName: get(entity.metadata, 'storage.collectionName') || entity.plural.toLowerCase(),
     description: entity.description,
-    fields: getFields(entity)
-      .filter(mutableFields)
+    fields: [
+      ...ids.map(f => ({
+        name: f.name === 'id' ? '_id' : f.name,
+        type: f.type,
+        required: false,
+      })).filter(f => f.type !== 'ID'),
+      ...getFields(entity)
+        .filter(mutableFields)]
       .map(f => {
         return {
           name: f.name,

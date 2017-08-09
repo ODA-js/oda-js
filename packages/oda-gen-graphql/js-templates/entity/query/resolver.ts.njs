@@ -7,6 +7,20 @@ import { fromGlobalId } from 'graphql-relay';
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { emptyConnection, idToCursor, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
 
+let mongoose = require('mongoose');
+
+function validId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
+export function getValue(value) {
+    if (typeof value === 'string') {
+      return validId(value) ? value : fromGlobalId(value).id;
+    } else {
+      return value;
+    }
+}
+
 export const query: { [key: string]: any } = {
   #{entity.plural}: async (
     owner,
@@ -82,14 +96,14 @@ export const query: { [key: string]: any } = {
     logger.trace('#{entity.singular}');
     let result;
     if (args.id) {
-      result = await context.connectors.#{entity.name}.findOneById(fromGlobalId(args.id).id);
+      result = await context.connectors.#{entity.name}.findOneById(getValue(args.id));
     <#- for (let f of entity.unique.find) {#>
     } else if (args.#{f.name}) {
       result = await context.connectors.#{entity.name}.findOneBy#{f.cName}(args.#{f.name});
     <#-}#>
     <#- for (let f of entity.unique.complex) {
       let findBy = f.fields.map(f=>f.uName).join('And');
-      let loadArgs = `${f.fields.map(f=>f.gqlType === 'ID' ? `fromGlobalId(args.${f.name}).id` : `args.${f.name}`).join(', ')}`;
+      let loadArgs = `${f.fields.map(f=>f.gqlType === 'ID' ? `getValue(args.${f.name})` : `args.${f.name}`).join(', ')}`;
       let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
 #>
     } else if (#{condArgs}) {

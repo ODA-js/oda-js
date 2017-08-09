@@ -11,6 +11,22 @@ export default {
 }
 
 <# chunkStart(`../../../dataPump/${entity.name}/import`); #>
+
+let mongoose = require('mongoose');
+import { fromGlobalId } from 'graphql-relay';
+
+function validId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
+export function getValue(value) {
+    if (typeof value === 'string') {
+      return validId(value) ? value : fromGlobalId(value).id;
+    } else {
+      return value;
+    }
+}
+
 export default {
   import: {
     queries : {
@@ -39,8 +55,9 @@ export default {
           // updateQuery: '#{entity.name}/update.graphql',
           // dataPropName: '#{entity.ownerFieldName}',
           findVars: {
-    <#- for (let f of entity.unique) {#>
-            #{f.name} : (f) => f.hasOwnProperty('#{f.name}') ? { #{f.name}: f.#{f.name} } : null,
+    <#- for (let f of entity.unique) {
+      #>
+            #{f.name} : (f) => f.hasOwnProperty('#{f.name}') ? { #{f.name}:<#if(f.type === 'ID'){#> getValue(f.#{f.name}) <#} else {#> f.#{f.name} <#}#>} : null,
     <#-}#>
     <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
     <#- for (let f of entity.complexUnique) {

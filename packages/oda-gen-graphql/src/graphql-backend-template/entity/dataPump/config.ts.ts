@@ -19,7 +19,7 @@ export interface MapperOutupt {
   //   complex: { name: string, fields: { name: string, uName: string, type: string }[] }[];
   // }
   complexUnique: { name: string, fields: { name: string, uName: string }[] }[];
-  unique: { name: string, cName: string; }[];
+  unique: { name: string, cName: string; type: string }[];
   fields: { name: string }[]
   relations: {
     derived: boolean;
@@ -45,11 +45,15 @@ import {
   relationFieldsExistsIn,
   oneUniqueInIndex,
   complexUniqueIndex,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -72,21 +76,25 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       };
     }),
     unique: [
-      { name: 'id', cName: 'Id' },
+      ...ids.map(f => ({
+        name: f.name,
+        type: 'ID',
+      })),
       ...fieldsAcl
         .filter(identityFields)
-        .filter(oneUniqueInIndex(entity))
-        .map(f => ({
-          name: f.name,
-          cName: capitalize(f.name),
-        }))],
+        .filter(oneUniqueInIndex(entity))]
+      .map(f => ({
+        name: f.name,
+        type: mapToGraphqlTypes(f.type),
+        cName: capitalize(f.name),
+      })),
     fields: [
-      { name: 'id' },
+      ...getFields(entity).filter(idField),
       ...fieldsAcl
-        .filter(f => mutableFields(f))
-        .map(f => ({
-          name: f.name,
-        }))],
+        .filter(f => mutableFields(f))]
+      .map(f => ({
+        name: f.name,
+      })),
     relations: fieldsAcl
       .filter(relationFieldsExistsIn(pack))
       .map(f => {

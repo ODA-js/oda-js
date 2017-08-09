@@ -57,25 +57,28 @@ import {
   oneUniqueInIndex,
   relationFieldsExistsIn,
   getRelationNames,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     singular: inflect.camelize(entity.name, false),
     plural: inflect.camelize(entity.plural, false),
     unique: {
       args: [
-        { name: 'id', type: 'string' },
+        ...ids,
         ...fieldsAcl
           .filter(identityFields)
-          .filter(oneUniqueInIndex(entity))
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          })),
-      ],
+          .filter(oneUniqueInIndex(entity))]
+        .map(f => ({
+          name: f.name,
+          type: mapToTSTypes(f.type),
+        })),
       find: [
         ...fieldsAcl
           .filter(identityFields)

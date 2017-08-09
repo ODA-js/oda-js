@@ -57,11 +57,15 @@ import {
   relationFieldsExistsIn,
   oneUniqueInIndex,
   complexUniqueIndex,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -83,15 +87,14 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           ownerFieldName: decapitalize(entity.name),
           unique: {
             args: [
-              { name: 'id', type: 'string' },
+              ...ids,
               ...fieldsEntityAcl
                 .filter(identityFields)
-                .filter(oneUniqueInIndex(entity))
-                .map(f => ({
-                  name: f.name,
-                  type: mapToGraphqlTypes(f.type),
-                })),
-            ],
+                .filter(oneUniqueInIndex(entity))]
+              .map(f => ({
+                name: f.name,
+                type: mapToGraphqlTypes(f.type),
+              })),
             find: [
               ...fieldsEntityAcl
                 .filter(identityFields)
@@ -162,9 +165,10 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     args: {
       create: {
         args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))
+          ...[
+            ...ids,
+            ...fieldsAcl
+              .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
@@ -178,9 +182,10 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       },
       update: {
         args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))
+          ...[
+            ...ids,
+            ...fieldsAcl
+              .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
@@ -203,10 +208,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       },
       remove: {
         args: [
-          { name: 'id', type: 'string' },
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
+          ...[
+            ...ids,
+            ...fieldsAcl
+              .filter(identityFields)
+              .filter(oneUniqueInIndex(entity))]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),

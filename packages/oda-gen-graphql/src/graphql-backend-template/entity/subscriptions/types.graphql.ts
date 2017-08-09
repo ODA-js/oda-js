@@ -31,18 +31,27 @@ import {
   getFieldsForAcl,
   identityFields,
   mutableFields,
-  updatePaylopadFields,
   persistentRelations,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     plural: entity.plural,
     ownerFieldName: decapitalize(entity.name),
-    update: fieldsAcl
-      .filter(updatePaylopadFields)
+    update: [
+      ...ids.map(f => ({
+        name: f.name,
+        type: 'ID',
+        required: false,
+      })),
+      ...fieldsAcl
+        .filter(mutableFields)]
       .map(f => ({
         name: f.name,
         type: `${mapToGraphqlTypes(f.type)}`,

@@ -22,25 +22,28 @@ import {
   getFields,
   persistentFields,
   singleStoredRelationsExistingIn,
-  mutableFields
+  mutableFields,
+  idField,
 } from '../../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     plural: entity.plural,
     description: entity.description,
     fields: [
-      { name: 'id', type: 'string' },
+      ...ids,
       ...getFields(entity)
-        .filter(f => singleStoredRelations(f) || mutableFields(f))
-        .map(f => {
-          return {
-            name: f.name,
-            type: mapToTSTypes(f.type),
-            required: f.required,
-          };
-        })],
+        .filter(f => singleStoredRelations(f) || mutableFields(f))]
+      .map(f => {
+        return {
+          name: f.name,
+          type: mapToTSTypes(f.type),
+          required: f.required,
+        };
+      }),
   };
 }

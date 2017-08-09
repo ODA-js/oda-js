@@ -22,23 +22,26 @@ import {
   getFieldsForAcl,
   indexedFields,
   identityFields,
+  idField,
+  getFields,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
+  let ids = getFields(entity).filter(idField);
+
   return {
     name: entity.name,
     singular: inflect.camelize(entity.name, false),
     plural: inflect.camelize(entity.plural, false),
     unique: [
-      { name: 'id', type: 'string' },
+      ...ids,
       ...fieldsAcl
-        .filter(identityFields)
-        .map(f => ({
-          name: f.name,
-          type: mapToTSTypes(f.type),
-        })),
-    ],
+        .filter(identityFields)]
+      .map(f => ({
+        name: f.name,
+        type: mapToTSTypes(f.type),
+      })),
     indexed: fieldsAcl
       .filter(indexedFields)
       .map(f => ({

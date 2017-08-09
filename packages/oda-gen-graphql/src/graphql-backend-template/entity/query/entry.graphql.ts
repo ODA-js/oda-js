@@ -21,16 +21,23 @@ export interface MapperOutput {
 import {
   getFieldsForAcl,
   identityFields,
+  getFields,
+  idField,
 } from '../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
+  let ids = getFields(entity).filter(idField);
+
   let unique = [
-    { name: 'id', type: 'ID' },
+    ...ids.map(f => ({
+      name: f.name,
+      type: 'ID',
+    })),
     ...getFieldsForAcl(aclAllow)(role)(entity)
       .filter(identityFields)]
     .map(f => ({
       name: f.name,
-      type: (f.name !== 'id') ? mapToGraphqlTypes(f.type) : 'ID',
+      type: mapToGraphqlTypes(f.type),
     }))
     .map(i => `${i.name}: ${i.type}`).join(', ');
 
