@@ -23,18 +23,21 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
     const keys = Object.keys(findVars);
     let variables;
     let key;
+    let res;
     for (let k = 0, kLen = keys.length; k < kLen; k++) {
       key = keys[k];
       variables = findVars[key](data[i]);
       if (variables) {
-        break;
+        //1. проверить что объект есть
+        res = await client.query({
+          query: queries[findQuery[key]],
+          variables,
+        });
+        if (res.data[dataPropName]) {
+          break;
+        }
       }
     }
-    //1. проверить что объект есть
-    let res = await client.query({
-      query: queries[findQuery[key]],
-      variables,
-    });
     if (!res.data[dataPropName]) {
       //2. если нет создать
       await client.mutate({
@@ -69,20 +72,23 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
     const keys = Object.keys(findVars);
     let variables;
     let key;
+    let res;
     for (let k = 0, kLen = keys.length; k < kLen; k++) {
       key = keys[k];
       variables = findVars[key](data[i]);
       if (variables) {
-        break;
+        res = await runQuery({
+          query: queries[findQuery[key]],
+          variables,
+          schema,
+          context,
+        });
+        if (res.data[dataPropName]) {
+          break;
+        }
       }
     }
     //1. проверить что объект есть
-    const res = await runQuery({
-      query: queries[findQuery[key]],
-      variables,
-      schema,
-      context,
-    });
     if (!res.data[dataPropName]) {
       //2. если нет создать
       await runQuery({
