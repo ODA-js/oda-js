@@ -26,7 +26,7 @@ export interface #{ entity.name }Connector extends Connector<I#{ entity.name }>{
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
-import { MongooseApi } from 'oda-api-graphql';
+import { SequelizeApi } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
@@ -34,17 +34,17 @@ import * as Dataloader from 'dataloader';
 import { I#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
-export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({mongoose, connectors, user, owner, acls, userGroup}) {
+export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
+  constructor({sequelize, connectors, user, owner, acls, userGroup}) {
     logger.trace('constructor');
-    super({mongoose, connectors, user, acls, userGroup
+    super({sequelize, connectors, user, acls, userGroup
 <#-if( entity.needOwner ){-#>
 , owner
 <#-} else {-#>
 , owner: false
 <#-}-#>
     });
-    this.initSchema('#{entity.name}', #{ entity.name }Schema());
+    this.initSchema('#{entity.name}', #{ entity.name }Schema);
 
     this.loaderKeys = {
 <#- for (let i = 0, len = entity.loaders.length; i < len; i++) {
@@ -129,7 +129,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
   public async create(payload: I#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
-    let result = await  (new (this.model)(entity)).save();
+    let result = await this.model.create(entity);
     this.storeToCache([result]);
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
@@ -143,12 +143,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if(result){
-      for (let f in entity) {
-        if (entity.hasOwnProperty(f)) {
-          result.set(f, entity[f]);
-        }
-      }
-      result = await result.save();
+      await result.update(entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -170,12 +165,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if(result){
-      for (let f in entity) {
-        if (entity.hasOwnProperty(f)) {
-          result.set(f, entity[f]);
-        }
-      }
-      result = await result.save();
+      await result.update(entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -193,7 +183,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     logger.trace(`findOneBy#{f.cName}AndRemove`);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if( result ){
-      result = await result.remove();
+      result = await result.destroy();
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -214,7 +204,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     logger.trace(`findOneBy#{findBy}AndRemove with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if( result ){
-      result = await result.remove();
+      result = await result.destroy();
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -333,36 +323,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 
-/*   public async _findOneBy#{f.cName}(#{ukey}?: #{type}) {
-    logger.trace(`_findOneBy#{f.cName} with ${#{ukey}} ${typeof #{ukey}} `);
-    let condition: any;
-    if (
-    <#- if(type == 'string'){ #>
-        #{ukey} !== undefined
-        && #{ukey} !== ''
-    <#- } else if(type == 'number') {#>
-        #{ukey} !== undefined
-        && !isNaN(Number(#{ukey}))
-    <#- } else if(type == 'boolean'){#>
-        #{ukey} !== undefined
-        && #{ukey} !== ''
-        && (!!args.#{ukey}.match(/true/i) || !!args.#{ukey}.match(/false/i))
-    <#}-#>
-    ) {
-      condition = {#{ukey}};
-    }
-    if (!condition) {
-      logger.error('no unique key provided findOneBy#{f.cName} "#{entity.name}"');
-      throw new Error('no unique key provided findOneBy#{f.cName} "#{entity.name}"');
-    }
-    <#-if (ukey === 'id') {#>
-    let result = await this.model.findById(condition.id).exec();
-    <#-} else {#>
-    let result = await this.model.findOne(condition).exec();
-    <#-}#>
-    return result;
-  } */
-
 <#-}-#>
 
 <#- entity.complexUniqueIndex.forEach(f=> {
@@ -378,39 +338,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
-
-/*   public async _findOneBy#{findBy}(args: {#{findArgs}}) {
-    logger.trace(`_findOneBy#{findBy} with #{withArgs2} #{withArgsTypeof} `);
-    let condition: any = {};
-    <# for (let i=0, len = f.fields.length; i < len; i++ ){
-    let ukey = f.fields[i].name;
-    let type = f.fields[i].type;
-    #>
-    if (
-    <#- if(type == 'string') { #>
-        args.#{ukey} !== undefined
-        && args.#{ukey} !== ''
-    <#- } else if(type == 'number') {#>
-        args.#{ukey} !== undefined
-        && !isNaN(Number(args.#{ukey}))
-    <#- } else if(type == 'boolean'){#>
-       args.#{ukey} !== undefined
-        && args.#{ukey} !== ''
-        && (!!args.#{ukey}.match(/true/i) || !!args.#{ukey}.match(/false/i))
-    <#}-#>
-    ) {
-      condition = {
-        ...condition,
-        #{ukey}: args.#{ukey},
-        };
-    } else {
-      throw new Error('All parameters required for findOneBy#{findBy}! "#{entity.name}"');
-    }
-  <#}#>
-    let result = await this.model.findOne(condition).exec();
-
-    return result;
-  } */
 
 <#-});-#>
 

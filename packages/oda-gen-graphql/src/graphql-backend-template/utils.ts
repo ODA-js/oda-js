@@ -88,6 +88,44 @@ export function mapToMongooseTypes(type: string | void) {
   }
 }
 
+export function mapToSequelizeTypes(type: string | void) {
+  if (type) {
+    // разобрать тип как надо массив и прочее...
+    let intype = type.toUpperCase();
+    switch (intype) {
+      case 'INT':
+      case 'INTEGER':
+        return 'DataTypes.INTEGER';
+
+      case 'NUMBER':
+      case 'FLOAT':
+      case 'DOUBLE':
+        return 'DataTypes.FLOAT';
+
+      case 'STRING':
+        return 'DataTypes.STRING';
+
+      case 'BOOL':
+      case 'BOOLEAN':
+        return 'DataTypes.BOOLEAN';
+
+      case 'ID':
+        return 'Sequelize.UUID';
+
+      case 'DATE':
+        return 'DataTypes.DATE';
+
+      // case 'JSON':
+      //   return 'mongoose.Schema.Types.Mixed';
+
+      default:
+        return type;
+    }
+  } else {
+    return 'String';
+  }
+}
+
 export function mapToTSTypes(type: string | void) {
   if (type) {
     // разобрать тип как надо массив и прочее...

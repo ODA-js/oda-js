@@ -9,7 +9,7 @@ import ConnectorsApiBase from './api';
 
 import { forward } from './listIterator';
 
-export default class MongooseApi<RegisterConnectors> extends ConnectorsApiBase<RegisterConnectors> {
+export default class MongooseApi<RegisterConnectors, Payload> extends ConnectorsApiBase<RegisterConnectors, Payload> {
 
   public mongoose: any;
 
@@ -47,14 +47,14 @@ export default class MongooseApi<RegisterConnectors> extends ConnectorsApiBase<R
     }
   };
 
-  public ensureId = (obj) => {
+  public ensureId(obj) {
     if (obj) {
       return {
         ...obj,
         id: obj._id,
-      };
+      } as Payload;
     } else {
-      return obj;
+      return obj as Payload;
     }
   }
 
@@ -146,23 +146,6 @@ export default class MongooseApi<RegisterConnectors> extends ConnectorsApiBase<R
         break;
       }
     }
-
-    // let answer = this.model.find(query).sort(sort).skip(cursor.skip)
-    //     .cursor();
-
-    // while ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-    //     let item = await answer.next();
-    //     if (item == null) { break; }
-    //     if (this.canView(item)) {
-    //         if (hasExtraCondition) {
-    //             if (await checkExtraCriteria(item)) {
-    //                 result.push(item);
-    //             }
-    //         } else {
-    //             result.push(item);
-    //         }
-    //     }
-    // }
 
     this.storeToCache(result);
 

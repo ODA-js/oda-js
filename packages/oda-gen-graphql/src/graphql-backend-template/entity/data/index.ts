@@ -1,7 +1,7 @@
-import * as mongoose from './mongoose';
+import * as adapter from './adapter';
 import * as types from './types';
 
 export {
-  mongoose,
+  adapter,
   types,
 }

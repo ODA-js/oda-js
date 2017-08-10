@@ -1,6 +1,6 @@
 import { ACLCRUD } from '../acl/secureAny';
 
-export default class ConnectorsApiBase<T> {
+export default class ConnectorsApiBase<Connectors, Payload> {
   protected user;
   protected userGroup;
   protected _viewer: {
@@ -10,7 +10,7 @@ export default class ConnectorsApiBase<T> {
   };
   public schema: any;
   public model: any;
-  public connectors: T;
+  public connectors: Connectors;
 
   public loaders: any;
   public updaters: any;
@@ -30,8 +30,8 @@ export default class ConnectorsApiBase<T> {
     this.storeToCache = this.updateLoaders('All Fields');
   }
 
-  public canView(obj) {
-    return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj);
+  public canView(obj: Payload) {
+    return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj) as Payload;
   }
 
   protected _canView(obj) {
@@ -54,10 +54,10 @@ export default class ConnectorsApiBase<T> {
     let result = await this._getList(args, checkExtraCriteria);
     return result
       .map(r => r.toJSON())
-      .map(this.ensureId);
+      .map(r => this.ensureId(r));
   }
 
-  public getPayload(args) { return {}; };
+  public getPayload(args) { return {} as Payload; };
   public setupViewer(viewer?: {
     id?: string,
     owner?: string,
@@ -119,11 +119,11 @@ export default class ConnectorsApiBase<T> {
     throw new Error('not implemented');
   }
 
-  public ensureId = (obj): (obj) => any => {
+  public ensureId(obj: Payload): Payload {
     throw new Error('not implemented');
   }
 
-  public async findOneById(id?: string) {
+  public async findOneById(id): Promise<Payload> {
     throw new Error('not implemented');
   }
 

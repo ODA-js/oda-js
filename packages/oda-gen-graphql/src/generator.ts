@@ -46,7 +46,7 @@ export type GeneratorConfigPackage = {
       resolver?: boolean | string[];
     },
     data?: boolean | string[] | {
-      mongoose?: {
+      adapter?: {
         connector?: boolean | string[];
         schema?: boolean | string[];
       },
@@ -132,7 +132,7 @@ const def = {
         resolver: true,
       },
       data: {
-        mongoose: {
+        adapter: {
           connector: true,
           schema: true,
         },
@@ -515,8 +515,8 @@ export default (args: Generator) => {
 
     let generatePkg = $generateDataPkg.bind(null, raw, rootDir, dataPackage);
 
-    generateData('data.mongoose.connector', 'ts');
-    generateData('data.mongoose.schema', 'ts');
+    generateData('data.adapter.connector', 'ts');
+    generateData('data.adapter.schema', 'ts');
     generateData('data.types.model', 'ts');
     // data-awarness
     generatePkg('indexMongooseConnectors', 'connectorIndex.ts');

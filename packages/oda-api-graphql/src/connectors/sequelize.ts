@@ -11,7 +11,7 @@ import ConnectorsApiBase from './api';
 
 import { forward } from './listIterator';
 
-export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<RegisterConnectors>{
+export default class SequelizeApi<RegisterConnectors, Payload> extends ConnectorsApiBase<RegisterConnectors, Payload>{
 
   public sequelize: Sequelize.Sequelize;
 
@@ -51,14 +51,14 @@ export default class SequelizeApi<RegisterConnectors> extends ConnectorsApiBase<
     }
   };
 
-  public ensureId = (obj) => {
+  public ensureId(obj) {
     if (obj) {
       return {
         ...obj,
         _id: obj.id,
-      };
+      } as Payload;
     } else {
-      return obj;
+      return obj as Payload;
     }
   }
 

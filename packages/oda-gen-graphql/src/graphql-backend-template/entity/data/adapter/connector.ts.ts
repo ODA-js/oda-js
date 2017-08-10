@@ -4,10 +4,14 @@ import { Factory } from 'fte.js';
 import { utils } from 'oda-api-graphql';
 let get = utils.get;
 
-export const template = 'entity/data/mongoose/connector.ts.njs';
+export const template = {
+  mongoose: 'entity/data/mongoose/connector.ts.njs',
+  sequelize: 'entity/data/sequelize/connector.ts.njs',
+};
 
 export function generate(te: Factory, entity: Entity, pack: ModelPackage) {
-  return te.run(mapper(entity, pack), template);
+  let adapter = entity.getMetadata('storage.adapter', 'mongoose');
+  return te.run(mapper(entity, pack, adapter), template[adapter]);
 }
 
 export interface MapperOutupt {
@@ -76,7 +80,7 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, adapter: string): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   const persistentRelation = persistentRelations(pack);
   let needOwner = true;
@@ -198,14 +202,16 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
         };
         let sameEntity = entity.name === f.relation.ref.entity;
         let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        let refe = pack.entities.get(ref.entity);
+
         let addArgs = [
           {
             name: decapitalize(entity.name),
-            type: 'string',
+            type: mapToTSTypes(ids[0].type)
           },
           {
             name: decapitalize(refFieldName),
-            type: 'string',
+            type: mapToTSTypes(refe.fields.get(ref.field).type),
           },
         ];
         let removeArgs = [...addArgs];
@@ -216,7 +222,7 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
           ref.using.field = current.using.field;
           ref.backField = current.using.backField;
           //from oda-model/model/belongstomany.ts ensure relation class
-          let refe = pack.entities.get(ref.entity);
+          // let refe = pack.entities.get(ref.entity);
           let opposite = getRelationNames(refe)
             // по одноименному классу ассоциации
             .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)

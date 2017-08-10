@@ -1,13 +1,22 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { mapToMongooseTypes } from '../../../utils';
+import { mapToMongooseTypes, mapToSequelizeTypes } from '../../../utils';
 import { Factory } from 'fte.js';
 import { utils } from 'oda-api-graphql';
 let get = utils.get;
 
-export const template = 'entity/data/mongoose/schema.ts.njs';
+const typeMapper = {
+  mongoose: mapToMongooseTypes,
+  sequelize: mapToSequelizeTypes,
+};
+
+export const template = {
+  mongoose: 'entity/data/mongoose/schema.ts.njs',
+  sequelize: 'entity/data/sequelize/schema.ts.njs',
+};
 
 export function generate(te: Factory, entity: Entity, pack: ModelPackage) {
-  return te.run(mapper(entity, pack), template);
+  let adapter = entity.getMetadata('storage.adapter', 'mongoose');
+  return te.run(mapper(entity, pack, adapter), template[adapter]);
 }
 
 export interface MapperOutupt {
@@ -16,6 +25,7 @@ export interface MapperOutupt {
   strict: boolean | undefined;
   collectionName: string;
   description?: string;
+  useDefaultPK: boolean;
   fields: {
     name: string;
     type: string;
@@ -25,11 +35,12 @@ export interface MapperOutupt {
     name: string;
     type: string;
     required?: boolean;
+    primaryKey?: boolean;
   }[];
   indexes?: {
     fields: object;
     options: object;
-  }[];
+  }[] | object;
 }
 
 import {
@@ -40,27 +51,32 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
-  let ids = getFields(entity).filter(idField);
+export function mapper(entity: Entity, pack: ModelPackage, adapter: string): MapperOutupt {
+  let ids = getFields(entity).filter(idField).filter(f => f.type !== 'ID');
+  let useDefaultPK = ids.length === 0;
+
   return {
     name: entity.name,
     plural: entity.plural,
     strict: get(entity.metadata, 'storage.schema.strict'),
     collectionName: get(entity.metadata, 'storage.collectionName') || entity.plural.toLowerCase(),
     description: entity.description,
+    useDefaultPK,
     fields: [
       ...ids.map(f => ({
-        name: f.name === 'id' ? '_id' : f.name,
+        name: (f.name === 'id' && adapter === 'mongoose') ? '_id' : f.name,
         type: f.type,
         required: false,
-      })).filter(f => f.type !== 'ID'),
+        primaryKey: true,
+      })),
       ...getFields(entity)
         .filter(mutableFields)]
       .map(f => {
         return {
           name: f.name,
-          type: mapToMongooseTypes(f.type),
+          type: typeMapper[adapter](f.type),
           required: f.required,
+          primaryKey: !!f['primaryKey'],
         };
       }),
     relations: getFields(entity)
@@ -69,12 +85,15 @@ export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
         let retKeyType = pack.entities.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type;
         return {
           name: f.name,
-          type: mapToMongooseTypes(retKeyType),
+          type: typeMapper[adapter](retKeyType),
           indexed: true,
           required: f.required,
         };
       }),
-    indexes: indexes(entity).map(i => ({
+    indexes: indexes(entity).map(i => adapter === 'mongoose' ? ({
+      fields: i.fields,
+      options: i.options,
+    }) : ({
       fields: i.fields,
       options: i.options,
     })),

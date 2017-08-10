@@ -8,7 +8,10 @@ export function generate(te: Factory, pack: ModelPackage) {
 }
 
 export interface MapperOutupt {
-  entities: { name: string }[];
+  entities: {
+    name: string;
+    adapter: string;
+  }[];
 }
 
 import {
@@ -20,6 +23,7 @@ export function mapper(pack: ModelPackage): MapperOutupt {
     entities: getEntities(pack)
       .map(e => ({
         name: e.name,
+        adapter: e.getMetadata('storage.adapter', 'mongoose'),
       })),
   };
 }
