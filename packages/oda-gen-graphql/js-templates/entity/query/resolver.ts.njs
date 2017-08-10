@@ -29,7 +29,7 @@ export const query: { [key: string]: any } = {
       first: number,
       before: string,
       last: number,
-      orderBy: string[],
+      orderBy: string | string[],
       filter: object,
       limit: number,
       skip: number,
@@ -59,7 +59,7 @@ export const query: { [key: string]: any } = {
       let direction = detectCursorDirection(args)._id;
       let edges = list.map(l => {
         return {
-          cursor: idToCursor(l._id),
+          cursor: idToCursor(l.id),
           node: l,
         };
       });

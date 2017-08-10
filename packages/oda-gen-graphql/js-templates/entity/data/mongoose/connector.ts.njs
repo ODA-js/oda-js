@@ -3,22 +3,22 @@
 
 <# chunkStart(`interface`); #>
 import { Connector } from 'oda-api-graphql';
-import { I#{ entity.name } } from '../types/model';
+import { Partial#{ entity.name } } from '../types/model';
 
-export interface #{ entity.name }Connector extends Connector<I#{ entity.name }>{
+export interface #{ entity.name }Connector extends Connector<Partial#{ entity.name }>{
 <#- for (let f of entity.args.update.find) {
   let ukey = f.name;
   let type = f.type;
 #>
-  findOneBy#{f.cName}AndUpdate: (#{ukey}: #{type}, payload: I#{entity.name})=> Promise<I#{entity.name}>
-  findOneBy#{f.cName}AndRemove: (#{ukey}: #{type})=> Promise<I#{entity.name}>
+  findOneBy#{f.cName}AndUpdate: (#{ukey}: #{type}, payload: Partial#{entity.name})=> Promise<Partial#{entity.name}>
+  findOneBy#{f.cName}AndRemove: (#{ukey}: #{type})=> Promise<Partial#{entity.name}>
 <#}-#>
 <#- entity.complexUniqueIndex.forEach(f=> {
   let findBy = f.fields.map(f=>f.uName).join('And');
   let findArgs = f.fields.map(f=>`${f.name}: ${f.type}`).join(', ');
     #>
-  findOneBy#{findBy}AndUpdate:(#{findArgs}, payload: I#{entity.name}) => Promise<I#{entity.name}>
-  findOneBy#{findBy}AndRemove:(#{findArgs}) => Promise<I#{entity.name}>
+  findOneBy#{findBy}AndUpdate:(#{findArgs}, payload: Partial#{entity.name}) => Promise<Partial#{entity.name}>
+  findOneBy#{findBy}AndRemove:(#{findArgs}) => Promise<Partial#{entity.name}>
   <#});-#>
 }
 
@@ -31,10 +31,10 @@ import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
 
-import { I#{ entity.name } } from '../types/model';
+import { Partial#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
-export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
+export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
   constructor({mongoose, connectors, user, owner, acls, userGroup}) {
     logger.trace('constructor');
     super({mongoose, connectors, user, acls, userGroup
@@ -126,7 +126,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
     };
   }
 
-  public async create(payload: I#{entity.name}) {
+  public async create(payload: Partial#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
     let result = await  (new (this.model)(entity)).save();
@@ -414,7 +414,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, I#
 
 <#-});-#>
 
-  public getPayload(args: I#{entity.name}, update?: boolean) {
+  public getPayload(args: Partial#{entity.name}, update?: boolean) {
     let entity: any = {};
     <#- for (let f of entity.args.create) {#>
       if (args.#{f.name} !== undefined) {

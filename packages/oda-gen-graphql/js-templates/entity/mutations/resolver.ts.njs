@@ -186,7 +186,7 @@ export const mutation = {
     }
 
     let #{entity.ownerFieldName}Edge = {
-      cursor: idToCursor(result._id),
+      cursor: idToCursor(result.id),
       node: result,
     };
 

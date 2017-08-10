@@ -27,8 +27,10 @@ export const resolver: { [key: string]: any } = {
         after?: string;
         last?: number;
         before?: string;
-        filter?: object;
-        orderBy?: object;
+        filter?: {
+          [k: string]: any
+        };
+        orderBy?: string | string[];
       },
       context: { connectors: RegisterConnectors },
       info) => {
@@ -59,7 +61,7 @@ export const resolver: { [key: string]: any } = {
           let direction = detectCursorDirection(args)._id;
           let edges = list.map(l => {
             return {
-              cursor: idToCursor(l._id),
+              cursor: idToCursor(l.id),
               node: l,
             };
           });
@@ -84,9 +86,18 @@ export const resolver: { [key: string]: any } = {
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
         const cursor = pagination(args);
         let direction = detectCursorDirection(args)._id;
-        // _.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before']);
         const _args = {
-          ..._.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before']),
+          ..._.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before', 'filter']),
+        } as {
+            limit?: number;
+            skip?: number;
+            first?: number;
+            after?: string;
+            last?: number;
+            before?: string;
+            filter?: {
+              [k: string]: any
+            };
         };
         if(!_args.filter){
           _args.filter = {};
@@ -119,7 +130,7 @@ export const resolver: { [key: string]: any } = {
               <#- for(let field of connection.ref.fields){#>
                 #{field}: l.#{field},
               <#-}#>
-                cursor: idToCursor(l._id),
+                cursor: idToCursor(l.id),
                 node: hItems[l.#{connection.ref.usingField}],
               };
             }).filter(l=>l.node);

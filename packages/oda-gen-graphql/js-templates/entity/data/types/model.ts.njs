@@ -6,6 +6,10 @@
   <#- })#>
 }
 
+export type Partial#{entity.name} = {
+  [P in keyof I#{entity.name}]?: I#{entity.name}[P]
+}
+
 export interface I#{entity.name}Edge {
   cursor: String;
   node: I#{entity.name};
