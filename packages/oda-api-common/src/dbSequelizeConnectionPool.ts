@@ -50,7 +50,11 @@ export default class DbSequelizeConnectionPool {
     let db;
     if (this.dbPool.has(name)) {
       db = this.dbPool.get(name);
-      if (db.connectionManager.validate()) {
+      if (db.connectionManager.validate instanceof Function) {
+        if (db.connectionManager.validate()) {
+          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+        }
+      } else {
         await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
       }
       this.dbPool.delete(name);
@@ -83,10 +87,14 @@ export default class DbSequelizeConnectionPool {
 
     if (this.dbPool.has(name)) {
       let db = this.dbPool.get(name);
-      if (db.connectionManager.validate()) {
-        return Promise.resolve(db);
+      if (db.connectionManager.validate instanceof Function) {
+        if (db.connectionManager.validate()) {
+          return Promise.resolve(db);
+        } else {
+          await this.remove(name);
+        }
       } else {
-        await this.remove(name);
+        return Promise.resolve(db);
       }
     }
 
@@ -115,7 +123,6 @@ export default class DbSequelizeConnectionPool {
       }
       if (db) {
         this.set(name, db);
-        db.sync();
         return Promise.resolve(db);
       } else {
         return Promise.reject(new Error(' unkonwn connection error'));

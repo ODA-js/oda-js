@@ -183,7 +183,7 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
     };
   }
 
-  public sync({ force = false }: { force?: boolean }) {
-    return this.model.sync(force);
+  public async sync({ force = false }: { force?: boolean }) {
+    await this.model.sync({ force });
   }
 }
