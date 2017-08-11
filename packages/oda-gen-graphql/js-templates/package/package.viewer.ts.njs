@@ -41,14 +41,14 @@ export class ViewerEntity extends common.types.GQLModule {
             result = {
               ...context.user,
             };
-            result._id = fromGlobalId(result.id).id;
+            result.id = fromGlobalId(result.id).id;
           } else {
-            result._id = result._id.toString();
+            result.id = result.id;
           }
           return {
             ...context.user,
             ...result,
-            _id: result._id,
+            id: result.id,
           };
         },
       },
