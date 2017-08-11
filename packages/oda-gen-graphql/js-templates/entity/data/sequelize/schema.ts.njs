@@ -2,7 +2,7 @@
 import * as Sequelize from 'sequelize';
 
 export default (sequelize, DataTypes: Sequelize.DataTypes) => {
-  let $#{entity.name} = sequelize.define('Starship', {
+  let $#{entity.name} = sequelize.define('#{entity.name}', {
 <#- if(entity.useDefaultPK){#>
     id: {
       type: DataTypes.INTEGER,

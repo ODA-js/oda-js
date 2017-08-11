@@ -10,6 +10,10 @@ import { acl } from 'oda-api-graphql';
 export default class RegisterConnectors {
 <#- for(let entity of pack.entities){#>
   public get #{entity.name}(): #{entity.name}Connector {
+    return this.Init#{entity.name}();
+  }
+
+  public Init#{entity.name}(): #{entity.name}Connector {
     if (!this._#{entity.name}) {
       this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup });
     }
@@ -55,7 +59,13 @@ export default class RegisterConnectors {
 
   async syncDb(force: boolean = false) {
 <#- for(let entity of pack.entities.filter(e=>e.adapter === 'sequelize')){#>
-    await this.#{entity.name}.sync({ force });
+    this.Init#{entity.name}();
 <#- }#>
+    await this.sequelize.sync({force});
+  }
+
+  async close(){
+    await this.sequelize.close();
+    await this.mongoose.close();
   }
 };
