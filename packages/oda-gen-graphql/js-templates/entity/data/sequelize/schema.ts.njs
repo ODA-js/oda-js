@@ -13,7 +13,7 @@ export default (sequelize, DataTypes: Sequelize.DataTypes) => {
 <#- entity.fields.forEach(field => { #>
     #{field.name}: {
       type: #{field.type},
-      allowNull: #{!!field.required},
+      allowNull: #{!field.required},
       <#- if(field.primaryKey){#>
       primaryKey: true,
       <#-}#>
