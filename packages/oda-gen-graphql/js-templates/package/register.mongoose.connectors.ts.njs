@@ -52,4 +52,10 @@ export default class RegisterConnectors {
     this.acls = { read: new acl.secureAny.Secure<(object) => object>({ acls }) };
     this.userGroup = userGroup;
   }
+
+  async syncDb(force: boolean = false) {
+<#- for(let entity of pack.entities.filter(e=>e.adapter === 'sequelize')){#>
+    await this.#{entity.name}.sync({ force });
+<#- }#>
+  }
 };

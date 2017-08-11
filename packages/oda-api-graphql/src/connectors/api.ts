@@ -134,4 +134,8 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   protected initOwner() {
     throw new Error('not implemented');
   }
+
+  public sync({ force = false }: { force?: boolean }) {
+    throw new Error('not implemented');
+  }
 }

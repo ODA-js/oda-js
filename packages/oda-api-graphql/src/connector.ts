@@ -7,4 +7,5 @@ export interface Connector<T> {
   getPayload: (obj: any, update?: boolean) => T;
   getCount: (args) => Promise<Number>;
   getList: (args, checkExtraCriteria?) => Promise<T[]>;
+  sync: (args: { force?: boolean }) => Promise<void>;
 }

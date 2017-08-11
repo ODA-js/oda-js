@@ -26,11 +26,11 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       /// TODO: переделать под sequilize
       // init once
       if (this.user) {
-        this.schema.pre('save', this.logUser());
+        // this.schema.pre('save', this.logUser());
       }
       /// TODO: переделать под sequilize
       if (this._viewer) {
-        this.schema.pre('save', this.initOwner());
+        // this.schema.pre('save', this.initOwner());
       }
       this.model = this.schema(this.sequelize, Sequelize);
     } else {
@@ -181,5 +181,9 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       }
       next();
     };
+  }
+
+  public sync({ force = false }: { force?: boolean }) {
+    return this.model.sync(force);
   }
 }

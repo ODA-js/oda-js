@@ -181,4 +181,6 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
       next();
     };
   }
+
+  public async sync({ force = false }: { force?: boolean }) { }
 }
