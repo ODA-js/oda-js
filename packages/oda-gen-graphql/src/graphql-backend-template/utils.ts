@@ -103,7 +103,7 @@ export function mapToSequelizeTypes(type: string | void) {
         return 'DataTypes.FLOAT';
 
       case 'STRING':
-        return 'DataTypes.TEXT(\'medium\')';
+        return 'DataTypes.STRING(1000)';
 
       case 'BOOL':
       case 'BOOLEAN':
