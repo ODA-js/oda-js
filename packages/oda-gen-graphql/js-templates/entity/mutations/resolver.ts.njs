@@ -310,7 +310,7 @@ export const mutation = {
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
           context,
-          create: true,
+          create: false,
         });
 
         await linkTo#{r.cField}({
