@@ -110,7 +110,7 @@ export function mapToSequelizeTypes(type: string | void) {
         return 'DataTypes.BOOLEAN';
 
       case 'ID':
-        return 'Sequelize.UUID';
+        return 'DataTypes.UUID';
 
       case 'DATE':
         return 'DataTypes.DATE';
