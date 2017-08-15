@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -39,10 +39,10 @@
     "sequelize": "^4.4.3"
   },
   "devDependencies": {
-    "@types/sequelize": "^4.0.65",
     "@types/node": "^8.0.20",
     "@types/passport": "^0.3.3",
     "@types/passport-local": "^1.0.30",
+    "@types/sequelize": "^4.0.65",
     "typescript": "^2.4.2"
   }
 }
