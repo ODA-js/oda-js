@@ -38,7 +38,7 @@ export default class DbSequelizeConnectionPool {
       db = list[i];
       if (db) {
         if (!(4 === db.readyState)) {
-          await db.close();
+          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
         }
       }
     }
@@ -46,12 +46,27 @@ export default class DbSequelizeConnectionPool {
     this.dbConnectionList.length = 0;
   }
 
+  private async isValid(db) {
+    if (db.validate instanceof Function) {
+      let valid = true;
+      try {
+        await db.validate(db)
+      } catch (e) {
+        valid = false;
+      }
+      return valid;
+    } else {
+      return db;
+    }
+  }
+
   public async remove(name: string) {
     let db;
     if (this.dbPool.has(name)) {
       db = this.dbPool.get(name);
-      if (db.connectionManager.validate instanceof Function) {
-        if (db.connectionManager.validate()) {
+      const valid = this.isValid(db);
+      if (typeof valid === 'boolean') {
+        if (valid) {
           await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
         }
       } else {
@@ -87,10 +102,12 @@ export default class DbSequelizeConnectionPool {
 
     if (this.dbPool.has(name)) {
       let db = this.dbPool.get(name);
-      if (db.connectionManager.validate instanceof Function) {
-        if (db.connectionManager.validate()) {
+      const valid = this.isValid(db);
+      if (typeof valid === 'boolean') {
+        if (valid) {
           return Promise.resolve(db);
         } else {
+          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
           await this.remove(name);
         }
       } else {
