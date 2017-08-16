@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
