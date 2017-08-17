@@ -17,7 +17,7 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
 
   return (req: express.Request, res: express.Response, next): void => {
     const originalQuery = req.method === 'POST' ? req.body : req.query;
-    const { transform, apply } = graphqlLodash(originalQuery.query);
+    const { transform, apply } = graphqlLodash(originalQuery.query, originalQuery.operationName);
 
     runHttpQuery([req, res], {
       method: req.method,
