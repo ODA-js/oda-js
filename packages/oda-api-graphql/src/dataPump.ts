@@ -1,4 +1,3 @@
-import { runQuery } from 'graphql-server-core';
 import { filter } from 'graphql-anywhere';
 import gql from 'graphql-tag';
 
@@ -67,7 +66,7 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
     dataPropName,
     queries,
     findVars: { [key: string]: (f: I) => any },
-  }, schema, context) {
+  }, schema, context, runQuery) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
     let variables;
@@ -113,7 +112,7 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
   }
 }
 
-export let restoreDataDirect = async (config, queries, data, schema, context) => {
+export let restoreDataDirect = async (config, queries, data, schema, context, runQuery) => {
   let importQueries = config.import.queries;
   let entitiesNames = Object.keys(importQueries);
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
@@ -133,7 +132,7 @@ export let restoreDataDirect = async (config, queries, data, schema, context) =>
         data: fields[entityName],
         ...uploader,
         queries: queries,
-      }, schema, context);
+      }, schema, context, runQuery);
     }
   }
 };
@@ -164,7 +163,7 @@ export let restoreData = async (config, queries, client, data) => {
   }
 };
 
-export let relateDataDirect = async (config, queries, data, schema, context) => {
+export let relateDataDirect = async (config, queries, data, schema, context, runQuery) => {
   let rel = config.import.relations;
   if (rel && typeof rel === 'object') {
 
@@ -316,7 +315,7 @@ export let relateData = async (config, queries, client, data) => {
   }
 };
 
-export let dumpDataDirect = async (config, queries, schema, context) => {
+export let dumpDataDirect = async (config, queries, schema, context, runQuery) => {
   let result = {};
   let exportQueries = config.export.queries;
   let entitiesNames = Object.keys(exportQueries);
