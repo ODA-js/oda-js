@@ -79,7 +79,7 @@ export default {
     queries: {
       #{entity.name}: {
         query: '#{entity.name}/list.graphql',
-        process: (f) => ({
+        /*process: (f) => ({
           #{entity.name}: f.viewer.#{entity.dcPlural} ? f.viewer.#{entity.dcPlural}.edges.map(e => ({
             ...e.node,
           <#- for(let fld of entity.relations){ #>
@@ -90,7 +90,7 @@ export default {
           <#-}#>
           <#-}#>
           })) : [],
-        }),
+        }),*/
       }
     }
   }

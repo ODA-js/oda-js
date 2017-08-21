@@ -27,8 +27,8 @@ mutation update#{entity.name}($#{entity.ownerFieldName}: update#{entity.name}Inp
 # List of #{entity.plural}
 query #{entity.plural} {
   viewer{
-    #{entity.dcPlural} {
-      edges{
+    #{entity.dcPlural} @_(get: "edges"){
+      edges @_(map: "node"){
         node{
           ...View#{entity.name}Full
         }
