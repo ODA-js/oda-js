@@ -17,7 +17,7 @@ export const defaultTypeMapper = {
   graphql: {
     Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
-    String: ['string', 'text'],
+    String: ['string', 'text', "*"],
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
