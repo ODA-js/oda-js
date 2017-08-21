@@ -17,7 +17,7 @@ export const defaultTypeMapper = {
   graphql: {
     Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
-    String: ['string', 'text', '*'],
+    String: ['string', 'text'],
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
@@ -57,7 +57,12 @@ export function prepareMapper(mapper: { [key: string]: string[] }) {
     return hash;
   }, {});
   return (type: string | void) => {
-    return (type && specificMapper[type.toUpperCase()]) || specificMapper['*'] || '';
+    let result = specificMapper['*']
+    if (type) {
+      result = specificMapper[type.toUpperCase()];
+      return result || type;
+    }
+    return result;
   }
 }
 
