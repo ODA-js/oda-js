@@ -321,18 +321,21 @@ export let dumpDataDirect = async (config, queries, schema, context, runQuery) =
   let entitiesNames = Object.keys(exportQueries);
   for (let i = 0, len = entitiesNames.length; i < len; i++) {
     let entityName = entitiesNames[i];
-    result[entityName] = await runQuery({
-      query: queries[exportQueries[entityName].query],
-      schema,
-      context,
-    })
-      .then(res => {
-        if (exportQueries[entityName].process) {
-          return exportQueries[entityName].process(res.data)[entityName]
-        } else {
-          return res.data;
-        }
-      });
+    result = {
+      ...result,
+      ...await runQuery({
+        query: queries[exportQueries[entityName].query],
+        schema,
+        context,
+      })
+        .then(res => {
+          if (exportQueries[entityName].process) {
+            return exportQueries[entityName].process(res.data)[entityName]
+          } else {
+            return res.data;
+          }
+        }),
+    }
   }
   return result;
 };
@@ -343,16 +346,19 @@ export let dumpData = async (config, queries, client) => {
   let entitiesNames = Object.keys(exportQueries);
   for (let i = 0, len = entitiesNames.length; i < len; i++) {
     let entityName = entitiesNames[i];
-    result[entityName] = await client.query({
-      query: queries[exportQueries[entityName].query],
-    })
-      .then(res => {
-        if (exportQueries[entityName].process) {
-          return exportQueries[entityName].process(res.data)[entityName]
-        } else {
-          return res.data;
-        }
-      });
+    result = {
+      ...result,
+      ...await client.query({
+        query: queries[exportQueries[entityName].query],
+      })
+        .then(res => {
+          if (exportQueries[entityName].process) {
+            return exportQueries[entityName].process(res.data)[entityName]
+          } else {
+            return res.data;
+          }
+        })
+    }
   }
   return result;
 };

@@ -26,12 +26,10 @@ mutation update#{entity.name}($#{entity.ownerFieldName}: update#{entity.name}Inp
 <# chunkStart(`../../../queries/${entity.name}/list`); #>
 # List of #{entity.plural}
 query #{entity.plural} {
-  viewer{
-    #{entity.dcPlural} @_(get: "edges"){
-      edges @_(map: "node"){
-        node{
-          ...View#{entity.name}Full
-        }
+  #{entity.name}: #{entity.dcPlural} @_(get: "edges"){
+    edges @_(map: "node"){
+      node{
+        ...View#{entity.name}Full
       }
     }
   }
@@ -72,17 +70,17 @@ fragment View#{entity.name}Full on #{entity.name} {
   #{fld.name}
   <#-}#>
   <#- for(let fld of entity.relations){ #>
-  #{fld.field} {
-    <#-if(fld.single){#>
+  #{fld.field} <#-if(fld.single){#>{
     ...Embed#{fld.ref.entity}WithId
-    <#-} else {#>
-    edges {
+  }
+<#-} else {#>@_(get: "edges"){
+    edges @_(map: "node"){
       node {
         ...Embed#{fld.ref.entity}WithId
       }
     }
-    <#-}#>
   }
+    <#-}#>
   <#-}#>
 }
 
