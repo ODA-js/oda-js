@@ -327,7 +327,13 @@ export let dumpDataDirect = async (config, queries, schema, context) => {
       schema,
       context,
     })
-      .then(res => exportQueries[entityName].process(res.data)[entityName]);
+      .then(res => {
+        if (exportQueries[entityName].process) {
+          return exportQueries[entityName].process(res.data)[entityName]
+        } else {
+          return res.data;
+        }
+      });
   }
   return result;
 };
@@ -341,7 +347,13 @@ export let dumpData = async (config, queries, client) => {
     result[entityName] = await client.query({
       query: queries[exportQueries[entityName].query],
     })
-      .then(res => exportQueries[entityName].process(res.data)[entityName]);
+      .then(res => {
+        if (exportQueries[entityName].process) {
+          return exportQueries[entityName].process(res.data)[entityName]
+        } else {
+          return res.data;
+        }
+      });
   }
   return result;
 };
