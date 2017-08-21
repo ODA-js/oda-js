@@ -1,12 +1,12 @@
 import { Entity, HasMany, BelongsToMany, ModelPackage } from 'oda-model';
-import { mapToGraphqlTypes, printRequired, printArguments } from '../../utils';
+import { printRequired, printArguments } from '../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/connections/types.graphql.njs';
 import { persistentRelations, getFieldsForAcl } from '../../queries';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutput {
@@ -24,7 +24,7 @@ export interface MapperOutput {
   }[];
 }
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   return {
     name: entity.name,
     plural: entity.plural,
@@ -35,13 +35,13 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         let relFields = [];
         if (f.relation.fields && f.relation.fields.length > 0) {
           f.relation.fields.forEach(field => {
-            let argsString = printArguments(field);
+            let argsString = printArguments(field, typeMapper.graphql);
             relFields.push({
               name: field.name,
               description: field.description ? field.description.split('\n').map(d => {
                 return (d.trim().match(/#/)) ? d : `# ${d}`;
               }).join('\n') : field.description,
-              type: `${mapToGraphqlTypes(field.type)}${printRequired(field)}`,
+              type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
               argsString: argsString ? `(${argsString})` : '',
             });
           });

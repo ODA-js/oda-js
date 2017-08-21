@@ -26,11 +26,11 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       /// TODO: переделать под sequilize
       // init once
       if (this.user) {
-        // this.schema.pre('save', this.logUser());
+        this.schema.hook('beforeSave', this.logUser());
       }
       /// TODO: переделать под sequilize
       if (this._viewer) {
-        // this.schema.pre('save', this.initOwner());
+        this.schema.hook('beforeSave', this.initOwner());
       }
       this.model = this.schema(this.sequelize, Sequelize);
     } else {
@@ -155,7 +155,8 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
   /// TODO: Переделать под sequelize
   protected logUser() {
     let _user = () => this.user;
-    return function (next) {
+    return function (object, options) {
+      debugger;
       let user = _user();
       if (this.isNewRecord) {
         this.set('createdAt', new Date());
@@ -164,7 +165,6 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
         this.set('updatedAt', new Date());
         this.set('updatedBy', fromGlobalId(user.id).id);
       }
-      next();
     };
   }
 

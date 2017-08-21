@@ -3,8 +3,8 @@ import { Factory } from 'fte.js';
 
 export const template = 'model/packages.registerConnectors.ts.njs';
 
-export function generate(te: Factory, pack: MetaModel) {
-  return te.run(mapper(pack), template);
+export function generate(te: Factory, pack: MetaModel, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(pack, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -18,7 +18,7 @@ import {
   getPackages,
 } from '../queries';
 
-export function mapper(model: MetaModel): MapperOutupt {
+export function mapper(model: MetaModel, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   return {
     packageList: getPackages(model)
       .filter(p => !p.abstract)

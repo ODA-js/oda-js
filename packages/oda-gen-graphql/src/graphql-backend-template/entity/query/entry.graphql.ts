@@ -1,12 +1,11 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { mapToGraphqlTypes } from '../../utils';
 import * as inflect from 'inflected';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/query/entry.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutput {
@@ -25,7 +24,7 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   let ids = getFields(entity).filter(idField);
 
   let unique = [
@@ -37,7 +36,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       .filter(identityFields)]
     .map(f => ({
       name: f.name,
-      type: mapToGraphqlTypes(f.type),
+      type: typeMapper.graphql(f.type),
     }))
     .map(i => `${i.name}: ${i.type}`).join(', ');
 

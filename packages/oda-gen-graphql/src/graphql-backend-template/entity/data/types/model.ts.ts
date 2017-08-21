@@ -1,11 +1,10 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { mapToTSTypes } from '../../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/data/types/model.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage) {
-  return te.run(mapper(entity, pack), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -26,7 +25,8 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+  const mapToTSTypes = typeMapper.typescript;
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let ids = getFields(entity).filter(idField);
 

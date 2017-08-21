@@ -1,12 +1,12 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { capitalize, decapitalize, mapToTSTypes } from '../../../utils';
+import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
 import { persistentRelations, getFieldsForAcl } from '../../../queries';
 
 export const template = 'entity/connections/mutations/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -28,7 +28,7 @@ export interface MapperOutupt {
 // для каждой операции свои параметры с типами должны быть.
 // специальный маппер типов для ts где ID === string
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -60,7 +60,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
               ref.fields.push(field.name);
               addArgs.push({
                 name: field.name,
-                type: mapToTSTypes(field.type),
+                type: typeMapper.typescript(field.type),
               });
             });
           }

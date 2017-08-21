@@ -1,22 +1,16 @@
 import { Entity, ModelPackage } from 'oda-model';
-import { mapToMongooseTypes, mapToSequelizeTypes } from '../../../utils';
 import { Factory } from 'fte.js';
 import { utils } from 'oda-api-graphql';
 let get = utils.get;
-
-const typeMapper = {
-  mongoose: mapToMongooseTypes,
-  sequelize: mapToSequelizeTypes,
-};
 
 export const template = {
   mongoose: 'entity/data/mongoose/schema.ts.njs',
   sequelize: 'entity/data/sequelize/schema.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage) {
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
   let adapter = entity.getMetadata('storage.adapter', 'mongoose');
-  return te.run(mapper(entity, pack, adapter), template[adapter]);
+  return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 
 export interface MapperOutupt {
@@ -51,7 +45,7 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, adapter: string): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, adapter: string, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let ids = getFields(entity).filter(idField).filter(f => f.type !== 'ID');
   let useDefaultPK = ids.length === 0;
 
@@ -66,7 +60,7 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string): Map
       ...ids.map(f => ({
         name: (f.name === 'id' && adapter === 'mongoose') ? '_id' : f.name,
         type: f.type,
-        required: false,
+        required: true,
         primaryKey: true,
       })),
       ...getFields(entity)

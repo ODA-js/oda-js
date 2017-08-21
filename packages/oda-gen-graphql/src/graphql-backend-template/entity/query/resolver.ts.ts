@@ -2,12 +2,12 @@ import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import * as inflect from 'inflected';
 
 import { Factory } from 'fte.js';
-import { capitalize, mapToTSTypes, decapitalize, mapToGraphqlTypes } from '../../utils';
+import { capitalize, decapitalize } from '../../utils';
 
 export const template = 'entity/query/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -61,9 +61,10 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
+  const mapToTSTypes = typeMapper.typescript;
 
   return {
     name: entity.name,
@@ -96,7 +97,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
             name: f.name,
             uName: capitalize(f.name),
             type: mapToTSTypes(f.type),
-            gqlType: mapToGraphqlTypes(f.type),
+            gqlType: typeMapper.graphql(f.type),
           })).sort((a, b) => {
             if (a.name > b.name) return 1
             else if (a.name < b.name) return -1;

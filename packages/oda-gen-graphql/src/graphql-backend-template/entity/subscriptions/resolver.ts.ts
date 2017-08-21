@@ -1,11 +1,11 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
-import { capitalize, decapitalize, mapToTSTypes, mapToGraphqlTypes, printRequired } from '../../utils';
+import { capitalize, decapitalize, printRequired } from '../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/subscriptions/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -40,7 +40,7 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -65,7 +65,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           f.relation.fields.forEach(field => {
             relFields.push({
               name: field.name,
-              type: `${mapToGraphqlTypes(field.type)}${printRequired(field)}`,
+              type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
             });
           });
         }

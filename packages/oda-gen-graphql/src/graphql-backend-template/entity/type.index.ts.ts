@@ -4,8 +4,8 @@ import * as schema from './index';
 
 export const template = 'entity/type.index.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl) {
-  return te.run(mapper(entity, pack, role, allowAcl), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -25,21 +25,21 @@ export interface MapperOutupt {
   };
 }
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   return {
     name: entity.name,
     partials: {
-      'enums': schema.type.enums.mapper(entity, pack, role, allowAcl),
-      'type': schema.type.entry.mapper(entity, pack, role, allowAcl),
-      'connections.types': schema.connections.types.mapper(entity, pack, role, allowAcl),
-      'connections.mutation': schema.connections.mutations.types.mapper(entity, pack, role, allowAcl),
-      'connections.mutation.entry': schema.connections.mutations.entry.mapper(entity, pack, role, allowAcl),
-      'mutation.types': schema.mutations.types.mapper(entity, pack, role, allowAcl),
-      'mutation.entry': schema.mutations.entry.mapper(entity, pack, role, allowAcl),
-      'subscription.types': schema.subscriptions.types.mapper(entity, pack, role, allowAcl),
-      'subscription.entry': schema.subscriptions.entry.mapper(entity, pack, role, allowAcl),
-      'query.entry': schema.query.entry.mapper(entity, pack, role, allowAcl),
-      'viewer.entry': schema.viewer.entry.mapper(entity, pack, role, allowAcl),
+      'enums': schema.type.enums.mapper(entity, pack, role, allowAcl, typeMapper),
+      'type': schema.type.entry.mapper(entity, pack, role, allowAcl, typeMapper),
+      'connections.types': schema.connections.types.mapper(entity, pack, role, allowAcl, typeMapper),
+      'connections.mutation': schema.connections.mutations.types.mapper(entity, pack, role, allowAcl, typeMapper),
+      'connections.mutation.entry': schema.connections.mutations.entry.mapper(entity, pack, role, allowAcl, typeMapper),
+      'mutation.types': schema.mutations.types.mapper(entity, pack, role, allowAcl, typeMapper),
+      'mutation.entry': schema.mutations.entry.mapper(entity, pack, role, allowAcl, typeMapper),
+      'subscription.types': schema.subscriptions.types.mapper(entity, pack, role, allowAcl, typeMapper),
+      'subscription.entry': schema.subscriptions.entry.mapper(entity, pack, role, allowAcl, typeMapper),
+      'query.entry': schema.query.entry.mapper(entity, pack, role, allowAcl, typeMapper),
+      'viewer.entry': schema.viewer.entry.mapper(entity, pack, role, allowAcl, typeMapper),
     },
   };
 }

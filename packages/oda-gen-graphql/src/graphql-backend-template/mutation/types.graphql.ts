@@ -1,11 +1,11 @@
 import { Factory } from 'fte.js';
-import { mapToGraphqlTypes, printRequired } from '../utils';
+import { printRequired } from '../utils';
 import { ModelPackage } from 'oda-model';
 
 export const template = 'mutation/types.graphql.njs';
 
-export function generate(te: Factory, mutation: MutationInput, pack: ModelPackage) {
-  return te.run(mapper(mutation, pack), template);
+export function generate(te: Factory, mutation: MutationInput, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(mutation, pack, typeMapper), template);
 }
 
 export interface MutationInput {
@@ -35,16 +35,16 @@ export interface MapperOutput {
   }[];
 }
 
-export function mapper(mutation: MutationInput, pack: ModelPackage): MapperOutput {
+export function mapper(mutation: MutationInput, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   return {
     name: mutation.name,
     args: mutation.args.map(arg => ({
       name: arg.name,
-      type: `${mapToGraphqlTypes(arg.type)}${printRequired(arg)}`,
+      type: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
     })),
     payload: mutation.payload.map(arg => ({
       name: arg.name,
-      type: `${mapToGraphqlTypes(arg.type)}${printRequired(arg)}`,
+      type: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
     })),
   };
 }

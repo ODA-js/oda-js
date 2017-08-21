@@ -4,8 +4,8 @@ import { capitalize } from '../utils';
 
 export const template = 'package/package.graphql.schema.ts.njs';
 
-export function generate(te: Factory, pack: ModelPackage) {
-  return te.run(mapper(pack), template);
+export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(pack, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -17,7 +17,7 @@ import {
   getEntities,
 } from '../queries';
 
-export function mapper(pack: ModelPackage): MapperOutupt {
+export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   return {
     name: capitalize(pack.name),
     entities: getEntities(pack)

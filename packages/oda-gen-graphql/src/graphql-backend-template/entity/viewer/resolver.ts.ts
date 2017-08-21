@@ -2,12 +2,11 @@ import { Entity, ModelPackage } from 'oda-model';
 import * as inflect from 'inflected';
 
 import { Factory } from 'fte.js';
-import { mapToTSTypes } from '../../utils';
 
 export const template = 'entity/viewer/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl) {
-  return te.run(mapper(entity, pack, role, allowAcl), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -26,9 +25,10 @@ import {
   getFields,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
   let ids = getFields(entity).filter(idField);
+  const mapToTSTypes = typeMapper.typescript;
 
   return {
     name: entity.name,

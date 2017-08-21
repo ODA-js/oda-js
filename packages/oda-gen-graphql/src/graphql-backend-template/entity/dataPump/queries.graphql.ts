@@ -1,11 +1,11 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
-import { capitalize, decapitalize, mapToTSTypes, mapToGraphqlTypes } from '../../utils';
+import { capitalize, decapitalize } from '../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/dataPump/queries.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -49,7 +49,7 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -63,7 +63,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .map(fn => entity.fields.get(fn))
         .map(f => ({
           name: f.name,
-          type: mapToGraphqlTypes(f.type),
+          type: typeMapper.graphql(f.type),
           uName: capitalize(f.name),
         })).sort((a, b) => {
           if (a.name > b.name) return 1
@@ -85,7 +85,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .filter(oneUniqueInIndex(entity))]
       .map(f => ({
         name: f.name,
-        type: mapToGraphqlTypes(f.type),
+        type: typeMapper.graphql(f.type),
         cName: capitalize(f.name),
       })),
     fields: [

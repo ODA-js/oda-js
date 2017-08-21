@@ -1,7 +1,8 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
-import { capitalize, decapitalize, mapToTSTypes } from '../../../utils';
+import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
 import { utils } from 'oda-api-graphql';
+
 let get = utils.get;
 
 export const template = {
@@ -9,9 +10,9 @@ export const template = {
   sequelize: 'entity/data/sequelize/connector.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage) {
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
   let adapter = entity.getMetadata('storage.adapter', 'mongoose');
-  return te.run(mapper(entity, pack, adapter), template[adapter]);
+  return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 
 export interface MapperOutupt {
@@ -80,7 +81,8 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, adapter: string): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, adapter: string, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+  const mapToTSTypes = typeMapper.typescript;
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   const persistentRelation = persistentRelations(pack);
   let needOwner = true;

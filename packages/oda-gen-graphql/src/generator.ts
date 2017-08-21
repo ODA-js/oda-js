@@ -7,7 +7,8 @@ import AclDefault from './acl';
 
 import { utils } from 'oda-api-graphql';
 
-let get = utils.get;
+const { get, deepMerge } = utils;
+const { defaultTypeMapper, prepareMapper } = template.utils;
 
 export type GeneratorConfigPackage = {
   mutation?: boolean | string[] | {
@@ -89,6 +90,13 @@ export type Generator = {
   templateRoot?: string;
   config: GeneratorConfig;
   acl?: { [key: string]: number };
+  context?: {
+    typeMapper?: {
+      [key: string]: {
+        [key: string]: string[]
+      }
+    }
+  };
 };
 
 const def = {
@@ -271,7 +279,7 @@ export const expandConfig = (config: any, packages: string[]) => {
   return packConfig;
 };
 
-function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow,
+function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow, typeMapper: { [key: string]: (string) => string },
   collection, cfg, type, route: string, ext: string, fileName?: string) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
@@ -284,7 +292,7 @@ function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allo
 
     let parts = route.split('.');
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow);
+      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow, typeMapper);
       if (typeof source === 'string') {
         let parts = route.split('.');
         if (!fileName) {
@@ -308,7 +316,7 @@ function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allo
   }
 }
 
-function $generateData(pkg, raw: Factory, rootDir: string,
+function $generateData(pkg, raw: Factory, rootDir: string, typeMapper: { [key: string]: (string) => string },
   collection, cfg, type, route: string, ext: string, fileName?: string) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
@@ -320,7 +328,7 @@ function $generateData(pkg, raw: Factory, rootDir: string,
     }
 
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg);
+      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, typeMapper);
       if (typeof source === 'string') {
         let parts = route.split('.').slice(1); // it is always `data`, at least here
         if (!fileName) {
@@ -344,9 +352,9 @@ function $generateData(pkg, raw: Factory, rootDir: string,
   }
 }
 
-function $generateDataPkg(raw: Factory, rootDir: string,
-  pkg: { name: string }, route: string, fileName?: string) {
-  let source = get(template, `packages.${route}`).generate(raw, pkg);
+function $generateDataPkg(raw: Factory, rootDir: string, pkg: { name: string }, typeMapper: { [key: string]: (string) => string },
+  route: string, fileName?: string) {
+  let source = get(template, `packages.${route}`).generate(raw, pkg, typeMapper);
   if (typeof source === 'string') {
     let fn = path.join(rootDir, 'data', fileName);
     fs.ensureFileSync(fn);
@@ -361,8 +369,9 @@ function $generateDataPkg(raw: Factory, rootDir: string,
   }
 }
 
-function $generatePkg(raw: Factory, rootDir: string, pkg: { name: string }, type: string, route: string, fileName?: string) {
-  let source = get(template, `packages.${route}`).generate(raw, pkg);
+function $generatePkg(raw: Factory, rootDir: string, typeMapper: { [key: string]: (string) => string }, pkg: { name: string },
+  type: string, route: string, fileName?: string) {
+  let source = get(template, `packages.${route}`).generate(raw, pkg, typeMapper);
   if (typeof source === 'string') {
     let fn = type ? path.join(rootDir, pkg.name, type, fileName) : path.join(rootDir, pkg.name, fileName);
     fs.ensureFileSync(fn);
@@ -384,8 +393,8 @@ function $generatePkg(raw: Factory, rootDir: string, pkg: { name: string }, type
 //   fs.writeFileSync(fn, source);
 // }
 
-function $generateModel(raw, rootDir, model, route: string, fileName: string) {
-  let source = get(template, `model.${route}`).generate(raw, model);
+function $generateModel(raw, rootDir, model, typeMapper: { [key: string]: (string) => string }, route: string, fileName: string) {
+  let source = get(template, `model.${route}`).generate(raw, model, typeMapper);
   let fn = path.join(rootDir, fileName);
 
   if (typeof source === 'string') {
@@ -418,7 +427,16 @@ export default (args: Generator) => {
       packages: true,
     },
     acl,
+    context,
   } = args;
+
+  const actualTypeMapper = deepMerge(defaultTypeMapper, (context || {}).typeMapper || {});
+
+  const typeMapper: { [key: string]: (string) => string } = Object.keys(actualTypeMapper).reduce((hash, type) => {
+    hash[type] = prepareMapper(actualTypeMapper[type])
+    return hash;
+  }, {});
+
   // передавать в методы кодогенерации.
   let secureAcl = new AclDefault(acl)
   const aclAllow = secureAcl.allow.bind(secureAcl);
@@ -510,10 +528,10 @@ export default (args: Generator) => {
     let dataPackage = modelStore.packages.get('system');
     let curConfig = config.packages['system'];
     let generateData = $generateData.bind(null,
-      dataPackage, raw, rootDir,
+      dataPackage, raw, rootDir, typeMapper,
       Array.from(dataPackage.entities.values()), curConfig, 'entity');
 
-    let generatePkg = $generateDataPkg.bind(null, raw, rootDir, dataPackage);
+    let generatePkg = $generateDataPkg.bind(null, raw, rootDir, dataPackage, typeMapper);
 
     generateData('data.adapter.connector', 'ts');
     generateData('data.adapter.schema', 'ts');
@@ -529,14 +547,14 @@ export default (args: Generator) => {
   }
 
   if (config.ts) {
-    $generateModel(raw, rootDir, { packages }, 'registerConnectors', 'registerConnectors.ts');
+    $generateModel(raw, rootDir, { packages }, typeMapper, 'registerConnectors', 'registerConnectors.ts');
   }
 
   // generate per package
   for (let i = 0, packLen = packageList.length; i < packLen; i++) {
     let pkg = packageList[i];
-    let generate = $generateGraphql.bind(null, pkg, raw, rootDir, pkg.name/*role is package name*/, aclAllow);
-    let generatePkg = $generatePkg.bind(null, raw, rootDir);
+    let generate = $generateGraphql.bind(null, pkg, raw, rootDir, pkg.name/*role is package name*/, aclAllow, typeMapper);
+    let generatePkg = $generatePkg.bind(null, raw, rootDir, typeMapper);
     const curConfig = config.packages[pkg.name];
     let missing = pkg.ensureAll();
     if (missing.length) {

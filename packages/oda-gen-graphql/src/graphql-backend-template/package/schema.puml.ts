@@ -3,8 +3,8 @@ import { Factory } from 'fte.js';
 
 export const template = 'package/schema.puml.njs';
 
-export function generate(te: Factory, pack: ModelPackage) {
-  return te.run(mapper(pack), template);
+export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(pack, typeMapper), template);
 }
 
 export interface RelationsList {
@@ -42,7 +42,7 @@ import {
   persistentFields,
 } from '../queries';
 
-export function mapper(pack: ModelPackage): MapperOutupt {
+export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
 
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {

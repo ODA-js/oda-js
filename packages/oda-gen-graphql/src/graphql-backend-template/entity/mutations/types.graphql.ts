@@ -1,12 +1,12 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
-import { mapToGraphqlTypes, printRequired, decapitalize, capitalize } from './../../utils';
+import { printRequired, decapitalize, capitalize } from './../../utils';
 
 import { Factory } from 'fte.js';
 
 export const template = 'entity/mutations/types.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow) {
-  return te.run(mapper(entity, pack, role, aclAllow), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
 export interface MapperOutput {
@@ -46,7 +46,7 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow): MapperOutput {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
 
@@ -78,7 +78,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .filter(mutableFields)]
       .map(f => ({
         name: f.name,
-        type: `${mapToGraphqlTypes(f.type)}${printRequired(f)}`,
+        type: `${typeMapper.graphql(f.type)}${printRequired(f)}`,
       })),
     update: [
       ...ids.map(f => ({
@@ -90,7 +90,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .filter(mutableFields)]
       .map(f => ({
         name: f.name,
-        type: `${mapToGraphqlTypes(f.type)}`,
+        type: `${typeMapper.graphql(f.type)}`,
       })),
     unique: [
       ...[
@@ -102,7 +102,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           .filter(identityFields)]
         .map(f => ({
           name: f.name,
-          type: mapToGraphqlTypes(f.type),
+          type: typeMapper.graphql(f.type),
         }))],
   };
 }

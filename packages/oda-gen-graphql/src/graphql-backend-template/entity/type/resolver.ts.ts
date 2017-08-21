@@ -4,8 +4,8 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/type/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl) {
-  return te.run(mapper(entity, pack, role, allowAcl), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }) {
+  return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
 
 export interface MapperOutupt {
@@ -46,7 +46,7 @@ import {
   derivedFields,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
   return {
     name: entity.name,
