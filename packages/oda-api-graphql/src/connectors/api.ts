@@ -32,7 +32,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
 
   public toJSON(obj): Payload {
     return Object.keys(obj).reduce((ret, item) => {
-      if (obj[item].toJSON) {
+      if (obj[item] !== null && obj[item].toJSON) {
         ret[item] = obj[item].toJSON();
       } else {
         ret[item] = obj[item];
