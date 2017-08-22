@@ -33,10 +33,47 @@ export default {
       #{entity.name}: {
         filter:`
           <#- for(let fld of entity.fields){ #>
-            #{fld.name}
-          <#-}#>
+          #{fld.name}
+          <#-}#>`,
+        uploader: {
+          findQuery: {
+    <#- for (let f of entity.unique) {#>
+            #{f.name}: '#{entity.name}/findBy#{f.cName}.graphql',
+    <#-}#>
+    <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
+    <#- for (let f of entity.complexUnique) {
+      let findBy = f.fields.map(f=>f.uName).join('And');
+    #>
+            #{f.name}: '#{entity.name}/findBy#{findBy}.graphql',
+    <#-}#>
+    <#-}#>
+          },
+          // createQuery: '#{entity.name}/create.graphql',
+          // updateQuery: '#{entity.name}/update.graphql',
+          // dataPropName: '#{entity.ownerFieldName}',
+          findVars: {
+    <#- for (let f of entity.unique) {
+      #>
+            #{f.name} : (f) => f.hasOwnProperty('#{f.name}') ? { #{f.name}:<#if(f.type === 'ID'){#> getValue(f.#{f.name}) <#} else {#> f.#{f.name} <#}#>} : null,
+    <#-}#>
+    <#-if(entity.complexUnique && entity.complexUnique.length > 0){#>
+    <#- for (let f of entity.complexUnique) {
+        let resultArgs = `{ ${f.fields.map(f=>`${f.name}: f.${f.name}`).join(', ')} }`;
+        let condArgs = `( ${f.fields.map(f=>`f.hasOwnProperty('${f.name}')`).join(' && ')} )`;
+    #>
+            #{f.name} : (f) => #{condArgs} ? #{resultArgs} : null,
+    <#-}#>
+    <#-}#>
+          }
+        }
+      }
+    },
+    relate : {
+      #{entity.name}: {
+        filter:`
+          id
           <#- for(let fld of entity.relations){ #>
-            #{fld.field}
+          #{fld.field}
           <#-}#>`,
         uploader: {
           findQuery: {
