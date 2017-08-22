@@ -15,21 +15,21 @@ export function printRequired(field: { required: boolean }): string {
 // * means default type
 export const defaultTypeMapper = {
   graphql: {
-    Int: ['int', 'integer'],
+    Int: ['int', 'integer', 'identity'],
     Float: ['number', 'float', 'double'],
-    String: ['string', 'text', "*"],
+    String: ['string', 'text', "*", 'uuid'],
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
   },
   mongoose: {
-    Number: ['int', 'integer', 'number', 'float', 'double'],
-    String: ['string', 'text', '*'],
+    Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
+    String: ['string', 'text', '*', 'uuid'],
     'mongoose.Schema.Types.Mixed': ['object', 'json'],
     Boolean: ['bool', 'boolean'],
     Date: ['date'],
-    'mongoose.Schema.Types.ObjectId': ['id', 'identity'],
+    'mongoose.Schema.Types.ObjectId': ['id'],
   },
   sequelize: {
     'DataTypes.INTEGER': ['int', 'integer'],
@@ -37,11 +37,13 @@ export const defaultTypeMapper = {
     'DataTypes.STRING(1000)': ['string', 'text', '*'],
     'DataTypes.BOOLEAN': ['bool', 'boolean'],
     'DataTypes.DATE': ['date'],
-    'mongoose.Schema.Types.ObjectId': ['id', 'identity'],
+    'DataTypes.INTEGER, autoIncrement: true': ['identity'],
+    'DataTypes.UUID, defaultValue: Sequelize.UUIDV4': ['uuid'],
+    'DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId()': ['id'],
   },
   typescript: {
-    number: ['int', 'integer', 'number', 'float', 'double'],
-    string: ['string', 'text', 'id', 'identity', '*'],
+    number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
+    string: ['string', 'text', 'id', '*', 'uuid'],
     'mongoose.Schema.Types.Mixed': ['object', 'json'],
     boolean: ['bool', 'boolean'],
     Date: ['date'],
