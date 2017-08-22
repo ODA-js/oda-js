@@ -15,7 +15,7 @@ export function printRequired(field: { required: boolean }): string {
 // * means default type
 export const defaultTypeMapper = {
   graphql: {
-    Int: ['int', 'integer', 'identity'],
+    Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
     String: ['string', 'text', "*", 'uuid'],
     JSON: ['object', 'json'],
@@ -44,7 +44,6 @@ export const defaultTypeMapper = {
   typescript: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
     string: ['string', 'text', 'id', '*', 'uuid'],
-    'mongoose.Schema.Types.Mixed': ['object', 'json'],
     boolean: ['bool', 'boolean'],
     Date: ['date'],
     object: ['json', 'object'],
