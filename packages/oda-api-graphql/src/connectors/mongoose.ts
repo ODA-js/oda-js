@@ -48,7 +48,7 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
   };
 
   public toJSON(obj): Payload {
-    return super.toJSON(obj.toObject);
+    return super.toJSON((obj && obj.toObject) ? obj.toObject() : obj);
   }
 
   public ensureId(obj) {
