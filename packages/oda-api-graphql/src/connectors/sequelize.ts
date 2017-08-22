@@ -23,18 +23,18 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
   protected initSchema(name, schema) {
     this.schema = schema;
     if (!this.sequelize.isDefined(name)) {
-      /// TODO: переделать под sequilize
-      // init once
-      if (this.user) {
-        this.schema.hook('beforeSave', this.logUser());
-      }
-      /// TODO: переделать под sequilize
-      if (this._viewer) {
-        this.schema.hook('beforeSave', this.initOwner());
-      }
       this.model = this.schema(this.sequelize, Sequelize);
     } else {
       this.model = this.sequelize.model(name);
+    }
+    /// TODO: переделать под sequilize
+    // init once
+    if (this.user) {
+      this.model.hook('beforeSave', this.logUser());
+    }
+    /// TODO: переделать под sequilize
+    if (this._viewer) {
+      this.model.hook('beforeSave', this.initOwner());
     }
   }
 
