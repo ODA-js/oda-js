@@ -31,12 +31,11 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   }
 
   public toJSON(obj): Payload {
-    let res = obj.toObject();
-    return Object.keys(res).reduce((ret, item) => {
-      if (res[item].toJSON) {
-        ret[item] = res[item].toJSON();
+    return Object.keys(obj).reduce((ret, item) => {
+      if (obj[item].toJSON) {
+        ret[item] = obj[item].toJSON();
       } else {
-        ret[item] = res[item];
+        ret[item] = obj[item];
       }
       return ret;
     }, {}) as Payload;
