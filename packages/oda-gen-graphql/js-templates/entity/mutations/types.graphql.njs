@@ -39,6 +39,7 @@ input update#{entity.name}Input {
 <#- for (let rel of entity.relations.filter(f=>f.persistent)){#>
   #{rel.field}: <#if(!rel.single){#>[<#}#>embed#{rel.ref.entity}Input<#if(!rel.single){#>]<#}#>
   #{rel.field}Unlink: <#if(!rel.single){#>[<#}#>embed#{rel.ref.entity}Input<#if(!rel.single){#>]<#}#>
+  #{rel.field}Create: <#if(!rel.single){#>[<#}#>create#{rel.ref.entity}Input<#if(!rel.single){#>]<#}#>
 <#-}#>
 }
 
