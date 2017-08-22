@@ -53,10 +53,10 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
 
   public ensureId(obj) {
     if (obj) {
-      return {
+      return this.toJSON({
         ...obj,
         _id: obj.id,
-      } as Payload;
+      } as Payload);
     } else {
       return obj as Payload;
     }

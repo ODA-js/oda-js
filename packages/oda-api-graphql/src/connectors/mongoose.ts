@@ -49,10 +49,10 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
 
   public ensureId(obj) {
     if (obj) {
-      return {
+      return this.toJSON({
         ...obj,
         id: obj._id,
-      } as Payload;
+      } as Payload);
     } else {
       return obj as Payload;
     }
@@ -135,7 +135,7 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
         if (this.canView(item)) {
           if (hasExtraCondition) {
-            if (await checkExtraCriteria(item)) {
+            if (await checkExtraCriteria(this.toJSON(item))) {
               result.push(item);
             }
           } else {

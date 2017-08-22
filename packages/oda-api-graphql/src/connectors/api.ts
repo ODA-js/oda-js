@@ -30,6 +30,18 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     this.storeToCache = this.updateLoaders('All Fields');
   }
 
+  public toJSON(obj): Payload {
+    let res = obj.toObject();
+    return Object.keys(res).reduce((ret, item) => {
+      if (res[item].toJSON) {
+        ret[item] = res[item].toJSON();
+      } else {
+        ret[item] = res[item];
+      }
+      return ret;
+    }, {}) as Payload;
+  }
+
   public canView(obj: Payload) {
     return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj) as Payload;
   }
