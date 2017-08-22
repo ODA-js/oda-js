@@ -8,8 +8,8 @@ export const template = {
   sequelize: 'entity/data/sequelize/schema.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
-  let adapter = entity.getMetadata('storage.adapter', 'mongoose');
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
+  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
   return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 
@@ -59,7 +59,7 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
     fields: [
       ...ids.map(f => ({
         name: (f.name === 'id' && adapter === 'mongoose') ? '_id' : f.name,
-        type: f.type,
+        type: adapter === 'sequelize' ? `${f.type}_pk` : f.type,
         required: true,
         primaryKey: true,
       })),
@@ -81,7 +81,7 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
           name: f.name,
           type: typeMapper[adapter](retKeyType),
           indexed: true,
-          required: f.required,
+          required: !!f.required,
         };
       }),
     indexes: indexes(entity).map(i => adapter === 'mongoose' ? ({

@@ -10,8 +10,8 @@ export const template = {
   sequelize: 'entity/data/sequelize/connector.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
-  let adapter = entity.getMetadata('storage.adapter', 'mongoose');
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
+  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
   return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 

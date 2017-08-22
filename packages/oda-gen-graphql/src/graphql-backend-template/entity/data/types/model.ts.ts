@@ -3,7 +3,7 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/data/types/model.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
   return te.run(mapper(entity, pack, typeMapper), template);
 }
 

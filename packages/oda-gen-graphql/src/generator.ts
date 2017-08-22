@@ -95,7 +95,8 @@ export type Generator = {
       [key: string]: {
         [key: string]: string[]
       }
-    }
+    };
+    defaultAdapter?: string;
   };
 };
 
@@ -316,7 +317,7 @@ function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allo
   }
 }
 
-function $generateData(pkg, raw: Factory, rootDir: string, typeMapper: { [key: string]: (string) => string },
+function $generateData(pkg, raw: Factory, rootDir: string, typeMapper: { [key: string]: (string) => string }, defaultAdapter: string,
   collection, cfg, type, route: string, ext: string, fileName?: string) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
@@ -328,7 +329,7 @@ function $generateData(pkg, raw: Factory, rootDir: string, typeMapper: { [key: s
     }
 
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, typeMapper);
+      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, typeMapper, defaultAdapter);
       if (typeof source === 'string') {
         let parts = route.split('.').slice(1); // it is always `data`, at least here
         if (!fileName) {
@@ -427,10 +428,11 @@ export default (args: Generator) => {
       packages: true,
     },
     acl,
-    context,
+    context = {} as any,
   } = args;
 
-  const actualTypeMapper = deepMerge(defaultTypeMapper, (context || {}).typeMapper || {});
+  const actualTypeMapper = deepMerge(defaultTypeMapper, context.typeMapper || {});
+  const defaultAdapter = context.defaultAdapter;
 
   const typeMapper: { [key: string]: (string) => string } = Object.keys(actualTypeMapper).reduce((hash, type) => {
     hash[type] = prepareMapper(actualTypeMapper[type])
@@ -528,7 +530,7 @@ export default (args: Generator) => {
     let dataPackage = modelStore.packages.get('system');
     let curConfig = config.packages['system'];
     let generateData = $generateData.bind(null,
-      dataPackage, raw, rootDir, typeMapper,
+      dataPackage, raw, rootDir, typeMapper, defaultAdapter,
       Array.from(dataPackage.entities.values()), curConfig, 'entity');
 
     let generatePkg = $generateDataPkg.bind(null, raw, rootDir, dataPackage, typeMapper);

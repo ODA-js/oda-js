@@ -22,7 +22,7 @@ export default (sequelize, DataTypes: Sequelize.DataTypes) => {
   <#- entity.relations.forEach(rel=>{#>
     #{rel.name}: {
       type: #{rel.type},
-      allowNull: false,
+      allowNull: #{!rel.required},
     },
   <#-})#>
   }, {
