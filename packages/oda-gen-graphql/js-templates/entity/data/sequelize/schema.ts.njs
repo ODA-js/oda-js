@@ -1,12 +1,12 @@
 <#@ context 'entity' -#>
 import * as Sequelize from 'sequelize';
+import { IdGenerator } from 'oda-isomorfic';
 
 export default (sequelize, DataTypes: Sequelize.DataTypes) => {
   let $#{entity.name} = sequelize.define('#{entity.name}', {
 <#- if(entity.useDefaultPK){#>
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId(),
       primaryKey: true,
     },
 <#}#>
