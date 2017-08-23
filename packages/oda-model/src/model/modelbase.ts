@@ -52,6 +52,7 @@ export class ModelBase extends Metadata {
 
   public updateWith(obj: ModelBaseInput) {
     if (obj) {
+      super.updateWith(obj);
 
       const result: ModelBaseStorage = Object.assign({}, this.$obj);
 

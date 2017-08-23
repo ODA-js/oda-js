@@ -1,5 +1,7 @@
 import get from './../lib/json/get';
 import set from './../lib/json/set';
+import { MetadataInput } from './interfaces';
+import deepMerge from './../lib/json/deepMerge';
 
 export class Metadata {
 
@@ -36,6 +38,13 @@ export class Metadata {
       }
     }
   }
+
+  public updateWith(obj: MetadataInput) {
+    if (obj && obj.metadata) {
+      this.metadata = deepMerge(this.metadata || {}, obj.metadata);
+    }
+  }
+
   public toObject(): { [key: string]: any } {
     return {
       metadata: this.metadata,

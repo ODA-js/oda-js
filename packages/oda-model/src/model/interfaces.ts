@@ -110,8 +110,11 @@ export interface HasOneStorage extends RelationBaseStorage {
   hasOne_: string;
 }
 
-export interface ModelBaseInput {
+export interface MetadataInput {
   metadata?: { [key: string]: any };
+}
+
+export interface ModelBaseInput extends MetadataInput {
   name: string;
   title?: string;
   description?: string;
