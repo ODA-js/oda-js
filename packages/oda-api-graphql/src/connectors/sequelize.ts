@@ -24,17 +24,15 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
     this.schema = schema;
     if (!this.sequelize.isDefined(name)) {
       this.model = this.schema(this.sequelize, Sequelize);
+      // init once
+      if (this.user) {
+        this.model.hook('beforeSave', this.logUser());
+      }
+      if (this._viewer) {
+        this.model.hook('beforeSave', this.initOwner());
+      }
     } else {
       this.model = this.sequelize.model(name);
-    }
-    /// TODO: переделать под sequilize
-    // init once
-    if (this.user) {
-      this.model.hook('beforeSave', this.logUser());
-    }
-    /// TODO: переделать под sequilize
-    if (this._viewer) {
-      this.model.hook('beforeSave', this.initOwner());
     }
   }
 
@@ -152,34 +150,32 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
 
     return result;
   }
-  /// TODO: Переделать под sequelize
+
   protected logUser() {
     let _user = () => this.user;
     return function (object, options) {
-      debugger;
       let user = _user();
-      if (this.isNewRecord) {
-        this.set('createdAt', new Date());
-        this.set('createdBy', fromGlobalId(user.id).id);
+      if (object.isNewRecord) {
+        object.set('createdAt', new Date());
+        object.set('createdBy', fromGlobalId(user.id).id);
       } else {
-        this.set('updatedAt', new Date());
-        this.set('updatedBy', fromGlobalId(user.id).id);
+        object.set('updatedAt', new Date());
+        object.set('updatedBy', fromGlobalId(user.id).id);
       }
     };
   }
 
   protected initOwner() {
     let _owner = () => this._viewer;
-    return function (next) {
-      if (this.isNewRecord && !this.get('owner')) {
+    return function (object, options) {
+      if (object.isNewRecord && !object.get('owner')) {
         let owner = _owner();
         if (owner.owner) {
-          this.set('owner', owner.owner);
+          object.set('owner', owner.owner);
         } else {
-          this.set('owner', owner.id);
+          object.set('owner', owner.id);
         }
       }
-      next();
     };
   }
 

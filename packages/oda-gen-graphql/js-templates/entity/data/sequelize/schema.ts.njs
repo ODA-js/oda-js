@@ -27,10 +27,10 @@ export default (sequelize, DataTypes: Sequelize.DataTypes) => {
   <#-})#>
   }, {
       tableName: '#{entity.collectionName}',
-      timestamp: true,
-      createdAt: 'created',
-      updatedAt: 'edited',
-      underscored: true,
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false,
+      underscored: false,
       indexes: [
 <#-for(let i = 0, len = entity.indexes.length; i < len; i++){
     let index = entity.indexes[i];
