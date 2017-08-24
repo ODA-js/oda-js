@@ -32,6 +32,18 @@ export default class RegisterConnectors {
   protected owner;
   protected acls: acl.secureAny.ACLCRUD<(object) => object>;
   protected userGroup;
+  protected userGQL;
+  protected systemGQL;
+
+  public initGQL({
+      userGQL,
+      systemGQL
+    }:{
+      userGQL?,
+      systemGQL?,}){
+    this.userGQL = userGQL ? userGQL : this.userGQL;
+    this.systemGQL = systemGQL ? systemGQL : this.systemGQL;
+  }
 
   constructor({
     user,
@@ -40,6 +52,8 @@ export default class RegisterConnectors {
     sequelize,
     acls,
     userGroup,
+    userGQL,
+    systemGQL,
   }:
     {
       user?: any,
@@ -48,6 +62,8 @@ export default class RegisterConnectors {
       sequelize?: any,
       acls?: acl.secureAny.Acls<(object) => object>;
       userGroup?: string;
+      userGQL?,
+      systemGQL?,
     }) {
     this.user = user;
     this.owner = owner;
@@ -55,6 +71,7 @@ export default class RegisterConnectors {
     this.sequelize = sequelize;
     this.acls = { read: new acl.secureAny.Secure<(object) => object>({ acls }) };
     this.userGroup = userGroup;
+    this.initGQL({userGQL, systemGQL});
   }
 
   async syncDb(force: boolean = false) {

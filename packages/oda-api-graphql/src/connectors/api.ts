@@ -126,7 +126,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     };
   }
 
-  public async getCount(args) {
+  public async getCount(args): Promise<Number> {
     throw new Error('not implemented');
   }
 
