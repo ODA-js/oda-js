@@ -60,6 +60,9 @@ sumBy: Path
 join: String
 
 get: Path
+# push selected item donw to the specified path
+dive: Path
+# get all fields of specified path to current object
 assign: [Path!]
 mapValues: Path
 

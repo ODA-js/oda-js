@@ -32,6 +32,8 @@ import * as sumBy from 'lodash/sumBy.js';
 import * as join from 'lodash/join.js';
 
 import * as get from 'lodash/get.js';
+import * as set from 'lodash/set.js';
+import * as unset from 'lodash/unset.js';
 import * as assign from 'lodash/assign.js';
 import * as mapValues from 'lodash/mapValues.js';
 import * as at from 'lodash/at.js';
@@ -67,10 +69,10 @@ export function applyTransformations(object, args) {
     if (!type && (typeof object === 'object'))
       type = 'Object';
 
-    if (expectedType !== type)
+    if (expectedType !== '*' && expectedType !== type)
       throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
 
-    object = transformations[type][op](object, arg);
+    object = transformations[expectedType][op](object, arg);
   }
   return object;
 }
@@ -139,6 +141,12 @@ const transformations = {
     startsWith,
     endsWith,
   },
+  "*": {
+    dive: (src, args) => (obj, key) => {
+      set(obj, args, src);
+      unset(obj, key);
+    },
+  }
 };
 
 const opToExpectedType = ((transformations) => {

@@ -177,7 +177,11 @@ function applyOnPath(result, pathToArgs) {
 
         const lodashArgs = pathRoot[key]['@_'];
         changedValue = applyLodashArgs(currentPath, changedValue, lodashArgs);
-        changedObject[key] = changedValue;
+        if (typeof changedValue === 'function') {
+          changedValue(changedObject, key);
+        } else {
+          changedObject[key] = changedValue;
+        }
         currentPath.pop();
       }
       return changedObject;
