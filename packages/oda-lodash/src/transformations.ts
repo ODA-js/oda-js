@@ -32,6 +32,7 @@ import * as sumBy from 'lodash/sumBy.js';
 import * as join from 'lodash/join.js';
 
 import * as get from 'lodash/get.js';
+import * as assign from 'lodash/assign.js';
 import * as mapValues from 'lodash/mapValues.js';
 import * as at from 'lodash/at.js';
 import * as toPairs from 'lodash/toPairs.js';
@@ -39,6 +40,7 @@ import * as invert from 'lodash/invert.js';
 import * as invertBy from 'lodash/invertBy.js';
 import * as keys from 'lodash/keys.js';
 import * as values from 'lodash/values.js';
+import * as omit from "lodash/omit.js";
 
 export function applyTransformations(object, args) {
   if (!args)
@@ -110,6 +112,14 @@ const transformations = {
   },
   Object: {
     get,
+    assign: (src, args) => args.reduce((obj, path) => {
+      const source = get(obj, path);
+      if (source && typeof source === 'object') {
+        return omit(assign(obj, get(obj, path)), path);
+      } else {
+        return obj;
+      }
+    }, src),
     mapValues,
     at,
     toPairs,

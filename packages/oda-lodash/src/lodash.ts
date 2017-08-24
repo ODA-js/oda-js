@@ -60,6 +60,7 @@ sumBy: Path
 join: String
 
 get: Path
+assign: [Path!]
 mapValues: Path
 
 # Creates an array of values corresponding to paths of object.
