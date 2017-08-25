@@ -26,14 +26,14 @@ export default class RegisterConnectors {
   protected _#{entity.name}: #{entity.name}Connector;
 <#- }#>
 
-  protected mongoose;
-  protected sequelize;
-  protected user;
-  protected owner;
-  protected acls: acl.secureAny.ACLCRUD<(object) => object>;
-  protected userGroup;
-  protected userGQL;
-  protected systemGQL;
+  public mongoose;
+  public sequelize;
+  public user;
+  public owner;
+  public acls: acl.secureAny.ACLCRUD<(object) => object>;
+  public userGroup;
+  public userGQL;
+  public systemGQL;
 
   public initGQL({
       userGQL,
