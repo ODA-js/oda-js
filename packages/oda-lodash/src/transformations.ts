@@ -49,8 +49,8 @@ export function applyTransformations(object, args) {
     return object;
 
   for (const op in args) {
-    if (object === null)
-      break;
+    // if (object === null)
+    //   break;
 
     const arg = args[op];
 
@@ -64,7 +64,7 @@ export function applyTransformations(object, args) {
     }
 
     const expectedType = opToExpectedType[op];
-    let type = object.constructor && object.constructor.name;
+    let type = object && object.constructor && object.constructor.name;
     // handle objects created with Object.create(null)
     if (!type && (typeof object === 'object'))
       type = 'Object';
@@ -143,8 +143,8 @@ const transformations = {
   },
   "*": {
     dive: (src, args) => (obj, key) => {
-      set(obj, args, src);
       unset(obj, key);
+      set(obj, args, src);
     },
   }
 };
