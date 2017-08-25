@@ -146,7 +146,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     throw new Error('not implemented');
   }
 
-  public sync({ force = false }: { force?: boolean }) {
+  public async sync({ force = false }: { force?: boolean }) {
     throw new Error('not implemented');
   }
 }
