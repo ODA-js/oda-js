@@ -29,8 +29,9 @@ import { lodashAST } from './schema';
 
 export function graphqlLodash(query: string | DocumentNode, operationName?: string) {
   const pathToArgs = {};
+  const reshape = {};
   const queryAST = typeof query === 'string' ? parse(query) : query;
-  traverseOperationFields(queryAST, operationName, (node, resultPath) => {
+  traverseOperationFields(queryAST, operationName, (node, resultPath, alias) => {
     var args = getLodashDirectiveArgs(node, lodashAST());
     if (args === null)
       return;
@@ -42,11 +43,14 @@ export function graphqlLodash(query: string | DocumentNode, operationName?: stri
     if (previousArgsValue !== null && !isEqual(previousArgsValue, args))
       throw Error(`Different "@_" args for the "${resultPath.join('.')}" path`);
     set(pathToArgs, argsSetPath, args);
+    set(reshape, [...resultPath, '_@'], alias[resultPath.length - 1]);
   });
   return {
     apply: !!Object.keys(pathToArgs).length,
     query: stripQuery(queryAST),
-    transform: data => applyLodashDirective(pathToArgs, data)
+    transform: data => applyLodashDirective(pathToArgs, data),
+    queryShape: pathToArgs,
+    reshape,
   };
 }
 
@@ -65,14 +69,17 @@ function traverseOperationFields(queryAST, operationName, cb) {
   });
 
   const resultPath = [];
-  cb(operationAST, resultPath);
+  const alias = [];
+  cb(operationAST, resultPath, alias);
   traverse(operationAST);
 
   function traverse(root) {
     visit(root, {
       enter(node) {
-        if (node.kind === Kind.FIELD)
+        if (node.kind === Kind.FIELD) {
           resultPath.push((node.alias || node.name).value);
+          alias.push({ [(node.alias || node.name).value]: node.name.value });
+        }
 
         if (node.kind === Kind.FRAGMENT_SPREAD) {
           const fragmentName = node.name.value;
@@ -85,8 +92,9 @@ function traverseOperationFields(queryAST, operationName, cb) {
       leave(node) {
         if (node.kind !== Kind.FIELD)
           return;
-        cb(node, resultPath);
+        cb(node, resultPath, alias);
         resultPath.pop();
+        alias.pop();
       }
     });
   }
@@ -159,21 +167,22 @@ function applyOnPath(result, pathToArgs) {
   return traverse(result, pathToArgs);
 
   function traverse(root, pathRoot) {
-    if (root === null || root === undefined)
-      return null;
+    // if (root === null || root === undefined)
+    //   debugger;
+    //   return null;
     if (Array.isArray(root))
       return root.map(item => traverse(item, pathRoot));
 
     if (typeof root === 'object') {
-      const changedObject = Object.assign({}, root);
+      const changedObject = root ? Object.assign({}, root) : root;
       for (const key in pathRoot) {
         if (key === '@_')
           continue;
         currentPath.push(key);
 
         let changedValue = traverse(root[key], pathRoot[key]);
-        if (changedValue === null || changedValue === undefined)
-          continue;
+        // if (changedValue === null || changedValue === undefined)
+        //   continue;
 
         const lodashArgs = pathRoot[key]['@_'];
         changedValue = applyLodashArgs(currentPath, changedValue, lodashArgs);
