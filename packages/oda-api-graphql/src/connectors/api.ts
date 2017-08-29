@@ -64,7 +64,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   public async getList(args, checkExtraCriteria?) {
     let result = await this._getList(args, checkExtraCriteria);
     return result
-      .map(r => r.toJSON())
+      .map(r => (r && r.toJSON) ? r.toJSON() : r)
       .map(r => this.ensureId(r));
   }
 
