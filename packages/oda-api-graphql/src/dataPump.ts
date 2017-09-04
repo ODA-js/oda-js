@@ -37,7 +37,7 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
         }
       }
     }
-    if (!res.data[dataPropName]) {
+    if (!(res && res.data[dataPropName])) {
       //2. если нет создать
       await client.mutate({
         mutation: queries[createQuery],
@@ -88,7 +88,7 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
       }
     }
     //1. проверить что объект есть
-    if (!res.data[dataPropName]) {
+    if (!(res && res.data[dataPropName])) {
       //2. если нет создать
       await runQuery({
         query: queries[createQuery],
