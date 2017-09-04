@@ -15,6 +15,11 @@ const getData = gql`
             spName: name
             classification
           }
+          some @_(get:"notItHasHaving.atAll"){
+            notItHasHaving{
+              atAll
+            }
+          }
           homeworld{
             hw_id: id
             hwName: name

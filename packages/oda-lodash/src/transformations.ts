@@ -69,7 +69,7 @@ export function applyTransformations(object, args) {
     if (!type && (typeof object === 'object'))
       type = 'Object';
 
-    if (expectedType !== '*' && expectedType !== type)
+    if (expectedType !== '*' && expectedType !== type && type !== undefined)
       throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
 
     object = transformations[expectedType][op](object, arg);

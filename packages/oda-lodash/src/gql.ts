@@ -180,16 +180,16 @@ function applyOnPath(result, pathToArgs) {
           continue;
         currentPath.push(key);
 
-        let changedValue = traverse(root[key], pathRoot[key]);
+        let changedValue = traverse(get(root, key), get(pathRoot, key));
         // if (changedValue === null || changedValue === undefined)
         //   continue;
 
-        const lodashArgs = pathRoot[key]['@_'];
+        const lodashArgs = get(pathRoot, [key, '@_'].join('.'));
         changedValue = applyLodashArgs(currentPath, changedValue, lodashArgs);
         if (typeof changedValue === 'function') {
           changedValue(changedObject, key);
         } else {
-          changedObject[key] = changedValue;
+          set(changedObject, key, changedValue);
         }
         currentPath.pop();
       }
