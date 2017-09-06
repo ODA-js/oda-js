@@ -1,5 +1,6 @@
 import { ModelBase } from './modelbase';
 import { MutationStorage, MutationInput, FieldArgs } from './interfaces';
+import clean from '../lib/json/clean';
 
 export class Mutation extends ModelBase {
   protected $obj: MutationStorage;
@@ -16,7 +17,7 @@ export class Mutation extends ModelBase {
     if (obj) {
       super.updateWith(obj);
 
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       let args = obj.args;
       let $args = obj.args;
@@ -30,7 +31,7 @@ export class Mutation extends ModelBase {
       result.payload = payload;
       result.payload_ = $payload;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 
@@ -38,36 +39,21 @@ export class Mutation extends ModelBase {
   public toObject() {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            args: props.args ? props.args : undefined,
-            payload: props.payload ? props.payload : undefined,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      args: props.args ? props.args : undefined,
+      payload: props.payload ? props.payload : undefined,
+    });
   }
 
   // it get clean object with no default values
   public toJSON() {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            args: props.args_ ? props.args_ : undefined,
-            payload: props.payload_ ? props.payload_ : undefined,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      args: props.args_ ? props.args_ : undefined,
+      payload: props.payload_ ? props.payload_ : undefined,
+    })
   }
-
 }

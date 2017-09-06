@@ -1,6 +1,7 @@
 import { RelationBase } from './relationbase';
 import { EntityReference } from './entityreference';
 import { HasManyStorage, HasManyInput } from './interfaces';
+import clean from '../lib/json/clean';
 
 export class HasMany extends RelationBase {
 
@@ -18,7 +19,7 @@ export class HasMany extends RelationBase {
     if (obj) {
       super.updateWith(obj);
 
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       this.setMetadata('storage.single', false);
       this.setMetadata('storage.stored', false);
@@ -35,40 +36,27 @@ export class HasMany extends RelationBase {
       result.hasMany_ = $hasMany;
       result.hasMany = hasMany;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
       this.initNames();
     }
   }
   // it get fixed object
-  public toObject() {
+  public toObject(): any {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            hasMany: props.hasMany ? props.hasMany.toString() : undefined,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      hasMany: props.hasMany ? props.hasMany.toString() : undefined,
+    });
   }
 
   // it get clean object with no default values
-  public toJSON() {
+  public toJSON(): any {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign({},
-          res,
-          {
-            hasMany: props.hasMany_,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      hasMany: props.hasMany_,
+    });
   }
 }

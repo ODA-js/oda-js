@@ -3,6 +3,7 @@ import { ModelPackage } from './modelpackage';
 import { ModelBaseStorage, ModelBaseInput } from './interfaces';
 import { Metadata } from './metadata';
 import fold from './../lib/json/fold';
+import clean from '../lib/json/clean';
 
 export class ModelBase extends Metadata {
   protected $obj: ModelBaseStorage;
@@ -32,29 +33,29 @@ export class ModelBase extends Metadata {
 
   public toObject(modelPackage?: ModelPackage) {
     let props = this.$obj;
-    return {
+    return clean({
       ...super.toObject(),
       name: props.name,
       title: props.title,
       description: props.description,
-    };
+    });
   }
 
   public toJSON(modelPackage?: ModelPackage): ModelBaseInput {
     let props = this.$obj;
-    return {
+    return clean({
       ...super.toJSON(),
       name: props.name_,
       title: props.title_,
       description: props.description_,
-    };
+    });
   }
 
   public updateWith(obj: ModelBaseInput) {
     if (obj) {
       super.updateWith(obj);
 
-      const result: ModelBaseStorage = Object.assign({}, this.$obj);
+      const result: ModelBaseStorage = { ... this.$obj };
 
       let $name = obj.name;
       let $title = obj.title;
@@ -83,7 +84,7 @@ export class ModelBase extends Metadata {
 
       result.description_ = $description;
       result.description = description;
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 

@@ -2,13 +2,18 @@ import get from './../lib/json/get';
 import set from './../lib/json/set';
 import { MetadataInput } from './interfaces';
 import deepMerge from './../lib/json/deepMerge';
+import clean from '../lib/json/clean';
 
 export class Metadata {
 
   public metadata: { [key: string]: any };
 
   constructor(inp: { metadata?: { [key: string]: any } }) {
-    this.setMetadata('*', inp.metadata);
+    if (inp && inp.metadata) {
+      this.setMetadata('*', inp.metadata);
+    } else {
+      this.metadata = {};
+    }
   }
 
   public getMetadata(key?: string, def?: any): any {
@@ -46,14 +51,14 @@ export class Metadata {
   }
 
   public toObject(): { [key: string]: any } {
-    return {
+    return clean({
       metadata: this.metadata,
-    };
+    });
   }
 
   public toJSON(): { [key: string]: any } {
-    return {
+    return clean({
       metadata: this.metadata,
-    };
+    });
   }
 }

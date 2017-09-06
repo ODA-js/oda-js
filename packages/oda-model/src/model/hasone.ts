@@ -1,6 +1,7 @@
 import { RelationBase } from './relationbase';
 import { EntityReference } from './entityreference';
 import { HasOneStorage, HasOneInput } from './interfaces';
+import clean from '../lib/json/clean';
 
 export class HasOne extends RelationBase {
   protected $obj: HasOneStorage;
@@ -16,7 +17,7 @@ export class HasOne extends RelationBase {
   public updateWith(obj: HasOneInput) {
     if (obj) {
       super.updateWith(obj);
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       this.setMetadata('storage.single', true);
       this.setMetadata('storage.stored', false);
@@ -29,41 +30,28 @@ export class HasOne extends RelationBase {
       result.hasOne_ = $hasOne;
       result.hasOne = hasOne;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
       this.initNames();
     }
   }
 
   // it get fixed object
-  public toObject() {
+  public toObject(): any {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            hasOne: props.hasOne ? props.hasOne.toString() : undefined,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      hasOne: props.hasOne ? props.hasOne.toString() : undefined,
+    });
   }
 
   // it get clean object with no default values
-  public toJSON() {
+  public toJSON(): any {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign({},
-          res,
-          {
-            hasOne: props.hasOne_,
-          }
-        )
-      )
-    );
+    return clean({
+      ...res,
+      hasOne: props.hasOne_,
+    });
   }
 }

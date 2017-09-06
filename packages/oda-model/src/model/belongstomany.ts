@@ -5,6 +5,7 @@ import { EntityReference } from './entityreference';
 import { BelongsToManyStorage, BelongsToManyInput, EntityInput, FieldInput } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { Entity } from './entity';
+import clean from '../lib/json/clean';
 
 // http://ooad.asf.ru/standarts/UML/spr/Association_class.aspx
 
@@ -56,7 +57,7 @@ export class BelongsToMany extends RelationBase {
           ...(this.fields || []),
           ].reduce((hash, curr) => {
             if (hash.has(curr.name)) {
-              curr = Object.assign({}, hash.get(curr.name), curr);
+              curr = { ...hash.get(curr.name), ...curr };
             }
             hash.set(curr.name, curr as FieldInput);
             return hash;
@@ -82,7 +83,7 @@ export class BelongsToMany extends RelationBase {
           ...(this.fields || []),
           ].reduce((hash, curr) => {
             if (hash.has(curr.name)) {
-              curr = Object.assign({}, hash.get(curr.name), curr);
+              curr = { ...hash.get(curr.name), ...curr };
             }
             hash.set(curr.name, curr as FieldInput);
             return hash;
@@ -113,7 +114,7 @@ export class BelongsToMany extends RelationBase {
           ...update.fields as FieldInput[],
         ].reduce((hash, curr) => {
           if (hash.has(curr.name)) {
-            curr = Object.assign({}, hash.get(curr.name), curr);
+            curr = { ...hash.get(curr.name), ...curr };
           }
           hash.set(curr.name, curr as FieldInput);
           return hash;
@@ -127,7 +128,7 @@ export class BelongsToMany extends RelationBase {
   public updateWith(obj: BelongsToManyInput) {
     if (obj) {
       super.updateWith(obj);
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       let $belongsToMany = obj.belongsToMany;
       this.setMetadata('storage.single', false);
@@ -165,43 +166,29 @@ export class BelongsToMany extends RelationBase {
       result.using_ = $using;
       result.using = using;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
       this.initNames();
     }
   }
   // it get fixed object
-  public toObject() {
+  public toObject(): any {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            belongsToMany: props.belongsToMany ? props.belongsToMany.toString() : undefined,
-            using: props.using ? props.using.toString() : undefined,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      belongsToMany: props.belongsToMany ? props.belongsToMany.toString() : undefined,
+      using: props.using ? props.using.toString() : undefined,
+    });
   }
 
   // it get clean object with no default values
-  public toJSON() {
+  public toJSON(): any {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            belongsToMany: props.belongsToMany_,
-            using: props.using_,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      belongsToMany: props.belongsToMany_,
+      using: props.using_,
+    });
   }
 }

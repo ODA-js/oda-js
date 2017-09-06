@@ -1,5 +1,6 @@
 import { ModelBase } from './modelbase';
 import { FieldBaseStorage, FieldBaseInput, FieldArgs } from './interfaces';
+import clean from '../lib/json/clean';
 
 export class FieldBase extends ModelBase {
   protected $obj: FieldBaseStorage;
@@ -26,7 +27,7 @@ export class FieldBase extends ModelBase {
     if (obj) {
       super.updateWith(obj);
 
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       let $entity = obj.entity;
       let entity = $entity;
@@ -49,7 +50,7 @@ export class FieldBase extends ModelBase {
       result.args = args;
       result.args_ = $args;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 
@@ -57,38 +58,24 @@ export class FieldBase extends ModelBase {
   public toObject() {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            derived: this.derived,
-            persistent: this.persistent,
-            entity: props.entity || props.entity_,
-            args: props.args || props.args_,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      derived: this.derived,
+      persistent: this.persistent,
+      entity: props.entity || props.entity_,
+      args: props.args || props.args_,
+    });
   }
 
   // it get clean object with no default values
   public toJSON() {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            derived: this.derived,
-            persistent: this.persistent,
-            args: props.args_,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      derived: this.derived,
+      persistent: this.persistent,
+      args: props.args_,
+    });
   }
 }

@@ -2,6 +2,7 @@ import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from './definitions';
 import * as camelcase from 'camelcase';
 import { EntityReferenceInput } from './interfaces';
 import * as inflected from 'inflected';
+import clean from '../lib/json/clean';
 
 /** Entityt reference implementation */
 export class EntityReference {
@@ -77,7 +78,7 @@ export class EntityReference {
   }
 
   public toObject() {
-    return Object.assign({}, {
+    return clean({
       backField: this.$obj.backField,
       entity: this.$obj.entity,
       field: this.$obj.field,
@@ -85,7 +86,7 @@ export class EntityReference {
   }
 
   public toJSON() {
-    return Object.assign({}, {
+    return clean({
       backField: this.$obj.backField_,
       entity: this.$obj.entity_,
       field: this.$obj.field_,

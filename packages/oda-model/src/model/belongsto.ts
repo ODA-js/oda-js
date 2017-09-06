@@ -1,6 +1,7 @@
 import { RelationBase } from './relationbase';
 import { EntityReference } from './entityreference';
 import { BelongsToStorage, BelongsToInput } from './interfaces';
+import clean from '../lib/json/clean';
 
 /**
  * BelongsTo Relation
@@ -26,7 +27,7 @@ export class BelongsTo extends RelationBase {
     if (obj) {
       super.updateWith(obj);
 
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       this.setMetadata('storage.single', true);
       this.setMetadata('storage.stored', true);
@@ -43,7 +44,7 @@ export class BelongsTo extends RelationBase {
       result.belongsTo_ = $belongsTo;
       result.belongsTo = belongsTo;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
       this.initNames();
     }
   }
@@ -51,37 +52,24 @@ export class BelongsTo extends RelationBase {
   /**
    * it get fixed object
    */
-  public toObject() {
+  public toObject(): any {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign({},
-          res,
-          {
-            belongsTo: props.belongsTo ? props.belongsTo.toString() : undefined,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      belongsTo: props.belongsTo ? props.belongsTo.toString() : undefined,
+    });
   }
 
   /**
    * it get clean object with no default values
    */
-  public toJSON() {
+  public toJSON(): any {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            belongsTo: props.belongsTo_,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      belongsTo: props.belongsTo_,
+    });
   }
 }

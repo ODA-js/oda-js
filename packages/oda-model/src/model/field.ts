@@ -7,6 +7,7 @@ import { EntityReference } from './entityreference';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
 import { FieldStorage, FieldInput } from './interfaces';
+import clean from '../lib/json/clean';
 
 function discoverFieldType(obj) {
   // сделать проверку по полю...
@@ -26,7 +27,9 @@ function discoverFieldType(obj) {
 
 export class Field extends FieldBase {
   protected $obj: FieldStorage;
-
+  constructor(obj: FieldInput) {
+    super(obj);
+  }
   get type(): string {
     return this.$obj.type;
   }
@@ -83,7 +86,7 @@ export class Field extends FieldBase {
   public updateWith(obj: FieldInput) {
     if (obj) {
       super.updateWith(obj);
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
 
       let $type = obj.type;
       let type = $type || 'String';
@@ -109,16 +112,16 @@ export class Field extends FieldBase {
 
         switch (discoverFieldType($relation)) {
           case 'HasOne':
-            relation = new HasOne(Object.assign({}, $relation, { entity: obj.entity, field: obj.name }));
+            relation = new HasOne({ ...$relation, entity: obj.entity, field: obj.name });
             break;
           case 'HasMany':
-            relation = new HasMany(Object.assign({}, $relation, { entity: obj.entity, field: obj.name }));
+            relation = new HasMany({ ...$relation, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsToMany':
-            relation = new BelongsToMany(Object.assign({}, $relation, { entity: obj.entity, field: obj.name }));
+            relation = new BelongsToMany({ ...$relation, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsTo':
-            relation = new BelongsTo(Object.assign({}, $relation, { entity: obj.entity, field: obj.name }));
+            relation = new BelongsTo({ ...$relation, entity: obj.entity, field: obj.name });
             break;
           default:
             throw new Error('undefined type');
@@ -129,44 +132,31 @@ export class Field extends FieldBase {
         delete result.type;
       }
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 
   // it get fixed object
-  public toObject(modelPackage?: ModelPackage) {
+  public toObject(modelPackage?: ModelPackage): any {
     let props = this.$obj;
     let res = super.toObject();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign({},
-          res,
-          {
-            entity: props.entity,
-            type: props.type || props.type_,
-            idKey: props.idKey ? props.idKey.toString() : undefined,
-            relation: props.relation ? props.relation.toObject() : undefined,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      entity: props.entity,
+      type: props.type || props.type_,
+      idKey: props.idKey ? props.idKey.toString() : undefined,
+      relation: props.relation ? props.relation.toObject() : undefined,
+    });
   }
 
   // it get clean object with no default values
-  public toJSON(modelPackage?: ModelPackage) {
+  public toJSON(modelPackage?: ModelPackage): any {
     let props = this.$obj;
     let res = super.toJSON();
-    return JSON.parse(
-      JSON.stringify(
-        Object.assign(
-          {},
-          res,
-          {
-            type: props.type_,
-            relation: props.relation ? props.relation.toJSON() : undefined,
-          },
-        ),
-      ),
-    );
+    return clean({
+      ...res,
+      type: props.type_,
+      relation: props.relation ? props.relation.toJSON() : undefined,
+    });
   }
 }

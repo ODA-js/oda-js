@@ -9,6 +9,7 @@ import { ModelPackage } from './modelpackage';
 import { EntityStorage, EntityInput, FieldInput, EntityJSON } from './interfaces';
 import * as inflected from 'inflected';
 import deepMerge from './../lib/json/deepMerge';
+import clean from '../lib/json/clean';
 
 /**
  * 1. тип объекта который входит на updateWith
@@ -310,7 +311,7 @@ export class Entity extends ModelBase {
     if (obj) {
       super.updateWith(obj);
 
-      const result = Object.assign({}, this.$obj);
+      const result = { ...this.$obj };
       result.name = this.getMetadata('name.singular') || inflected.classify(result.name);
 
       if (result.name !== obj.name) {
@@ -335,7 +336,7 @@ export class Entity extends ModelBase {
 
       let traverse = (f, index) => {
         let field = new Field({
-          ...f,
+          ...(f.toJSON ? f.toJSON() : f),
           metadata: {
             order: index,
             ...f.metadata,
@@ -385,7 +386,7 @@ export class Entity extends ModelBase {
       } else if (!f && fields.has('_id')) {
         f = fields.get('_id');
       } else {
-        f = new Field(Object.assign({}, DEFAULT_ID_FIELD, { entity: result.name }));
+        f = new Field({ ...DEFAULT_ID_FIELD, entity: result.name });
         fields.set(f.name, f);
       }
 
@@ -403,7 +404,7 @@ export class Entity extends ModelBase {
       result.indexed = indexed;
       result.fields = fields;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 
@@ -411,43 +412,29 @@ export class Entity extends ModelBase {
     if (!modelPackage) {
       let props = this.$obj;
       let res = super.toObject();
-      return JSON.parse(
-        JSON.stringify(
-          Object.assign(
-            {},
-            res,
-            {
-              fields: [...props.fields.values()].map(f => f.toObject()),
-            },
-          ),
-        ),
-      );
+      return clean({
+        ...res,
+        fields: [...props.fields.values()].map(f => f.toObject()),
+      });
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
       if (modelRelations) {
         let props = this.$obj;
         let res = super.toObject();
-        return JSON.parse(
-          JSON.stringify(
-            Object.assign(
-              {},
-              res,
-              {
-                fields: [...props.fields.values()].map(f => {
-                  let result;
-                  if (this.relations.has(f.name)) {
-                    if (modelRelations && modelRelations.has(f.name)) {
-                      result = f.toObject(modelPackage);
-                    }
-                  } else {
-                    result = f.toObject(modelPackage);
-                  }
-                  return result;
-                }).filter(f => f),
-              },
-            ),
-          ),
-        );
+        return clean({
+          ...res,
+          fields: [...props.fields.values()].map(f => {
+            let result;
+            if (this.relations.has(f.name)) {
+              if (modelRelations && modelRelations.has(f.name)) {
+                result = f.toObject(modelPackage);
+              }
+            } else {
+              result = f.toObject(modelPackage);
+            }
+            return result;
+          }).filter(f => f),
+        });
       }
     }
   }
@@ -456,41 +443,29 @@ export class Entity extends ModelBase {
     if (!modelPackage) {
       let props = this.$obj;
       let res = super.toJSON();
-      return JSON.parse(JSON.stringify(
-        Object.assign({},
-          res,
-          {
-            fields: [...props.fields.values()],
-          },
-        ),
-      ),
-      );
+      return clean({
+        ...res,
+        fields: [...props.fields.values()],
+      }) as any;
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
       if (modelRelations) {
         let props = this.$obj;
         let res = super.toJSON();
-        return JSON.parse(
-          JSON.stringify(
-            Object.assign(
-              {},
-              res,
-              {
-                fields: [...props.fields.values()].map(f => {
-                  let result;
-                  if (this.relations.has(f.name)) {
-                    if (modelRelations && modelRelations.has(f.name)) {
-                      result = f.toJSON(modelPackage);
-                    }
-                  } else {
-                    result = f.toJSON(modelPackage);
-                  }
-                  return result;
-                }).filter(f => f),
-              },
-            ),
-          ),
-        );
+        return clean({
+          ...res,
+          fields: [...props.fields.values()].map(f => {
+            let result;
+            if (this.relations.has(f.name)) {
+              if (modelRelations && modelRelations.has(f.name)) {
+                result = f.toJSON(modelPackage);
+              }
+            } else {
+              result = f.toJSON(modelPackage);
+            }
+            return result;
+          }).filter(f => f),
+        });
       }
     }
   }

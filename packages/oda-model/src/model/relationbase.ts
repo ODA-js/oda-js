@@ -3,6 +3,7 @@ import { RelationBaseStorage, RelationBaseInput, RelationFields, RelationBaseJSO
 import { EntityReference } from './entityreference';
 import { Metadata } from './metadata';
 import fold from './../lib/json/fold';
+import clean from '../lib/json/clean';
 
 export class RelationBase extends Metadata {
   /**
@@ -104,30 +105,30 @@ export class RelationBase extends Metadata {
 
   public toObject(): RelationBaseInput {
     let props = this.$obj;
-    return {
+    return clean({
       ...super.toObject(),
       name: props.name || props.name_,
       entity: props.entity,
       field: props.field,
       fields: props.fields,
       opposite: props.opposite,
-    };
+    });
   }
 
   public toJSON(): RelationBaseJSON {
     let props = this.$obj;
-    return {
+    return clean({
       ...super.toJSON(),
       name: props.name_,
       fields: props.fields,
       opposite: props.opposite,
-    };
+    });
   }
 
   public updateWith(obj: RelationBaseInput): void {
     if (obj) {
 
-      const result: RelationBaseStorage = Object.assign({}, this.$obj);
+      const result: RelationBaseStorage = { ...this.$obj };
 
       let $name = obj.name;
       let opposite = obj.opposite;
@@ -153,7 +154,7 @@ export class RelationBase extends Metadata {
       result.field = field;
       result.field_ = $field;
 
-      this.$obj = Object.assign({}, result);
+      this.$obj = result;
     }
   }
 

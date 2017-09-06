@@ -4,6 +4,7 @@ import { Field } from './field';
 import { ModelPackageInput, EntityInput, EntityJSON } from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
+import clean from '../lib/json/clean';
 
 /** Model package is the storage place of Entities */
 export class ModelPackage {
@@ -102,25 +103,25 @@ export class ModelPackage {
   }
 
   public toJSON(): ModelPackageInput {
-    return {
+    return clean({
       name: this.name,
       title: this.title,
       abstract: this.abstract,
       description: this.description,
       entities: Array.from(this.entities.values()).map(f => f.name),
       mutations: Array.from(this.mutations.values()).map(f => f.name),
-    };
+    });
   }
 
-  public toObject() {
-    return {
+  public toObject(): any {
+    return clean({
       name: this.name,
       title: this.title,
       description: this.description,
       abstract: this.abstract,
       entities: Array.from(this.entities.values()).map(f => f.toObject(this)),
       mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
-    };
+    });
   }
 
   private ensureEntity(entity) {
