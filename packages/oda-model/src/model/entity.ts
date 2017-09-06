@@ -21,6 +21,10 @@ import clean from '../lib/json/clean';
 export class Entity extends ModelBase {
   protected $obj: EntityStorage;
 
+  constructor(obj: EntityInput) {
+    super(obj);
+  }
+
   public ensureIds(modelPackage: ModelPackage) {
     this.identity.forEach((value) => {
       let ids = this.fields.get(value);

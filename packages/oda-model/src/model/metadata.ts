@@ -11,8 +11,6 @@ export class Metadata {
   constructor(inp: { metadata?: { [key: string]: any } }) {
     if (inp && inp.metadata) {
       this.setMetadata('*', inp.metadata);
-    } else {
-      this.metadata = {};
     }
   }
 

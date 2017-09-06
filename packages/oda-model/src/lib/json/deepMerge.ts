@@ -25,12 +25,15 @@ export default function deepMerge(...args: Object[]) {
           }
         } else {
           if (Array.isArray(current)) {
-            result = [
-              ...result,
-              ...(<Object[]>current),
-            ];
+            (<Object[]>current).forEach(item => {
+              if (result.indexOf(item) === -1) {
+                result.push(item);
+              }
+            });
           } else {
-            result.push(current);
+            if (result.indexOf(current) === -1) {
+              result.push(current);
+            }
           }
         }
       }
