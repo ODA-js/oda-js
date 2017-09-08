@@ -1,7 +1,4 @@
 <#@ context 'entity' -#>
-import {
-  fromGlobalId,
-} from 'graphql-relay';
 
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { idToCursor, emptyConnection, pagination } from 'oda-api-graphql';

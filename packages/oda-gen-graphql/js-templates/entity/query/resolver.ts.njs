@@ -9,9 +9,9 @@ import { emptyConnection, idToCursor, pagination, detectCursorDirection, consts 
 
 let mongoose = require('mongoose');
 
-function validId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
+import { utils } from 'oda-api-graphql';
+
+const { validId } = utils;
 
 export function getValue(value) {
     if (typeof value === 'string') {

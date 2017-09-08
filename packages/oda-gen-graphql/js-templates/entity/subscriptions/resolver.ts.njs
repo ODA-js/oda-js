@@ -2,11 +2,6 @@
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 
-import {
-  fromGlobalId,
-  toGlobalId,
-} from 'graphql-relay';
-
 import { mutateAndGetPayload, idToCursor, Filter } from 'oda-api-graphql';
 import { pubsub } from '../../../../../model/pubsub';
 import { withFilter } from 'graphql-subscriptions';

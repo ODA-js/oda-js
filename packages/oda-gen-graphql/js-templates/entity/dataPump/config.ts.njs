@@ -14,10 +14,9 @@ export default {
 
 let mongoose = require('mongoose');
 import { fromGlobalId } from 'graphql-relay';
+import { utils } from 'oda-api-graphql';
 
-function validId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
+const { validId } = utils;
 
 export function getValue(value) {
     if (typeof value === 'string') {
