@@ -1,6 +1,6 @@
 import deepMerge from './../lib/deepMerge';
 import fillDefaults from './../lib/fillDefaults';
-import { utils as jsonUtils } from 'oda-api-graphql';
+import * as jsonUtils from '../lib';
 
 // let padding = 0;
 
