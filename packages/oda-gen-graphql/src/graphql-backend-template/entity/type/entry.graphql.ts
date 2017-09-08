@@ -77,6 +77,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
     })
     .map(i => `${i.name}: ${i.type}`);
 
+  // не используем до лучших времен!!! поиск по вложенным объекта только.... для mongo и для sequelize
   let filterEmbed = filterForAcl(allowAcl)(role)(entity)
     .filter(k => {
       let f = entity.fields.get(k);
@@ -108,6 +109,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
       }
     })
     .map(i => `${i.name}: ${i.type}`);
+
 
   let filterSubscriptions = filterForAcl(allowAcl)(role)(entity)
     .map(k => {

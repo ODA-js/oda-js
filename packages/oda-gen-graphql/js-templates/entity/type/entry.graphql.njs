@@ -28,13 +28,13 @@ input #{entity.name}Filter {
 input #{entity.name}ComplexFilter {
   or: [#{entity.name}ComplexFilter]
   and: [#{entity.name}ComplexFilter]
-<#-entity.filterEmbed.forEach((item, index)=>{#>
+<#-entity.filter.forEach((item, index)=>{#>
   #{item}
 <#-})#>
 }
 
 input #{entity.name}FilterItem {
-<#-entity.filterEmbed.forEach((item, index)=>{#>
+<#-entity.filter.forEach((item, index)=>{#>
   #{item}
 <#-})#>
 }
