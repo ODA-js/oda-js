@@ -14,8 +14,8 @@ export class WhereString extends GQLModule {
         not: [WhereString!]
         exists: Boolean
         match: String
+        imatch: String
       }
   `],
   };
 }
-
