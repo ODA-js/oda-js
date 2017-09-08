@@ -1,5 +1,5 @@
 import generator from './generator';
-import * as common from 'oda-gen-graphql-common';
+import * as common from 'oda-gen-common';
 import * as templates from './graphql-backend-template';
 
 export {
