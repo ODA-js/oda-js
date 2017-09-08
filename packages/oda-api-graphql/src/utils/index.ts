@@ -3,6 +3,7 @@ import set from './set';
 import fold from './fold';
 import deepMerge from './deepMerge';
 import padLeft from './padLeft';
+import validId from './validId';
 
 export {
   set,
@@ -10,4 +11,5 @@ export {
   fold,
   deepMerge,
   padLeft,
+  validId,
 };
