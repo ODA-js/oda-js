@@ -1,12 +1,12 @@
 // tslint:disable:no-unused-variable
-import { common } from 'oda-gen-graphql';
-const { deepMerge } = common.lib;
+import { types, lib } from 'oda-gen-common';
+const { deepMerge } = lib;
 import { makeExecutableSchema } from 'graphql-tools';
 import { LodashModule } from './lodash'
 
-class LodashSchema extends common.types.GQLModule {
-  protected _extend: common.types.GQLModule[] = [
-    new common.types.DefaultTypes({}),
+class LodashSchema extends types.GQLModule {
+  protected _extend: types.GQLModule[] = [
+    new types.DefaultTypes({}),
     new LodashModule({}),
   ];
 

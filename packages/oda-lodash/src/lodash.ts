@@ -1,4 +1,4 @@
-import { common } from 'oda-gen-graphql';
+import { types } from 'oda-gen-common';
 
 const lodashProps = `
 map: Path
@@ -83,7 +83,7 @@ keys: DummyArgument
 values: DummyArgument
 `;
 
-export class Path extends common.types.GQLModule {
+export class Path extends types.GQLModule {
   protected _resolver: { [key: string]: any } = {
     Path: {
       __serialize: String,
@@ -98,7 +98,7 @@ export class Path extends common.types.GQLModule {
   };
 }
 
-export class Predicate extends common.types.GQLModule {
+export class Predicate extends types.GQLModule {
   protected _typeDef = {
     type: [`
         input Predicate {
@@ -117,7 +117,7 @@ export class Predicate extends common.types.GQLModule {
   };
 }
 
-export class DirectiveLodash extends common.types.GQLModule {
+export class DirectiveLodash extends types.GQLModule {
   protected _typeDef = {
     type: [`
       directive @_(
@@ -127,7 +127,7 @@ export class DirectiveLodash extends common.types.GQLModule {
   };
 }
 
-export class LodashOperations extends common.types.GQLModule {
+export class LodashOperations extends types.GQLModule {
   protected _typeDef = {
     type: [`
         input LodashOperations {
@@ -137,7 +137,7 @@ export class LodashOperations extends common.types.GQLModule {
   };
 }
 
-export class DummyArgument extends common.types.GQLModule {
+export class DummyArgument extends types.GQLModule {
   protected _typeDef = {
     type: [`
       enum DummyArgument{
@@ -147,7 +147,7 @@ export class DummyArgument extends common.types.GQLModule {
   };
 }
 
-export class LodashModule extends common.types.GQLModule {
+export class LodashModule extends types.GQLModule {
   protected _extend = [
     new Path({}),
     new Predicate({}),
