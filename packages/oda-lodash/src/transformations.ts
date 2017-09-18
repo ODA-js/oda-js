@@ -42,40 +42,7 @@ import * as invert from 'lodash/invert.js';
 import * as invertBy from 'lodash/invertBy.js';
 import * as keys from 'lodash/keys.js';
 import * as values from 'lodash/values.js';
-import * as omit from "lodash/omit.js";
-
-export function applyTransformations(object, args) {
-  if (!args)
-    return object;
-
-  for (const op in args) {
-    // if (object === null)
-    //   break;
-
-    const arg = args[op];
-
-    if (op === 'and') {
-      object = every(arg, predicateArgs => applyTransformations(object, predicateArgs));
-      continue;
-    }
-    if (op === 'or') {
-      object = some(arg, predicateArgs => applyTransformations(object, predicateArgs));
-      continue;
-    }
-
-    const expectedType = opToExpectedType[op];
-    let type = object && object.constructor && object.constructor.name;
-    // handle objects created with Object.create(null)
-    if (!type && (typeof object === 'object'))
-      type = 'Object';
-
-    if (expectedType !== '*' && expectedType !== type && type !== undefined)
-      throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
-
-    object = transformations[expectedType][op](object, arg);
-  }
-  return object;
-}
+import * as omit from 'lodash/omit.js';
 
 const transformations = {
   Array: {
@@ -141,20 +108,64 @@ const transformations = {
     startsWith,
     endsWith,
   },
-  "*": {
+  '*': {
     dive: (src, args) => (obj, key) => {
       unset(obj, key);
       set(obj, args, src);
     },
-  }
+  },
 };
 
-const opToExpectedType = ((transformations) => {
+const opToExpectedType = ((trans) => {
   let result = {};
-  for (const type in transformations) {
-    for (const name in transformations[type]) {
-      result[name] = type;
+  for (const type in trans) {
+    if (trans.hasOwnProperty(type)) {
+      const names = trans[type];
+      for (const name in names) {
+        if (names.hasOwnProperty(name)) {
+          result[name] = type;
+        }
+      }
     }
   }
   return result;
-})(transformations)
+})(transformations);
+
+export function applyTransformations(object, args) {
+  if (!args) {
+    return object;
+  }
+
+  for (const op in args) {
+    if (args.hasOwnProperty(op)) {
+      // if (object === null)
+      //   break;
+
+      const arg = args[op];
+
+      if (op === 'and') {
+        object = every(arg, predicateArgs => applyTransformations(object, predicateArgs));
+        continue;
+      }
+      if (op === 'or') {
+        object = some(arg, predicateArgs => applyTransformations(object, predicateArgs));
+        continue;
+      }
+
+      const expectedType = opToExpectedType[op];
+      let type = object && object.constructor && object.constructor.name;
+      // handle objects created with Object.create(null)
+      if (!type && (typeof object === 'object')) {
+        type = 'Object';
+      }
+
+      if (expectedType !== '*' && expectedType !== type && type !== undefined) {
+        throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
+      }
+
+      object = transformations[expectedType][op](object, arg);
+    }
+  }
+  return object;
+}
+
