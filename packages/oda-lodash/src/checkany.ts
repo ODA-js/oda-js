@@ -31,7 +31,7 @@ const getData = gql`
 `;
 
 const data = {
-  "peoples": {
+  "people": {
     "edges": [
       {
         "cursor": "Y29ubmVjdGlvbi41OTllOTBhY2I0NjljNzNhOGU0MWRkMzQ=",
@@ -68,18 +68,18 @@ const reverse = {
   "people": [
     {
       "cursor": "Y29ubmVjdGlvbi41OTllOTBhY2I0NjljNzNhOGU0MWRkMzQ=",
-      "id": "UGVyc29uOjU5OWU5MGFjYjQ2OWM3M2E4ZTQxZGQzNA==",
-      "name": "Luke Skywalker",
-      "hwName": "Coruscant",
-      "spName": "Just a Human being",
-      "classification": null
+      'id': 'UGVyc29uOjU5OWU5MGFjYjQ2OWM3M2E4ZTQxZGQzNA==',
+      'name': 'Luke Skywalker',
+      'hwName': 'Coruscant',
+      'spName': 'Just a Human being',
+      'classification': null
     }
   ]
 };
 
 const log = (doc, data) => {
   console.log(inspect(reshape(doc, data), { depth: 10 }));
-}
+};
 
 log(getData, data);
 
