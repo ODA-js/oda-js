@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
-import * as _ from 'lodash';
+import * as get from 'lodash/get';
 
 import { fromGlobalId } from 'graphql-relay';
 import RegisterConnectors from '../../../../data/registerConnectors';
@@ -42,7 +42,7 @@ export const query: { [key: string]: any } = {
   ) => {
     logger.trace('#{entity.plural}');
     let result;
-    let selectionSet = traverse(info.operation.selectionSet);
+    let selectionSet = traverse(info);
 
 <# let relFields = entity.
   relations
@@ -50,12 +50,12 @@ export const query: { [key: string]: any } = {
   .map(f=>f.field);#>
     let idMap = {
       id: '_id',
-<#- relFields.forEach(f=>{#>
+<# relFields.forEach(f=>{#>
       #{f}: '#{f}',
 <#})-#>
-    }
+    };
 
-    let list = get(selectionSet, '#{entity.plural}.edges.node') ? await context.connectors.Person.getList({
+    let list = get(selectionSet, 'edges.node') ? await context.connectors.#{entity.name}.getList({
       ...args,
       idMap,
     }) : [];
@@ -64,7 +64,7 @@ export const query: { [key: string]: any } = {
       let cursor = pagination(args);
       let direction = detectCursorDirection(args)._id;
 
-      let edges = get(selectionSet, '#{entity.plural}.edges') ?
+      let edges = get(selectionSet, 'edges') ?
         list.map(l => {
           return {
             cursor: idToCursor(l.id),
@@ -72,15 +72,15 @@ export const query: { [key: string]: any } = {
           };
         }) : null;
 
-      let pageInfo = get(selectionSet, '#{entity.plural}.pageInfo') ?
+      let pageInfo = get(selectionSet, 'pageInfo') ?
         {
-          startCursor: get(selectionSet, '#{entity.plural}.pageInfo.startCursor')
+          startCursor: get(selectionSet, 'pageInfo.startCursor')
             ? edges[0].cursor : undefined,
-          endCursor: get(selectionSet, '#{entity.plural}.pageInfo.endCursor')
+          endCursor: get(selectionSet, 'pageInfo.endCursor')
             ? edges[edges.length - 1].cursor : undefined,
-          hasPreviousPage: get(selectionSet, '#{entity.plural}.pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
-          hasNextPage: get(selectionSet, '#{entity.plural}.pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
-          count: get(selectionSet, '#{entity.plural}.pageInfo.count') ? await context.connectors.Person.getCount(args) : 0,
+          hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
+          hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+          count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{entity.name}.getCount(args) : 0,
         } : null;
 
       result = {

@@ -1,6 +1,8 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 import * as _ from 'lodash';
+import * as get from 'lodash/get';
+
 let logger = log4js.getLogger('graphql:query:#{entity.name}');
 import {
   globalIdField,
@@ -9,7 +11,7 @@ import {
 <#-if(entity.relations.length > 0){#>
 import RegisterConnectors from '../../../../data/registerConnectors';
 <# if(entity.relations.some(c=>c.verb === 'BelongsToMany' || c.verb === 'HasMany')) {-#>
-import { idToCursor, emptyConnection, pagination, detectCursorDirection, consts  } from 'oda-api-graphql';
+import { idToCursor, emptyConnection, pagination, detectCursorDirection, consts, Filter } from 'oda-api-graphql';
 
 <#}-#>
 <#}-#>
@@ -37,7 +39,7 @@ export const resolver: { [key: string]: any } = {
       context: { connectors: RegisterConnectors },
       info) => {
       let result;
-      let selectionSet = traverse(info.operation.selectionSet);
+      let selectionSet = traverse(info);
 
 <# if(!connection.derived){#>
       let #{entity.ownerFieldName} = await context.connectors.#{entity.name}.findOneById(id);
@@ -88,11 +90,12 @@ export const resolver: { [key: string]: any } = {
         result = await context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.cField}(#{entity.ownerFieldName}.#{connection.field});
 <#} else if (connection.verb === 'BelongsToMany') {#>
       //BelongsToMany
+
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
         const cursor = pagination(args);
         let direction = detectCursorDirection(args)._id;
         const _args = {
-          ..._.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before', 'filter']),
+          ..._.pick(args, ['limit', 'skip', 'first', 'after', 'last', 'before']),
         } as {
             limit?: number;
             skip?: number;
@@ -104,17 +107,37 @@ export const resolver: { [key: string]: any } = {
               [k: string]: any
             };
         };
-        if(!_args.filter){
-          _args.filter = {};
+
+        _args.filter = {
+          #{connection.ref.using.field}: {
+            eq: #{entity.ownerFieldName}.#{connection.ref.backField},
+          }
         }
-        _args.filter.#{connection.ref.using.field} = #{entity.ownerFieldName}.#{connection.ref.backField};
+
+<# let relFields = entity.
+  relations
+  .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
+  .map(f=>f.field);#>
+      let idMap = {
+        id: '_id',
+<# relFields.forEach(f=>{#>
+        #{f}: '#{f}',
+<#})-#>
+      };
+
+      const itemCheck = Filter.Process.create(args.filter || {}, idMap);
 
         let links = await context.connectors.#{connection.ref.using.entity}.getList(
            _args,
           async (link) => {
             let result = await context.connectors.#{connection.ref.entity}.findOneById(link.#{connection.ref.usingField});
             if (result) {
-              return true;
+              return itemCheck({
+                ...result,
+              <#- for(let field of connection.ref.fields){#>
+                #{field}: l.#{field},
+              <#-}#>
+                });
             } else {
               return false;
             }
@@ -122,7 +145,13 @@ export const resolver: { [key: string]: any } = {
         );
         if (links.length > 0) {
 
-          let res = await Promise.all(links.map(i => context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.usingIndex}(i.#{connection.ref.usingField})));
+          //let res = await Promise.all(links.map(i => context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.usingIndex}(i.#{connection.ref.usingField})));
+
+          let res = await context.connectors.#{connection.ref.entity}.getList({
+            filter: {
+              #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
+            }
+          });
 
           if (res.length > 0) {
             let hItems = res.reduce((hash, item) => {
