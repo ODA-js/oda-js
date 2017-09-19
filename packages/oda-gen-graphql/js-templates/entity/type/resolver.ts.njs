@@ -118,14 +118,14 @@ export const resolver: { [key: string]: any } = {
   relations
   .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
   .map(f=>f.field);#>
-      let idMap = {
-        id: '_id',
+        let idMap = {
+          id: '_id',
 <# relFields.forEach(f=>{#>
-        #{f}: '#{f}',
+          #{f}: '#{f}',
 <#})-#>
-      };
+        };
 
-      const itemCheck = Filter.Process.create(args.filter || {}, idMap);
+        const itemCheck = Filter.Process.create(args.filter || {}, idMap);
 
         let links = await context.connectors.#{connection.ref.using.entity}.getList(
            _args,
