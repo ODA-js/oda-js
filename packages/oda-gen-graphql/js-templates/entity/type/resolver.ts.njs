@@ -113,7 +113,6 @@ export const resolver: { [key: string]: any } = {
             eq: #{entity.ownerFieldName}.#{connection.ref.backField},
           }
         }
-
 <# let relFields = entity.
   relations
   .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
