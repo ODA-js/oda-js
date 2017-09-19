@@ -21,6 +21,7 @@ export interface I#{entity.name}Connection {
     hasPreviousPage: boolean;
     startCursor?: string;
     endCursor?: string;
+    count?: number;
   };
   edges: I#{entity.name}Edge[];
 }
