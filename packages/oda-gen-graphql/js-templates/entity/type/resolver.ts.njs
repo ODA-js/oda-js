@@ -13,6 +13,8 @@ import { idToCursor, emptyConnection, pagination, detectCursorDirection, consts 
 
 <#}-#>
 <#}-#>
+import { lib } from 'oda-gen-common';
+const { selectionTree: traverse } = lib;
 
 export const resolver: { [key: string]: any } = {
   #{entity.name}: {
@@ -35,6 +37,8 @@ export const resolver: { [key: string]: any } = {
       context: { connectors: RegisterConnectors },
       info) => {
       let result;
+      let selectionSet = traverse(info.operation.selectionSet);
+
 <# if(!connection.derived){#>
       let #{entity.ownerFieldName} = await context.connectors.#{entity.name}.findOneById(id);
 <#- if (connection.verb === 'HasOne') {#>
@@ -48,6 +52,7 @@ export const resolver: { [key: string]: any } = {
         result = #{connection.refFieldName}[0];
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
+
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
         if(!args.filter){
           args.filter = {};
