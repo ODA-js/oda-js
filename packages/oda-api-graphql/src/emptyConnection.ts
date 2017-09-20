@@ -6,6 +6,7 @@ export default () => {
       endCursor: null,
       hasPreviousPage: false,
       hasNextPage: false,
+      count: 0,
     },
   };
 };
