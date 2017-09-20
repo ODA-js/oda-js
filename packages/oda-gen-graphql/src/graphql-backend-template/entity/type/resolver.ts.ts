@@ -18,7 +18,8 @@ export interface MapperOutupt {
     field: string;
     refFieldName: string;
     name: string;
-    verb: string,
+    verb: string;
+    idMap: string[];
     ref: {
       backField: string;
       usingField: string;
@@ -48,6 +49,7 @@ import {
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAcl, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(allowAcl)(role)(entity);
+  const fieldMap = getFieldsForAcl(allowAcl)(role);
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -108,6 +110,15 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, allowAc
           refFieldName: decapitalize(refFieldName),
           verb,
           ref,
+          idMap: fieldMap(pack.entities.get(ref.entity))
+            .filter(relationFieldsExistsIn(pack))
+            .map(f => ({
+              verb: f.relation.verb,
+              type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type,
+              field: f.name,
+            }))
+            .filter(f => f.type === 'ID' && f.verb === 'BelongsTo')
+            .map(f => f.field)
         };
       }),
     fields: fieldsAcl

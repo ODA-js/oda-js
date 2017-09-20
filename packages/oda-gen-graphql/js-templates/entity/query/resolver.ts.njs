@@ -44,13 +44,9 @@ export const query: { [key: string]: any } = {
     let result;
     let selectionSet = traverse(info);
 
-<# let relFields = entity.
-  relations
-  .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
-  .map(f=>f.field);#>
     let idMap = {
       id: '_id',
-<# relFields.forEach(f=>{#>
+<# entity.idMap.forEach(f=>{-#>
       #{f}: '#{f}',
 <#})-#>
     };

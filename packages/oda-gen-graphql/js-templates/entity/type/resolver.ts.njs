@@ -62,7 +62,9 @@ export const resolver: { [key: string]: any } = {
         args.filter.#{connection.ref.field} =  {
           eq: #{entity.ownerFieldName}.#{connection.ref.backField}
         };
-        let list = await context.connectors.#{connection.ref.entity}.getList(args);
+        let list = get(selectionSet, 'edges.node') ?
+          await context.connectors.#{connection.ref.entity}.getList(args): [];
+
         if (list.length > 0) {
           let cursor = pagination(args);
           let direction = detectCursorDirection(args)._id;
@@ -72,15 +74,23 @@ export const resolver: { [key: string]: any } = {
               node: l,
             };
           });
+
+          let pageInfo = get(selectionSet, 'pageInfo') ?
+            {
+              startCursor: get(selectionSet, 'pageInfo.startCursor')
+                ? edges[0].cursor : undefined,
+              endCursor: get(selectionSet, 'pageInfo.endCursor')
+                ? edges[edges.length - 1].cursor : undefined,
+              hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
+              hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+              count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount(args) : 0,
+            } : null;
+
           result = {
             edges,
-            pageInfo: {
-              startCursor: edges[0].cursor,
-              endCursor: edges[edges.length - 1].cursor,
-              hasPreviousPage: direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false,
-              hasNextPage: direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false,
-            },
+            pageInfo,
           };
+
         } else {
           result = emptyConnection();
         }
@@ -113,13 +123,10 @@ export const resolver: { [key: string]: any } = {
             eq: #{entity.ownerFieldName}.#{connection.ref.backField},
           }
         }
-<# let relFields = entity.
-  relations
-  .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
-  .map(f=>f.field);#>
+        /// idMap Должен быть для конечной сущности!!!!
         let idMap = {
           id: '_id',
-<# relFields.forEach(f=>{#>
+<# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
         };
@@ -144,8 +151,6 @@ export const resolver: { [key: string]: any } = {
         );
         if (links.length > 0) {
 
-          //let res = await Promise.all(links.map(i => context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.usingIndex}(i.#{connection.ref.usingField})));
-
           let res = await context.connectors.#{connection.ref.entity}.getList({
             filter: {
               #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
@@ -168,14 +173,24 @@ export const resolver: { [key: string]: any } = {
               };
             }).filter(l=>l.node);
 
+            let pageInfo = get(selectionSet, 'pageInfo') ?
+              {
+                startCursor: get(selectionSet, 'pageInfo.startCursor')
+                  ? edges[0].cursor : undefined,
+                endCursor: get(selectionSet, 'pageInfo.endCursor')
+                  ? edges[edges.length - 1].cursor : undefined,
+                hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
+                hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+                count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount({
+                  filter: {
+                    #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
+                  }
+                }) : 0,
+              } : null;
+
             result = {
               edges,
-              pageInfo: {
-                startCursor: edges[0].cursor,
-                endCursor: edges[edges.length - 1].cursor,
-                hasPreviousPage: direction === consts.DIRECTION.BACKWARD ? edges.length === cursor.limit : false,
-                hasNextPage: direction === consts.DIRECTION.FORWARD ? edges.length === cursor.limit : false,
-              },
+              pageInfo,
             };
           } else {
             result = emptyConnection();
