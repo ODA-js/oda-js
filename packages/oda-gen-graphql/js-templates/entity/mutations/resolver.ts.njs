@@ -148,6 +148,75 @@ async function unlinkFrom#{r.cField}({
 
 <#-}#>
 
+async function unlink#{entity.name}FromAll(args:{
+  key,
+  type,
+  value,
+}[],
+  context: {userGQL: (args: any)=>Promise<any>},
+){
+  if (args.length > 0 && context) {
+
+    const variables = args.reduce((res, cur) => {
+      res[cur.key] = cur.value;
+      return res;
+    }, {});
+
+    const qArgs = args.reduce((res, cur) => {
+      res.push(`${cur.key}: ${cur.type}`);
+      return res;
+    }, []).join(',');
+
+    const pArgs = args.reduce((res, cur) => {
+      res.push(`${cur.key}: $${cur.key}`);
+      return res;
+    }, []).join(',');
+
+    const input = await context.userGQL({
+      query: `fragment Unlink#{entity.name} on #{entity.name} {
+      id
+      <#- for(let fld of entity.relations){ #>
+      #{fld.field}Unlink: #{fld.field}<#-if(fld.single){#>{
+        id
+      }
+    <#-} else {#>@_(get: "edges"){
+        edges @_(map: "node"){
+          node {
+            id
+          }
+        }
+      }
+        <#-}#>
+      <#-}#>
+    }
+
+    query getUnlink(${qArgs}) {
+      input: #{entity.ownerFieldName}(${pArgs}){
+          ...Unlink#{entity.name}
+          }
+        }
+      }
+    }
+    `,
+    variables,
+  }).then(data => data.input);
+
+  await context.userGQL({
+    query: `
+    mutation unlink($input: update#{entity.name}Input!) {
+      update#{entity.name}(input: $input) {
+        #{entity.ownerFieldName} {
+          ...UnlinkFilm
+        }
+      }
+    }`,
+    variables:{
+      input,
+    }
+  });
+  }
+}
+
 export const mutation = {
   create#{entity.name}: mutateAndGetPayload( async (args: {
     <#- for (let f of entity.args.create.args) {#>
@@ -373,16 +442,37 @@ export const mutation = {
       #{args},
     <#-}#>
     },
-    context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
+    context: {
+      connectors: RegisterConnectors,
+      pubsub: PubSubEngine,
+      userGQL: (args: any)=>Promise<any> },
     info,
   ) => {
     logger.trace('delete#{entity.name}');
     let result;
     try {
       if (args.id) {
+
+        await unlink#{entity.name}FromAll([{
+          key: 'id',
+          type: 'ID',
+          value: args.id,
+        }],
+          context,
+        );
+
         result = await context.connectors.#{entity.name}.findOneByIdAndRemove(fromGlobalId(args.id).id);
       <#- for (let f of entity.args.remove.find) {#>
       } else if (args.#{f.name}) {
+
+        await unlink#{entity.name}FromAll([{
+          key: '#{f.name}',
+          type: '#{f.gqlType}',
+          value: args.#{f.name},
+        }],
+          context,
+        );
+
         result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
       <#-}#>
       <#- for (let f of entity.complexUnique) {
@@ -391,6 +481,18 @@ export const mutation = {
         let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
         #>
       } else if (#{condArgs}) {
+
+        await unlink#{entity.name}FromAll([
+          <#-f.fields.forEach((f, i)=>{#>
+          <#-if(i>0){#>, <#}#>{
+            key: '#{f.name}',
+            type: '#{f.gqlType}',
+            value: args.#{f.name},
+          }
+          <#-});-#>],
+          context,
+        );
+
         result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
       <#-}#>
       }

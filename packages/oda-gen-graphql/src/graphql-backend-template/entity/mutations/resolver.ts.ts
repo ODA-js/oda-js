@@ -26,6 +26,19 @@ export interface MapperOutupt {
     name: string;
     ref: {
       entity: string;
+      fieldName: string;
+    }
+  }[];
+  fields: { name: string }[];
+  persistent: {
+    derived: boolean;
+    persistent: boolean;
+    field: string;
+    single: boolean;
+    name: string;
+    ref: {
+      entity: string;
+      fieldName: string;
     }
   }[];
   args: {
@@ -66,6 +79,27 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
+  const mapToGQLTypes = typeMapper.graphql;
+
+  const relations = fieldsAcl
+    .filter(relationFieldsExistsIn(pack))
+    .map(f => {
+      let verb = f.relation.verb;
+      let sameEntity = entity.name === f.relation.ref.entity;
+      let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+      return {
+        persistent: f.persistent,
+        derived: f.derived,
+        field: f.name,
+        name: f.relation.fullName,
+        cField: capitalize(f.name),
+        single: (verb === 'BelongsTo' || verb === 'HasOne'),
+        ref: {
+          entity: f.relation.ref.entity,
+          fieldName: decapitalize(refFieldName),
+        },
+      };
+    });
 
   return {
     name: entity.name,
@@ -134,6 +168,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           name: f.name,
           uName: capitalize(f.name),
           type: mapToTSTypes(f.type),
+          gqlType: mapToGQLTypes(f.type),
         })).sort((a, b) => {
           if (a.name > b.name) return 1
           else if (a.name < b.name) return -1;
@@ -144,25 +179,15 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         fields,
       };
     }),
-    relations: fieldsAcl
-      .filter(relationFieldsExistsIn(pack))
-      .map(f => {
-        let verb = f.relation.verb;
-        let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-        return {
-          persistent: f.persistent,
-          derived: f.derived,
-          field: f.name,
-          name: f.relation.fullName,
-          cField: capitalize(f.name),
-          single: (verb === 'BelongsTo' || verb === 'HasOne'),
-          ref: {
-            entity: f.relation.ref.entity,
-            fieldName: decapitalize(refFieldName),
-          },
-        };
-      }),
+    relations,
+    persistent: relations.filter(f => f.persistent),
+    fields: [
+      ...ids,
+      ...fieldsAcl
+        .filter(f => mutableFields(f))]
+      .map(f => ({
+        name: f.name,
+      })),
     args: {
       create: {
         args: [
@@ -225,6 +250,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
+              gqlType: mapToGQLTypes(f.type),
               cName: capitalize(f.name),
             }))],
       },
