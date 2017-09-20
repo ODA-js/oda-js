@@ -80,13 +80,13 @@ export class Filter {
     },
     match(value, idMap, id) {
       if (typeof value !== 'string') {
-        throw new Error('expected string type for exists operation');
+        throw new Error('expected string type for match operation');
       }
       return { $regex: new RegExp(value) };
     },
     imatch(value, idMap, id) {
       if (typeof value !== 'string') {
-        throw new Error('expected string type for exists operation');
+        throw new Error('expected string type for imatch operation');
       }
       return { $regex: new RegExp(value, 'i') };
     },
@@ -179,13 +179,13 @@ export class FilterSequelize {
     },
     match(value, idMap, id) {
       if (typeof value !== 'string') {
-        throw new Error('expected string type for exists operation');
+        throw new Error('expected string type for match operation');
       }
       return { $regexp: value };
     },
     imatch(value, idMap, id) {
       if (typeof value !== 'string') {
-        throw new Error('expected string type for exists operation');
+        throw new Error('expected string type for imatch operation');
       }
       return { $iRegexp: value };
     },
@@ -320,7 +320,7 @@ export class Process {
       return '!(' + value.map(v => `(${Process.go(v)})`).join('&&') + ')';
     },
     exists(value, idMap, id) {
-      return `${value ? '' : '!'}(value! == undefined || value!== null || value!== '')`;
+      return `${value ? '' : '!'}(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
