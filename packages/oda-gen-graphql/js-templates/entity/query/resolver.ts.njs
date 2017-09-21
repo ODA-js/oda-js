@@ -51,22 +51,21 @@ export const query: { [key: string]: any } = {
 <#})-#>
     };
 
-    let list = get(selectionSet, 'edges.node') ? await context.connectors.#{entity.name}.getList({
+    let list = await context.connectors.#{entity.name}.getList({
       ...args,
       idMap,
-    }) : [];
+    });
 
     if (list.length > 0) {
       let cursor = pagination(args);
       let direction = detectCursorDirection(args)._id;
 
-      let edges = get(selectionSet, 'edges') ?
-        list.map(l => {
+      let edges = list.map(l => {
           return {
             cursor: idToCursor(l.id),
             node: l,
           };
-        }) : null;
+        });
 
       let pageInfo = get(selectionSet, 'pageInfo') ?
         {

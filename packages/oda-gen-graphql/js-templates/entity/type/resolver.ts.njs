@@ -62,8 +62,7 @@ export const resolver: { [key: string]: any } = {
         args.filter.#{connection.ref.field} =  {
           eq: #{entity.ownerFieldName}.#{connection.ref.backField}
         };
-        let list = get(selectionSet, 'edges.node') ?
-          await context.connectors.#{connection.ref.entity}.getList(args): [];
+        let list = await context.connectors.#{connection.ref.entity}.getList(args);
 
         if (list.length > 0) {
           let cursor = pagination(args);
