@@ -67,16 +67,14 @@ export const query: { [key: string]: any } = {
           };
         });
 
-      let pageInfo = get(selectionSet, 'pageInfo') ?
-        {
-          startCursor: get(selectionSet, 'pageInfo.startCursor')
-            ? edges[0].cursor : undefined,
+      let pageInfo = {
+          startCursor: edges[0].cursor,
           endCursor: get(selectionSet, 'pageInfo.endCursor')
             ? edges[edges.length - 1].cursor : undefined,
           hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
           hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
           count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{entity.name}.getCount(args) : 0,
-        } : null;
+        };
 
       result = {
         edges,
