@@ -51,30 +51,33 @@ export const query: { [key: string]: any } = {
 <#})-#>
     };
 
-    let list = await context.connectors.#{entity.name}.getList({
+    let list = get(selectionSet, 'edges.node') ? await context.connectors.#{entity.name}.getList({
       ...args,
       idMap,
-    });
+    }) : [];
 
     if (list.length > 0) {
       let cursor = pagination(args);
       let direction = detectCursorDirection(args)._id;
 
-      let edges = list.map(l => {
+      let edges = get(selectionSet, 'edges') ?
+        list.map(l => {
           return {
             cursor: idToCursor(l.id),
             node: l,
           };
-        });
+        }) : null;
 
-      let pageInfo = {
-          startCursor: edges[0].cursor,
+      let pageInfo = get(selectionSet, 'pageInfo') ?
+        {
+          startCursor: get(selectionSet, 'pageInfo.startCursor')
+            ? edges[0].cursor : undefined,
           endCursor: get(selectionSet, 'pageInfo.endCursor')
             ? edges[edges.length - 1].cursor : undefined,
           hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
           hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
           count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{entity.name}.getCount(args) : 0,
-        };
+        } : null;
 
       result = {
         edges,

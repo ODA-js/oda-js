@@ -62,7 +62,8 @@ export const resolver: { [key: string]: any } = {
         args.filter.#{connection.ref.field} =  {
           eq: #{entity.ownerFieldName}.#{connection.ref.backField}
         };
-        let list = await context.connectors.#{connection.ref.entity}.getList(args);
+        let list = get(selectionSet, 'edges.node') ?
+          await context.connectors.#{connection.ref.entity}.getList(args): [];
 
         if (list.length > 0) {
           let cursor = pagination(args);
@@ -74,13 +75,16 @@ export const resolver: { [key: string]: any } = {
             };
           });
 
-          let pageInfo = {
-              startCursor: edges[0].cursor,
-              endCursor: edges[edges.length - 1].cursor,
-              hasPreviousPage: (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false),
-              hasNextPage: (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false),
-              count: await context.connectors.#{connection.ref.entity}.getCount(args),
-            };
+          let pageInfo = get(selectionSet, 'pageInfo') ?
+            {
+              startCursor: get(selectionSet, 'pageInfo.startCursor')
+                ? edges[0].cursor : undefined,
+              endCursor: get(selectionSet, 'pageInfo.endCursor')
+                ? edges[edges.length - 1].cursor : undefined,
+              hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
+              hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+              count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount(args) : 0,
+            } : null;
 
           result = {
             edges,
@@ -169,17 +173,20 @@ export const resolver: { [key: string]: any } = {
               };
             }).filter(l=>l.node);
 
-            let pageInfo = {
-                startCursor: edges[0].cursor,
-                endCursor: edges[edges.length - 1].cursor,
-                hasPreviousPage: (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false),
-                hasNextPage: (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false),
-                count: await context.connectors.#{connection.ref.entity}.getCount({
+            let pageInfo = get(selectionSet, 'pageInfo') ?
+              {
+                startCursor: get(selectionSet, 'pageInfo.startCursor')
+                  ? edges[0].cursor : undefined,
+                endCursor: get(selectionSet, 'pageInfo.endCursor')
+                  ? edges[edges.length - 1].cursor : undefined,
+                hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
+                hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+                count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount({
                   filter: {
                     #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
                   }
-                }),
-              };
+                }) : 0,
+              } : null;
 
             result = {
               edges,
