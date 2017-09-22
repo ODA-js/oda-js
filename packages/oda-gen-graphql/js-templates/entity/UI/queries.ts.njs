@@ -26,8 +26,8 @@ export default {
 import gql from 'graphql-tag';
 
 export default {
-  list: gql`
-  fragment #{entity.name}List on #{entity.name}{
+  full: gql`
+  fragment #{entity.name}Full on #{entity.name}{
 <# entity.fields.forEach(f=>{-#>
     #{f.name}
 <#})-#>
@@ -35,14 +35,36 @@ export default {
     #{f.field}{<#if(f.single){#>
       id
     <#} else {#>
-      edges{
-        node{
+      edges {
+        node {
           id
         }
       }
     <#}#>}
 <#})-#>
-            }
+  }
+  `,
+  fullResult: gql`
+  fragment #{entity.name}FullResult on #{entity.name}{
+<# entity.fields.forEach(f=>{-#>
+    #{f.name}
+<#})-#>
+<# entity.relations.forEach(f=>{
+-#><#-if(f.single){#>
+    #{f.field}Id: #{f.field} @_(get:"id") {
+      id
+    }
+    <#-} else {#>
+    #{f.field}Ids: #{f.field} @_(get:"edges") {
+      edges @_(map:"node") {
+        node @_(get:"id"){
+          id
+        }
+      }
+    }
+<#-}-#>
+<#-})#>
+  }
   `
 }
 
@@ -63,30 +85,30 @@ query listResult{
       }
       data: edges @_(each:{assign:"node"}) {
         node {
-          ...#{entity.name}List
+          ...#{entity.name}FullResult
         }
       }
     }
   }
-  ${fragments.list}
+  ${fragments.fullResult}
 `
 
 
 export default {
-  query: gql` query #{entity.plural}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter){
-        items: #{entity.listName}(skip:$skip, limit: $limit, orderBy: $orderBy, filter: $filter) {
-          pageInfo{
-            count
-          }
-          edges {
-            node {
-              ...#{entity.name}List
-            }
-          }
+  query: gql`query #{entity.plural}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter){
+    items: #{entity.listName}(skip:$skip, limit: $limit, orderBy: $orderBy, filter: $filter) {
+      pageInfo{
+        count
+      }
+      edges {
+        node {
+          ...#{entity.name}Full
         }
       }
-      ${fragments.list}
-      `,
+    }
+  }
+  ${fragments.full}
+`,
   parseResponse: response => {
     let data = reshape(listResult, response.data);
     return {
@@ -114,3 +136,34 @@ export default {
 
 }
 
+<# chunkStart(`../../../UI/${entity.name}/getOne`); #>
+import gql from 'graphql-tag';
+import { reshape } from 'oda-lodash';
+import fragments from './fragments';
+
+const oneResult = gql`{
+  item {
+    ...#{entity.name}FullResult
+  }
+}
+${fragments.fullResult}
+`
+export default {
+  query: gql`
+  query Person($id: ID){
+    item: person(id: $id) {
+      ...#{entity.name}Full
+    }
+  }
+  ${fragments.full}
+  `,
+  parseResponse: response => {
+    let data = reshape(oneResult, response.data);
+    return {
+      data: data.item,
+    };
+  },
+  variables: params => ({
+    id: params.id,
+  }),
+}
