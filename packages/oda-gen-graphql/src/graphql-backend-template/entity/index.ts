@@ -7,6 +7,7 @@ import * as query from './query';
 import * as viewer from './viewer';
 import * as type from './type';
 import * as index from './type.index.ts';
+import * as UI from './UI';
 
 export {
   connections,
@@ -18,4 +19,5 @@ export {
   viewer,
   type,
   index,
+  UI,
 }

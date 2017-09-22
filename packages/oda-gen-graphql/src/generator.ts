@@ -36,6 +36,9 @@ export type GeneratorConfigPackage = {
       queries?: boolean | string[];
       config?: boolean | string[];
     },
+    UI?: boolean | string[] | {
+      queries?: boolean | string[];
+    },
     mutations?: boolean | string[] | {
       entry?: boolean | string[];
       types?: boolean | string[];
@@ -129,6 +132,9 @@ const def = {
       dataPump: {
         queries: true,
         config: true,
+      },
+      UI: {
+        queries: true,
       },
       mutations: {
         entry: true,
@@ -596,6 +602,7 @@ export default (args: Generator) => {
         generate(entities, curConfig, 'entity', 'connections.mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'dataPump.config', 'ts');
+        generate(entities, curConfig, 'entity', 'UI.queries', 'ts');
         generate(entities, curConfig, 'entity', 'subscriptions.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'query.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'viewer.resolver', 'ts');
