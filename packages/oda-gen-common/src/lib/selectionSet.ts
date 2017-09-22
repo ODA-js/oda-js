@@ -4,7 +4,7 @@ export default function getSelection(info) {
   if (!info) {
     throw new Error('must provide not null graphql info');
   }
-  const selectionSet = traverse(info.operation.selectionSet);
+  const selectionSet = traverse(info.operation.selectionSet, info.fragments);
   const path = getPath(info.path);
   const result = get(selectionSet, path);
   return normalize(result);
@@ -23,24 +23,29 @@ function normalize(tree) {
   }
 }
 
-function traverse(operation, obj = {}) {
+function traverse(operation, fragmentsMap, obj = {}) {
   if (operation) {
     if (Array.isArray(operation)) {
-      operation.forEach(item => traverse(item, obj));
+      operation.forEach(item => traverse(item, fragmentsMap, obj));
       return obj;
     } else {
       let field = (operation.alias ? operation.alias.value : '') || (operation.name ? operation.name.value : '');
       switch (operation.kind) {
         case 'SelectionSet':
-          return traverse(operation.selections, obj) || {};
+          return traverse(operation.selections, fragmentsMap, obj) || {};
         case 'OperationDefinition':
-          obj[field] = traverse(operation.selectionSet) || {};
+          obj[field] = traverse(operation.selectionSet, fragmentsMap, ) || {};
           obj[field].___$$$___node = operation;
           return obj;
         case 'Field':
-          obj[field] = traverse(operation.selectionSet) || {};
+          obj[field] = traverse(operation.selectionSet, fragmentsMap, ) || {};
           obj[field].___$$$___node = operation;
           return obj;
+        case 'FragmentSpread':
+          return traverse(fragmentsMap[field], fragmentsMap, obj) || {};
+        case 'FragmentDefinition':
+          debugger;
+          return traverse(operation.selectionSet, fragmentsMap, obj) || {};
       }
     }
   }
