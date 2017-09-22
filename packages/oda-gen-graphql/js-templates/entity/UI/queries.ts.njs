@@ -73,8 +73,8 @@ query listResult{
 
 
 export default {
-  query: gql` query #{entity.plural}($skip: Int, $last: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter){
-        items: #{entity.listName}(skip:$skip, last: $last, orderBy: $orderBy, filter: $filter) {
+  query: gql` query #{entity.plural}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter){
+        items: #{entity.listName}(skip:$skip, limit: $limit, orderBy: $orderBy, filter: $filter) {
           pageInfo{
             count
           }
