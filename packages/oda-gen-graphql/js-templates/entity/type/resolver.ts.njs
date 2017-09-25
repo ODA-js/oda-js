@@ -54,7 +54,12 @@ export const resolver: { [key: string]: any } = {
         result = #{connection.refFieldName}[0];
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
-
+        let idMap = {
+          id: '_id',
+<# connection.idMap.forEach(f=>{-#>
+          #{f}: '#{f}',
+<#})-#>
+        };
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField}) {
         if(!args.filter){
           args.filter = {};
@@ -63,7 +68,10 @@ export const resolver: { [key: string]: any } = {
           eq: #{entity.ownerFieldName}.#{connection.ref.backField}
         };
         let list = get(selectionSet, 'edges.node') ?
-          await context.connectors.#{connection.ref.entity}.getList(args): [];
+          await context.connectors.#{connection.ref.entity}.getList({
+            ...args,
+            idMap,
+          }): [];
 
         if (list.length > 0) {
           let cursor = pagination(args);
@@ -83,7 +91,10 @@ export const resolver: { [key: string]: any } = {
                 ? edges[edges.length - 1].cursor : undefined,
               hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
               hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
-              count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount(args) : 0,
+              count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount({
+                ...args,
+                idMap,
+                }) : 0,
             } : null;
 
           result = {
@@ -123,7 +134,6 @@ export const resolver: { [key: string]: any } = {
             eq: #{entity.ownerFieldName}.#{connection.ref.backField},
           }
         }
-        /// idMap Должен быть для конечной сущности!!!!
         let idMap = {
           id: '_id',
 <# connection.idMap.forEach(f=>{-#>
