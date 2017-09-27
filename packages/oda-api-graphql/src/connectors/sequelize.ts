@@ -74,8 +74,8 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       const detect = (name: string, value: any) =>
         ({
           [name]: (sort[name] === DIRECTION.BACKWARD) ?
-            { [cursor.after ? '$lt' : '$gt']: value } :
-            { [cursor.before ? '$lt' : '$gt']: value },
+            { [cursor.after ? '$lte' : '$gte']: value } :
+            { [cursor.before ? '$lte' : '$gte']: value },
         });
       ;
       let sortKeys = Object.keys(sort);
