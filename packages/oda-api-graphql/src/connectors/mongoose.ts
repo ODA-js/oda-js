@@ -85,18 +85,13 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
         let current = await this.findOneById(cursor.after || cursor.before);
         let find = sortKeys.filter(f => f !== '_id').map(f => detect(f, current[f]));
         find.push({ _id: { $gt: cursor.after || cursor.before } });
-        const or = [];
-        while (find.length > 0) {
-          or.push(find.reduce((prev, curr) => {
-            prev = {
-              ...prev,
-              ...curr,
-            };
-            return prev;
-          }, {}));
-          find.pop();
-        }
-        move = { $or: or };
+        move = find.reduce((prev, curr) => {
+          prev = {
+            ...prev,
+            ...curr,
+          };
+          return prev;
+        }, {});
       } else {
         move = {
           _id: { [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']: cursor.after || cursor.before },
