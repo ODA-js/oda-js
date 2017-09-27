@@ -74,22 +74,33 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       const detect = (name: string, value: any) =>
         ({
           [name]: (sort[name] === DIRECTION.BACKWARD) ?
-            { [cursor.after ? '$lte' : '$gte']: value } :
-            { [cursor.before ? '$lte' : '$gte']: value },
+            { [cursor.after ? '$lt' : '$gt']: value } :
+            { [cursor.before ? '$lt' : '$gt']: value },
         });
       ;
       let sortKeys = Object.keys(sort);
       if (sortKeys.length > 1) {
         let current = await this.findOneById(cursor.after || cursor.before);
-        let find = sortKeys.filter(f => f !== '_id').map(f => detect(f, current[f]));
-        find.push({ _id: { $gt: cursor.after || cursor.before } });
-        move = find.reduce((prev, curr) => {
-          prev = {
-            ...prev,
-            ...curr,
-          };
-          return prev;
-        }, {});
+        let find = sortKeys.filter(f => f !== '_id');
+        find.push('_id');
+        const or = [];
+        while (find.length > 0) {
+          const len = find.length;
+          or.push(find.reduce((prev, f, index) => {
+            const curr = index == len - 1 ?
+              detect(f, current[f]) :
+              {
+                [f]: { $eq: current[f] },
+              };
+            prev = {
+              ...prev,
+              ...curr,
+            };
+            return prev;
+          }, {}));
+          find.pop();
+        }
+        move = { $or: or };
       } else {
         move = {
           _id: { [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']: cursor.after || cursor.before },

@@ -44,7 +44,6 @@ function traverse(operation, fragmentsMap, obj = {}) {
         case 'FragmentSpread':
           return traverse(fragmentsMap[field], fragmentsMap, obj) || {};
         case 'FragmentDefinition':
-          debugger;
           return traverse(operation.selectionSet, fragmentsMap, obj) || {};
       }
     }
