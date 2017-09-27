@@ -85,8 +85,6 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
         let current = await this.findOneById(cursor.after || cursor.before);
         let find = sortKeys.filter(f => f !== '_id');
         find.push('_id');
-        // let find = sortKeys.filter(f => f !== '_id').map(f => detect(f, current[f]));
-        // find.push({ _id: { $gt: cursor.after || cursor.before } });
         const or = [];
         while (find.length > 0) {
           const len = find.length;
@@ -94,9 +92,8 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
             const curr = index == len - 1 ?
               detect(f, current[f]) :
               {
-                [f]: { eq: current[f] },
+                [f]: { $eq: current[f] },
               };
-
             prev = {
               ...prev,
               ...curr,
