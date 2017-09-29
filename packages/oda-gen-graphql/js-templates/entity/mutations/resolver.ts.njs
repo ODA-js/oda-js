@@ -192,9 +192,7 @@ async function unlink#{entity.name}FromAll(args:{
 
     query getUnlink(${qArgs}) {
       input: #{entity.ownerFieldName}(${pArgs}){
-          ...Unlink#{entity.name}
-          }
-        }
+        ...Unlink#{entity.name}
       }
     }
     `,
@@ -206,7 +204,7 @@ async function unlink#{entity.name}FromAll(args:{
     mutation unlink($input: update#{entity.name}Input!) {
       update#{entity.name}(input: $input) {
         #{entity.ownerFieldName} {
-          ...UnlinkFilm
+          ...Unlink#{entity.name}
         }
       }
     }`,
