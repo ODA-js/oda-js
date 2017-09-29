@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
-
+import gql from 'graphql-tag';
 import {
   fromGlobalId,
   toGlobalId,
@@ -52,7 +52,7 @@ async function ensure#{relEntity.name}({
   let #{relEntity.findQuery};
   if (filter) {
     #{relEntity.findQuery} = await context.userGQL({
-      query: `query find#{relEntity.name}(${fArgs}){
+      query: gql`query find#{relEntity.name}(${fArgs}){
             #{relEntity.findQuery}(${filter}){
               id
             }
@@ -65,7 +65,7 @@ async function ensure#{relEntity.name}({
   if (!#{relEntity.findQuery}) {
     if (create) {
       #{relEntity.findQuery} = await context.userGQL({
-        query: `mutation create#{relEntity.name}($#{relEntity.findQuery}: create#{relEntity.name}Input!) {
+        query: gql`mutation create#{relEntity.name}($#{relEntity.findQuery}: create#{relEntity.name}Input!) {
             create#{relEntity.name}(input: $#{relEntity.findQuery}) {
               #{relEntity.findQuery} {
                 node {
@@ -83,7 +83,7 @@ async function ensure#{relEntity.name}({
   } else {
     // update
     #{relEntity.findQuery} = await context.userGQL({
-      query: `mutation update#{relEntity.name}($#{relEntity.findQuery}: update#{relEntity.name}Input!) {
+      query: gql`mutation update#{relEntity.name}($#{relEntity.findQuery}: update#{relEntity.name}Input!) {
             update#{relEntity.name}(input: $#{relEntity.findQuery}) {
               #{relEntity.findQuery} {
                 id
@@ -107,7 +107,7 @@ async function linkTo#{r.cField}({
 }) {
   if (#{r.field}) {
     await context.userGQL({
-      query: `mutation addTo#{r.name}($input:addTo#{r.name}Input!) {
+      query: gql`mutation addTo#{r.name}($input:addTo#{r.name}Input!) {
           addTo#{r.name}(input:$input){
             #{entity.ownerFieldName} {
               id
@@ -129,7 +129,7 @@ async function unlinkFrom#{r.cField}({
 }) {
   if (#{r.field}) {
     await context.userGQL({
-      query: `mutation removeFrom#{r.name}($input: removeFrom#{r.name}Input!) {
+      query: gql`mutation removeFrom#{r.name}($input: removeFrom#{r.name}Input!) {
           removeFrom#{r.name}(input:$input){
             #{entity.ownerFieldName} {
               id
@@ -171,43 +171,47 @@ async function unlink#{entity.name}FromAll(args:{
       res.push(`${cur.key}: $${cur.key}`);
       return res;
     }, []).join(',');
-
-    const input = await context.userGQL({
-      query: `fragment Unlink#{entity.name} on #{entity.name} {
-      id
-      <#- for(let fld of entity.relations){ #>
-      #{fld.field}Unlink: #{fld.field}<#-if(fld.single){#>{
+    const unlinkFragment = gql`
+      fragment Unlink#{entity.name} on #{entity.name} {
         id
-      }
-    <#-} else {#>@_(get: "edges"){
-        edges @_(map: "node"){
-          node {
-            id
+        <#- for(let fld of entity.relations){ #>
+        #{fld.field}Unlink: #{fld.field}<#-if(fld.single){#>{
+          id
+        }
+      <#-} else {#>@_(get: "edges"){
+          edges @_(map: "node"){
+            node {
+              id
+            }
           }
         }
-      }
+          <#-}#>
         <#-}#>
-      <#-}#>
-    }
-
-    query getUnlink(${qArgs}) {
-      input: #{entity.ownerFieldName}(${pArgs}){
-        ...Unlink#{entity.name}
       }
-    }
-    `,
+    `;
+    const input = await context.userGQL({
+      query: gql`
+        query getUnlink(${qArgs}) {
+        input: #{entity.ownerFieldName}(${pArgs}){
+          ...Unlink#{entity.name}
+        }
+      }
+      ${unlinkFragment}
+      `,
     variables,
   }).then(data => data.input);
 
   await context.userGQL({
-    query: `
+    query: gql`
     mutation unlink($input: update#{entity.name}Input!) {
       update#{entity.name}(input: $input) {
         #{entity.ownerFieldName} {
           ...Unlink#{entity.name}
         }
       }
-    }`,
+    }
+    ${unlinkFragment}
+    `,
     variables:{
       input,
     }
