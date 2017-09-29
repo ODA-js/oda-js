@@ -213,9 +213,7 @@ async function unlink#{entity.name}FromAll(args:{
         }
         ${unlinkFragment}
         `,
-        variables:{
-          input,
-        }
+        variables: input
       });
     }
   }
