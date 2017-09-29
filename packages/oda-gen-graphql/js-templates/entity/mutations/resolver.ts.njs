@@ -190,32 +190,34 @@ async function unlink#{entity.name}FromAll(args:{
       }
     `;
     const input = await context.userGQL({
-      query: gql`
-        query getUnlink(${qArgs}) {
-        input: #{entity.ownerFieldName}(${pArgs}){
-          ...Unlink#{entity.name}
+        query: gql`
+          query getUnlink(${qArgs}) {
+          input: #{entity.ownerFieldName}(${pArgs}){
+            ...Unlink#{entity.name}
+          }
         }
-      }
-      ${unlinkFragment}
-      `,
-    variables,
-  }).then(data => data.input);
+        ${unlinkFragment}
+        `,
+      variables,
+    }).then(data => data.input);
 
-  await context.userGQL({
-    query: gql`
-    mutation unlink($input: update#{entity.name}Input!) {
-      update#{entity.name}(input: $input) {
-        #{entity.ownerFieldName} {
-          ...Unlink#{entity.name}
+    if(input){
+      await context.userGQL({
+        query: gql`
+        mutation unlink($input: update#{entity.name}Input!) {
+          update#{entity.name}(input: $input) {
+            #{entity.ownerFieldName} {
+              ...Unlink#{entity.name}
+            }
+          }
         }
-      }
+        ${unlinkFragment}
+        `,
+        variables:{
+          input,
+        }
+      });
     }
-    ${unlinkFragment}
-    `,
-    variables:{
-      input,
-    }
-  });
   }
 }
 
