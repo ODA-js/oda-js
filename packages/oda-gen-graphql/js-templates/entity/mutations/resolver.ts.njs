@@ -163,7 +163,7 @@ async function unlink#{entity.name}FromAll(args:{
     }, {});
 
     const qArgs = args.reduce((res, cur) => {
-      res.push(`${cur.key}: ${cur.type}`);
+      res.push(`$${cur.key}: ${cur.type}`);
       return res;
     }, []).join(',');
 
