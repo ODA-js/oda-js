@@ -199,7 +199,7 @@ async function unlink#{entity.name}FromAll(args:{
         ${unlinkFragment}
         `,
       variables,
-    }).then(data => data.input);
+    }).then(r => r.data || r.data.input);
 
     if(input){
       await context.userGQL({
