@@ -341,7 +341,7 @@ export const mutation = {
       throw err;
     }
 
-    if(!result){
+    if (!result) {
       throw new Error('Specified item not found!');
     }
 
@@ -502,7 +502,7 @@ export const mutation = {
       throw err;
     }
 
-    if(!result){
+    if (!result) {
       throw new Error('Specified item not found!');
     }
 
