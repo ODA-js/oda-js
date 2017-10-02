@@ -337,8 +337,8 @@ export const mutation = {
         result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
       <#-}#>
       }
-    } catch(err) {
-
+    } catch (err) {
+      throw err;
     }
 
     if(!result){
@@ -498,8 +498,8 @@ export const mutation = {
         result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
       <#-}#>
       }
-    } catch (err){
-
+    } catch (err) {
+      throw err;
     }
 
     if(!result){
