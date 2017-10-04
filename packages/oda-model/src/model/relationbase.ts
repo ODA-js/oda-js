@@ -25,6 +25,10 @@ export class RelationBase extends Metadata {
     return this.$obj.name;
   }
 
+  get field(): string {
+    return this.$obj.field;
+  }
+
   get fields(): RelationFields[] | undefined {
     return this.$obj.fields;
   }
