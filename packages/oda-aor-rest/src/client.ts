@@ -2,7 +2,7 @@ import buildApolloClient from './apollo';
 import { ApolloClient } from 'apollo-client';
 import { QUERY_TYPES } from './constants';
 
-export default ({ client: clientOptions, resources: resourceList }) => {
+export default ({ client: clientOptions, resources: resourceList, queries = {}, fetchPolicy = 'network-only' }) => {
 
   const client = clientOptions && clientOptions instanceof ApolloClient
     ? clientOptions
@@ -26,24 +26,42 @@ export default ({ client: clientOptions, resources: resourceList }) => {
       throw new Error(`No ${type} method found for name ${resourceName}`);
     }
 
-    const operation = resource[type]();
+    const operation = resource[type](queries[type]);
 
     const variables = typeof operation.variables === 'function' ? operation.variables(params) : operation.variables;
 
+    const currentfetchPolicy = typeof operation.fetchPolicy === 'function' ? operation.fetchPolicy(params) : operation.fetchPolicy || fetchPolicy;
+
+    const refetchQueries = typeof operation.refetchQueries === 'function' ? operation.refetchQueries(variables) : operation.refetchQueries;
+
+    const update = typeof operation.update === 'function' ? operation.update : false;
+    const query = typeof operation.query === 'function' ? operation.query(params) : operation.query;
+
     if (QUERY_TYPES.includes(type)) {
-      const apolloQuery = {
-        query: operation.query,
+      const apolloQuery: any = {
+        query,
         variables,
-        fetchPolicy: 'network-only',
       };
+      if (fetchPolicy) {
+        apolloQuery.fetchPolicy = currentfetchPolicy;
+      }
       action = client.query(apolloQuery);
     } else {
-      const apolloQuery = {
+      const apolloQuery: any = {
         mutation: operation.query,
         variables,
       };
+
+      if (refetchQueries) {
+        apolloQuery.refetchQueries = refetchQueries;
+      }
+
+      if (update) {
+        apolloQuery.update = update;
+      }
+
       action = client.mutate(apolloQuery)
     }
-    return action.then(operation.parseResponse);
+    return action.then(response => operation.parseResponse(response, params));
   };
 }
