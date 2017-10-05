@@ -107,6 +107,14 @@ const transformations = {
   String: {
     startsWith,
     endsWith,
+    match: (src: string, args) => {
+      debugger;
+      return src.match(new RegExp(args.match, args.flags || 'g'));
+    },
+    isMatch: (src: string, args) => {
+      debugger;
+      return (new RegExp(args.match, args.flags)).test(src);
+    },
   },
   '*': {
     dive: (src, args) => (obj, key) => {

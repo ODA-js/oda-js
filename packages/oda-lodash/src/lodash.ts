@@ -50,6 +50,8 @@ filterIf: Predicate
 rejectIf: Predicate
 groupBy: Path
 sortBy: [Path!]
+match: RegExpr
+isMatch: RegExpr
 
 minBy: Path
 maxBy: Path
@@ -94,6 +96,17 @@ export class Path extends types.GQLModule {
   protected _typeDef = {
     type: [`
       scalar Path
+    `],
+  };
+}
+
+export class RegularExpression extends types.GQLModule {
+  protected _typeDef = {
+    type: [`
+        input RegExpr {
+          match: String!
+          flags: String
+        }
     `],
   };
 }
@@ -149,6 +162,7 @@ export class DummyArgument extends types.GQLModule {
 
 export class LodashModule extends types.GQLModule {
   protected _extend = [
+    new RegularExpression({}),
     new Path({}),
     new Predicate({}),
     new DirectiveLodash({}),

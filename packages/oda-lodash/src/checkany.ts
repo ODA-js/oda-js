@@ -10,6 +10,8 @@ const getData = gql`
         node @_(assign:["homeworld","species"]){
           id
           name
+          isLuke: name @_(isMatch:{match:"Luke", flags:"ig"})
+          Name: name @_(match:{match:"Luke", flags:"ig"}, take:0)
           species {
             sp_id:id
             spName: name
