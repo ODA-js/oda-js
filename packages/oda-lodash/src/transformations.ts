@@ -108,11 +108,9 @@ const transformations = {
     startsWith,
     endsWith,
     match: (src: string, args) => {
-      debugger;
-      return src.match(new RegExp(args.match, args.flags || 'g'));
+      return src.match(new RegExp(args.match, args.flags));
     },
     isMatch: (src: string, args) => {
-      debugger;
       return (new RegExp(args.match, args.flags)).test(src);
     },
   },
