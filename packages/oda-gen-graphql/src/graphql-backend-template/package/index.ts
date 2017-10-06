@@ -7,6 +7,7 @@ import * as viewer from './package.viewer.ts';
 import * as schemaPuml from './schema.puml';
 import * as graphqlIndex from './package.graphql.index.ts';
 import * as graphqlSchema from './package.graphql.schema.ts';
+import * as uiIndex from './ui-index.ts';
 
 export {
   registerMongooseConnectors,
@@ -18,4 +19,5 @@ export {
   schemaPuml,
   graphqlIndex,
   graphqlSchema,
+  uiIndex,
 }

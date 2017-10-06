@@ -39,6 +39,7 @@ export type GeneratorConfigPackage = {
     UI?: boolean | string[] | {
       queries?: boolean | string[];
       forms?: boolean | string[];
+      index?: boolean | string[];
     },
     mutations?: boolean | string[] | {
       entry?: boolean | string[];
@@ -137,6 +138,7 @@ const def = {
       UI: {
         queries: true,
         forms: true,
+        index: true,
       },
       mutations: {
         entry: true,
@@ -606,6 +608,9 @@ export default (args: Generator) => {
         generate(entities, curConfig, 'entity', 'dataPump.config', 'ts');
         generate(entities, curConfig, 'entity', 'UI.queries', 'js');
         generate(entities, curConfig, 'entity', 'UI.forms', 'js');
+
+        generatePkg(pkg, 'UI', 'uiIndex', 'index.js');
+
         generate(entities, curConfig, 'entity', 'subscriptions.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'query.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'viewer.resolver', 'ts');

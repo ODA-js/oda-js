@@ -79,6 +79,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
     .map(f => {
+      let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
       let ref = {
         opposite: '',
@@ -87,9 +88,10 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         entity: f.relation.ref.entity,
         queryName: decapitalize(f.relation.ref.entity),
         field: f.relation.ref.field,
-        type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type,
+        type: refe.fields.get(f.relation.ref.field).type,
         cField: capitalize(f.relation.ref.field),
         fields: [],
+        listName: "",
         using: {
           backField: '',
           entity: '',
@@ -102,7 +104,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         ref.using.field = current.using.field;
         ref.backField = current.using.backField;
         //from oda-model/model/belongstomany.ts ensure relation class
-        let refe = pack.entities.get(ref.entity);
 
         let opposite = getRelationNames(refe)
           // по одноименному классу ассоциации
@@ -142,28 +143,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         },
       };
     });
-
-  /*  const relations = fieldsAcl
-      .filter(relationFieldsExistsIn(pack))
-      .map(f => {
-        let verb = f.relation.verb;
-        let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-        return {
-          persistent: f.persistent,
-          derived: f.derived,
-          field: f.name,
-          name: f.relation.fullName,
-          cField: capitalize(f.name),
-          verb,
-          single: (verb === 'BelongsTo' || verb === 'HasOne'),
-          ref: {
-            entity: f.relation.ref.entity,
-            fieldName: decapitalize(refFieldName),
-          },
-        };
-      });
-  */
 
   return {
     name: entity.name,
