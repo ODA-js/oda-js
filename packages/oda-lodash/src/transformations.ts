@@ -45,7 +45,7 @@ import * as values from 'lodash/values.js';
 import * as omit from 'lodash/omit.js';
 
 const transformations = {
-  Array: {
+  array: {
     each: (array, arg) => {
       return map(array, item => applyTransformations(item, arg));
     },
@@ -79,7 +79,7 @@ const transformations = {
     sumBy,
     join,
   },
-  Object: {
+  object: {
     get,
     assign: (src, args) => args.reduce((obj, path) => {
       const source = get(obj, path);
@@ -97,14 +97,14 @@ const transformations = {
     keys,
     values,
   },
-  Number: {
+  number: {
     lt,
     lte,
     gt,
     gte,
     eq,
   },
-  String: {
+  string: {
     startsWith,
     endsWith,
     match: (src: string, args) => {
@@ -159,10 +159,12 @@ export function applyTransformations(object, args) {
       }
 
       const expectedType = opToExpectedType[op];
-      let type = object && object.constructor && object.constructor.name;
+      let type: String = object && object.constructor && object.constructor.name;
       // handle objects created with Object.create(null)
-      if (!type && (typeof object === 'object')) {
-        type = 'Object';
+      if (!type) {
+        type = typeof object;
+      } else {
+        type = type.toLowerCase();
       }
 
       if (expectedType !== '*' && expectedType !== type && type !== undefined) {
