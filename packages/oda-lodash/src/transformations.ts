@@ -138,7 +138,7 @@ const opToExpectedType = ((trans) => {
 })(transformations);
 
 export function applyTransformations(object, args) {
-  if (!args) {
+  if (!args || object === null || object === undefined) {
     return object;
   }
 
@@ -172,6 +172,7 @@ export function applyTransformations(object, args) {
       }
 
       object = transformations[expectedType][op](object, arg);
+      if (object === null || object === undefined) return object;
     }
   }
   return object;
