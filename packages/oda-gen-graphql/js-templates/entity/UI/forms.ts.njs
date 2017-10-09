@@ -78,12 +78,12 @@ import {
 export default props => (
   <Datagrid {...props} >
 <# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-    <TextField source="#{f.name}" />
+    <TextField source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations.forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceField label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}">
-      <TextField optionText="name" />
+    <ReferenceField sortable={false} label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+      <TextField optionText="id"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
 <#-}-#>
 <#-})#>
@@ -116,16 +116,16 @@ import {
 export default props => (
   <SimpleForm {...props} >
 <# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-    <TextInput source="#{f.name}" />
+    <TextInput source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations.forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceInput label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}" allowEmpty>
-      <SelectInput optionText="name" />
+    <ReferenceInput sortable={false}  label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+      <SelectInput optionText="id" />
     </ReferenceInput>
 <#-} else {#>
-    <ReferenceArrayInput label="#{f.ref.queryName}" source="#{f.field}Ids" reference="#{f.ref.entity}" allowEmpty>
-      <SelectArrayInput options={{ fullWidth: true }} optionText="name" optionValue="id" />
+    <ReferenceArrayInput sortable={false}  label="#{f.ref.queryName}" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+      <SelectArrayInput options={{ fullWidth: true }} optionText="id" optionValue="id" />
     </ReferenceArrayInput>
 <#-}-#>
 <#-})#>
@@ -191,17 +191,17 @@ if(manyRels.length > 0){#>
 
   return (
     <Show title={<#{entity.name}Title />} {...props} >
-      <SimpleShowLayout>
+      <SimpleShowLayout {...props}>
 <# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-        <TextField source="#{f.name}" />
+        <TextField source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations.forEach(f=>{
 -#><#-if(f.single){#>
-      <ReferenceField label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}">
-        <TextField optionText="name" />
-      </ReferenceField>
+        <ReferenceField sortable={false} label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+          <TextField optionText="id"<# if (!f.required){#> allowEmpty<#}#> />
+        </ReferenceField>
 <#-} else {#>
-        <ReferenceManyField label="#{f.ref.queryName}" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
+        <ReferenceManyField sortable={false} label="#{f.ref.queryName}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#-}-#>

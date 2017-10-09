@@ -14,6 +14,7 @@ export interface MapperOutupt {
   complexUnique: { name: string, fields: { name: string, uName: string, type: string }[] }[];
   relEntities: any[];
   relations: {
+    required: boolean;
     derived: boolean;
     persistent: boolean;
     field: string;
@@ -24,7 +25,10 @@ export interface MapperOutupt {
       fieldName: string;
     }
   }[];
-  fields: { name: string }[];
+  fields: {
+    name: string;
+    required: boolean;
+  }[];
   persistent: {
     derived: boolean;
     persistent: boolean;
@@ -82,7 +86,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
       let ref = {
-        opposite: '',
+        opposite: f.relation.ref.field,
         usingField: '',
         backField: f.relation.ref.backField,
         entity: f.relation.ref.entity,
@@ -129,6 +133,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       let sameEntity = entity.name === f.relation.ref.entity;
       let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
       return {
+        required: f.required,
         derived: f.derived,
         persistent: f.persistent,
         field: f.name,
@@ -232,6 +237,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .filter(f => mutableFields(f))]
       .map(f => ({
         name: f.name,
+        required: f.required,
       })),
     args: {
       create: {
