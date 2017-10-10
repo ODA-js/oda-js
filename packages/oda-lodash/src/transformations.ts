@@ -177,6 +177,6 @@ export function applyTransformations(object, args) {
       // if (object === null || object === undefined) return object;
     }
   }
-  return object;
+  return object === undefined ? null : object;
 }
 
