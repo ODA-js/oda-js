@@ -159,20 +159,22 @@ export function applyTransformations(object, args) {
       }
 
       const expectedType = opToExpectedType[op];
-      let type: String = object && object.constructor && object.constructor.name;
-      // handle objects created with Object.create(null)
-      if (!type) {
-        type = typeof object;
-      } else {
-        type = type.toLowerCase();
-      }
+      if (!(object === undefined || object === null)) {
+        let type: String = object && object.constructor && object.constructor.name;
+        // handle objects created with Object.create(null)
+        if (!type) {
+          type = typeof object;
+        } else {
+          type = type.toLowerCase();
+        }
 
-      if (expectedType !== '*' && expectedType !== type && type !== undefined) {
-        throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
+        if (expectedType !== '*' && expectedType !== type && type !== undefined) {
+          throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
+        }
       }
 
       object = transformations[expectedType][op](object, arg);
-      if (object === null || object === undefined) return object;
+      // if (object === null || object === undefined) return object;
     }
   }
   return object;
