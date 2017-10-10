@@ -1,5 +1,20 @@
 import get from './get';
 import set from './set';
+import { isEqual } from 'lodash';
+
+function find(array: any[], item) {
+  let result = array.indexOf(item);
+  if (result === -1 && typeof item === 'object') {
+    array.some((f, i) => {
+      const res = isEqual(f, item);
+      if (res) {
+       result = i;
+      }
+      return res;
+    });
+  }
+  return result;
+}
 
 export default function deepMerge(...args: Object[]) {
   if (args.length > 0) {
@@ -26,10 +41,10 @@ export default function deepMerge(...args: Object[]) {
         } else {
           if (Array.isArray(current)) {
             (<Object[]>current).forEach(item => {
-              if (result.indexOf(item) === -1) {
-                result.push(item);
-              }
-            });
+              if (find(result, item) === -1) {
+                  result.push(item);
+                }
+              });
           } else {
             if (result.indexOf(current) === -1) {
               result.push(current);
@@ -42,4 +57,4 @@ export default function deepMerge(...args: Object[]) {
   } else {
     return args[0];
   }
-};
+}
