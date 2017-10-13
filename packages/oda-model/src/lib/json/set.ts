@@ -1,7 +1,6 @@
 const set = (data, path, value) => {
-  if ('object' === typeof data) {
+  if (data !== null && 'object' === typeof data) {
     const parts = path.split('.');
-    if (Array.isArray(parts)) {
       const curr = parts.shift();
       if (parts.length > 0) {
         if (!data[curr]) {
@@ -15,9 +14,6 @@ const set = (data, path, value) => {
       } else {
         data[path] = value;
       }
-    } else {
-      data[path] = value;
-    }
   }
 };
 
