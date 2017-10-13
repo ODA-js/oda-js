@@ -348,7 +348,7 @@ export default (_queries) => {
           return { ...acc, id: { in: params.filter[key] } };
         }
         if (key === 'q') {
-          return { ...acc, name: { imatch: params.filter[key] } };
+          return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
         }
         return { ...acc, [key]: params.filter[key] };
       }, {});

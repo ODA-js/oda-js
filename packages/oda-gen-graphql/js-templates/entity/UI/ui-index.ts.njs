@@ -30,7 +30,7 @@ export const uix = () => ({
 import React, { Component } from 'react';
 import { client } from 'oda-aor-rest';
 import Loading from 'react-loading-animation'
-import { Admin, Resource } from 'admin-on-rest';
+import { Admin, Resource, Delete } from 'admin-on-rest';
 
 export default class extends Component {
   constructor(props) {
@@ -85,7 +85,7 @@ export default class extends Component {
           edit={#{entity.name}.Edit}
           create={#{entity.name}.Create}
           list={#{entity.name}.List}
-          remove={#{entity.name}.Delete}
+          remove={Delete}
         />
 <#}-#>
       </Admin>

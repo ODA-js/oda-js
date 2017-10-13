@@ -1,9 +1,37 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 
+const formPriority = {
+  list: 1,
+  show: 2,
+  edit: 3,
+  hidden: 4,
+};
+
+export interface UIResult {
+  listName: string;
+  hidden?: string[];
+  edit?: string[];
+  show?: string[];
+  list?: string[];
+}
+
+export interface UIView {
+  listName: string;
+  hidden?: { [key: string]: boolean };
+  edit?: { [key: string]: boolean };
+  show?: { [key: string]: boolean };
+  list?: { [key: string]: boolean };
+}
+
 export interface MapperOutupt {
   name: string;
+  UI: UIView;
   plural: string;
+  listLabel: {
+    type: string;
+    source: any;
+  };
   listName: string;
   ownerFieldName: string;
   // unique: {
@@ -23,6 +51,10 @@ export interface MapperOutupt {
     ref: {
       entity: string;
       fieldName: string;
+      listLabel: {
+        type: string;
+        source: any;
+      };
     }
   }[];
   fields: {
@@ -69,9 +101,93 @@ import {
   relationFieldsExistsIn,
   oneUniqueInIndex,
   complexUniqueIndex,
+  complexUniqueFields,
   getFields,
   idField,
 } from '../../queries';
+
+function visibility(entity: Entity, aclAllow, role, aor): UIView {
+  const result: UIResult = {
+    listName: guessListLabel(entity, aclAllow, role, aor).source,
+    hidden: [],
+    edit: [],
+    show: [],
+    list: [],
+  };
+  let allFields = getFieldsForAcl(aclAllow)(role)(entity);
+  result.edit.push(...allFields.map(f => f.name));
+  result.show.push(...result.edit);
+  result.list.push(...allFields.
+    filter(oneUniqueInIndex(entity))
+    .map(f => f.name));
+  result.list.push(...complexUniqueFields(entity)
+    .map(f => entity.fields.get(f))
+    .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
+    .map(f => f.name));
+
+  const UI = entity.getMetadata('UI');
+  if (UI) {
+    if (UI.hidden && Array.isArray(UI.hidden)) {
+      result.hidden.push(...UI.hidden);
+    }
+
+    if (UI.edit && Array.isArray(UI.edit)) {
+      result.edit.push(...UI.edit);
+    }
+
+    if (UI.show && Array.isArray(UI.show)) {
+      result.show.push(...UI.show);
+    }
+
+    if (UI.list && Array.isArray(UI.list)) {
+      result.list.push(...UI.list);
+    }
+  }
+
+  const res: UIView = {
+    listName: result.listName,
+    hidden: result.hidden.reduce((r, c) => {
+      r[c] = true;
+      return r;
+    }, {}),
+  };
+
+  res.list = result.list.filter(f => !res.hidden[f]).reduce((r, c) => {
+    r[c] = true;
+    return r;
+  }, {});
+
+  res.edit = result.edit.filter(f => !res.hidden[f] && !res.list[f]).reduce((r, c) => {
+    r[c] = true;
+    return r;
+  }, {});
+
+  res.show = result.show.filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f]).reduce((r, c) => {
+    r[c] = true;
+    return r;
+  }, {});
+
+  return res;
+}
+
+function guessListLabel(entity, aclAllow, role, aor) {
+  let UI = entity.getMetadata('UI');
+  let result = {
+    type: 'Text',
+    source: 'id',
+  };
+  if (UI && UI.listName) {
+    result.source = UI.listName;
+  } else {
+    let res = getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
+      .filter(oneUniqueInIndex(entity))[0];
+    if (res) {
+      result.type = aor(res.type);
+      result.source = res.name;
+    }
+  }
+  return result;
+}
 
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
@@ -79,6 +195,8 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
+  const mapAORypes = typeMapper.aor;
+  const UI = visibility(entity, aclAllow, role, mapAORypes);
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
@@ -145,13 +263,16 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         ref: {
           ...ref,
           fieldName: decapitalize(refFieldName),
+          listLabel: guessListLabel(refe, aclAllow, role, mapAORypes),
         },
       };
     });
 
   return {
     name: entity.name,
+    UI,
     plural: entity.plural,
+    listLabel: guessListLabel(entity, aclAllow, role, mapAORypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relEntities: fieldsAcl
@@ -223,7 +344,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           if (a.name > b.name) return 1
           else if (a.name < b.name) return -1;
           else return 0;
-        });;
+        });
       return {
         name: i.name,
         fields,
@@ -237,7 +358,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         .filter(f => mutableFields(f))]
       .map(f => ({
         name: f.name,
+        cName: capitalize(f.name),
         required: f.required,
+        type: mapAORypes(f.type),
       })),
     args: {
       create: {
@@ -245,13 +368,13 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           ...[
             ...ids,
             ...fieldsAcl
-              .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))]
+              .filter(f => mutableFields(f))]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
             }))],
         find: fieldsAcl
-          .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))
+          .filter(f => mutableFields(f))
           .map(f => ({
             name: f.name,
             type: mapToTSTypes(f.type),
@@ -262,7 +385,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           ...[
             ...ids,
             ...fieldsAcl
-              .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))]
+              .filter(f => mutableFields(f))]
             .map(f => ({
               name: f.name,
               type: mapToTSTypes(f.type),
@@ -277,7 +400,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
               cName: capitalize(f.name),
             }))],
         payload: fieldsAcl
-          .filter(f => /*singleStoredRelations(f) ||*/ mutableFields(f))
+          .filter(f => mutableFields(f))
           .map(f => ({
             name: f.name,
             type: mapToTSTypes(f.type),

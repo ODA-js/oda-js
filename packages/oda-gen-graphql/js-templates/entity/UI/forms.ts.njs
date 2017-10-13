@@ -22,32 +22,21 @@ export default {
 
 <#- chunkStart(`../../../UI/${entity.name}/uix/title`); -#>
 import React from 'react';
-const #{entity.name}Title = ({ record }) => {
-  return <span>#{entity.name} {record ? `"${record.id}"` : ''}</span>;
+export default ({ record }) => {
+  return <span>#{entity.name} {record ? `"${record.#{entity.listLabel.source}}"` : ''}</span>;
 };
 
-export default #{entity.name}Title;
 <#- chunkStart(`../../../UI/${entity.name}/uix/list`); -#>
 import React from 'react';
 import {
-  Filter,
   List,
-  Edit,
-  Create,
-  Datagrid,
-  TextField,
-  EditButton,
-  LongTextInput,
-  SimpleForm,
-  TextInput,
-  ReferenceArrayInput,
-  SelectArrayInput,
 } from 'admin-on-rest';
 
 import Grid from './grid';
+import Filter from './filter';
 
 export default props => (
-  <List {...props} >
+  <List {...props} filters={<Filter />}>
     <Grid {...props} />
   </List>
 );
@@ -55,20 +44,11 @@ export default props => (
 <#- chunkStart(`../../../UI/${entity.name}/uix/grid`); -#>
 import React from 'react';
 import {
-  Edit,
-  ReferenceInput,
-  SelectInput,
-  TextInput,
-  NumberInput,
-  TabbedForm,
-  FormTab,
-  ReferenceArrayInput,
-  SelectArrayInput,
-  ReferenceManyField,
-  Responsive,
-  SimpleForm,
   Datagrid,
   TextField,
+  DateField,
+  NumberField,
+  BooleanField,
   EditButton,
   DeleteButton,
   ShowButton,
@@ -77,55 +57,85 @@ import {
 
 export default props => (
   <Datagrid {...props} >
-<# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-    <TextField source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+<# entity.fields.filter(f=>f.name!== 'id')
+.filter(f=>entity.UI.list[f.name])
+.forEach(f=>{-#>
+    <#{f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
-<# entity.relations.forEach(f=>{
+<# entity.relations
+.filter(f=>entity.UI.list[f.field])
+.forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceField sortable={false} label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
-      <TextField optionText="id"<# if (!f.required){#> allowEmpty <#}#>/>
+    <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+      <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
 <#-}-#>
 <#-})#>
-    <ShowButton />
-    <EditButton />
-    <DeleteButton />
+    <ShowButton label={false}/>
+    <EditButton label={false}/>
+    <DeleteButton label={false}/>
   </Datagrid>
+);
+
+<#- chunkStart(`../../../UI/${entity.name}/uix/filter`); -#>
+import React from 'react';
+import {
+  ReferenceInput,
+  SelectInput,
+  ReferenceArrayInput,
+  SelectArrayInput,
+  SimpleForm,
+  TextInput,
+  DateInput,
+  NumberInput,
+  BooleanInput,
+  RichTextInput,
+  NullableBooleanInput,
+  Filter,
+} from 'admin-on-rest';
+
+export default props => (
+  <Filter {...props} >
+    <TextInput label='Search' source="q" allowEmpty alwaysOn />
+<# entity.fields.filter(f=>f.name!== 'id')
+  .filter(f=>entity.UI.list[f.name])
+  .forEach(f=>{-#>
+    <#{f.type}Input label='#{f.cName}' source="#{f.name}.#{f.type === 'Text'?'imatch':'eq'}" allowEmpty />
+<#})-#>
+  </Filter>
 );
 
 <#- chunkStart(`../../../UI/${entity.name}/uix/form`); -#>
 import React from 'react';
 import {
-  Edit,
   ReferenceInput,
   SelectInput,
-  TextInput,
-  NumberInput,
-  TabbedForm,
-  FormTab,
   ReferenceArrayInput,
   SelectArrayInput,
-  ReferenceManyField,
-  Responsive,
   SimpleForm,
-  Datagrid,
-  TextField,
-  EditButton,
+  TextInput,
+  DateInput,
+  NumberInput,
+  BooleanInput,
 } from 'admin-on-rest';
 
 export default props => (
   <SimpleForm {...props} >
-<# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-    <TextInput source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+<# entity.fields.filter(f=>f.name!== 'id')
+  .filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
+  .forEach(f=>{-#>
+    <#{f.type}Input source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
-<# entity.relations.forEach(f=>{
+<# entity.relations
+.filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
+.forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceInput sortable={false}  label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-      <SelectInput optionText="id" />
+    <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+      <SelectInput optionText="#{f.ref.listLabel.source}" />
     </ReferenceInput>
 <#-} else {#>
-    <ReferenceArrayInput sortable={false}  label="#{f.ref.queryName}" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-      <SelectArrayInput options={{ fullWidth: true }} optionText="id" optionValue="id" />
+    <ReferenceArrayInput sortable={false} label="#{f.cField}" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+      <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
     </ReferenceArrayInput>
 <#-}-#>
 <#-})#>
@@ -164,7 +174,12 @@ export default props => (
 import React from 'react';
 import {
   Datagrid,
-  TextField, EditButton,
+  TextField,
+  DateField,
+  NumberField,
+  FunctionField,
+  BooleanField,
+  EditButton,
   ReferenceManyField,
   ReferenceField,
   Show,
@@ -192,16 +207,20 @@ if(manyRels.length > 0){#>
   return (
     <Show title={<#{entity.name}Title />} {...props} >
       <SimpleShowLayout {...props}>
-<# entity.fields.filter(f=>f.name!== 'id').forEach(f=>{-#>
-        <TextField source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+<# entity.fields.filter(f=>f.name!== 'id')
+.filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
+.forEach(f=>{-#>
+        <#{f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
-<# entity.relations.forEach(f=>{
+<# entity.relations
+.filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
+.forEach(f=>{
 -#><#-if(f.single){#>
-        <ReferenceField sortable={false} label="#{f.ref.queryName}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-          <TextField optionText="id"<# if (!f.required){#> allowEmpty<#}#> />
+        <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+          <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#}#> />
         </ReferenceField>
 <#-} else {#>
-        <ReferenceManyField sortable={false} label="#{f.ref.queryName}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#}#> >
+        <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#-}-#>
