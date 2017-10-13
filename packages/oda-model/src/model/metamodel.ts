@@ -270,7 +270,7 @@ export class MetaModel extends ModelPackage {
     let pack = this.packages.get(input.package);
     if (!pack) {
       throw new Error(`Package ${input.package} didn't exists`);
-    };
+    }
     let ent = this.entities.get(input.entity);
     if (!ent) {
       throw new Error(`Package ${input.entity} didn't exists`);

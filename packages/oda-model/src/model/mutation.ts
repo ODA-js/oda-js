@@ -54,6 +54,6 @@ export class Mutation extends ModelBase {
       ...res,
       args: props.args_ ? props.args_ : undefined,
       payload: props.payload_ ? props.payload_ : undefined,
-    })
+    });
   }
 }
