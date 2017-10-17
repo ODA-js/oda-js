@@ -2,7 +2,6 @@
 <#@ chunks '$$$main$$$' -#>
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/index`); -#>
-
 import GET_LIST from './getList';
 import GET_ONE from './getOne';
 import CREATE from './create';
@@ -27,31 +26,32 @@ import {
   getManyReferenceOf#{entity.name}Result,
 } from './queries';
 
-export default {
-  GET_LIST,
-  GET_ONE,
-  CREATE,
-  UPDATE,
-  DELETE,
-  GET_MANY,
-  GET_MANY_REFERENCE,
-  QUERIES: {
-    GET_LIST: getListOf#{entity.name},
-    GET_ONE: getOneOf#{entity.name},
-    GET_MANY: getManyOf#{entity.name},
-    GET_MANY_REFERENCE: getManyReferenceOf#{entity.name},
-    CREATE: createOf#{entity.name},
-    UPDATE: updateOf#{entity.name},
-    DELETE: deleteOf#{entity.name},
-    GET_LIST_RESULT: getListOf#{entity.name}Result,
-    GET_ONE_RESULT: getOneOf#{entity.name}Result,
-    GET_MANY_RESULT: getManyOf#{entity.name}Result,
-    GET_MANY_REFERENCE_RESULT: getManyReferenceOf#{entity.name}Result,
-    CREATE_RESULT: createOf#{entity.name}Result,
-    UPDATE_RESULT: updateOf#{entity.name}Result,
-    DELETE_RESULT: deleteOf#{entity.name}Result,
-  },
-}
+export const resource = ({ queries, resources }) => ({
+  GET_LIST: GET_LIST({ queries, resources } ),
+  GET_ONE: GET_ONE({ queries, resources }),
+  CREATE: CREATE({ queries, resources }),
+  UPDATE: UPDATE({ queries, resources }),
+  DELETE: DELETE({ queries, resources }),
+  GET_MANY: GET_MANY({ queries, resources }),
+  GET_MANY_REFERENCE: GET_MANY_REFERENCE({ queries, resources }),
+});
+
+export const queries = {
+  GET_LIST: getListOf#{entity.name},
+  GET_ONE: getOneOf#{entity.name},
+  GET_MANY: getManyOf#{entity.name},
+  GET_MANY_REFERENCE: getManyReferenceOf#{entity.name},
+  CREATE: createOf#{entity.name},
+  UPDATE: updateOf#{entity.name},
+  DELETE: deleteOf#{entity.name},
+  GET_LIST_RESULT: getListOf#{entity.name}Result,
+  GET_ONE_RESULT: getOneOf#{entity.name}Result,
+  GET_MANY_RESULT: getManyOf#{entity.name}Result,
+  GET_MANY_REFERENCE_RESULT: getManyReferenceOf#{entity.name}Result,
+  CREATE_RESULT: createOf#{entity.name}Result,
+  UPDATE_RESULT: updateOf#{entity.name}Result,
+  DELETE_RESULT: deleteOf#{entity.name}Result,
+};
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';
@@ -324,101 +324,80 @@ export const getManyReferenceOf#{entity.name}Result = {
 <#- chunkStart(`../../../UI/${entity.name}/queries/getList`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
-import #{entity.name}Resource from './index';
+const { SortOrder } = constants;
 
-export default (_queries) => {
-
-  const { QUERIES } = #{entity.name}Resource;
-  const { SortOrder } = constants;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.GET_LIST,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.GET_LIST_RESULT, response.data);
-      return {
-        data: data.items.data,
-        total: data.items.total,
-      };
-    },
-    fetchPolicy: 'network-only',
-    variables: (params) => {
-      const filter = Object.keys(params.filter).reduce((acc, key) => {
-        if (key === 'ids') {
-          return { ...acc, id: { in: params.filter[key] } };
-        }
-        if (key === 'q') {
-          return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
-        }
-        return { ...acc, [key]: params.filter[key] };
-      }, {});
-      return {
-        skip: (params.pagination.page - 1) * params.pagination.perPage,
-        limit: params.pagination.perPage,
-        orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
-        filter,
-      };
-    },
-  };
-};
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.GET_LIST,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.GET_LIST_RESULT, response.data);
+    return {
+      data: data.items.data,
+      total: data.items.total,
+    };
+  },
+  fetchPolicy: 'network-only',
+  variables: (params) => {
+    const filter = Object.keys(params.filter).reduce((acc, key) => {
+      if (key === 'ids') {
+        return { ...acc, id: { in: params.filter[key] } };
+      }
+      if (key === 'q') {
+        return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
+      }
+      return { ...acc, [key]: params.filter[key] };
+    }, {});
+    return {
+      skip: (params.pagination.page - 1) * params.pagination.perPage,
+      limit: params.pagination.perPage,
+      orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
+      filter,
+    };
+  },
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/getOne`); -#>
 import { reshape } from 'oda-lodash';
-import #{entity.name}Resource from './index';
 
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.GET_ONE,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.GET_ONE_RESULT, response.data);
-      return {
-        data: data.item,
-      };
-    },
-    fetchPolicy: 'network-only',
-    variables: (params) => ({
-      id: params.id,
-    }),
-  };
-};
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.GET_ONE,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.GET_ONE_RESULT, response.data);
+    return {
+      data: data.item,
+    };
+  },
+  fetchPolicy: 'network-only',
+  variables: params => ({
+    id: params.id,
+  }),
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/getMany`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
-import #{entity.name}Resource from './index';
-
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
-  const { SortOrder } = constants;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.GET_MANY,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.GET_MANY_RESULT, response.data);
-      return {
-        data: data.items,
-      };
-    },
-    fetchPolicy: 'network-only',
-    variables: (params) => {
-      const filter = {
-        id: { in: params.ids }
-      }
-      return {
-        filter,
-      };
-    },
-  };
-};
+const { SortOrder } = constants;
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.GET_MANY,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.GET_MANY_RESULT, response.data);
+    return {
+      data: data.items,
+    };
+  },
+  fetchPolicy: 'network-only',
+  variables: (params) => {
+    const filter = {
+      id: { in: params.ids }
+    }
+    return {
+      filter,
+    };
+  },
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/getManyReference`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
-import #{entity.name}Resource from './index';
 
 const useOpposite = {
 <# entity.relations.filter(f=>f.verb === 'BelongsToMany')
@@ -426,164 +405,140 @@ const useOpposite = {
   #{f.field}: true,
 <#})-#>};
 
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
   const { SortOrder } = constants;
-  const queries = _queries || { #{entity.name}: QUERIES };
+export default ({queries, resources}) => ({
+  query: params => queries.#{entity.name}.GET_MANY_REFERENCE[params.target],
+  parseResponse: (response, params) => {
+    const data = reshape(queries.#{entity.name}.GET_MANY_REFERENCE_RESULT[params.target], response.data);
+    return {
+      data: data.items.data,
+      total: data.items.total,
+    };
+  },
+  fetchPolicy: 'network-only',
+  variables: (params) => {
+    const filter = {};
 
-  return {
-    query: params => queries.#{entity.name}.GET_MANY_REFERENCE[params.target],
-    parseResponse: (response, params) => {
-      const data = reshape(queries.#{entity.name}.GET_MANY_REFERENCE_RESULT[params.target], response.data);
-      return {
-        data: data.items.data,
-        total: data.items.total,
-      };
-    },
-    fetchPolicy: 'network-only',
-    variables: (params) => {
-      const filter = {};
+    if (!useOpposite[params.target]) {
+      filter[params.target] = { eq: params.id };
+    }
 
-      if (!useOpposite[params.target]) {
-        filter[params.target] = { eq: params.id };
-      }
-
-      return {
-        id: params.id,
-        target: params.target,
-        skip: (params.pagination.page - 1) * params.pagination.perPage,
-        limit: params.pagination.perPage,
-        orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
-        filter,
-      };
-    },
-  };
-};
+    return {
+      id: params.id,
+      target: params.target,
+      skip: (params.pagination.page - 1) * params.pagination.perPage,
+      limit: params.pagination.perPage,
+      orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
+      filter,
+    };
+  },
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/delete`); -#>
 import { reshape } from 'oda-lodash';
-import #{entity.name}Resource from './index';
 
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.DELETE,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.DELETE_RESULT, response.data);
-      return { data: data.item };
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.DELETE,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.DELETE_RESULT, response.data);
+    return { data: data.item };
+  },
+  update: (store, response) => {
+    // remove from cache
+  },
+  variables: params => ({
+    input: {
+      id: params.id,
     },
-    update: (store, response) => {
-      // remove from cache
-    },
-    variables: (params) => {
-      return {
-        input: {
-          id: params.id
-        }
-      };
-    },
-  };
-};
+  }),
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/create`); -#>
 import { reshape } from 'oda-lodash';
-import #{entity.name}Resource from './index';
 
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.CREATE,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.CREATE_RESULT, response.data);
-      return { data: data.item };
-    },
-    update: (store, response) => {
-      // insert into cache
-    },
-    variables: (params) => {
-      const data = params.data;
-      const input = {};
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.CREATE,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.CREATE_RESULT, response.data);
+    return { data: data.item };
+  },
+  update: (store, response) => {
+    // insert into cache
+  },
+  variables: (params) => {
+    const data = params.data;
+    const input = {};
 
 <#- entity.fields.forEach(f=>{#>
-      if (data.#{f.name} !== undefined) {
-        input.#{f.name} = data.#{f.name};
-      }
+    if (data.#{f.name} !== undefined) {
+      input.#{f.name} = data.#{f.name};
+    }
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-      if (data.#{f.field}Id !== undefined) {
-        input.#{f.field} = { id: data.#{f.field}Id };
-      }
-      <#-} else {#>
-      if (data.#{f.field}Ids !== undefined && Array.isArray(data.#{f.field}Ids) && data.#{f.field}Ids.length > 0) {
-        input.#{f.field} = data.#{f.field}Ids.map(f => ({ id: f }));
-      }
+    if (data.#{f.field}Id !== undefined) {
+      input.#{f.field} = { id: data.#{f.field}Id };
+    }
+    <#-} else {#>
+    if (data.#{f.field}Ids !== undefined && Array.isArray(data.#{f.field}Ids) && data.#{f.field}Ids.length > 0) {
+      input.#{f.field} = data.#{f.field}Ids.map(f => ({ id: f }));
+    }
 <#-}-#>
 <#-})#>
-      return { input };
-    },
-  };
-};
+    return { input };
+  },
+});
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/update`); -#>
 import { reshape } from 'oda-lodash';
 import comparator from 'comparator.js';
-import #{entity.name}Resource from './index';
 
-export default (_queries) => {
-  const { QUERIES } = #{entity.name}Resource;
-  const queries = _queries || { #{entity.name}: QUERIES };
-
-  return {
-    query: queries.#{entity.name}.UPDATE,
-    parseResponse: (response) => {
-      const data = reshape(queries.#{entity.name}.UPDATE_RESULT, response.data);
-      return { data: data.item };
+export default ({queries, resources}) => ({
+  query: queries.#{entity.name}.UPDATE,
+  parseResponse: (response) => {
+    const data = reshape(queries.#{entity.name}.UPDATE_RESULT, response.data);
+    return { data: data.item };
+  },
+  refetchQueries: variables => ([{
+    query: queries.#{entity.name}.GET_ONE,
+    variables: {
+      id: variables.input.id,
     },
-    refetchQueries: variables => ([{
-      query: queries.#{entity.name}.GET_ONE,
-      variables: {
-        id: variables.input.id,
-      },
-    }]),
-    variables: (params) => {
-      const { data, previousData } = params;
-      const input = {
-        id: data.id,
-      };
+  }]),
+  variables: (params) => {
+    const { data, previousData } = params;
+    const input = {
+      id: data.id,
+    };
 
 <#- entity.fields.filter(f=>f.name !== 'id').forEach(f=>{#>
-      if (data.#{f.name} !== undefined && previousData.#{f.name} !== data.#{f.name}) {
-        input.#{f.name} = data.#{f.name};
-      }
+    if (data.#{f.name} !== undefined && previousData.#{f.name} !== data.#{f.name}) {
+      input.#{f.name} = data.#{f.name};
+    }
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-      if (data.#{f.field}Id !== undefined && previousData.#{f.field}Id !== data.#{f.field}Id) {
-        input.#{f.field} = { id: data.#{f.field}Id };
-      }
-      <#-} else {#>
+    if (data.#{f.field}Id !== undefined && previousData.#{f.field}Id !== data.#{f.field}Id) {
+      input.#{f.field} = { id: data.#{f.field}Id };
+    }
+    <#-} else {#>
 
-      if (data.#{f.field}Ids !== undefined && !comparator.strictEq(previousData.#{f.field}Ids, data.#{f.field}Ids)) {
-        const diff = comparator.diff(previousData.#{f.field}Ids, data.#{f.field}Ids);
-        if (diff.inserted) {
-          input.#{f.field} = Object.keys(diff.inserted)
-            .map(f => ({ id: diff.inserted[f].value }));
-        }
-        if (diff.removed) {
-          input.#{f.field}Unlink = Object.keys(diff.removed)
-            .map(f => ({ id: diff.removed[f].value }));
-        }
+    if (data.#{f.field}Ids !== undefined && !comparator.strictEq(previousData.#{f.field}Ids, data.#{f.field}Ids)) {
+      const diff = comparator.diff(previousData.#{f.field}Ids, data.#{f.field}Ids);
+      if (diff.inserted) {
+        input.#{f.field} = Object.keys(diff.inserted)
+          .map(f => ({ id: diff.inserted[f].value }));
       }
+      if (diff.removed) {
+        input.#{f.field}Unlink = Object.keys(diff.removed)
+          .map(f => ({ id: diff.removed[f].value }));
+      }
+    }
 
 <#-}-#>
 <#-})#>
-      return { input };
-    },
-  };
-};
+    return { input };
+  },
+});
+
 

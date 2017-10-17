@@ -71,9 +71,9 @@ export default props => (
     </ReferenceField>
 <#-}-#>
 <#-})#>
-    <ShowButton label={false}/>
-    <EditButton label={false}/>
-    <DeleteButton label={false}/>
+    <ShowButton />
+    <EditButton />
+    <DeleteButton />
   </Datagrid>
 );
 

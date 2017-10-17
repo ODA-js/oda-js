@@ -3,7 +3,7 @@
 
 <#- chunkStart(`./index.js`); -#>
 <# for(let entity of pack.entities){-#>
-import #{entity.name}Query from './#{entity.name}/queries';
+import { queries as #{entity.name}Query, resource as #{entity.name}Resource } from './#{entity.name}/queries';
 <#}-#>
 
 <# for(let entity of pack.entities){-#>
@@ -14,17 +14,26 @@ import Admin from './admin';
 
 export { Admin };
 
-export const queries = () => ({
+// здесь класс как в коннекторах было.
+// использовать через get; чтобы можно было override делать без проблем.
+
+export const queries = {
 <# for(let entity of pack.entities){-#>
   #{entity.name}: #{entity.name}Query,
 <#}-#>
+};
+
+export const resources = ({ queries }) => ({
+<# for(let entity of pack.entities){-#>
+  #{entity.name}: #{entity.name}Resource({ resources, queries }),
+<#}-#>
 });
 
-export const uix = () => ({
+export const uix = {
 <# for(let entity of pack.entities){-#>
   #{entity.name}: #{entity.name}UIX,
 <#}-#>
-});
+};
 
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';
@@ -39,6 +48,7 @@ export default class extends Component {
       restClient: null,
       authClient: null,
       queries: null,
+      resources: null,
       uix: null,
     };
   }
@@ -54,10 +64,12 @@ export default class extends Component {
     this.setState({
       restClient: client({
         client: nextProps.connection,
-        resources: nextProps.queries,
+        resources: nextProps.resources,
+        queries: nextProps.queries,
       }),
       authClient: nextProps.authClientInit(nextProps.connection),
       queries: this.props.queries,
+      resources: this.props.resources,
       uix: this.props.uix,
     });
   }
