@@ -26,7 +26,7 @@ export default ({ client: clientOptions, resources: resourceList, queries = {}, 
       throw new Error(`No ${type} method found for name ${resourceName}`);
     }
 
-    const operation = resource[type](queries[type]);
+    const operation = resource[type];
 
     const variables = typeof operation.variables === 'function' ? operation.variables(params) : operation.variables;
 
