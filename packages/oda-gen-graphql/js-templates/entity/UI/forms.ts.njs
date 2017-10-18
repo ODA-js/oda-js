@@ -201,7 +201,7 @@ if(manyRels.length > 0){#>
 <# manyRels.forEach(f=>{-#>
     #{f.ref.entity},
 <#})-#>
-  } = uix();
+  } = uix;
 <#-}-#>
 
   return (
@@ -210,7 +210,7 @@ if(manyRels.length > 0){#>
 <# entity.fields.filter(f=>f.name!== 'id')
 .filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
 .forEach(f=>{-#>
-        <#{f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+        <#{f.type=='Number' ? 'Text' : f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])

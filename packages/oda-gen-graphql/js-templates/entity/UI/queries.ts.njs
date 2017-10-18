@@ -512,18 +512,18 @@ export default ({queries, resources}) => ({
     };
 
 <#- entity.fields.filter(f=>f.name !== 'id').forEach(f=>{#>
-    if (data.#{f.name} !== undefined && previousData.#{f.name} !== data.#{f.name}) {
+    if (!comparator.looseEq(data.#{f.name}, previousData.#{f.name})) {
       input.#{f.name} = data.#{f.name};
     }
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-    if (data.#{f.field}Id !== undefined && previousData.#{f.field}Id !== data.#{f.field}Id) {
+    if (!comparator.looseEq(data.#{f.field}Id, previousData.#{f.field}Id)) {
       input.#{f.field} = { id: data.#{f.field}Id };
     }
     <#-} else {#>
 
-    if (data.#{f.field}Ids !== undefined && !comparator.strictEq(previousData.#{f.field}Ids, data.#{f.field}Ids)) {
+    if (!comparator.strictEq(previousData.#{f.field}Ids, data.#{f.field}Ids)) {
       const diff = comparator.diff(previousData.#{f.field}Ids, data.#{f.field}Ids);
       if (diff.inserted) {
         input.#{f.field} = Object.keys(diff.inserted)
