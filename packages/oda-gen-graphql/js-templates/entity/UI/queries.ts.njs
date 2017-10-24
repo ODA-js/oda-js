@@ -324,9 +324,10 @@ export const getManyReferenceOf#{entity.name}Result = {
 <#- chunkStart(`../../../UI/${entity.name}/queries/getList`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
+
 const { SortOrder } = constants;
 
-export default ({queries, resources}) => ({
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.GET_LIST,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.GET_LIST_RESULT, response.data);
@@ -358,7 +359,7 @@ export default ({queries, resources}) => ({
 <#- chunkStart(`../../../UI/${entity.name}/queries/getOne`); -#>
 import { reshape } from 'oda-lodash';
 
-export default ({queries, resources}) => ({
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.GET_ONE,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.GET_ONE_RESULT, response.data);
@@ -375,8 +376,10 @@ export default ({queries, resources}) => ({
 <#- chunkStart(`../../../UI/${entity.name}/queries/getMany`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
+
 const { SortOrder } = constants;
-export default ({queries, resources}) => ({
+
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.GET_MANY,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.GET_MANY_RESULT, response.data);
@@ -406,7 +409,8 @@ const useOpposite = {
 <#})-#>};
 
   const { SortOrder } = constants;
-export default ({queries, resources}) => ({
+
+export default ({ queries, resources }) => ({
   query: params => queries.#{entity.name}.GET_MANY_REFERENCE[params.target],
   parseResponse: (response, params) => {
     const data = reshape(queries.#{entity.name}.GET_MANY_REFERENCE_RESULT[params.target], response.data);
@@ -437,7 +441,7 @@ export default ({queries, resources}) => ({
 <#- chunkStart(`../../../UI/${entity.name}/queries/delete`); -#>
 import { reshape } from 'oda-lodash';
 
-export default ({queries, resources}) => ({
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.DELETE,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.DELETE_RESULT, response.data);
@@ -455,8 +459,11 @@ export default ({queries, resources}) => ({
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/create`); -#>
 import { reshape } from 'oda-lodash';
+import { utils } from 'oda-aor-rest';
 
-export default ({queries, resources}) => ({
+const { createField, createSingle, createMany } = utils;
+
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.CREATE,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.CREATE_RESULT, response.data);
@@ -467,33 +474,30 @@ export default ({queries, resources}) => ({
   },
   variables: (params) => {
     const data = params.data;
-    const input = {};
-
+    return { input:
+      {
 <#- entity.fields.forEach(f=>{#>
-    if (data.#{f.name} !== undefined) {
-      input.#{f.name} = data.#{f.name};
-    }
+        ...createField(data, '#{f.name}'),
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-    if (data.#{f.field}Id !== undefined) {
-      input.#{f.field} = { id: data.#{f.field}Id };
-    }
+        ...createSingle(data, '#{f.field}', '#{f.ref.entity}', resources),
     <#-} else {#>
-    if (data.#{f.field}Ids !== undefined && Array.isArray(data.#{f.field}Ids) && data.#{f.field}Ids.length > 0) {
-      input.#{f.field} = data.#{f.field}Ids.map(f => ({ id: f }));
-    }
+        ...createMany(data, '#{f.field}'),
 <#-}-#>
 <#-})#>
     return { input };
+    };
   },
 });
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/update`); -#>
 import { reshape } from 'oda-lodash';
-import comparator from 'comparator.js';
+import { utils } from 'oda-aor-rest';
 
-export default ({queries, resources}) => ({
+const { updateField, updateSingle, updateMany } = utils;
+
+export default ({ queries, resources }) => ({
   query: queries.#{entity.name}.UPDATE,
   parseResponse: (response) => {
     const data = reshape(queries.#{entity.name}.UPDATE_RESULT, response.data);
@@ -507,38 +511,20 @@ export default ({queries, resources}) => ({
   }]),
   variables: (params) => {
     const { data, previousData } = params;
-    const input = {
-      id: data.id,
-    };
-
+    return {
+      input: {
+        id: data.id,
 <#- entity.fields.filter(f=>f.name !== 'id').forEach(f=>{#>
-    if (!comparator.looseEq(data.#{f.name}, previousData.#{f.name})) {
-      input.#{f.name} = data.#{f.name};
-    }
+        ...updateField(data, previousData, '#{f.name}'),
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-    if (!comparator.looseEq(data.#{f.field}Id, previousData.#{f.field}Id)) {
-      input.#{f.field} = { id: data.#{f.field}Id };
-    }
+        ...updateSingle(data, previousData, '#{f.field}', '#{f.ref.entity}', resources),
     <#-} else {#>
-
-    if (!comparator.strictEq(previousData.#{f.field}Ids, data.#{f.field}Ids)) {
-      const diff = comparator.diff(previousData.#{f.field}Ids, data.#{f.field}Ids);
-      if (diff.inserted) {
-        input.#{f.field} = Object.keys(diff.inserted)
-          .map(f => ({ id: diff.inserted[f].value }));
-      }
-      if (diff.removed) {
-        input.#{f.field}Unlink = Object.keys(diff.removed)
-          .map(f => ({ id: diff.removed[f].value }));
-      }
-    }
-
+        ...updateMany(data, previousData, '#{f.field}'),
 <#-}-#>
 <#-})#>
-    return { input };
+      },
+    };
   },
 });
-
-
