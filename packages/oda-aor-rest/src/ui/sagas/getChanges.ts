@@ -1,7 +1,7 @@
 import { put, take, select, SelectEffect, TakeEffect, PutEffect } from 'redux-saga/effects';
 import { change, formValueSelector } from 'redux-form';
 
-import { FORM_EMBED_RELATION, } from './../consts';
+import { FORM_EMBED_RELATION, actionType } from './../consts';
 import embed from './../actions/embed';
 
 export default function (
@@ -9,12 +9,13 @@ export default function (
     { form: string, relation: { [relation: string]: string } }
 ) {
   return function* () {
+    const relNames = Object.keys(relation);
     while (true) {
       const state = yield select();
       const selector = formValueSelector(form);
       const action = yield take('@@redux-form/CHANGE');
       if (action.meta && action.meta.form === form) {
-        const rel = Object.keys(relation).filter(r => action.meta.field === `${r}Id` || action.meta.field === `${r}Type`).map(r => ({
+        const rel = relNames.filter(r => action.meta.field === `${r}Id` || action.meta.field === `${r}Type`).map(r => ({
           relId: `${r}Id`,
           relType: `${r}Type`,
           relName: r,
