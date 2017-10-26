@@ -20,6 +20,13 @@ export const defaultTypeMapper = {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
   },
+  aorFilter: {
+    Number: ['int', 'integer', 'number', 'float', 'double'],
+    Text: ['string', 'text', "*"],
+    ID: [, 'uuid', 'id', 'identity'],
+    Date: ['date', 'time', 'datetime'],
+    Boolean: ['bool', 'boolean'],
+  },
   graphql: {
     Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
