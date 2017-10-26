@@ -1,44 +1,60 @@
 import * as comparator from 'comparator.js';
+import { actionType } from './../ui/consts';
 
 export default function (data, previousData, field, resource, resources) {
   const fieldId = field + 'Id';
   const fieldType = field + 'Type';
-  if (!comparator.strictEq(previousData[fieldId], data[fieldId])) {
-    return {
-      [field]: { id: data[fieldId] },
-    };
-  } else if (!comparator.strictEq(previousData[field], data[field])) {
-    const fieldCreate = field + 'Create';
-    const fieldUnlink = field + 'Unlink';
-    if (previousData && previousData[field] && data[field].id !== previousData[field].id) {
-      let res = resources[resource].UPDATE.variables({ data: data[field], previousData: previousData[field] || {} }).input;
-      let result = {};
-      if (!comparator.looseEq({}, res)) {
-        result = {
-          ...result,
-          [fieldCreate]: res
+  const fieldCreate = field + 'Create';
+  const fieldUnlink = field + 'Unlink';
+  debugger;
+  switch (data[fieldType]) {
+    case actionType.USE:
+      if (data[fieldId] || (previousData[field] && previousData[field].id)) {
+        return {
+          [field]: { id: data[fieldId] },
         };
       }
-      return {
-        ...result,
-        [fieldUnlink]: {
-          id: previousData[field].id
-        },
+    case actionType.UPDATE:
+      if (data[field] && typeof data[field] === 'object') {
+        let res = resources[resource].UPDATE.variables({ data: data[field], previousData: previousData[field] || {} }).input;
+        return {
+          [field]: {
+            id: previousData[fieldId] || previousData[field].id,
+            ...res,
+          },
+        };
       };
-    } else {
-      let res = resources[resource].UPDATE.variables({ data: data[field], previousData: previousData[field] || {} }).input;
-      if (!comparator.looseEq({}, {
-        id: data[field],
-        ...res,
-      })) {
+    case actionType.CLONE:
+    case actionType.CREATE:
+      if (data[field] && typeof data[field] === 'object') {
+        let res = resources[resource].CREATE.variables({ data: data[field] }).input;
+        delete res.id;
+        if (
+          [fieldId] || (previousData[field] && previousData[field].id)) {
+          return {
+            [fieldUnlink]: {
+              id: previousData[fieldId] || previousData[field].id,
+            },
+            [fieldCreate]: {
+              ...res,
+            },
+          };
+        } else {
+          return {
+            [fieldCreate]: {
+              ...res,
+            },
+          };
+        }
+      }
+
+    case actionType.UNLINK:
+      if (previousData[fieldId] || (previousData[field] && previousData[field].id)) {
         return {
-          [fieldCreate]: res,
-        };
-      } else if (Object.keys(res).length > 1) {
-        return {
-          [field]: res,
+          [fieldUnlink]: {
+            id: previousData[fieldId] || previousData[field].id,
+          },
         };
       }
-    }
   }
 }
