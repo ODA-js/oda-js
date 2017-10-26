@@ -14,6 +14,19 @@ export interface UIResult {
   edit?: string[];
   show?: string[];
   list?: string[];
+  embedded?: string[];
+}
+
+export interface embeddedRel {
+  name: string,
+  type: string,
+  required: boolean;
+};
+
+export interface embedded {
+  name: string;
+  entity: string,
+  fields: embeddedRel[],
 }
 
 export interface UIView {
@@ -22,6 +35,10 @@ export interface UIView {
   edit?: { [key: string]: boolean };
   show?: { [key: string]: boolean };
   list?: { [key: string]: boolean };
+  embedded?: {
+    names: { [key: string]: number };
+    items: embedded[];
+  }
 }
 
 export interface MapperOutupt {
@@ -34,12 +51,6 @@ export interface MapperOutupt {
   };
   listName: string;
   ownerFieldName: string;
-  // unique: {
-  //   args: { name: string, type: string }[];
-  //   find: { name: string, type: string, cName: string }[];
-  //   complex: { name: string, fields: { name: string, uName: string, type: string }[] }[];
-  // }
-  complexUnique: { name: string, fields: { name: string, uName: string, type: string }[] }[];
   relEntities: any[];
   relations: {
     required: boolean;
@@ -61,32 +72,6 @@ export interface MapperOutupt {
     name: string;
     required: boolean;
   }[];
-  persistent: {
-    derived: boolean;
-    persistent: boolean;
-    field: string;
-    single: boolean;
-    name: string;
-    ref: {
-      entity: string;
-      fieldName: string;
-    }
-  }[];
-  args: {
-    create: {
-      args: { name: string; type: string; }[];
-      find: { name: string; type: string; }[];
-    };
-    update: {
-      args: { name: string; type: string; }[];
-      find: { name: string; type: string; cName: string }[];
-      payload: { name: string; type: string; }[];
-    };
-    remove: {
-      args: { name: string; type: string; }[]
-      find: { name: string; type: string; cName: string }[],
-    };
-  };
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -106,13 +91,14 @@ import {
   idField,
 } from '../../queries';
 
-function visibility(entity: Entity, aclAllow, role, aor): UIView {
+function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor): UIView {
   const result: UIResult = {
     listName: guessListLabel(entity, aclAllow, role, aor).source,
     hidden: [],
     edit: [],
     show: [],
     list: [],
+    embedded: [],
   };
   let allFields = getFieldsForAcl(aclAllow)(role)(entity);
   result.edit.push(...allFields.map(f => f.name));
@@ -124,6 +110,9 @@ function visibility(entity: Entity, aclAllow, role, aor): UIView {
     .map(f => entity.fields.get(f))
     .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
     .map(f => f.name));
+
+  // придумать как вытаскивать реляции из модели...
+  //
 
   const UI = entity.getMetadata('UI');
   if (UI) {
@@ -141,6 +130,9 @@ function visibility(entity: Entity, aclAllow, role, aor): UIView {
 
     if (UI.list && Array.isArray(UI.list)) {
       result.list.push(...UI.list);
+    }
+    if (UI.embedded && Array.isArray(UI.embedded)) {
+      result.embedded.push(...UI.embedded);
     }
   }
 
@@ -166,6 +158,39 @@ function visibility(entity: Entity, aclAllow, role, aor): UIView {
     r[c] = true;
     return r;
   }, {});
+
+  const embedItems = allFields.filter(f => f.relation && f.relation.single && result.embedded.indexOf(f.name) > -1)
+    .map(f => {
+      const res: embedded = {
+        name: f.name,
+        entity: f.relation.ref.entity,
+        fields: [],
+      };
+      const re = pack.entities.get(f.relation.ref.entity);
+      const reUI = visibility(pack, re, aclAllow, role, aor);
+      const fList = Array.from(re.fields.values())
+        // потом беру все поля которые редактируются,
+        .filter(f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name])
+        // проверяю что это не связи,
+        .filter(f => !f.relation)
+        // формирую список полей и возвращаю
+        .map(f => ({
+          name: f.name,
+          type: aor(f.type),
+          required: f.required,
+        }));
+
+      res.fields.push(...fList);
+      return res;
+    }, {});
+
+  res.embedded = {
+    items: embedItems,
+    names: embedItems.reduce((res, f, index) => {
+      res[f.name] = index;
+      return res;
+    }, {}),
+  }
 
   return res;
 }
@@ -195,8 +220,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
-  const mapAORypes = typeMapper.aor;
-  const UI = visibility(entity, aclAllow, role, mapAORypes);
+  const mapAORTypes = typeMapper.aor;
+  const mapAORFilterTypes = typeMapper.aor;
+  const UI = visibility(pack, entity, aclAllow, role, mapAORTypes);
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
@@ -263,7 +289,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         ref: {
           ...ref,
           fieldName: decapitalize(refFieldName),
-          listLabel: guessListLabel(refe, aclAllow, role, mapAORypes),
+          listLabel: guessListLabel(refe, aclAllow, role, mapAORTypes),
         },
       };
     });
@@ -272,7 +298,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     name: entity.name,
     UI,
     plural: entity.plural,
-    listLabel: guessListLabel(entity, aclAllow, role, mapAORypes),
+    listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relEntities: fieldsAcl
@@ -331,27 +357,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           },
         }
       }),
-
-    complexUnique: complexUniqueIndex(entity).map(i => {
-      let fields = Object.keys(i.fields)
-        .map(fn => entity.fields.get(fn))
-        .map(f => ({
-          name: f.name,
-          uName: capitalize(f.name),
-          type: mapToTSTypes(f.type),
-          gqlType: mapToGQLTypes(f.type),
-        })).sort((a, b) => {
-          if (a.name > b.name) return 1
-          else if (a.name < b.name) return -1;
-          else return 0;
-        });
-      return {
-        name: i.name,
-        fields,
-      };
-    }),
     relations,
-    persistent: relations.filter(f => f.persistent),
     fields: [
       ...ids,
       ...fieldsAcl
@@ -360,74 +366,8 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         name: f.name,
         cName: capitalize(f.name),
         required: f.required,
-        type: mapAORypes(f.type),
+        type: mapAORTypes(f.type),
+        filterType: mapAORFilterTypes(f.type),
       })),
-    args: {
-      create: {
-        args: [
-          ...[
-            ...ids,
-            ...fieldsAcl
-              .filter(f => mutableFields(f))]
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: fieldsAcl
-          .filter(f => mutableFields(f))
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          })),
-      },
-      update: {
-        args: [
-          ...[
-            ...ids,
-            ...fieldsAcl
-              .filter(f => mutableFields(f))]
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: [
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-              cName: capitalize(f.name),
-            }))],
-        payload: fieldsAcl
-          .filter(f => mutableFields(f))
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          })),
-      },
-      remove: {
-        args: [
-          ...[
-            ...ids,
-            ...fieldsAcl
-              .filter(identityFields)
-              .filter(oneUniqueInIndex(entity))]
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-            }))],
-        find: [
-          ...fieldsAcl
-            .filter(identityFields)
-            .filter(oneUniqueInIndex(entity))
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-              gqlType: mapToGQLTypes(f.type),
-              cName: capitalize(f.name),
-            }))],
-      },
-    },
   };
 }

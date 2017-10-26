@@ -324,6 +324,7 @@ export const getManyReferenceOf#{entity.name}Result = {
 <#- chunkStart(`../../../UI/${entity.name}/queries/getList`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
+import set from 'lodash/set';
 
 const { SortOrder } = constants;
 
@@ -345,7 +346,7 @@ export default ({ queries, resources }) => ({
       if (key === 'q') {
         return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
       }
-      return { ...acc, [key]: params.filter[key] };
+      return set(acc, key.replace('-', '.'), params.filter[key]);
     }, {});
     return {
       skip: (params.pagination.page - 1) * params.pagination.perPage,
@@ -388,14 +389,11 @@ export default ({ queries, resources }) => ({
     };
   },
   fetchPolicy: 'network-only',
-  variables: (params) => {
-    const filter = {
-      id: { in: params.ids }
-    }
-    return {
-      filter,
-    };
-  },
+  variables: params => ({
+    filter: {
+      id: { in: params.ids },
+    },
+  }),
 });
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/getManyReference`); -#>
