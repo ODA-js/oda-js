@@ -8,8 +8,10 @@ export default function ({ form, relation }) {
   return function* () {
     while (true) {
       const action = yield take('@@redux-form/INITIALIZE');
-      for (let i = 0, len = relNames.length; i < len; i++) {
-        yield put(change(form, `${relNames[i]}Type`, actionType.USE));
+      if (action.meta && action.meta.form === form) {
+        for (let i = 0, len = relNames.length; i < len; i++) {
+          yield put(change(form, `${relNames[i]}Type`, actionType.USE));
+        }
       }
     }
   }
