@@ -11,12 +11,9 @@ import Grid from "./grid";
 import List from "./list";
 
 export default {
-  Title,
-  Form,
   Create,
   Edit,
   Show,
-  Grid,
   List,
 };
 
