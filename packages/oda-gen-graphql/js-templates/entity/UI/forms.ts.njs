@@ -181,13 +181,7 @@ class Form extends Component {
     const { props } = this;
     const homeworld = showRel('homeworld', props);
     const species = showRel('species', props);
-    const choices = [
-      { id: actionType.CREATE, name: 'Create' },
-      { id: actionType.UPDATE, name: 'Update Existing' },
-      { id: actionType.CLONE, name: 'Copy Selected' },
-      { id: actionType.USE, name: 'Use Existing' },
-      { id: actionType.UNLINK, name: 'Unlink' },
-    ];
+    const relActions = props.relActions;
 
     return (
       <SimpleForm {...props} >
@@ -206,7 +200,7 @@ class Form extends Component {
         <SelectInput
           source="#{f.field}Type"
           label="Expected to"
-          choices={choices}
+          choices={relActions}
           defaultValue={actionType.USE}
         />
         {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
@@ -266,10 +260,21 @@ import {
 } from "admin-on-rest";
 import #{entity.name}Form from "./form";
 import #{entity.name}Title from "./title";
+import { ui } from 'oda-aor-rest';
+const actionType = ui.consts.actionType;
 
 export default props => (
   <Edit title={<#{entity.name}Title />} {...props}>
-    <#{entity.name}Form {...props} />
+    <#{entity.name}Form
+      {...props}
+      relActions={[
+        { id: actionType.CREATE, name: 'Create' },
+        { id: actionType.UPDATE, name: 'Update Existing' },
+        { id: actionType.CLONE, name: 'Copy Selected' },
+        { id: actionType.USE, name: 'Use Existing' },
+        { id: actionType.UNLINK, name: 'Unlink' },
+      ]}
+    />
   </Edit >
 );
 
@@ -280,10 +285,19 @@ import {
 } from "admin-on-rest";
 import #{entity.name}Form from "./form";
 import #{entity.name}Title from "./title";
+import { ui } from 'oda-aor-rest';
+const actionType = ui.consts.actionType;
 
 export default props => (
   <Create title={<#{entity.name}Title />} {...props} >
-    <#{entity.name}Form {...props} />
+    <#{entity.name}Form
+      {...props}
+      relActions={[
+        { id: actionType.CREATE, name: 'Create' },
+        { id: actionType.CLONE, name: 'Copy Selected' },
+        { id: actionType.USE, name: 'Use Existing' },
+      ]}
+    />
   </Create >
 );
 

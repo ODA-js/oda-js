@@ -194,8 +194,8 @@ ${fullFragment}
 
 //create
 export const createOf#{entity.name}Result = gql`{
-  item {
-    edge @_(get: "node") {
+  item @_(get: "edge.node") {
+    edge {
       node {
         ...#{entity.name}Result
       }
@@ -457,7 +457,7 @@ export default ({ queries, resources }) => ({
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/create`); -#>
 import { reshape } from 'oda-lodash';
-import { utils } from 'oda-aor-rest';
+import { data as utils } from 'oda-aor-rest';
 
 const { createField, createSingle, createMany } = utils;
 
@@ -484,14 +484,14 @@ export default ({ queries, resources }) => ({
         ...createMany(data, '#{f.field}'),
 <#-}-#>
 <#-})#>
-    return { input };
+      },
     };
   },
 });
 
 <#- chunkStart(`../../../UI/${entity.name}/queries/update`); -#>
 import { reshape } from 'oda-lodash';
-import { utils } from 'oda-aor-rest';
+import { data as utils } from 'oda-aor-rest';
 
 const { updateField, updateSingle, updateMany } = utils;
 
