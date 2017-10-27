@@ -6,7 +6,6 @@ export default function (data, previousData, field, resource, resources) {
   const fieldType = field + 'Type';
   const fieldCreate = field + 'Create';
   const fieldUnlink = field + 'Unlink';
-  debugger;
   switch (data[fieldType]) {
     case actionType.USE:
       if (data[fieldId] || (previousData[field] && previousData[field].id)) {
@@ -29,8 +28,7 @@ export default function (data, previousData, field, resource, resources) {
       if (data[field] && typeof data[field] === 'object') {
         let res = resources[resource].CREATE.variables({ data: data[field] }).input;
         delete res.id;
-        if (
-          [fieldId] || (previousData[field] && previousData[field].id)) {
+        if (previousData[fieldId] || (previousData[field] && previousData[field].id)) {
           return {
             [fieldUnlink]: {
               id: previousData[fieldId] || previousData[field].id,
