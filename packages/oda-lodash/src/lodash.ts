@@ -68,6 +68,8 @@ dive: Path
 assign: [Path!]
 mapValues: Path
 
+convertTo: ConvertTypeArgument
+
 # Creates an array of values corresponding to paths of object.
 at: [Path!]
 # Creates an array of own enumerable string keyed-value pairs for object.
@@ -160,6 +162,17 @@ export class DummyArgument extends types.GQLModule {
   };
 }
 
+export class ConvertTypeArgument extends types.GQLModule {
+  protected _typeDef = {
+    type: [`
+      enum ConvertTypeArgument{
+        toNumber
+        toString
+      }
+    `],
+  };
+}
+
 export class LodashModule extends types.GQLModule {
   protected _extend = [
     new RegularExpression({}),
@@ -168,6 +181,7 @@ export class LodashModule extends types.GQLModule {
     new DirectiveLodash({}),
     new LodashOperations({}),
     new DummyArgument({}),
+    new ConvertTypeArgument({}),
   ];
 }
 

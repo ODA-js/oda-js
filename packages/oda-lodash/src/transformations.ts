@@ -44,6 +44,10 @@ import * as keys from 'lodash/keys.js';
 import * as values from 'lodash/values.js';
 import * as omit from 'lodash/omit.js';
 
+function getType(v): String {
+  return Object.prototype.toString.call(v).match(/\[object (.+)\]/)[1].toLowerCase();
+}
+
 const transformations = {
   array: {
     each: (array, arg) => {
@@ -115,6 +119,23 @@ const transformations = {
     },
   },
   '*': {
+    convert: (obj, type) => {
+      if (obj !== null || obj !== undefined) {
+        switch (type) {
+          case 'toNumber':
+            return parseFloat(obj);
+          case 'toString':
+            return obj.toString();
+        }
+      } else {
+        switch (type) {
+          case 'toNumber':
+            return NaN;
+          case 'toString':
+            return '';
+        }
+      }
+    },
     dive: (src, args) => (obj, key) => {
       unset(obj, key);
       set(obj, args, src);
@@ -159,15 +180,9 @@ export function applyTransformations(object, args) {
       }
 
       const expectedType = opToExpectedType[op];
-      if (!(object === undefined || object === null)) {
-        let type: String = object && object.constructor && object.constructor.name;
-        // handle objects created with Object.create(null)
-        if (!type) {
-          type = typeof object;
-        } else {
-          type = type.toLowerCase();
-        }
 
+      if (!(object === undefined || object === null)) {
+        let type = getType(object);
         if (expectedType !== '*' && expectedType !== type && type !== undefined) {
           throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
         }
