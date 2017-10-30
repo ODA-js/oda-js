@@ -68,7 +68,7 @@ dive: Path
 assign: [Path!]
 mapValues: Path
 
-convertTo: ConvertTypeArgument
+convert: ConvertTypeArgument
 
 # Creates an array of values corresponding to paths of object.
 at: [Path!]
