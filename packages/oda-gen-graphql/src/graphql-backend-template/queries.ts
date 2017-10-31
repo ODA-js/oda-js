@@ -13,15 +13,17 @@ export const getMutations = (pack: ModelPackage): Mutation[] => Array.from(pack.
 
 export const oneUniqueInIndex = (entity: Entity) => (f: Field) => {
   let indexes = entity.getMetadata('storage.indexes');
-  let iNames = Object.keys(indexes);
   let result = false;
-  for (let i = 0, len = iNames.length; i < len; i++) {
-    let iName = iNames[i];
-    if (indexes[iName].options.unique && indexes[iName].fields[f.name]) {
-      // only one in unique index
-      result = Object.keys(indexes[iName].fields).length === 1;
-      if (result) {
-        break;
+  if (indexes !== null && typeof indexes === 'object') {
+    let iNames = Object.keys(indexes);
+    for (let i = 0, len = iNames.length; i < len; i++) {
+      let iName = iNames[i];
+      if (indexes[iName].options.unique && indexes[iName].fields[f.name]) {
+        // only one in unique index
+        result = Object.keys(indexes[iName].fields).length === 1;
+        if (result) {
+          break;
+        }
       }
     }
   }
