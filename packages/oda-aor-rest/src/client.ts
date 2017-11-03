@@ -15,7 +15,7 @@ export default ({ client: clientOptions, resources: resourceList, queries = {}, 
   * @returns {Promise} the Promise for a REST response
   */
   return (type, resourceName, params) => {
-    console.log("Type is ", type)
+    console.log("Type is ", type);
     const resource = resourceList[resourceName];
     if (!resource) {
       throw new Error(`No matching resource found for name ${resourceName}`);
@@ -62,6 +62,9 @@ export default ({ client: clientOptions, resources: resourceList, queries = {}, 
 
       action = client.mutate(apolloQuery)
     }
-    return action.then(response => operation.parseResponse(response, params));
+    return action.then(response => operation.parseResponse(response, params)).catch(er => {
+      debugger;
+      throw er;
+    });
   };
 }
