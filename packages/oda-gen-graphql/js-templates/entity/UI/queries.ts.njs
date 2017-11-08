@@ -27,7 +27,7 @@ import {
 } from './queries';
 
 export const resource = ({ queries, resources }) => ({
-  GET_LIST: GET_LIST({ queries, resources } ),
+  GET_LIST: GET_LIST({ queries, resources }),
   GET_ONE: GET_ONE({ queries, resources }),
   CREATE: CREATE({ queries, resources }),
   UPDATE: UPDATE({ queries, resources }),
@@ -482,7 +482,7 @@ export default ({ queries, resources }) => ({
 #><#-if(f.single){#>
         ...createSingle(data, '#{f.field}', '#{f.ref.entity}', resources),
     <#-} else {#>
-        ...createMany(data, '#{f.field}'),
+        ...createMany(data, '#{f.field}', '#{f.ref.entity}', resources),
 <#-}-#>
 <#-})#>
       },
@@ -520,7 +520,7 @@ export default ({ queries, resources }) => ({
 #><#-if(f.single){#>
         ...updateSingle(data, previousData, '#{f.field}', '#{f.ref.entity}', resources),
     <#-} else {#>
-        ...updateMany(data, previousData, '#{f.field}'),
+        ...updateMany(data, previousData, '#{f.field}', '#{f.ref.entity}', resources),
 <#-}-#>
 <#-})#>
       },

@@ -166,17 +166,7 @@ const { DependentInput, EmbeddedInput, GrouppedInput, Label } = ui.components;
 const actionType = ui.consts.actionType;
 const initForm = ui.actions.initForm;
 const finalizeForm = ui.actions.finalizeForm;
-const showRel = ui.showRel;
-
-const showDetailsFor = (relName) => {
-  const relType = `${relName}Type`;
-  return (root) => !!(root && root[relType] && root[relType] !== actionType.USE && root[relType] !== actionType.UNLINK)
-}
-
-const showSelectorFor = (relName) => {
-  const relType = `${relName}Type`;
-  return (root) => !!!(root && root[relType] && root[relType] !== actionType.USE && root[relType] !== actionType.UNLINK)
-}
+const { selectorFor, detailsFor } = ui.showFor;
 
 class Form extends Component {
   componentWillMount() {
@@ -188,10 +178,6 @@ class Form extends Component {
 
   render() {
     const { props } = this;
-<#entity.UI.embedded.items.forEach(f=>{-#>
-    const #{f.name} = showRel('#{f.entity}', props);
-<#});-#>
-
     const singleRelActions = props.singleRelActions;
     const manyRelAction = props.manyRelActions;
 
@@ -254,10 +240,12 @@ class Form extends Component {
             choices={manyRelAction}
             defaultValue={actionType.USE}
           />
-          {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-            <SelectInput optionText="#{f.ref.listLabel.source}" />
-          </ReferenceInput>}
-          <DependentInput resolve={showDetailsFor('#{f.field}')} scoped >
+          <DependentInput resolve={selectorFor('#{f.field}')} scoped >
+            <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+              <SelectInput optionText="#{f.ref.listLabel.source}" />
+            </ReferenceInput>
+          </DependentInput>
+          <DependentInput resolve={detailsFor('#{f.field}')} scoped >
 <#
         let current = entity.UI.embedded.names[f.field];
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
