@@ -159,12 +159,24 @@ import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import compose from 'recompose/compose';
 import { ui } from 'oda-aor-rest';
+import { EmbeddedArrayInput } from 'aor-embedded-array';
 
+const { DependentInput, EmbeddedInput, GrouppedInput, Label } = ui.components;
 
 const actionType = ui.consts.actionType;
 const initForm = ui.actions.initForm;
 const finalizeForm = ui.actions.finalizeForm;
 const showRel = ui.showRel;
+
+const showDetailsFor = (relName) => {
+  const relType = `${relName}Type`;
+  return (root) => !!(root && root[relType] && root[relType] !== actionType.USE && root[relType] !== actionType.UNLINK)
+}
+
+const showSelectorFor = (relName) => {
+  const relType = `${relName}Type`;
+  return (root) => !!!(root && root[relType] && root[relType] !== actionType.USE && root[relType] !== actionType.UNLINK)
+}
 
 class Form extends Component {
   componentWillMount() {
@@ -176,9 +188,12 @@ class Form extends Component {
 
   render() {
     const { props } = this;
-    const homeworld = showRel('homeworld', props);
-    const species = showRel('species', props);
-    const relActions = props.relActions;
+<#entity.UI.embedded.items.forEach(f=>{-#>
+    const #{f.name} = showRel('#{f.entity}', props);
+<#});-#>
+
+    const singleRelActions = props.singleRelActions;
+    const manyRelAction = props.manyRelActions;
 
     return (
       <SimpleForm {...props} >
@@ -190,37 +205,75 @@ class Form extends Component {
 <# entity.relations
 .filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
 .forEach(f=>{
+  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
-        <span><h3> #{f.cField} </h3></span>
-<#-if(f.single){#>
-        <#if(entity.UI.embedded.names[f.field]>-1){#>
-        <SelectInput
-          source="#{f.field}Type"
-          label="Expected to"
-          choices={relActions}
-          defaultValue={actionType.USE}
-        />
+<#-   if ( f.single ) {
+        if(embedded){
+#>
+        <Label text="#{f.cField}" />
         {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
           <SelectInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>}
+        <SelectInput
+          source="#{f.field}Type"
+          label="Expected to"
+          choices={singleRelActions}
+          defaultValue={actionType.USE}
+        />
 <#
         let current = entity.UI.embedded.names[f.field];
         const fName = f.field;
-        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 #>
-        { #{fName}.edit && <#{f.type}Input source="#{fName}.#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />}
+        <DependentInput resolve={showDetailsFor('#{fName}')} >
+          <EmbeddedInput label="#{f.cField}" source="#{fName}" addLabel={false}>
+<#
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
+-#>
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#
         });
+-#>
+          </EmbeddedInput>
+        </DependentInput>
+<#
+        } else {
 #>
-        <#} else {#>
-        <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+        <Label text="#{f.cField}" />
+        <ReferenceInput sortable={false} label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
           <SelectInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
-        <#}#>
-<#-} else {#>
-        <ReferenceArrayInput sortable={false} label="#{f.cField}" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+<#}#>
+<#-
+      } else {
+  #>
+<# if(embedded){#>
+        <EmbeddedArrayInput sortable={false} label="#{f.cField}" source="#{f.field}Values" allowEmpty >
+          <SelectInput
+            source="#{f.field}Type"
+            label="Expected to"
+            choices={manyRelAction}
+            defaultValue={actionType.USE}
+          />
+          {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+            <SelectInput optionText="#{f.ref.listLabel.source}" />
+          </ReferenceInput>}
+          <DependentInput resolve={showDetailsFor('#{f.field}')} scoped >
+<#
+        let current = entity.UI.embedded.names[f.field];
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
+-#>
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+<#
+        });
+-#>
+          </DependentInput>
+        </EmbeddedArrayInput>
+<#} else {#>
+        <Label text="#{f.cField}" />
+        <ReferenceArrayInput sortable={false} label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
+<#}#>
 <#-}-#>
 <#-})#>
       </SimpleForm>);
@@ -235,7 +288,7 @@ const selector = formValueSelector(formName);
 export default compose(
   connect(
     state => ({
-<# entity.UI.embedded.items.forEach(f=>{-#>
+<# entity.UI.embedded.items.filter(f=>f.single).forEach(f=>{-#>
       #{f.name}: selector(state, '#{f.name}'),
       #{f.name}Id: selector(state, '#{f.name}Id'),
       #{f.name}Type: selector(state, '#{f.name}Type'),
@@ -243,7 +296,10 @@ export default compose(
     }), {
       initForm: initForm('record-form', {
 <#entity.UI.embedded.items.forEach(f=>{-#>
-        #{f.name}: '#{f.entity}',
+        #{f.name}: {
+          resource: '#{f.entity}',
+          single: #{f.single},
+        },
 <#});-#>
       }),
       finalizeForm,
@@ -264,12 +320,18 @@ export default props => (
   <Edit title={<#{entity.name}Title />} {...props}>
     <#{entity.name}Form
       {...props}
-      relActions={[
+      singleRelActions={[
         { id: actionType.CREATE, name: 'Create' },
         { id: actionType.UPDATE, name: 'Update Existing' },
         { id: actionType.CLONE, name: 'Copy Selected' },
         { id: actionType.USE, name: 'Use Existing' },
         { id: actionType.UNLINK, name: 'Unlink' },
+      ]}
+      manyRelActions={[
+        { id: actionType.CREATE, name: 'Create' },
+        { id: actionType.UPDATE, name: 'Update Existing' },
+        { id: actionType.CLONE, name: 'Copy Selected' },
+        { id: actionType.USE, name: 'Use Existing' },
       ]}
     />
   </Edit >

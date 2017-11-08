@@ -62,14 +62,15 @@ const resultFragment = gql`fragment #{entity.name}Result on #{entity.name}{
   #{f.name}
 <#})-#>
 <# entity.relations.forEach(f=>{
+  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#><#-if(f.single){#>
   #{f.field}Id: #{f.field} @_(get:"id") {
     id
   }
 <#-} else {#>
-  #{f.field}Ids: #{f.field} @_(get:"edges") {
+  #{f.field}<#if(embedded){#>Values<#}else{#>Ids<#}#>: #{f.field} @_(get:"edges") {
     edges @_(map:"node") {
-      node @_(get:"id"){
+      node <#if(!embedded){#>@_(get:"id") <#}#>{
         id
       }
     }

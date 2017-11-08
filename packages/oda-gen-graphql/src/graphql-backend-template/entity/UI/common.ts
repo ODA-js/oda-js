@@ -26,6 +26,7 @@ export interface embeddedRel {
 export interface embedded {
   name: string;
   entity: string,
+  single: boolean,
   fields: embeddedRel[],
 }
 
@@ -91,7 +92,7 @@ import {
   idField,
 } from '../../queries';
 
-function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor): UIView {
+function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, first = false): UIView {
   const result: UIResult = {
     listName: guessListLabel(entity, aclAllow, role, aor).source,
     hidden: [],
@@ -159,37 +160,41 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor): UI
     return r;
   }, {});
 
-  const embedItems = allFields.filter(f => f.relation && f.relation.single && result.embedded.indexOf(f.name) > -1)
-    .map(f => {
-      const res: embedded = {
-        name: f.name,
-        entity: f.relation.ref.entity,
-        fields: [],
-      };
-      const re = pack.entities.get(f.relation.ref.entity);
-      const reUI = visibility(pack, re, aclAllow, role, aor);
-      const fList = Array.from(re.fields.values())
-        // потом беру все поля которые редактируются,
-        .filter(f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name])
-        // проверяю что это не связи,
-        .filter(f => !f.relation)
-        // формирую список полей и возвращаю
-        .map(f => ({
+  if (first) {
+    const embedItems = allFields.filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
+      .map(f => {
+        const res: embedded = {
           name: f.name,
-          type: aor(f.type),
-          required: f.required,
-        }));
+          single: f.relation.single,
+          entity: f.relation.ref.entity,
+          fields: [],
+        };
+        const re = pack.entities.get(f.relation.ref.entity);
+        const reUI = visibility(pack, re, aclAllow, role, aor);
+        const fList = Array.from(re.fields.values())
+          // потом беру все поля которые редактируются,
+          .filter(f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name])
+          // проверяю что это не связи,
+          .filter(f => !f.relation)
+          // формирую список полей и возвращаю
+          .map(f => ({
+            name: f.name,
+            cName: capitalize(f.name),
+            type: aor(f.type),
+            required: f.required,
+          }));
 
-      res.fields.push(...fList);
-      return res;
-    }, {});
+        res.fields.push(...fList);
+        return res;
+      }, {});
 
-  res.embedded = {
-    items: embedItems,
-    names: embedItems.reduce((res, f, index) => {
-      res[f.name] = index;
-      return res;
-    }, {}),
+    res.embedded = {
+      items: embedItems,
+      names: embedItems.reduce((res, f, index) => {
+        res[f.name] = index;
+        return res;
+      }, {}),
+    }
   }
 
   return res;
@@ -222,7 +227,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   const mapToGQLTypes = typeMapper.graphql;
   const mapAORTypes = typeMapper.aor;
   const mapAORFilterTypes = typeMapper.aor;
-  const UI = visibility(pack, entity, aclAllow, role, mapAORTypes);
+  const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
