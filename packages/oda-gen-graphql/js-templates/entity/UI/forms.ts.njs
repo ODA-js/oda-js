@@ -153,6 +153,7 @@ import {
   DateInput,
   NumberInput,
   BooleanInput,
+  required,
 } from "admin-on-rest";
 
 import { connect } from 'react-redux';
