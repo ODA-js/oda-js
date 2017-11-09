@@ -3,6 +3,7 @@ import Label from './label';
 import EmbeddedInput from './embeddedInput';
 import FormInput from './formInput';
 import GrouppedInput from './grouppedInput';
+import AutocompleteInput from './autocompleteInput';
 
 export {
   DependentInput,
@@ -10,4 +11,5 @@ export {
   Label,
   FormInput,
   GrouppedInput,
+  AutocompleteInput,
 }

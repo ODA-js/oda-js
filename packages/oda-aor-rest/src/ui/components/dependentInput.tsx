@@ -39,7 +39,7 @@ export const DependentInputComponent = ({ children, show, root, ...props }) => {
 
   return (
     <div key={children.props.source} style={children.props.style} className={`aor-input-${children.props.source}`}>
-      <FormInput {...props} input={children} />
+      <FormInput {...props} input={children} source={root ? `${root}.${children.props.source}` : children.props.source} name={root ? `${root}.${children.props.source}` : children.props.source} />
     </div>
   );
 };

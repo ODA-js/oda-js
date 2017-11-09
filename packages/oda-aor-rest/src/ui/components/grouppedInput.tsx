@@ -116,7 +116,6 @@ export class GrouppedInput extends Component {
   };
 
   render() {
-    debugger;
     const { source, label, addLabel, translate, resource } = this.props;
     const labelStyle = Object.assign(styles.label, {
       color: this.context.muiTheme ? this.context.muiTheme.textField.focusColor : '',

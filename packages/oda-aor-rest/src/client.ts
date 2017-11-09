@@ -63,7 +63,6 @@ export default ({ client: clientOptions, resources: resourceList, queries = {}, 
       action = client.mutate(apolloQuery)
     }
     return action.then(response => operation.parseResponse(response, params)).catch(er => {
-      debugger;
       throw er;
     });
   };
