@@ -473,6 +473,7 @@ export default ({ queries, resources }) => ({
   },
   variables: (params) => {
     const data = params.data;
+    const res = resources({ queries });
     return { input:
       {
 <#- entity.fields.forEach(f=>{#>
@@ -510,6 +511,7 @@ export default ({ queries, resources }) => ({
   }]),
   variables: (params) => {
     const { data, previousData } = params;
+    const res = resources({ queries });
     return {
       input: {
         id: data.id,

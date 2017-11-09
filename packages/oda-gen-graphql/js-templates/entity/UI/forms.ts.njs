@@ -161,12 +161,18 @@ import compose from 'recompose/compose';
 import { ui } from 'oda-aor-rest';
 import { EmbeddedArrayInput } from 'aor-embedded-array';
 
-const { DependentInput, EmbeddedInput, GrouppedInput, Label } = ui.components;
+const {
+  DependentInput,
+  EmbeddedInput,
+  GrouppedInput,
+  Label,
+  AutocompleteInput
+} = ui.components;
 
 const actionType = ui.consts.actionType;
 const initForm = ui.actions.initForm;
 const finalizeForm = ui.actions.finalizeForm;
-const { selectorFor, detailsFor } = ui.showFor;
+const { selectorFor, detailsFor } = ui.show;
 
 class Form extends Component {
   componentWillMount() {
@@ -186,7 +192,7 @@ class Form extends Component {
 <# entity.fields.filter(f=>f.name!== "id")
   .filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
   .forEach(f=>{-#>
-        <#{f.type}Input source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+        <#{f.type}Input source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
 <#})-#>
 <# entity.relations
 .filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
@@ -197,8 +203,8 @@ class Form extends Component {
         if(embedded){
 #>
         <Label text="#{f.cField}" />
-        {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-          <SelectInput optionText="#{f.ref.listLabel.source}" />
+        {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+          <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>}
         <SelectInput
           source="#{f.field}Type"
@@ -215,7 +221,7 @@ class Form extends Component {
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
 <#
         });
 -#>
@@ -225,8 +231,8 @@ class Form extends Component {
         } else {
 #>
         <Label text="#{f.cField}" />
-        <ReferenceInput sortable={false} label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-          <SelectInput optionText="#{f.ref.listLabel.source}" />
+        <ReferenceInput sortable={false} label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+          <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
 <#}#>
 <#-
@@ -241,7 +247,7 @@ class Form extends Component {
             defaultValue={actionType.USE}
           />
           <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-            <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+            <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
           </DependentInput>
@@ -250,7 +256,7 @@ class Form extends Component {
         let current = entity.UI.embedded.names[f.field];
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
@@ -258,7 +264,7 @@ class Form extends Component {
         </EmbeddedArrayInput>
 <#} else {#>
         <Label text="#{f.cField}" />
-        <ReferenceArrayInput sortable={false} label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+        <ReferenceArrayInput sortable={false} label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
 <#}#>
@@ -339,8 +345,16 @@ export default props => (
   <Create title={<#{entity.name}Title />} {...props} >
     <#{entity.name}Form
       {...props}
-      relActions={[
+      singleRelActions={[
         { id: actionType.CREATE, name: 'Create' },
+        { id: actionType.UPDATE, name: 'Update Existing' },
+        { id: actionType.CLONE, name: 'Copy Selected' },
+        { id: actionType.USE, name: 'Use Existing' },
+        { id: actionType.UNLINK, name: 'Unlink' },
+      ]}
+      manyRelActions={[
+        { id: actionType.CREATE, name: 'Create' },
+        { id: actionType.UPDATE, name: 'Update Existing' },
         { id: actionType.CLONE, name: 'Copy Selected' },
         { id: actionType.USE, name: 'Use Existing' },
       ]}
@@ -361,7 +375,8 @@ import {
   ReferenceManyField,
   ReferenceField,
   Show,
-  SimpleShowLayout
+  SimpleShowLayout,
+  required,
 } from "admin-on-rest";
 
 import {
@@ -395,10 +410,10 @@ if(manyRels.length > 0){#>
 .forEach(f=>{
 -#><#-if(f.single){#>
         <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-          <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#}#> />
+          <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
         </ReferenceField>
 <#-} else {#>
-        <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#}#> >
+        <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#-}-#>
