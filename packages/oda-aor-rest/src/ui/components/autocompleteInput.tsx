@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
 import * as PropTypes from 'prop-types';
-import * as get from 'lodash.get';
+import * as get from 'lodash/get';
 import * as _ from 'lodash';
 import * as isEqual from 'lodash/isEqual';
 import * as diff from 'lodash/difference';

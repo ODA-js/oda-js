@@ -2,16 +2,8 @@ import * as React from 'react';
 import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { formValueSelector, getFormValues } from 'redux-form';
-import * as get from 'lodash.get';
 import FormInput from './formInput';
-
-const getValue = (value, path) => {
-  if (typeof value === 'object') {
-    return get(value, path);
-  }
-
-  return value;
-}
+import getValue from './getValue';
 
 const REDUX_FORM_NAME = 'record-form';
 export const DependentInputComponent = ({ children, show, root, ...props }) => {
