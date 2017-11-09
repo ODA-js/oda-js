@@ -15,6 +15,7 @@ export default {
   Edit,
   Show,
   List,
+  Grid,
 };
 
 <#- chunkStart(`../../../UI/${entity.name}/uix/title`); -#>
@@ -204,9 +205,11 @@ class Form extends Component {
         if(embedded){
 #>
         <Label text="#{f.cField}" />
-        {#{f.field}.select && <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
-          <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
-        </ReferenceInput>}
+        <DependentInput resolve={selectorFor('#{f.field}')} scoped >
+          <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+            <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
+          </ReferenceInput>
+        </DependentInput>
         <SelectInput
           source="#{f.field}Type"
           label="Expected to"
@@ -217,7 +220,7 @@ class Form extends Component {
         let current = entity.UI.embedded.names[f.field];
         const fName = f.field;
 #>
-        <DependentInput resolve={showDetailsFor('#{fName}')} >
+        <DependentInput resolve={detailsFor('#{fName}')} >
           <EmbeddedInput label="#{f.cField}" source="#{fName}" addLabel={false}>
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
