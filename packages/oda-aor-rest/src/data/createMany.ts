@@ -1,7 +1,6 @@
 export default function (data, field, resource, resources) {
   const fieldIds = field + 'Ids';
   const fieldValues = field + 'Values';
-  debugger;
   if (data[fieldIds] !== undefined && Array.isArray(data[fieldIds]) && data[fieldIds].length > 0) {
     return {
       [field]: data[fieldIds].map(f => ({ id: f })),
