@@ -481,9 +481,9 @@ export default ({ queries, resources }) => ({
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-        ...createSingle(data, '#{f.field}', '#{f.ref.entity}', resources),
+        ...createSingle(data, '#{f.field}', '#{f.ref.entity}', res),
     <#-} else {#>
-        ...createMany(data, '#{f.field}', '#{f.ref.entity}', resources),
+        ...createMany(data, '#{f.field}', '#{f.ref.entity}', res),
 <#-}-#>
 <#-})#>
       },
@@ -520,9 +520,9 @@ export default ({ queries, resources }) => ({
 <#-})-#>
 <# entity.relations.forEach(f=>{
 #><#-if(f.single){#>
-        ...updateSingle(data, previousData, '#{f.field}', '#{f.ref.entity}', resources),
+        ...updateSingle(data, previousData, '#{f.field}', '#{f.ref.entity}', res),
     <#-} else {#>
-        ...updateMany(data, previousData, '#{f.field}', '#{f.ref.entity}', resources),
+        ...updateMany(data, previousData, '#{f.field}', '#{f.ref.entity}', res),
 <#-}-#>
 <#-})#>
       },

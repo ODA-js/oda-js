@@ -92,8 +92,6 @@ import {
   Filter,
 } from "admin-on-rest";
 
-import RangeOperationInput from "./../../../lib/filters/rangeOperation";
-
 export default props => (
   <Filter {...props} >
     <TextInput label="Search" source="q" allowEmpty alwaysOn />
@@ -217,15 +215,15 @@ class Form extends Component {
           defaultValue={actionType.USE}
         />
 <#
-        let current = entity.UI.embedded.names[f.field];
         const fName = f.field;
+        let current = entity.UI.embedded.names[fName];
 #>
         <DependentInput resolve={detailsFor('#{fName}')} >
           <EmbeddedInput label="#{f.cField}" source="#{fName}" addLabel={false}>
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
@@ -260,7 +258,7 @@ class Form extends Component {
         let current = entity.UI.embedded.names[f.field];
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+            <#{f.type}Input label="#{f.cName}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
@@ -387,15 +385,29 @@ import {
   uix
 } from "./../../";
 
+// import { EmbeddedArrayField } from 'aor-embedded-array';
 import #{entity.name}Title from "./title";
+import { ui } from 'oda-aor-rest';
 
+const {
+  DependentField,
+  EmbeddedField,
+  GrouppedField,
+  EmbeddedArrayField,
+  EmbeddedRefArrayField,
+  EmbeddedRefField,
+} = ui.components;
+
+const showIfExists = field => root => !!root[field];
+
+const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
 
 export default (props) => {
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
 if(manyRels.length > 0){#>
   const {
-<# manyRels.forEach(f=>{-#>
+<# manyRels.filter(f=> !f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f=>{-#>
     #{f.ref.entity},
 <#})-#>
   } = uix;
@@ -407,19 +419,64 @@ if(manyRels.length > 0){#>
 <# entity.fields.filter(f=>f.name!== "id")
 .filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
 .forEach(f=>{-#>
-        <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+        <DependentField resolve={showIfExists('#{f.name}')}>
+          <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+        </DependentField>
 <#})-#>
 <# entity.relations
 .filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
 .forEach(f=>{
+  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#><#-if(f.single){#>
-        <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
-          <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
-        </ReferenceField>
+<#-if(embedded){
+        const fName = f.field;
+        let current = entity.UI.embedded.names[fName];
+#>
+        <DependentField resolve={showIfNotEmptyRel('#{fName}Id')} source="#{fName}" >
+          <EmbeddedRefField source="#{fName}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
+<#
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
+-#>
+            <DependentField resolve={showIfExists('#{f.name}')} scoped >
+              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+            </DependentField>
+<#
+        });
+-#>
+          </EmbeddedRefField>
+        </DependentField>
+<#} else {#>
+        <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
+          <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+            <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+          </ReferenceField>
+        </DependentField>
+<#}#>
 <#-} else {#>
-        <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
-          <#{f.ref.entity}.Grid />
-        </ReferenceManyField>
+<#-if(embedded){
+        const fName = f.field;
+        let current = entity.UI.embedded.names[fName];
+#>
+        <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
+          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" sortable={false} label="#{f.cField}" source="#{f.field}Values" allowEmpty >
+<#
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
+-#>
+            <DependentField resolve={showIfExists('#{f.name}')} source="#{f.name}" scoped >
+              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+            </DependentField>
+<#
+        });
+-#>
+          </EmbeddedArrayField>
+        </DependentField>
+<#} else {#>
+        <DependentField resolve={showIfNotEmptyRel('#{f.field}')} source="#{f.field}">
+          <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+            <#{f.ref.entity}.Grid />
+          </ReferenceManyField>
+        </DependentField>
+<#}#>
 <#-}-#>
 <#-})#>
       </SimpleShowLayout>
