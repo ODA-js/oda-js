@@ -15,25 +15,39 @@ export const DependentInputComponent = ({ children, show, root, ...props }) => {
     return (
       <div>
         {React.Children.map(children, child => {
+          const source = root ? `${root}.${child.props.source}` : child.props.source;
+          const name = root ? `${root}.${child.props.source}` : child.props.source;
           return (
             <div
               key={child.props.source}
               style={child.props.style}
               className={`aor-input-${child.props.source}`}
             >
-              <FormField {...props} input={child} source={root ? `${root}.${child.props.source}` : child.props.source} name={root ? `${root}.${child.props.source}` : child.props.source} />
+              <FormField input={
+                React.cloneElement(child, {
+                  ...props,
+                  source,
+                  name,
+                })} />
             </div>
           )
         })}
       </div>
     );
+  } else {
+    const source = root ? `${root}.${children.props.source}` : children.props.source;
+    const name = root ? `${root}.${children.props.source}` : children.props.source;
+    const child = React.cloneElement(children, {
+      ...props,
+      source,
+      name,
+    });
+    return (
+      <div key={child.props.source} style={child.props.style} className={`aor-input-${child.props.source}`}>
+        <FormField input={child} />
+      </div>
+    );
   }
-
-  return (
-    <div key={children.props.source} style={children.props.style} className={`aor-input-${children.props.source}`}>
-      <FormField {...props} input={children} source={root ? `${root}.${children.props.source}` : children.props.source} name={root ? `${root}.${children.props.source}` : children.props.source} />
-    </div>
-  );
 };
 
 DependentInputComponent.propTypes = {
