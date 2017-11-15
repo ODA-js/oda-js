@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 <#@ chunks '$$$main$$$' -#>
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/index`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/index`); -#>
 import GET_LIST from './getList';
 import GET_ONE from './getOne';
 import CREATE from './create';
@@ -53,7 +53,7 @@ export const queries = {
   DELETE_RESULT: deleteOf#{entity.name}Result,
 };
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/queries`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';
 // fragments
 
@@ -322,7 +322,7 @@ export const getManyReferenceOf#{entity.name}Result = {
   #{f.field}: getManyReferenceOf#{entity.name}ResultRegular,
 <#}})-#>};
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/getList`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/getList`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
 import set from 'lodash/set';
@@ -358,7 +358,7 @@ export default ({ queries, resources }) => ({
   },
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/getOne`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/getOne`); -#>
 import { reshape } from 'oda-lodash';
 
 export default ({ queries, resources }) => ({
@@ -375,7 +375,7 @@ export default ({ queries, resources }) => ({
   }),
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/getMany`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/getMany`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
 
@@ -397,7 +397,7 @@ export default ({ queries, resources }) => ({
   }),
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/getManyReference`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/getManyReference`); -#>
 import { reshape } from 'oda-lodash';
 import { constants } from 'oda-aor-rest';
 
@@ -437,7 +437,7 @@ export default ({ queries, resources }) => ({
   },
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/delete`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/delete`); -#>
 import { reshape } from 'oda-lodash';
 
 export default ({ queries, resources }) => ({
@@ -456,7 +456,7 @@ export default ({ queries, resources }) => ({
   }),
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/create`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/create`); -#>
 import { reshape } from 'oda-lodash';
 import { data as utils } from 'oda-aor-rest';
 
@@ -491,7 +491,7 @@ export default ({ queries, resources }) => ({
   },
 });
 
-<#- chunkStart(`../../../UI/${entity.name}/queries/update`); -#>
+<#- chunkStart(`../../../${entity.name}/queries/update`); -#>
 import { reshape } from 'oda-lodash';
 import { data as utils } from 'oda-aor-rest';
 

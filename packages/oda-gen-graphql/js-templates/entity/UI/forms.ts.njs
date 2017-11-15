@@ -1,7 +1,7 @@
 <#@ context "entity" -#>
 <#@ chunks "$$$main$$$" -#>
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/index`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/index`); -#>
 import Title from "./title";
 import Form from "./form";
 import Create from "./create";
@@ -18,13 +18,13 @@ export default {
   Grid,
 };
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/title`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/title`); -#>
 import React from "react";
 export default ({ record }) => {
   return <span>#{entity.name} {record ? `"${record.#{entity.listLabel.source}}"` : ""}</span>;
 };
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/list`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/list`); -#>
 import React from "react";
 import {
   List,
@@ -39,7 +39,7 @@ export default props => (
   </List>
 );
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/grid`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/grid`); -#>
 import React from "react";
 import {
   Datagrid,
@@ -75,7 +75,7 @@ export default props => (
   </Datagrid>
 );
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/filter`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/filter`); -#>
 import React from "react";
 import {
   ReferenceInput,
@@ -140,7 +140,7 @@ export default props => (
   </Filter>
 );
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/form`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/form`); -#>
 import React, { Component } from 'react';
 import {
   ReferenceInput,
@@ -302,7 +302,7 @@ export default compose(
     }),
 )(Form);
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/edit`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/edit`); -#>
 import React from "react";
 import {
   Edit,
@@ -333,7 +333,7 @@ export default props => (
   </Edit >
 );
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/create`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/create`); -#>
 import React from "react";
 import {
   Create,
@@ -364,7 +364,7 @@ export default props => (
   </Create >
 );
 
-<#- chunkStart(`../../../UI/${entity.name}/uix/show`); -#>
+<#- chunkStart(`../../../${entity.name}/uix/show`); -#>
 import React from "react";
 import {
   Datagrid,
@@ -407,7 +407,16 @@ export default (props) => {
 const manyRels = entity.relations.filter(f => !f.single);
 if(manyRels.length > 0){#>
   const {
-<# manyRels.filter(f=> !f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f=>{-#>
+<#
+ const uniqueEntities = manyRels.filter(f=> !f.single && !entity.UI.embedded.names.hasOwnProperty(f.field))
+  .reduce((hash, curr)=>{
+    hash[curr.ref.entity] = curr;
+    return hash;
+  },{});
+
+  Object.keys(uniqueEntities).forEach(key=>{
+    let f = uniqueEntities[key];
+-#>
     #{f.ref.entity},
 <#})-#>
   } = uix;
