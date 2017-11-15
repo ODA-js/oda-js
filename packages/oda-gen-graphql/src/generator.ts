@@ -79,6 +79,7 @@ export type GeneratorConfig = {
   graphql?: boolean;
   ts?: boolean;
   schema?: boolean;
+  ui?: boolean;
   packages?: boolean | string[] | { [key: string]: GeneratorConfigPackage; };
 };
 
@@ -109,6 +110,7 @@ const def = {
   graphql: true,
   ts: true,
   schema: false,
+  ui: true,
   package: {
     mutation: {
       entry: true,
@@ -241,6 +243,12 @@ export const expandConfig = (config: any, packages: string[]) => {
     packConfig.ts = def.ts;
   } else {
     packConfig.ts = config.ts;
+  }
+
+  if (!config.hasOwnProperty('ui')) {
+    packConfig.ui = def.ui;
+  } else {
+    packConfig.ui = config.ui;
   }
 
   if (!config.hasOwnProperty('schema')) {
@@ -433,9 +441,10 @@ export default (args: Generator) => {
     templateRoot = path.resolve(__dirname, '../js-templates'),
     config =
     {
-      graphql: true,
-      ts: true,
-      packages: true,
+      graphql: false,
+      ts: false,
+      packages: false,
+      ui: false,
     },
     acl,
     context = {} as any,
@@ -606,11 +615,6 @@ export default (args: Generator) => {
         generate(entities, curConfig, 'entity', 'connections.mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'mutations.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'dataPump.config', 'ts');
-        generate(entities, curConfig, 'entity', 'UI.queries', 'js');
-        generate(entities, curConfig, 'entity', 'UI.forms', 'js');
-
-        generatePkg(pkg, 'UI', 'uiIndex', 'index.js');
-
         generate(entities, curConfig, 'entity', 'subscriptions.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'query.resolver', 'ts');
         generate(entities, curConfig, 'entity', 'viewer.resolver', 'ts');
@@ -627,11 +631,15 @@ export default (args: Generator) => {
         generatePkg(pkg, 'entity', 'viewer', 'viewer.ts');
         generatePkg(pkg, 'mutation', 'mutationIndex', 'index.ts');
       }
+      if (config.ui) {
+        generatePkg(pkg, '', 'uiIndex', 'index.js');
+        generate(entities, curConfig, 'entity', 'UI.queries', 'js');
+        generate(entities, curConfig, 'entity', 'UI.forms', 'js');
+      }
     }
 
     if (config.schema) {
       generatePkg(pkg, 'schema', 'schemaPuml', 'schema.puml');
     }
   }
-
 };
