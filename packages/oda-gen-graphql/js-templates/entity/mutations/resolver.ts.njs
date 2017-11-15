@@ -36,7 +36,7 @@ async function ensure#{relEntity.name}({
   <#-}#>
   <#- for (let f of relEntity.unique.complex) {
     let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
-    let fArgs = f.fields.map(fld=>`${fld.name}: ${fld.type}`).join(', ');
+    let fArgs = f.fields.map(fld=>`$${fld.name}: ${fld.type}`).join(', ');
     let filter = f.fields.map(fld=>`${fld.name}: $${fld.name}`).join(', ');
     #>
   } else if (#{condArgs}) {
