@@ -140,30 +140,57 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
   const res: UIView = {
     listName: result.listName,
     hidden: result.hidden.reduce((r, c) => {
-      r[c] = true;
+      if (r[c] !== false) {
+        if (!/\^/.test(c)) {
+          r[c] = true;
+        } else {
+          r[c.slice(1)] = false;
+        }
+      }
       return r;
     }, {}),
   };
 
-  res.list = result.list.filter(f => !res.hidden[f]).reduce((r, c) => {
-    r[c] = true;
-    return r;
-  }, {});
+  res.list = result.list.filter(f => !res.hidden[f])
+    .reduce((r, c) => {
+      if (r[c] !== false) {
+        if (!/\^/.test(c)) {
+          r[c] = true;
+        } else {
+          r[c.slice(1)] = false;
+        }
+      }
+      return r;
+    }, {});
 
-  res.edit = result.edit.filter(f => !res.hidden[f] && !res.list[f]).reduce((r, c) => {
-    r[c] = true;
-    return r;
-  }, {});
+  res.edit = result.edit.filter(f => !res.hidden[f] && !res.list[f])
+    .reduce((r, c) => {
+      if (r[c] !== false) {
+        if (!/\^/.test(c)) {
+          r[c] = true;
+        } else {
+          r[c.slice(1)] = false;
+        }
+      }
+      return r;
+    }, {});
 
-  res.show = result.show.filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f]).reduce((r, c) => {
-    r[c] = true;
-    return r;
-  }, {});
-
+  res.show = result.show.filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f])
+    .reduce((r, c) => {
+      if (r[c] !== false) {
+        if (!/\^/.test(c)) {
+          r[c] = true;
+        } else {
+          r[c.slice(1)] = false;
+        }
+      }
+      return r;
+    }, {});
+  debugger;
   if (first) {
     const embedItems = allFields.filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
       .map(f => {
-        const res: embedded = {
+        const lRes: embedded = {
           name: f.name,
           single: f.relation.single,
           entity: f.relation.ref.entity,
@@ -184,15 +211,15 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
             required: f.required,
           }));
 
-        res.fields.push(...fList);
-        return res;
+        lRes.fields.push(...fList);
+        return lRes;
       }, {});
 
     res.embedded = {
       items: embedItems,
-      names: embedItems.reduce((res, f, index) => {
-        res[f.name] = index;
-        return res;
+      names: embedItems.reduce((r, f, index) => {
+        r[f.name] = index;
+        return r;
       }, {}),
     }
   }
@@ -244,7 +271,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         type: refe.fields.get(f.relation.ref.field).type,
         cField: capitalize(f.relation.ref.field),
         fields: [],
-        listName: "",
+        listName: '',
         using: {
           backField: '',
           entity: '',
@@ -360,7 +387,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
               };
             }),
           },
-        }
+        };
       }),
     relations,
     fields: [

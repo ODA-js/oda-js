@@ -190,12 +190,12 @@ class Form extends Component {
     return (
       <SimpleForm {...props} >
 <# entity.fields.filter(f=>f.name!== "id")
-  .filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
+  .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
   .forEach(f=>{-#>
         <#{f.type}Input source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
 <#})-#>
 <# entity.relations
-.filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
+.filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
 .forEach(f=>{
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
@@ -425,15 +425,16 @@ if(manyRels.length > 0){#>
   return (
     <Show title={<#{entity.name}Title />} {...props} >
       <SimpleShowLayout {...props}>
-<# entity.fields.filter(f=>f.name!== "id")
-.filter(f=>entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name])
+<# debugger;
+entity.fields.filter(f=>f.name!== "id")
+.filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
         <DependentField resolve={showIfExists('#{f.name}')}>
           <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
         </DependentField>
 <#})-#>
 <# entity.relations
-.filter(f=>entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field])
+.filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
 .forEach(f=>{
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#><#-if(f.single){#>
@@ -480,11 +481,9 @@ if(manyRels.length > 0){#>
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-        <DependentField resolve={showIfNotEmptyRel('#{f.field}')} source="#{f.field}">
           <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
             <#{f.ref.entity}.Grid />
           </ReferenceManyField>
-        </DependentField>
 <#}#>
 <#-}-#>
 <#-})#>
