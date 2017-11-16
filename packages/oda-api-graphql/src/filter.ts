@@ -325,6 +325,9 @@ export class Process {
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
     },
+    imatch(value, idMap, id) {
+      return `(new RegExp("${value}","i")).test(value.toString())`;
+    },
   };
 
   public static create(obj, idMap: { [key: string]: any } = { id: '_id' }) {
