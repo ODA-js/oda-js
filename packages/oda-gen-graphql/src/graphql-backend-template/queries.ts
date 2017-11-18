@@ -111,6 +111,8 @@ export const identityFields = (f: Field): boolean => fields(f) && f.identity && 
 
 export const mutableFields = (f: Field): boolean => fields(f) && !idField(f) && f.persistent;
 
+export const nonIdFields = (f: Field): boolean => fields(f) && !idField(f) && f.persistent;
+
 export const getUniqueFieldNames = (entity: Entity) => [
   'id',
   ...getFields(entity)

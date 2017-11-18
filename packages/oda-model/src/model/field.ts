@@ -23,7 +23,7 @@ function discoverFieldType(obj) {
     console.warn(`undefined relation type of ${JSON.stringify(obj)}`);
     return 'undefined';
   }
-};
+}
 
 export class Field extends FieldBase {
   protected $obj: FieldStorage;

@@ -53,7 +53,6 @@ export interface MapperOutupt {
   };
   listName: string;
   ownerFieldName: string;
-  relEntities: any[];
   relations: {
     required: boolean;
     derived: boolean;
@@ -337,63 +336,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
-    relEntities: fieldsAcl
-      .filter(relationFieldsExistsIn(pack))
-      .map(f => f.relation.ref.entity)
-      .reduce((prev, curr) => {
-        if (prev.indexOf(curr) === -1) {
-          prev.push(curr);
-        }
-        return prev;
-      }, [])
-      .map(entity => pack.get(entity))
-      .map(entity => {
-        let fieldsEntityAcl = getFieldsForAcl(aclAllow)(role)(entity);
-        return {
-          name: entity.name,
-          findQuery: decapitalize(entity.name),
-          ownerFieldName: decapitalize(entity.name),
-          unique: {
-            args: [
-              ...ids,
-              ...fieldsEntityAcl
-                .filter(identityFields)
-                .filter(oneUniqueInIndex(entity))]
-              .map(f => ({
-                name: f.name,
-                type: typeMapper.graphql(f.type),
-              })),
-            find: [
-              ...fieldsEntityAcl
-                .filter(identityFields)
-                .filter(oneUniqueInIndex(entity))
-                .map(f => ({
-                  name: f.name,
-                  type: typeMapper.graphql(f.type),
-                  cName: capitalize(f.name),
-                  label: humanize(f.name),
-                })),
-            ],
-            complex: complexUniqueIndex(entity).map(i => {
-              let fields = Object.keys(i.fields)
-                .map(fn => entity.fields.get(fn))
-                .map(f => ({
-                  name: f.name,
-                  uName: capitalize(f.name),
-                  type: typeMapper.graphql(f.type),
-                })).sort((a, b) => {
-                  if (a.name > b.name) return 1
-                  else if (a.name < b.name) return -1;
-                  else return 0;
-                });
-              return {
-                name: i.name,
-                fields,
-              };
-            }),
-          },
-        };
-      }),
     relations,
     fields: [
       ...ids,
