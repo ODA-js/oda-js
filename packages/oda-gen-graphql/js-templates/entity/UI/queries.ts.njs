@@ -476,7 +476,7 @@ export default ({ queries, resources }) => ({
     const res = resources({ queries });
     return { input:
       {
-<#- entity.fields.forEach(f=>{#>
+<#- entity.fields.filter(f=> !f.derived ).forEach(f=>{#>
         ...createField(data, '#{f.name}'),
 <#-})-#>
 <# entity.relations.forEach(f=>{
@@ -515,7 +515,7 @@ export default ({ queries, resources }) => ({
     return {
       input: {
         id: data.id,
-<#- entity.fields.filter(f=>f.name !== 'id').forEach(f=>{#>
+<#- entity.fields.filter(f=>f.name !== 'id' && !f.derived ).forEach(f=>{#>
         ...updateField(data, previousData, '#{f.name}'),
 <#-})-#>
 <# entity.relations.forEach(f=>{

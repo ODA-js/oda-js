@@ -58,13 +58,13 @@ export default props => (
 <# entity.fields.filter(f=>f.name!== "id")
 .filter(f=>entity.UI.list[f.name])
 .forEach(f=>{-#>
-    <#{f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+    <#{f.type}Field sortable={#{!f.derived}} source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f=>entity.UI.list[f.field])
 .forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+    <ReferenceField sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
       <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
 <#-}-#>
@@ -95,44 +95,44 @@ import {
 export default props => (
   <Filter {...props} >
     <TextInput label="Search" source="q" allowEmpty alwaysOn />
-<# entity.fields.filter(f=>f.name!== "id")
+<# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>entity.UI.list[f.name])
   .forEach(f=>{-#>
-    <NullableBooleanInput label="#{f.cName} exists" source="#{f.name}-exists" />
+    <NullableBooleanInput label="#{f.label} exists" source="#{f.name}-exists" />
 <#
     switch(f.filterType) {
       case "Number":
 #>
-    <NumberInput label="#{f.cName} =" source="#{f.name}-eq" allowEmpty />
-    <NumberInput label="#{f.cName} <=" source="#{f.name}-lte" allowEmpt />
-    <NumberInput label="#{f.cName} >=" source="#{f.name}-gte" allowEmpty />
-    <NumberInput label="#{f.cName} <" source="#{f.name}-lt" allowEmpt />
-    <NumberInput label="#{f.cName} >" source="#{f.name}-gt" allowEmpty />
+    <NumberInput label="#{f.label} =" source="#{f.name}-eq" allowEmpty />
+    <NumberInput label="#{f.label} <=" source="#{f.name}-lte" allowEmpt />
+    <NumberInput label="#{f.label} >=" source="#{f.name}-gte" allowEmpty />
+    <NumberInput label="#{f.label} <" source="#{f.name}-lt" allowEmpt />
+    <NumberInput label="#{f.label} >" source="#{f.name}-gt" allowEmpty />
 <#
       break;
       case "Text":
 #>
-    <#{f.filterType}Input label="#{f.cName}" source="#{f.name}-imatch" allowEmpty />
-    <SelectArrayInput label="#{f.cName} in" source="#{f.name}-in" allowEmpty />
-    <SelectArrayInput label="#{f.cName} not in" source="#{f.name}-nin" allowEmpty />
+    <#{f.filterType}Input label="#{f.label}" source="#{f.name}-imatch" allowEmpty />
+    <SelectArrayInput label="#{f.label} in" source="#{f.name}-in" allowEmpty />
+    <SelectArrayInput label="#{f.label} not in" source="#{f.name}-nin" allowEmpty />
 <#
       break;
       case "ID":
 #>
-    <TextInput label="#{f.cName}" source="#{f.name}-eq" allowEmpty />
-    <SelectArrayInput label="#{f.cName} in" source="#{f.name}-in" allowEmpty />
-    <SelectArrayInput label="#{f.cName} not in" source="#{f.name}-nin" allowEmpty />
+    <TextInput label="#{f.label}" source="#{f.name}-eq" allowEmpty />
+    <SelectArrayInput label="#{f.label} in" source="#{f.name}-in" allowEmpty />
+    <SelectArrayInput label="#{f.label} not in" source="#{f.name}-nin" allowEmpty />
 <#
       break;
       case "Date":
 #>
-    <DateInput label="#{f.cName} <=" source="#{f.name}-lte" allowEmpty />
-    <DateInput label="#{f.cName} >=" source="#{f.name}-gte" allowEmpty />
+    <DateInput label="#{f.label} <=" source="#{f.name}-lte" allowEmpty />
+    <DateInput label="#{f.label} >=" source="#{f.name}-gte" allowEmpty />
 <#
       break;
       case "Boolean":
 #>
-    <BooleanInput label="#{f.cName}" source="#{f.name}-eq" allowEmpty />
+    <BooleanInput label="#{f.label}" source="#{f.name}-eq" allowEmpty />
 <#
       break;
     }
@@ -189,10 +189,10 @@ class Form extends Component {
 
     return (
       <SimpleForm {...props} >
-<# entity.fields.filter(f=>f.name!== "id")
+<# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
   .forEach(f=>{-#>
-        <#{f.type}Input source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
+        <#{f.type}Input label="#{f.label}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
 <#})-#>
 <# entity.relations
 .filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
@@ -202,9 +202,9 @@ class Form extends Component {
 <#-   if ( f.single ) {
         if(embedded){
 #>
-        <Label text="#{f.cField}" />
+        <Label text="#{f.label}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-          <ReferenceInput sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+          <ReferenceInput sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
         </DependentInput>
@@ -219,11 +219,11 @@ class Form extends Component {
         let current = entity.UI.embedded.names[fName];
 #>
         <DependentInput resolve={detailsFor('#{fName}')} >
-          <EmbeddedInput label="#{f.cField}" source="#{fName}" addLabel={false}>
+          <EmbeddedInput label="#{f.label}" source="#{fName}" addLabel={false}>
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+            <#{f.type}Input label="#{f.label}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
@@ -232,7 +232,7 @@ class Form extends Component {
 <#
         } else {
 #>
-        <Label text="#{f.cField}" />
+        <Label text="#{f.label}" />
         <ReferenceInput sortable={false} label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
@@ -241,7 +241,7 @@ class Form extends Component {
       } else {
   #>
 <# if(embedded){#>
-        <EmbeddedArrayInput sortable={false} label="#{f.cField}" source="#{f.field}Values" allowEmpty >
+        <EmbeddedArrayInput sortable={false} label="#{f.label}" source="#{f.field}Values" allowEmpty >
           <SelectInput
             source="#{f.field}Type"
             label="Expected to"
@@ -258,14 +258,14 @@ class Form extends Component {
         let current = entity.UI.embedded.names[f.field];
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="#{f.cName}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+            <#{f.type}Input label="#{f.label}" source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
           </DependentInput>
         </EmbeddedArrayInput>
 <#} else {#>
-        <Label text="#{f.cField}" />
+        <Label text="#{f.label}" />
         <ReferenceArrayInput sortable={false} label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
@@ -430,7 +430,7 @@ entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
         <DependentField resolve={showIfExists('#{f.name}')}>
-          <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+          <#{f.type=="Number" ? "Text" : f.type}Field label="#{f.label}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
         </DependentField>
 <#})-#>
 <# entity.relations
@@ -440,15 +440,16 @@ entity.fields.filter(f=>f.name!== "id")
 -#><#-if(f.single){#>
 <#-if(embedded){
         const fName = f.field;
+
         let current = entity.UI.embedded.names[fName];
 #>
         <DependentField resolve={showIfNotEmptyRel('#{fName}Id')} source="#{fName}" >
-          <EmbeddedRefField source="#{fName}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
+          <EmbeddedRefField label="#{f.label}" source="#{fName}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
             <DependentField resolve={showIfExists('#{f.name}')} scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.label}"<# if (!f.required){#> allowEmpty<#}#> />
             </DependentField>
 <#
         });
@@ -457,7 +458,7 @@ entity.fields.filter(f=>f.name!== "id")
         </DependentField>
 <#} else {#>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField sortable={false} label="#{f.cField}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+          <ReferenceField sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
             <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
           </ReferenceField>
         </DependentField>
@@ -468,12 +469,12 @@ entity.fields.filter(f=>f.name!== "id")
         let current = entity.UI.embedded.names[fName];
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
-          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" sortable={false} label="#{f.cField}" source="#{f.field}Values" allowEmpty >
+          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" sortable={false} label="#{f.label}" source="#{f.field}Values" allowEmpty >
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
             <DependentField resolve={showIfExists('#{f.name}')} source="#{f.name}" scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label="#{f.label}"<# if (!f.required){#> allowEmpty<#}#> />
             </DependentField>
 <#
         });
@@ -481,9 +482,9 @@ entity.fields.filter(f=>f.name!== "id")
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-          <ReferenceManyField sortable={false} label="#{f.cField}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
-            <#{f.ref.entity}.Grid />
-          </ReferenceManyField>
+        <ReferenceManyField sortable={false} label="#{f.label}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+          <#{f.ref.entity}.Grid />
+        </ReferenceManyField>
 <#}#>
 <#-}-#>
 <#-})#>
