@@ -1,5 +1,6 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
+import * as humanize from 'string-humanize';
 
 const formPriority = {
   list: 1,
@@ -81,7 +82,7 @@ export interface MapperOutupt {
 import {
   getFieldsForAcl,
   singleStoredRelationsExistingIn,
-  mutableFields,
+  fields,
   identityFields,
   getRelationNames,
   relationFieldsExistsIn,
@@ -207,6 +208,7 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
           .map(f => ({
             name: f.name,
             cName: capitalize(f.name),
+            label: humanize(f.name),
             type: aor(f.type),
             required: f.required,
           }));
@@ -270,6 +272,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         field: f.relation.ref.field,
         type: refe.fields.get(f.relation.ref.field).type,
         cField: capitalize(f.relation.ref.field),
+        label: humanize(f.relation.ref.field),
         fields: [],
         listName: '',
         using: {
@@ -316,6 +319,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         name: f.relation.fullName,
         shortName: f.relation.shortName,
         cField: capitalize(f.name),
+        label: humanize(f.name),
         verb,
         single: verb === 'BelongsTo' || verb === 'HasOne',
         ref: {
@@ -367,6 +371,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
                   name: f.name,
                   type: typeMapper.graphql(f.type),
                   cName: capitalize(f.name),
+                  label: humanize(f.name),
                 })),
             ],
             complex: complexUniqueIndex(entity).map(i => {
@@ -393,10 +398,13 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     fields: [
       ...ids,
       ...fieldsAcl
-        .filter(f => mutableFields(f))]
+        .filter(f => fields(f) && !idField(f))]
       .map(f => ({
         name: f.name,
+        persistent: f.persistent,
+        derived: f.derived,
         cName: capitalize(f.name),
+        label: humanize(f.name),
         required: f.required,
         type: mapAORTypes(f.type),
         filterType: mapAORFilterTypes(f.type),

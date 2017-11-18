@@ -12,4 +12,4 @@ export default {
   updateField,
   updateMany,
   updateSingle,
-}
+};

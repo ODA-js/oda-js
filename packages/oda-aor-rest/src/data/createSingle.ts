@@ -6,6 +6,8 @@ export default function (data, field, resource, resources) {
   const fieldType = field + 'Type';
   const fieldCreate = field + 'Create';
   const fieldUnlink = field + 'Unlink';
+  let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
+
   switch (data[fieldType]) {
     case actionType.USE:
       if (data[fieldId]) {

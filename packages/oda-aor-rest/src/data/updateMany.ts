@@ -20,13 +20,13 @@ export default function (data, previousData, field, resource, resources) {
       return {
         [field]: Object.keys(diff.inserted)
           .map(f => ({ id: diff.inserted[f].value })),
-      }
+      };
     }
     if (diff.removed) {
       return {
         [fieldUnlink]: Object.keys(diff.removed)
           .map(f => ({ id: diff.removed[f].value })),
-      }
+      };
     }
   } else if (!comparator.strictEq(previousData[fieldValues], data[fieldValues])) {
     let result = {};
@@ -36,18 +36,19 @@ export default function (data, previousData, field, resource, resources) {
     const insertedNew = inserted.filter(f =>
       !f.id
       || f[fieldType] === actionType.CLONE
-      || f[fieldType] === actionType.CREATE
+      || f[fieldType] === actionType.CREATE,
     ).map(item => resources[resource].CREATE.variables({ data: item }).input);
 
     const changed = intersectionWith(data[fieldValues], previousData[fieldValues], sameId)
       .filter(f => (f[fieldType] !== actionType.CLONE && f[fieldType] !== actionType.CREATE))
       .filter(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
-        return !isEqual(resources[resource].CREATE.variables({ data: value }).input, resources[resource].CREATE.variables({ data: f }).input);
+        return !isEqual(resources[resource]
+          .CREATE.variables({ data: value }).input, resources[resource].CREATE.variables({ data: f }).input);
       })
       .map(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
-        return resources[resource].UPDATE.variables({ data: f, previousData: value }).input
+        return resources[resource].UPDATE.variables({ data: f, previousData: value }).input;
       });
 
     if (removed.length > 0) {

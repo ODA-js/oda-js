@@ -6,13 +6,16 @@ export default function (data, previousData, field, resource, resources) {
   const fieldType = field + 'Type';
   const fieldCreate = field + 'Create';
   const fieldUnlink = field + 'Unlink';
-  switch (data[fieldType]) {
+  let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
+  // tslint:disable-next-line:switch-default
+  switch (embedType) {
     case actionType.USE:
       if (data[fieldId] || (previousData[field] && previousData[field].id)) {
         return {
           [field]: { id: data[fieldId] },
         };
       }
+    // tslint:disable-next-line:no-switch-case-fall-through
     case actionType.UPDATE:
       if (data[field] && typeof data[field] === 'object') {
         let res = resources[resource].UPDATE.variables({ data: data[field], previousData: previousData[field] || {} }).input;
@@ -23,6 +26,7 @@ export default function (data, previousData, field, resource, resources) {
           },
         };
       };
+    // tslint:disable-next-line:no-switch-case-fall-through
     case actionType.CLONE:
     case actionType.CREATE:
       if (data[field] && typeof data[field] === 'object') {
@@ -46,6 +50,7 @@ export default function (data, previousData, field, resource, resources) {
         }
       }
 
+    // tslint:disable-next-line:no-switch-case-fall-through
     case actionType.UNLINK:
       if (previousData[fieldId] || (previousData[field] && previousData[field].id)) {
         return {
