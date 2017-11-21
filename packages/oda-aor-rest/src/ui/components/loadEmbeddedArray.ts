@@ -21,7 +21,6 @@ const emptyIds = [];
 export default compose(
   connect((state, props) => {
     const { record, source, reference, field = 'id', ...rest } = props;
-    debugger;
     if (reference) {
       const ids =
         (get(record, source) || emptyIds)

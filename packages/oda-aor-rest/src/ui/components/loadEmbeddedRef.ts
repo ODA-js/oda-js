@@ -13,7 +13,6 @@ export default compose(
   connect((state, props) => {
     const { record, source, reference, field = 'id', ...rest } = props;
     if (reference) {
-      debugger;
       const id = get(record, source);
       let data = id ? getReferences(state, reference, id) : null;
 
