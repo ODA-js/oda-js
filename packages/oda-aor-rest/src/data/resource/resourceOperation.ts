@@ -1,5 +1,9 @@
-import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, ResourceOperationOverride } from "./interfaces";
+import { SortOrder } from './../../constants';
+
+import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationOverride, IResource, FilterByFunction, OrderByFunction } from "./interfaces";
 import { reshape } from "oda-lodash";
+import { result } from './consts';
+import { queries } from './resourceContainer';
 
 export class ResourceOperation implements IResourceOperation {
   public get query(): any {
@@ -14,26 +18,28 @@ export class ResourceOperation implements IResourceOperation {
   public get variables(): VariablesFunction {
     return this._variables;
   }
-  public get name(): string {
-    return this._name;
+  public get resource(): IResource {
+    return this.resource;
   }
-  public get type(): string {
+  public get type(): queries {
     return this._type;
   }
   public get fetchPolicy(): string {
     return this._fetchPolicy;
   }
-  public get resourceContainer(): IResourceContainer {
-    return this._resourceContainer;
+  public get orderBy() {
+    return this._orderBy;
   }
-  public get refetchQueries(): IResourceContainer {
+  public get filterBy() {
+    return this._filterBy;
+  }
+  public get refetchQueries() {
     return this._refetchQueries;
   }
+
   public override({
-    name,
     type,
     query,
-    resourceContainer,
     parseResponse,
     update,
     variables,
@@ -41,18 +47,13 @@ export class ResourceOperation implements IResourceOperation {
     filterBy,
     fetchPolicy = 'network-only',
     refetchQueries,
-}: ResourceOperationOverride) {
-    if (name) {
-      this._name = name;
-    }
+}: IResourceOperationOverride) {
+
     if (type) {
       this._type = type;
     }
     if (query) {
       this._query = query;
-    }
-    if (resourceContainer) {
-      this._resourceContainer = resourceContainer;
     }
     if (parseResponse) {
       this._parseResponse = parseResponse;
@@ -77,27 +78,6 @@ export class ResourceOperation implements IResourceOperation {
     }
   }
 
-  private defaultParseResponse(response) {
-    const data = reshape(this._resourceContainer.queries(this._name, result[this._type]), response.data);
-    return { data: data.item };
-  };
-
-  private defaultParseGetList(response) {
-    const data = reshape(this._resourceContainer.queries(this._name, result[this._type]), response.data);
-    return {
-      data: data.items.data,
-      total: data.items.total,
-    };
-  };
-
-  private defaultParseGetManyReferense(response, params) {
-    const data = reshape(this._resourceContainer.queries(this._name, result[this._type])[params.target], response.data);
-    return {
-      data: data.items.data,
-      total: data.items.total,
-    };
-  };
-
   private defaultUpdate(store, response) {
     // insert into cache
   };
@@ -107,18 +87,11 @@ export class ResourceOperation implements IResourceOperation {
   }
 
   public initDefaults({
-    name,
     type,
     query,
-    resourceContainer,
-    parseResponse,
     update,
-    variables,
-    orderBy,
-    filterBy,
-    fetchPolicy = 'network-only',
-    refetchQueries,
-  }: ResourceOperationOverride) {
+    resource,
+  }: IResourceOperation) {
     if (!name) {
       throw new Error('name is required param');
     }
@@ -126,27 +99,31 @@ export class ResourceOperation implements IResourceOperation {
       throw new Error('type is required param');
     }
     if (!query) {
-      this._query = resourceContainer.queries(name, type);
+      this._query = this._resource.resourceContainer.queries(name, type);
     }
     if (!update) {
       this._update = this.defaultUpdate;
     }
+    if (resource) {
+      this._resource = resource;
+    } else {
+      throw new Error('resource is required param');
+    }
   }
 
+  protected _resource: IResource;
   protected _query: any;
   protected _parseResponse: ResponseFunction;
   protected _update: UpdateFunction;
   protected _variables: VariablesFunction;
-  protected _name: string;
-  protected _type: string;
+  protected _type: queries;
   protected _fetchPolicy: string;
-  protected _orderBy: (field) => string | undefined;
-  protected _filterBy: (field) => object | undefined;
-  protected _resourceContainer: ResourceContainer;
+  protected _orderBy: OrderByFunction;
+  protected _filterBy: FilterByFunction;
   protected _refetchQueries: any;
 
-  constructor(options: ResourceOperationOverride) {
-    this.override(options);
+  constructor(options: IResourceOperation) {
     this.initDefaults(options);
+    this.override(options);
   }
 }

@@ -13,6 +13,7 @@ import {
   Field,
   FieldsDefinition,
 } from './interfaces';
+import { ResourceContainer } from './resourceContainer';
 
 export default class implements IResource {
 
@@ -35,6 +36,18 @@ export default class implements IResource {
   public get query() {
     return this.resourceQuery;
   }
+
+  /**
+   * resourceContainer
+   */
+  public get resourceContainer(): IResourceContainer {
+    return this._resourceContainer;
+  }
+
+  /**
+   * internal store for resourceContainer
+   */
+  private _resourceContainer: IResourceContainer;
 
   /**
    * internal query storage
@@ -90,11 +103,16 @@ export default class implements IResource {
    * @param name name of the resource
    * @param overrides configuration options
    */
-  constructor(overrides: IResourceDefinition) {
+  constructor(overrides: IResourceDefinition, resourceContainer: IResourceContainer) {
     if (overrides.name) {
       this._name = overrides.name;
     } else {
-      throw new Error('Resource MUST HAVE name');
+      throw new Error('name is required param');
+    }
+    if (overrides.name) {
+      this._resourceContainer = resourceContainer;
+    } else {
+      throw new Error('resourceContainer is required param');
     }
     this.override(overrides);
   }

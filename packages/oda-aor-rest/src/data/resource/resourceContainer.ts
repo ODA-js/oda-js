@@ -14,7 +14,7 @@ export class ResourceContainer implements IResourceContainer {
     }
   }
   public register(resource: IResourceDefinition) {
-    this.resources[resource.name] = new Resource(resource);
+    this.resources[resource.name] = new Resource(resource, this);
   }
   public override(resource: IResourceDefinition) {
     let res = this.resources[resource.name];
