@@ -5,8 +5,11 @@ import { reshape } from "oda-lodash";
 import { result } from './consts';
 import { queries } from './resourceContainer';
 
-export class ResourceOperation implements IResourceOperation {
+export abstract class ResourceOperation implements IResourceOperation {
   public get query(): any {
+    return this._query;
+  }
+  public get resultQuery(): any {
     return this._query;
   }
   public get parseResponse(): ResponseFunction {
@@ -48,7 +51,6 @@ export class ResourceOperation implements IResourceOperation {
     fetchPolicy = 'network-only',
     refetchQueries,
 }: IResourceOperationOverride) {
-
     if (type) {
       this._type = type;
     }
@@ -99,7 +101,7 @@ export class ResourceOperation implements IResourceOperation {
       throw new Error('type is required param');
     }
     if (!query) {
-      this._query = this._resource.resourceContainer.queries(name, type);
+      this._query = query;
     }
     if (!update) {
       this._update = this.defaultUpdate;
@@ -113,6 +115,7 @@ export class ResourceOperation implements IResourceOperation {
 
   protected _resource: IResource;
   protected _query: any;
+  protected _resultQuery: any;
   protected _parseResponse: ResponseFunction;
   protected _update: UpdateFunction;
   protected _variables: VariablesFunction;

@@ -1,6 +1,8 @@
 import { IResourceQueryDefinition } from './interfaces';
 import { reshape } from 'oda-lodash';
 import { PageInfoType } from 'oda-gen-common/dist/types';
+import { Create } from './operations';
+
 
 import {
   IResource,
@@ -75,26 +77,26 @@ export default class implements IResource {
       }
     }
 
-    if (overrides.queries.CREATE) {
-      this.resourceQuery.CREATE = overrides.queries.CREATE;
+    if (overrides.query.CREATE) {
+      this.resourceQuery.CREATE = new Create(overrides.query.CREATE);
     }
-    if (overrides.queries.UPDATE) {
-      this.resourceQuery.UPDATE = overrides.queries.UPDATE;
+    if (overrides.query.UPDATE) {
+      this.resourceQuery.UPDATE = overrides.query.UPDATE;
     }
-    if (overrides.queries.DELETE) {
-      this.resourceQuery.DELETE = overrides.queries.DELETE;
+    if (overrides.query.DELETE) {
+      this.resourceQuery.DELETE = overrides.query.DELETE;
     }
-    if (overrides.queries.GET_ONE) {
-      this.resourceQuery.GET_ONE = overrides.queries.GET_ONE;
+    if (overrides.query.GET_ONE) {
+      this.resourceQuery.GET_ONE = overrides.query.GET_ONE;
     }
-    if (overrides.queries.GET_LIST) {
-      this.resourceQuery.GET_LIST = overrides.queries.GET_LIST;
+    if (overrides.query.GET_LIST) {
+      this.resourceQuery.GET_LIST = overrides.query.GET_LIST;
     }
-    if (overrides.queries.GET_MANY) {
-      this.resourceQuery.GET_MANY = overrides.queries.GET_MANY;
+    if (overrides.query.GET_MANY) {
+      this.resourceQuery.GET_MANY = overrides.query.GET_MANY;
     }
-    if (overrides.queries.GET_MANY_REFERENCE) {
-      this.resourceQuery.GET_MANY_REFERENCE = overrides.queries.GET_MANY_REFERENCE;
+    if (overrides.query.GET_MANY_REFERENCE) {
+      this.resourceQuery.GET_MANY_REFERENCE = overrides.query.GET_MANY_REFERENCE;
     }
   }
 
