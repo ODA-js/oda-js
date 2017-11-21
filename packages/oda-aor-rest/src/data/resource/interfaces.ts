@@ -1,8 +1,11 @@
-import { queries } from "./consts";
+import { queries } from './consts';
 
 export type ResponseFunction = (response: { data: any }, params: any) => { data: any };
 export type UpdateFunction = (store, response) => void;
 export type VariablesFunction = (params: any) => any;
+export type OrderByFunction = (field) => string | undefined;
+export type FilterByFunction = (field) => object | undefined;
+export type RefetchQueriesFunction = (variables) => any;
 
 export enum refType {
   single = 'single',
@@ -30,14 +33,10 @@ export type FieldsDefinition = {
  * list of fields for specific Resource
  */
 export interface IResourceFields {
-  /**
-   * list of fields
-   */
   fields?: FieldsDefinition;
 }
 
-export interface IResourceOverride {
-  fields: IResourceFields;
+export interface IResourceQueryDefinition {
   GET_LIST?: IResourceOperation;
   GET_ONE?: IResourceOperation;
   CREATE?: IResourceOperation;
@@ -47,32 +46,47 @@ export interface IResourceOverride {
   GET_MANY_REFERENCE?: IResourceOperation;
 }
 
-export interface IResourceOperationOverride {
-  name: string,
-  type: string,
-  resourceContainer: IResourceContainer,
-  query?: any,
-  parseResponse?: (response: { data: any }) => { data: any },
-  update?: (store, response) => void,
-  variables?: (params: any) => { input: any },
-  fetchPolicy?: string,
-  orderBy: (field) => string | undefined,
-  filterBy: (filter: object) => object,
-  refetchQueries: (variables) => any,
+export interface IResourceDefinition {
+  name: string;
+  fields?: FieldsDefinition;
+  queries?: IResourceQueryDefinition;
 }
 
-export interface IResourceBase {
+export interface IResourceOperationOverride {
+  query?: any;
+  parseResponse?: ResponseFunction;
+  update?: UpdateFunction;
+  variables?: VariablesFunction;
+  type?: queries;
+  fetchPolicy?: string;
+  orderBy?: OrderByFunction;
+  filterBy?: FilterByFunction;
+  refetchQueries?: RefetchQueriesFunction;
+}
+
+export interface IResource extends IResourceDefinition {
   name: string;
-  query: any;
-  override: (overrides: IResourceOverride) => void
+  fields: FieldsDefinition;
+  query: IResourceQueryDefinition;
+  override: (overrides: IResourceDefinition) => void
+  resourceContainer: IResourceContainer;
 }
 
 export interface IResourceContainer {
-  register: (name: string, resource: IResourceBase) => void
-  override: (name: string, resource: IResourceOverride) => void
+  register: (resource: IResourceDefinition) => void
+  override: (resource: IResourceDefinition) => void
   queries: (resource: string, query: queries) => any
 }
 
-export interface IResourceOperation {
-
+export interface IResourceOperation extends IResourceOperationOverride {
+  resource: IResource;
+  query: any;
+  parseResponse: ResponseFunction;
+  update: UpdateFunction;
+  variables: VariablesFunction;
+  type: queries;
+  fetchPolicy: string;
+  orderBy: OrderByFunction;
+  filterBy: FilterByFunction;
+  refetchQueries: RefetchQueriesFunction;
 }
