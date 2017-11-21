@@ -1,59 +1,57 @@
 import { ResourceOperation } from "../resourceOperation";
-import { IResourceOperationOverride } from "../interfaces";
+import { IResourceOperation, refType } from "../interfaces";
+import { reshape } from "oda-lodash";
+import createField from './../../createField';
+import createSingle from './../../createSingle';
+import createMany from './../../createMany';
+import { SortOrder } from "../../../constants";
+import set from 'lodash/set';
+
+///!!! ПОСМЛОТРЕТЬ ЗДЕСЬ КОД!!!
+const useOpposite = {
+};
+
 
 export default class extends ResourceOperation {
   constructor(options) {
     super(options);
     this.initDefaults(options);
   }
-  initDefaults(options: IResourceOperationOverride) {
+
+  initDefaults(options: IResourceOperation) {
     super.initDefaults(options);
-    const {
-      name,
-      type,
-      query,
-      resourceContainer,
-      parseResponse,
-      update,
-      variables,
-      orderBy,
-      filterBy,
-      fetchPolicy = 'network-only',
-      refetchQueries,
-    } = options;
-    if (!parseResponse) {
-      if (type === queries.GET_MANY_REFERENCE) {
-        this._parseResponse = this.defaultParseGetManyReferense;
-      } else if (type === queries.GET_LIST) {
-        this._parseResponse = this.defaultParseGetList;
-      } else {
-        this._parseResponse = this.defaultParseResponse;
-      }
-    }
-    if (!variables) {
-      if (type === queries.GET_ONE) {
-        this._variables = params => ({
-          id: params.id,
-        });
-      } else if (type === queries.GET_LIST) {
-      } else if (type === queries.CREATE) {
-      } else if (type === queries.UPDATE) {
-      } else if (type === queries.DELETE) {
-        this._variables = params => ({
-          input: {
-            id: params.id,
-          },
-        })
-      } else if (type === queries.GET_MANY_REFERENCE) {
-      } else if (type === queries.GET_MANY) {
-        this._variables = params => ({
-          filter: {
-            id: { in: params.ids },
-          },
-        });
-      } else {
-        throw new Error('variables is required param');
-      }
-    }
+  }
+
+  public get query() {
+    return params => this._query[params.target]
+  }
+
+  public get resultQuery() {
+    return params => this._resultQuery[params.target]
+  }
+
+  _parseResponse = (response, params) => {
+    const data = reshape(this._resultQuery[params.target], response.data);
+    return {
+      data: data.items.data,
+      total: data.items.total,
+    };
+  }
+
+  _orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
+
+  _filterBy = (params) => !useOpposite[params.target] ? {
+    [params.target]: { eq: params.id }
+  } : undefined;
+
+  _variables = (params) => {
+    return {
+      id: params.id,
+      target: params.target,
+      skip: (params.pagination.page - 1) * params.pagination.perPage,
+      limit: params.pagination.perPage,
+      orderBy: this.orderBy(params),
+      filter: this.filterBy(params),
+    };
   }
 }

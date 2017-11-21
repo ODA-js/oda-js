@@ -1,59 +1,48 @@
 import { ResourceOperation } from "../resourceOperation";
-import { IResourceOperationOverride } from "../interfaces";
+import { IResourceOperation, refType } from "../interfaces";
+import { reshape } from "oda-lodash";
+import createField from './../../createField';
+import createSingle from './../../createSingle';
+import createMany from './../../createMany';
+import { SortOrder } from "../../../constants";
+import set from 'lodash/set';
 
 export default class extends ResourceOperation {
   constructor(options) {
     super(options);
     this.initDefaults(options);
   }
-  initDefaults(options: IResourceOperationOverride) {
+
+  initDefaults(options: IResourceOperation) {
     super.initDefaults(options);
-    const {
-      name,
-      type,
-      query,
-      resourceContainer,
-      parseResponse,
-      update,
-      variables,
-      orderBy,
-      filterBy,
-      fetchPolicy = 'network-only',
-      refetchQueries,
-    } = options;
-    if (!parseResponse) {
-      if (type === queries.GET_MANY_REFERENCE) {
-        this._parseResponse = this.defaultParseGetManyReferense;
-      } else if (type === queries.GET_LIST) {
-        this._parseResponse = this.defaultParseGetList;
-      } else {
-        this._parseResponse = this.defaultParseResponse;
-      }
+  }
+
+  _parseResponse = (response) => {
+    const data = reshape(this._resultQuery, response.data);
+    return {
+      data: data.items.data,
+      total: data.items.total,
+    };
+  }
+
+  _orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
+
+  _filterBy = (params) => Object.keys(params.filter).reduce((acc, key) => {
+    if (key === 'ids') {
+      return { ...acc, id: { in: params.filter[key] } };
     }
-    if (!variables) {
-      if (type === queries.GET_ONE) {
-        this._variables = params => ({
-          id: params.id,
-        });
-      } else if (type === queries.GET_LIST) {
-      } else if (type === queries.CREATE) {
-      } else if (type === queries.UPDATE) {
-      } else if (type === queries.DELETE) {
-        this._variables = params => ({
-          input: {
-            id: params.id,
-          },
-        })
-      } else if (type === queries.GET_MANY_REFERENCE) {
-      } else if (type === queries.GET_MANY) {
-        this._variables = params => ({
-          filter: {
-            id: { in: params.ids },
-          },
-        });
-      } else {
-        throw new Error('variables is required param');
-      }
+    if (key === 'q') {
+      return { ...acc, email: { imatch: params.filter[key] } };
     }
+    return set(acc, key.replace('-', '.'), params.filter[key]);
+  }, {})
+
+  _variables = (params) => {
+    return {
+      skip: (params.pagination.page - 1) * params.pagination.perPage,
+      limit: params.pagination.perPage,
+      orderBy: this.orderBy(params),
+      filter: this.filterBy(params),
+    };
   }
 }
