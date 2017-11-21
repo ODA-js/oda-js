@@ -1,21 +1,20 @@
+import { IResourceQueryDefinition } from './interfaces';
 import { reshape } from 'oda-lodash';
-import { SortOrder } from './../../constants';
 import { PageInfoType } from 'oda-gen-common/dist/types';
 
 import {
-  IResourceBase,
-  IResourceOverride,
+  IResource,
+  IResourceDefinition,
   ResponseFunction,
   UpdateFunction,
   VariablesFunction,
   IResourceContainer,
   IResourceOperationOverride,
   Field,
-  IResourceFields,
   FieldsDefinition,
 } from './interfaces';
 
-export class ResourceBase implements IResourceBase, IResourceFields {
+export default class implements IResource {
 
   public get fields(): FieldsDefinition {
     return this._fields;
@@ -40,7 +39,7 @@ export class ResourceBase implements IResourceBase, IResourceFields {
   /**
    * internal query storage
    */
-  private resourceQuery: IResourceOverride;
+  private resourceQuery: IResourceQueryDefinition;
 
   /**
    * internal name store
@@ -51,7 +50,7 @@ export class ResourceBase implements IResourceBase, IResourceFields {
    * override existing Resource configuration
    * @param overrides override options
    */
-  public override(overrides: IResourceOverride) {
+  public override(overrides: IResourceDefinition) {
     if (overrides.fields) {
       const { fields } = overrides;
       if (fields.fields) {
@@ -63,26 +62,26 @@ export class ResourceBase implements IResourceBase, IResourceFields {
       }
     }
 
-    if (overrides.CREATE) {
-      this.resourceQuery.CREATE = overrides.CREATE;
+    if (overrides.queries.CREATE) {
+      this.resourceQuery.CREATE = overrides.queries.CREATE;
     }
-    if (overrides.UPDATE) {
-      this.resourceQuery.UPDATE = overrides.UPDATE;
+    if (overrides.queries.UPDATE) {
+      this.resourceQuery.UPDATE = overrides.queries.UPDATE;
     }
-    if (overrides.DELETE) {
-      this.resourceQuery.DELETE = overrides.DELETE;
+    if (overrides.queries.DELETE) {
+      this.resourceQuery.DELETE = overrides.queries.DELETE;
     }
-    if (overrides.GET_ONE) {
-      this.resourceQuery.GET_ONE = overrides.GET_ONE;
+    if (overrides.queries.GET_ONE) {
+      this.resourceQuery.GET_ONE = overrides.queries.GET_ONE;
     }
-    if (overrides.GET_LIST) {
-      this.resourceQuery.GET_LIST = overrides.GET_LIST;
+    if (overrides.queries.GET_LIST) {
+      this.resourceQuery.GET_LIST = overrides.queries.GET_LIST;
     }
-    if (overrides.GET_MANY) {
-      this.resourceQuery.GET_MANY = overrides.GET_MANY;
+    if (overrides.queries.GET_MANY) {
+      this.resourceQuery.GET_MANY = overrides.queries.GET_MANY;
     }
-    if (overrides.GET_MANY_REFERENCE) {
-      this.resourceQuery.GET_MANY_REFERENCE = overrides.GET_MANY_REFERENCE;
+    if (overrides.queries.GET_MANY_REFERENCE) {
+      this.resourceQuery.GET_MANY_REFERENCE = overrides.queries.GET_MANY_REFERENCE;
     }
   }
 
@@ -91,8 +90,12 @@ export class ResourceBase implements IResourceBase, IResourceFields {
    * @param name name of the resource
    * @param overrides configuration options
    */
-  constructor(name: string, overrides: IResourceOverride) {
-    this._name = name;
+  constructor(overrides: IResourceDefinition) {
+    if (overrides.name) {
+      this._name = overrides.name;
+    } else {
+      throw new Error('Resource MUST HAVE name');
+    }
     this.override(overrides);
   }
 }
