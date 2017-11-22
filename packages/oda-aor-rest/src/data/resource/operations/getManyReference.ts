@@ -7,11 +7,6 @@ import createMany from './../../createMany';
 import { SortOrder } from "../../../constants";
 import set from 'lodash/set';
 
-///!!! ПОСМЛОТРЕТЬ ЗДЕСЬ КОД!!!
-const useOpposite = {
-};
-
-
 export default class extends ResourceOperation {
   constructor(options) {
     super(options);
@@ -40,9 +35,12 @@ export default class extends ResourceOperation {
 
   _orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
 
-  _filterBy = (params) => !useOpposite[params.target] ? {
-    [params.target]: { eq: params.id }
-  } : undefined;
+  _filterBy = (params) => {
+    const useOpposite = this._resource.fields[params.target].ref === refType.belongsToMany;
+    return !useOpposite ? {
+      [params.target]: { eq: params.id }
+    } : undefined;
+  }
 
   _variables = (params) => {
     return {

@@ -20,7 +20,7 @@ export default function (data: object, previousData: object, field: INamedField,
     // tslint:disable-next-line:no-switch-case-fall-through
     case actionType.UPDATE:
       if (data[field.name] && typeof data[field.name] === 'object') {
-        let res = resources.queries(field.ref, queries.UPDATE)
+        let res = resources.queries(field.refResource, queries.UPDATE)
           .variables({ data: data[field.name], previousData: previousData[field.name] || {} }).input;
         return {
           [field.name]: {
@@ -33,7 +33,7 @@ export default function (data: object, previousData: object, field: INamedField,
     case actionType.CLONE:
     case actionType.CREATE:
       if (data[field.name] && typeof data[field.name] === 'object') {
-        let res = resources.queries(field.ref, queries.CREATE)
+        let res = resources.queries(field.refResource, queries.CREATE)
           .variables({ data: data[field.name] }).input;
         delete res.id;
         if (previousData[fieldId] || (previousData[field.name] && previousData[field.name].id)) {

@@ -21,7 +21,7 @@ export default function (data: object, field: INamedField, resources: IResourceC
     case actionType.CREATE:
       if (data[field.name] && typeof data[field.name] === 'object') {
         let res = resources
-          .queries(field.ref, queries.CREATE)
+          .queries(field.refResource, queries.CREATE)
           .variables({ data: data[field.name] }).input;
         delete res.id;
         return {
