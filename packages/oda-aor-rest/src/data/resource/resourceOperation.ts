@@ -1,11 +1,11 @@
 import { SortOrder } from './../../constants';
 
-import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationOverride, IResource, FilterByFunction, OrderByFunction } from "./interfaces";
+import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationDefinition, IResource, FilterByFunction, OrderByFunction } from "./interfaces";
 import { reshape } from "oda-lodash";
 import { result } from './consts';
 import { queries } from './resourceContainer';
 
-export abstract class ResourceOperation implements IResourceOperation {
+export default abstract class implements IResourceOperation {
   public get query(): any {
     return this._query;
   }
@@ -50,7 +50,7 @@ export abstract class ResourceOperation implements IResourceOperation {
     filterBy,
     fetchPolicy = 'network-only',
     refetchQueries,
-}: IResourceOperationOverride) {
+}: IResourceOperationDefinition) {
     if (type) {
       this._type = type;
     }
@@ -92,8 +92,7 @@ export abstract class ResourceOperation implements IResourceOperation {
     type,
     query,
     update,
-    resource,
-  }: IResourceOperation) {
+  }: IResourceOperationDefinition) {
     if (!name) {
       throw new Error('name is required param');
     }
@@ -105,11 +104,6 @@ export abstract class ResourceOperation implements IResourceOperation {
     }
     if (!update) {
       this._update = this.defaultUpdate;
-    }
-    if (resource) {
-      this._resource = resource;
-    } else {
-      throw new Error('resource is required param');
     }
   }
 
@@ -125,8 +119,15 @@ export abstract class ResourceOperation implements IResourceOperation {
   protected _filterBy: FilterByFunction;
   protected _refetchQueries: any;
 
-  constructor(options: IResourceOperation) {
+  constructor(options: IResourceOperationDefinition, resource?: IResource) {
     this.initDefaults(options);
+    this.connect(resource)
     this.override(options);
+  }
+
+  public connect(resource: IResource) {
+    if (resource) {
+      this._resource = resource;
+    }
   }
 }

@@ -61,7 +61,7 @@ export interface IResourceDefinition {
   query?: IResourceQueryDefinition;
 }
 
-export interface IResourceOperationOverride {
+export interface IResourceOperationDefinition {
   query?: any;
   parseResponse?: ResponseFunction;
   update?: UpdateFunction;
@@ -87,7 +87,7 @@ export interface IResourceContainer {
   queries: (resource: string, query: queries) => any
 }
 
-export interface IResourceOperation extends IResourceOperationOverride {
+export interface IResourceOperation extends IResourceOperationDefinition {
   resource: IResource;
   query: any;
   resultQuery: any;

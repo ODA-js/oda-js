@@ -1,4 +1,4 @@
-import getList from './getList';
+import GetList from './getList';
 import GetOne from './getOne';
 import Create from './create';
 import Update from './update';
@@ -7,7 +7,7 @@ import GetMany from './getMany';
 import GetManyReference from './getManyReference';
 
 export {
-  getList,
+  GetList,
   GetOne,
   Create,
   Update,

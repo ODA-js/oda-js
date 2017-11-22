@@ -7,7 +7,7 @@ import createSingle from './createSingle';
 import * as resource from './resource';
 import { INamedField, IResourceContainer } from './resource/interfaces'
 
-export default {
+export {
   createField,
   createMany,
   createSingle,

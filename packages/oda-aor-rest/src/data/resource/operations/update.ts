@@ -1,16 +1,16 @@
-import { ResourceOperation } from "../resourceOperation";
-import { IResourceOperation, refType } from "../interfaces";
+import ResourceOperation from "../resourceOperation";
+import { IResourceOperation, refType, IResourceOperationDefinition, IResource } from "../interfaces";
 import { reshape } from "oda-lodash";
 import updateField from './../../updateField';
 import updateSingle from './../../updateSingle';
 import updateMany from './../../updateMany';
 
 export default class extends ResourceOperation {
-  constructor(options) {
-    super(options);
+  constructor(options: IResourceOperationDefinition, resource?: IResource) {
+    super(options, resource);
     this.initDefaults(options);
   }
-  initDefaults(options: IResourceOperation) {
+  initDefaults(options: IResourceOperationDefinition) {
     super.initDefaults(options);
   }
   _parseResponse = (response) => {

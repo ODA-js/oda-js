@@ -3,7 +3,7 @@ import { queries } from './consts';
 import Resource from './resource';
 export { queries }
 
-export class ResourceContainer implements IResourceContainer {
+export default class implements IResourceContainer {
   private resources: { [resource: string]: IResource }
   constructor(options?: IResourceDefinition[] | IResourceDefinition) {
     this.resources = {};

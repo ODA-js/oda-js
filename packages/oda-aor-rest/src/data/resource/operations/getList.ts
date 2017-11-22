@@ -1,5 +1,5 @@
-import { ResourceOperation } from "../resourceOperation";
-import { IResourceOperation } from "../interfaces";
+import ResourceOperation from "../resourceOperation";
+import { IResourceOperation, IResourceOperationDefinition, IResource } from "../interfaces";
 import { reshape } from "oda-lodash";
 import createField from './../../createField';
 import createSingle from './../../createSingle';
@@ -8,12 +8,11 @@ import { SortOrder } from "../../../constants";
 import set from 'lodash/set';
 
 export default class extends ResourceOperation {
-  constructor(options) {
-    super(options);
+  constructor(options: IResourceOperationDefinition, resource?: IResource) {
+    super(options, resource);
     this.initDefaults(options);
   }
-
-  initDefaults(options: IResourceOperation) {
+  initDefaults(options: IResourceOperationDefinition) {
     super.initDefaults(options);
   }
 

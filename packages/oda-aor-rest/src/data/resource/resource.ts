@@ -1,7 +1,15 @@
 import { IResourceQueryDefinition } from './interfaces';
 import { reshape } from 'oda-lodash';
 import { PageInfoType } from 'oda-gen-common/dist/types';
-import { Create } from './operations';
+import {
+  Create,
+  Delete,
+  GetMany,
+  GetList,
+  GetManyReference,
+  GetOne,
+  Update
+} from './operations';
 
 
 import {
@@ -11,11 +19,10 @@ import {
   UpdateFunction,
   VariablesFunction,
   IResourceContainer,
-  IResourceOperationOverride,
+  IResourceOperationDefinition,
   IField,
   FieldsDefinition,
 } from './interfaces';
-import { ResourceContainer } from './resourceContainer';
 
 export default class implements IResource {
 
@@ -111,11 +118,12 @@ export default class implements IResource {
     } else {
       throw new Error('name is required param');
     }
-    if (overrides.name) {
-      this._resourceContainer = resourceContainer;
-    } else {
-      throw new Error('resourceContainer is required param');
+    if (resourceContainer) {
+      this.connect(resourceContainer)
     }
     this.override(overrides);
+  }
+  public connect(resourceContainer: IResourceContainer) {
+    this._resourceContainer = resourceContainer;
   }
 }
