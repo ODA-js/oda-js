@@ -3,37 +3,36 @@
 
 <#- chunkStart(`./index.js`); -#>
 <# for(let entity of pack.entities){-#>
-import { queries as #{entity.name}Query, resource as #{entity.name}Resource } from './#{entity.name}/queries';
+import #{entity.name}Resource from './#{entity.name}/queries';
 <#}-#>
 
 <# for(let entity of pack.entities){-#>
 import #{entity.name}UIX from './#{entity.name}/uix';
 <#}-#>
+import { data } from 'oda-aor-rest';
 
 import Admin from './admin';
 
 export { Admin };
 
-// здесь класс как в коннекторах было.
-// использовать через get; чтобы можно было override делать без проблем.
-
-export const queries = {
+export class Resources extends data.resource.ResourceContainer {
+  constructor(...args){
+    super(...args);
+    this.override([
 <# for(let entity of pack.entities){-#>
-  #{entity.name}: #{entity.name}Query,
+      new #{entity.name}Resource(),
 <#}-#>
-};
-
-export const resources = ({ queries }) => ({
-<# for(let entity of pack.entities){-#>
-  #{entity.name}: #{entity.name}Resource({ resources, queries }),
-<#}-#>
-});
+    ]);
+  }
+}
 
 export const uix = {
 <# for(let entity of pack.entities){-#>
   #{entity.name}: #{entity.name}UIX,
 <#}-#>
 };
+
+<#- chunkStart(`./index-override.js`); -#>
 
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';

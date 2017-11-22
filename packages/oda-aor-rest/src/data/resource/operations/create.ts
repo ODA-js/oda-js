@@ -6,13 +6,6 @@ import createSingle from './../../createSingle';
 import createMany from './../../createMany';
 
 export default class extends ResourceOperation {
-  constructor(options: IResourceOperationDefinition, resource?: IResource) {
-    super(options, resource);
-    this.initDefaults(options);
-  }
-  initDefaults(options: IResourceOperationDefinition) {
-    super.initDefaults(options);
-  }
   _parseResponse = (response) => {
     const data = reshape(this._resultQuery, response.data);
     return { data: data.item };
@@ -23,7 +16,7 @@ export default class extends ResourceOperation {
     Object.keys(this.resource.fields).forEach(f => {
       if (!this.resource.fields[f].ref) {
         if (
-          this.resource.fields[f].ref.type === refType.hasMany || this.resource.fields[f].ref.type === refType.belongsToMany
+          this.resource.fields[f].ref.type === refType.HasMany || this.resource.fields[f].ref.type === refType.BelongsToMany
         ) {
           input = {
             ...input,

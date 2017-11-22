@@ -8,16 +8,17 @@ export type FilterByFunction = (field) => object | undefined;
 export type RefetchQueriesFunction = (variables) => any;
 
 export enum refType {
-  hasMany = 'hasMany',
-  hasOne = 'hasOne',
-  belongsTo = 'belongsTo',
-  belongsToMany = 'belongsToMany',
+  HasMany = 'HasMany',
+  HasOne = 'HasOne',
+  BelongsTo = 'BelongsTo',
+  BelongsToMany = 'BelongsToMany',
 }
 
 export enum fieldType {
   number = 'number',
   string = 'string',
   date = 'date',
+  boolean = 'boolean',
 }
 
 export interface IResourceReference {
@@ -77,8 +78,9 @@ export interface IResource extends IResourceDefinition {
   name: string;
   fields: FieldsDefinition;
   query: IResourceQueryDefinition;
-  override: (overrides: IResourceDefinition) => void
   resourceContainer: IResourceContainer;
+  override: (overrides: IResourceDefinition) => IResource
+  connect: (resourceContainer: IResourceContainer) => IResource
 }
 
 export interface IResourceContainer {
@@ -99,4 +101,6 @@ export interface IResourceOperation extends IResourceOperationDefinition {
   orderBy: OrderByFunction;
   filterBy: FilterByFunction;
   refetchQueries: RefetchQueriesFunction;
+  override: (overrides: IResourceOperationDefinition) => IResourceOperation
+  connect: (resource: IResource) => IResourceOperation
 }

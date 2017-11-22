@@ -2,13 +2,15 @@
 <#@ chunks '$$$main$$$' -#>
 
 <#- chunkStart(`../../../${entity.name}/queries/index`); -#>
-import GET_LIST from './getList';
-import GET_ONE from './getOne';
-import CREATE from './create';
-import UPDATE from './update';
-import DELETE from './delete';
-import GET_MANY from './getMany';
-import GET_MANY_REFERENCE from './getManyReference';
+import GetList from './getList';
+import GetOne from './getOne';
+import Create from './create';
+import Update from './update';
+import Delete from './delete';
+import GetMany from './getMany';
+import GetManyReference from './getManyReference';
+import { data } from 'oda-aor-rest';
+
 import {
   getListOf#{entity.name},
   getOneOf#{entity.name},
@@ -26,32 +28,123 @@ import {
   getManyReferenceOf#{entity.name}Result,
 } from './queries';
 
-export const resource = ({ queries, resources }) => ({
-  GET_LIST: GET_LIST({ queries, resources }),
-  GET_ONE: GET_ONE({ queries, resources }),
-  CREATE: CREATE({ queries, resources }),
-  UPDATE: UPDATE({ queries, resources }),
-  DELETE: DELETE({ queries, resources }),
-  GET_MANY: GET_MANY({ queries, resources }),
-  GET_MANY_REFERENCE: GET_MANY_REFERENCE({ queries, resources }),
-});
 
-export const queries = {
-  GET_LIST: getListOf#{entity.name},
-  GET_ONE: getOneOf#{entity.name},
-  GET_MANY: getManyOf#{entity.name},
-  GET_MANY_REFERENCE: getManyReferenceOf#{entity.name},
-  CREATE: createOf#{entity.name},
-  UPDATE: updateOf#{entity.name},
-  DELETE: deleteOf#{entity.name},
-  GET_LIST_RESULT: getListOf#{entity.name}Result,
-  GET_ONE_RESULT: getOneOf#{entity.name}Result,
-  GET_MANY_RESULT: getManyOf#{entity.name}Result,
-  GET_MANY_REFERENCE_RESULT: getManyReferenceOf#{entity.name}Result,
-  CREATE_RESULT: createOf#{entity.name}Result,
-  UPDATE_RESULT: updateOf#{entity.name}Result,
-  DELETE_RESULT: deleteOf#{entity.name}Result,
+export default class extends data.resource.Resource {
+  constructor (options, resourceContainer) {
+    super(options, resourceContainer);
+    this._name = '#{entity.name}';
+    this._fields = {
+  <#- entity.fields.forEach(f=>{
+  #>
+      #{f.name}: { type: '#{f.resourceType}'},
+  <#-
+  })#>
+  <#- entity.relations.forEach(f=>{
+  #>
+      #{f.field}: {
+        ref:{
+          ref: '#{f.ref.entity}',
+          type:  data.resource.interfaces.refType.#{f.verb},
+        },
+      },
+  <#-
+  })#>
+    };
+    this._query = {
+      GET_LIST: new GetList({
+        query: getListOf#{entity.name},
+        resultQuery: getListOf#{entity.name}Result,
+      }),
+      GET_ONE: new GetOne({
+        query: getOneOf#{entity.name},
+        resultQuery: getOneOf#{entity.name}Result,
+      }),
+      GET_MANY: new GetMany({
+        query: getManyOf#{entity.name},
+        resultQuery: getManyOf#{entity.name}Result,
+      }),
+      GET_MANY_REFERENCE: new GetManyReference({
+        query: getManyReferenceOf#{entity.name},
+        resultQuery: getManyReferenceOf#{entity.name}Result,
+      }),
+      CREATE: new Create({
+        query: createOf#{entity.name},
+        resultQuery: createOf#{entity.name}Result,
+      }),
+      UPDATE: new Update({
+        query: createOf#{entity.name},
+        resultQuery: createOf#{entity.name}Result,
+      }),
+      DELETE: new Delete({
+        query: createOf#{entity.name},
+        resultQuery: createOf#{entity.name}Result,
+      }),
+    };
+  }
 };
+
+<#- chunkStart(`../../../${entity.name}/queries/getList`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.GetList {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/getOne`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.GetOne  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/getMany`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.GetMany  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/getManyReference`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.GetManyReference  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/delete`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.Delete  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/create`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.Create  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
+
+<#- chunkStart(`../../../${entity.name}/queries/update`); -#>
+import { data } from 'oda-aor-rest';
+
+export default class extends data.resource.operations.Update  {
+  // constructor(options, resource){
+  //   super(options, resource);
+  // }
+}
 
 <#- chunkStart(`../../../${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';
@@ -322,210 +415,3 @@ export const getManyReferenceOf#{entity.name}Result = {
   #{f.field}: getManyReferenceOf#{entity.name}ResultRegular,
 <#}})-#>};
 
-<#- chunkStart(`../../../${entity.name}/queries/getList`); -#>
-import { reshape } from 'oda-lodash';
-import { constants } from 'oda-aor-rest';
-import set from 'lodash/set';
-
-const { SortOrder } = constants;
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.GET_LIST,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.GET_LIST_RESULT, response.data);
-    return {
-      data: data.items.data,
-      total: data.items.total,
-    };
-  },
-  fetchPolicy: 'network-only',
-  variables: (params) => {
-    const filter = Object.keys(params.filter).reduce((acc, key) => {
-      if (key === 'ids') {
-        return { ...acc, id: { in: params.filter[key] } };
-      }
-      if (key === 'q') {
-        return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
-      }
-      return set(acc, key.replace('-', '.'), params.filter[key]);
-    }, {});
-    return {
-      skip: (params.pagination.page - 1) * params.pagination.perPage,
-      limit: params.pagination.perPage,
-      orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
-      filter,
-    };
-  },
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/getOne`); -#>
-import { reshape } from 'oda-lodash';
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.GET_ONE,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.GET_ONE_RESULT, response.data);
-    return {
-      data: data.item,
-    };
-  },
-  fetchPolicy: 'network-only',
-  variables: params => ({
-    id: params.id,
-  }),
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/getMany`); -#>
-import { reshape } from 'oda-lodash';
-import { constants } from 'oda-aor-rest';
-
-const { SortOrder } = constants;
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.GET_MANY,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.GET_MANY_RESULT, response.data);
-    return {
-      data: data.items,
-    };
-  },
-  fetchPolicy: 'network-only',
-  variables: params => ({
-    filter: {
-      id: { in: params.ids },
-    },
-  }),
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/getManyReference`); -#>
-import { reshape } from 'oda-lodash';
-import { constants } from 'oda-aor-rest';
-
-const useOpposite = {
-<# entity.relations.filter(f=>f.verb === 'BelongsToMany')
-.forEach(f=>{-#>
-  #{f.field}: true,
-<#})-#>};
-
-  const { SortOrder } = constants;
-
-export default ({ queries, resources }) => ({
-  query: params => queries.#{entity.name}.GET_MANY_REFERENCE[params.target],
-  parseResponse: (response, params) => {
-    const data = reshape(queries.#{entity.name}.GET_MANY_REFERENCE_RESULT[params.target], response.data);
-    return {
-      data: data.items.data,
-      total: data.items.total,
-    };
-  },
-  fetchPolicy: 'network-only',
-  variables: (params) => {
-    const filter = {};
-
-    if (!useOpposite[params.target]) {
-      filter[params.target] = { eq: params.id };
-    }
-
-    return {
-      id: params.id,
-      target: params.target,
-      skip: (params.pagination.page - 1) * params.pagination.perPage,
-      limit: params.pagination.perPage,
-      orderBy: params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined,
-      filter,
-    };
-  },
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/delete`); -#>
-import { reshape } from 'oda-lodash';
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.DELETE,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.DELETE_RESULT, response.data);
-    return { data: data.item };
-  },
-  update: (store, response) => {
-    // remove from cache
-  },
-  variables: params => ({
-    input: {
-      id: params.id,
-    },
-  }),
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/create`); -#>
-import { reshape } from 'oda-lodash';
-import { data as utils } from 'oda-aor-rest';
-
-const { createField, createSingle, createMany } = utils;
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.CREATE,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.CREATE_RESULT, response.data);
-    return { data: data.item };
-  },
-  update: (store, response) => {
-    // insert into cache
-  },
-  variables: (params) => {
-    const data = params.data;
-    const res = resources({ queries });
-    return { input:
-      {
-<#- entity.fields.filter(f=> !f.derived ).forEach(f=>{#>
-        ...createField(data, '#{f.name}'),
-<#-})-#>
-<# entity.relations.forEach(f=>{
-#><#-if(f.single){#>
-        ...createSingle(data, '#{f.field}', '#{f.ref.entity}', res),
-    <#-} else {#>
-        ...createMany(data, '#{f.field}', '#{f.ref.entity}', res),
-<#-}-#>
-<#-})#>
-      },
-    };
-  },
-});
-
-<#- chunkStart(`../../../${entity.name}/queries/update`); -#>
-import { reshape } from 'oda-lodash';
-import { data as utils } from 'oda-aor-rest';
-
-const { updateField, updateSingle, updateMany } = utils;
-
-export default ({ queries, resources }) => ({
-  query: queries.#{entity.name}.UPDATE,
-  parseResponse: (response) => {
-    const data = reshape(queries.#{entity.name}.UPDATE_RESULT, response.data);
-    return { data: data.item };
-  },
-  refetchQueries: variables => ([{
-    query: queries.#{entity.name}.GET_ONE,
-    variables: {
-      id: variables.input.id,
-    },
-  }]),
-  variables: (params) => {
-    const { data, previousData } = params;
-    const res = resources({ queries });
-    return {
-      input: {
-        id: data.id,
-<#- entity.fields.filter(f=>f.name !== 'id' && !f.derived ).forEach(f=>{#>
-        ...updateField(data, previousData, '#{f.name}'),
-<#-})-#>
-<# entity.relations.forEach(f=>{
-#><#-if(f.single){#>
-        ...updateSingle(data, previousData, '#{f.field}', '#{f.ref.entity}', res),
-    <#-} else {#>
-        ...updateMany(data, previousData, '#{f.field}', '#{f.ref.entity}', res),
-<#-}-#>
-<#-})#>
-      },
-    };
-  },
-});

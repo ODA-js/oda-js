@@ -78,6 +78,7 @@ export default abstract class implements IResourceOperation {
     if (refetchQueries) {
       this._refetchQueries = refetchQueries;
     }
+    return this;
   }
 
   private defaultUpdate(store, response) {
@@ -119,15 +120,20 @@ export default abstract class implements IResourceOperation {
   protected _filterBy: FilterByFunction;
   protected _refetchQueries: any;
 
-  constructor(options: IResourceOperationDefinition, resource?: IResource) {
-    this.initDefaults(options);
-    this.connect(resource)
-    this.override(options);
+  constructor(options?: IResourceOperationDefinition, resource?: IResource) {
+    if (options) {
+      this.initDefaults(options);
+      this.override(options);
+    }
+    if (resource) {
+      this.connect(resource)
+    }
   }
 
   public connect(resource: IResource) {
     if (resource) {
       this._resource = resource;
     }
+    return this;
   }
 }

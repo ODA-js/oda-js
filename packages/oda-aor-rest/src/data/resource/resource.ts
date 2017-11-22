@@ -11,6 +11,7 @@ import {
   Update
 } from './operations';
 
+import ResourceOperation from './resourceOperation';
 
 import {
   IResource,
@@ -85,26 +86,27 @@ export default class implements IResource {
     }
 
     if (overrides.query.CREATE) {
-      this.resourceQuery.CREATE = new Create(overrides.query.CREATE);
+      this.resourceQuery.CREATE = (overrides.query.CREATE instanceof ResourceOperation) ? overrides.query.CREATE.connect(this) : new Create(overrides.query.CREATE, this);
     }
     if (overrides.query.UPDATE) {
-      this.resourceQuery.UPDATE = overrides.query.UPDATE;
+      this.resourceQuery.UPDATE = (overrides.query.UPDATE instanceof ResourceOperation) ? overrides.query.UPDATE.connect(this) : new Update(overrides.query.UPDATE, this);
     }
     if (overrides.query.DELETE) {
-      this.resourceQuery.DELETE = overrides.query.DELETE;
+      this.resourceQuery.DELETE = (overrides.query.DELETE instanceof ResourceOperation) ? overrides.query.DELETE.connect(this) : new Delete(overrides.query.DELETE, this);
     }
     if (overrides.query.GET_ONE) {
-      this.resourceQuery.GET_ONE = overrides.query.GET_ONE;
+      this.resourceQuery.GET_ONE = (overrides.query.GET_ONE instanceof ResourceOperation) ? overrides.query.GET_ONE.connect(this) : new GetOne(overrides.query.GET_ONE, this);
     }
     if (overrides.query.GET_LIST) {
-      this.resourceQuery.GET_LIST = overrides.query.GET_LIST;
+      this.resourceQuery.GET_LIST = (overrides.query.GET_LIST instanceof ResourceOperation) ? overrides.query.GET_LIST.connect(this) : new GetList(overrides.query.GET_LIST, this);
     }
     if (overrides.query.GET_MANY) {
-      this.resourceQuery.GET_MANY = overrides.query.GET_MANY;
+      this.resourceQuery.GET_MANY = (overrides.query.GET_MANY instanceof ResourceOperation) ? overrides.query.GET_MANY.connect(this) : new GetMany(overrides.query.GET_MANY, this);
     }
     if (overrides.query.GET_MANY_REFERENCE) {
-      this.resourceQuery.GET_MANY_REFERENCE = overrides.query.GET_MANY_REFERENCE;
+      this.resourceQuery.GET_MANY_REFERENCE = (overrides.query.GET_MANY_REFERENCE instanceof ResourceOperation) ? overrides.query.GET_MANY_REFERENCE.connect(this) : new GetManyReference(overrides.query.GET_MANY_REFERENCE, this);
     }
+    return this;
   }
 
   /**
@@ -112,18 +114,21 @@ export default class implements IResource {
    * @param name name of the resource
    * @param overrides configuration options
    */
-  constructor(overrides: IResourceDefinition, resourceContainer: IResourceContainer) {
-    if (overrides.name) {
-      this._name = overrides.name;
-    } else {
-      throw new Error('name is required param');
+  constructor(overrides?: IResourceDefinition, resourceContainer?: IResourceContainer) {
+    if (overrides) {
+      if (overrides.name) {
+        this._name = overrides.name;
+      } else {
+        throw new Error('name is required param');
+      }
+      this.override(overrides);
     }
     if (resourceContainer) {
       this.connect(resourceContainer)
     }
-    this.override(overrides);
   }
   public connect(resourceContainer: IResourceContainer) {
     this._resourceContainer = resourceContainer;
+    return this;
   }
 }

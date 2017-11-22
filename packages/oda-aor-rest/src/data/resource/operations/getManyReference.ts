@@ -8,14 +8,6 @@ import { SortOrder } from "../../../constants";
 import set from 'lodash/set';
 
 export default class extends ResourceOperation {
-  constructor(options: IResourceOperationDefinition, resource?: IResource) {
-    super(options, resource);
-    this.initDefaults(options);
-  }
-  initDefaults(options: IResourceOperationDefinition) {
-    super.initDefaults(options);
-  }
-
   public get query() {
     return params => this._query[params.target]
   }
@@ -35,7 +27,7 @@ export default class extends ResourceOperation {
   _orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
 
   _filterBy = (params) => {
-    const useOpposite = this._resource.fields[params.target].ref.type === refType.belongsToMany;
+    const useOpposite = this._resource.fields[params.target].ref.type === refType.BelongsToMany;
     return !useOpposite ? {
       [params.target]: { eq: params.id }
     } : undefined;

@@ -8,14 +8,6 @@ import { SortOrder } from "../../../constants";
 import set from 'lodash/set';
 
 export default class extends ResourceOperation {
-  constructor(options: IResourceOperationDefinition, resource?: IResource) {
-    super(options, resource);
-    this.initDefaults(options);
-  }
-  initDefaults(options: IResourceOperationDefinition) {
-    super.initDefaults(options);
-  }
-
   _parseResponse = (response) => {
     const data = reshape(this._resultQuery, response.data);
     return {

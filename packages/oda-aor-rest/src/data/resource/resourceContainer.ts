@@ -13,12 +13,20 @@ export default class implements IResourceContainer {
       this.register(options);
     }
   }
-  public register(resource: IResourceDefinition) {
-    this.resources[resource.name] = new Resource(resource, this);
+  public register(resource: IResourceDefinition[] | IResourceDefinition) {
+    if (Array.isArray(resource)) {
+      resource.forEach(this.register.bind(this));
+    } else if (resource) {
+      this.resources[resource.name] = (resource instanceof Resource) ? resource.connect(this) : new Resource(resource, this);
+    }
   }
-  public override(resource: IResourceDefinition) {
-    let res = this.resources[resource.name];
-    res.override(resource);
+  public override(resource: IResourceDefinition[] | IResourceDefinition) {
+    if (Array.isArray(resource)) {
+      resource.forEach(this.override.bind(this));
+    } else if (resource) {
+      let res = this.resources[resource.name];
+      res.override(resource);
+    }
   }
   public queries(resource: string, query: queries) {
     return this.resources[resource].query[query];

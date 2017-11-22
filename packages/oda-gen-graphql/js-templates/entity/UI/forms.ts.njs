@@ -425,8 +425,7 @@ if(manyRels.length > 0){#>
   return (
     <Show title={<#{entity.name}Title />} {...props} >
       <SimpleShowLayout {...props}>
-<# debugger;
-entity.fields.filter(f=>f.name!== "id")
+<#entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
         <DependentField resolve={showIfExists('#{f.name}')}>

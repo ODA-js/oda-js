@@ -44,6 +44,7 @@ export interface UIView {
 }
 
 export interface MapperOutupt {
+  packageName: string;
   name: string;
   UI: UIView;
   plural: string;
@@ -91,6 +92,7 @@ import {
   getFields,
   idField,
 } from '../../queries';
+import { platform } from 'os';
 
 function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, first = false): UIView {
   const result: UIResult = {
@@ -210,6 +212,7 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
             label: humanize(f.name),
             type: aor(f.type),
             required: f.required,
+
           }));
 
         lRes.fields.push(...fList);
@@ -254,6 +257,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
   const mapAORTypes = typeMapper.aor;
+  const mapResourceTypes = typeMapper.resource;
   const mapAORFilterTypes = typeMapper.aor;
   const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
 
@@ -330,6 +334,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     });
 
   return {
+    packageName: pack.name,
     name: entity.name,
     UI,
     plural: entity.plural,
@@ -349,6 +354,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         label: humanize(f.name),
         required: f.required,
         type: mapAORTypes(f.type),
+        resourceType: mapResourceTypes(f.type),
         filterType: mapAORFilterTypes(f.type),
       })),
   };

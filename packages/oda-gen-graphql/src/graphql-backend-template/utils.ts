@@ -20,6 +20,12 @@ export const defaultTypeMapper = {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
   },
+  resource: {
+    number: ['int', 'integer', 'number', 'float', 'double'],
+    string: ['string', 'text', "*", 'uuid', 'id', 'identity'],
+    date: ['date', 'time', 'datetime'],
+    boolean: ['bool', 'boolean'],
+  },
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
     Text: ['string', 'text', "*"],
