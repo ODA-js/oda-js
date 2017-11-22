@@ -20,9 +20,13 @@ export enum fieldType {
   date = 'date',
 }
 
+export interface IResourceReference {
+  type: refType,
+  resource: string;
+}
+
 export interface IField {
-  ref?: refType,
-  refResource?: string;
+  ref?: IResourceReference,
   type?: fieldType;
 }
 

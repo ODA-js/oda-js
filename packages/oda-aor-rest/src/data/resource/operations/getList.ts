@@ -1,5 +1,5 @@
 import { ResourceOperation } from "../resourceOperation";
-import { IResourceOperation, refType } from "../interfaces";
+import { IResourceOperation } from "../interfaces";
 import { reshape } from "oda-lodash";
 import createField from './../../createField';
 import createSingle from './../../createSingle';

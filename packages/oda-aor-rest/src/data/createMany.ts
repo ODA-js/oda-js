@@ -13,7 +13,7 @@ export default function (data: object, field: INamedField, resources: IResourceC
       return {
         [field.name]: data[fieldValues]
           .map(value => resources
-            .queries(field.refResource, queries.CREATE)
+            .queries(field.ref.resource, queries.CREATE)
             .variables({ data: value }).input),
       };
     }

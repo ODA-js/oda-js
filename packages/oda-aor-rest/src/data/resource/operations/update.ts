@@ -21,9 +21,9 @@ export default class extends ResourceOperation {
     const { data, previousData } = params;
     let input = {};
     Object.keys(this.resource.fields).forEach(f => {
-      if (!this.resource.fields[f].ref) {
+      if (!this.resource.fields[f].ref.type) {
         if (
-          this.resource.fields[f].ref === refType.hasMany || this.resource.fields[f].ref === refType.belongsToMany
+          this.resource.fields[f].ref.type === refType.hasMany || this.resource.fields[f].ref.type === refType.belongsToMany
         ) {
           input = {
             ...input,

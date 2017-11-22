@@ -40,7 +40,7 @@ export default function (data: object, previousData: object, field: INamedField,
       || f[fieldType] === actionType.CLONE
       || f[fieldType] === actionType.CREATE,
     ).map(item =>
-      resources.queries(field.refResource, queries.CREATE)
+      resources.queries(field.ref.resource, queries.CREATE)
         .variables({ data: item }).input);
 
     const changed = intersectionWith(data[fieldValues], previousData[fieldValues], sameId)
@@ -48,14 +48,14 @@ export default function (data: object, previousData: object, field: INamedField,
       .filter(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
         return !isEqual(
-          resources.queries(field.refResource, queries.CREATE)
+          resources.queries(field.ref.resource, queries.CREATE)
             .variables({ data: value }).input,
-          resources.queries(field.refResource, queries.CREATE)
+          resources.queries(field.ref.resource, queries.CREATE)
             .variables({ data: f }).input);
       })
       .map(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
-        return resources.queries(field.refResource, queries.UPDATE)
+        return resources.queries(field.ref.resource, queries.UPDATE)
           .variables({ data: f, previousData: value }).input;
       });
 

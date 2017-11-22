@@ -36,7 +36,7 @@ export default class extends ResourceOperation {
   _orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
 
   _filterBy = (params) => {
-    const useOpposite = this._resource.fields[params.target].ref === refType.belongsToMany;
+    const useOpposite = this._resource.fields[params.target].ref.type === refType.belongsToMany;
     return !useOpposite ? {
       [params.target]: { eq: params.id }
     } : undefined;
