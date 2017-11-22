@@ -3,12 +3,14 @@ import * as differenceWith from 'lodash/differenceWith';
 import * as intersectionWith from 'lodash/intersectionWith';
 import * as isEqual from 'lodash/isEqual';
 import { actionType } from './../ui/consts';
+import { IResourceContainer, INamedField } from './resource/interfaces';
+import { queries } from './resource/consts';
 
 function sameId(a, b) {
   return a.id === b.id;
 }
 
-export default function (data, previousData, field, resource, resources) {
+export default function (data: object, previousData: object, field: INamedField, resources: IResourceContainer) {
   const fieldIds = field + 'Ids';
   const fieldValues = field + 'Values';
   const fieldUnlink = field + 'Unlink';
@@ -18,7 +20,7 @@ export default function (data, previousData, field, resource, resources) {
     const diff = comparator.diff(previousData[fieldIds], data[fieldIds]);
     if (diff.inserted) {
       return {
-        [field]: Object.keys(diff.inserted)
+        [field.name]: Object.keys(diff.inserted)
           .map(f => ({ id: diff.inserted[f].value })),
       };
     }
@@ -37,18 +39,24 @@ export default function (data, previousData, field, resource, resources) {
       !f.id
       || f[fieldType] === actionType.CLONE
       || f[fieldType] === actionType.CREATE,
-    ).map(item => resources[resource].CREATE.variables({ data: item }).input);
+    ).map(item =>
+      resources.queries(field.ref, queries.CREATE)
+        .variables({ data: item }).input);
 
     const changed = intersectionWith(data[fieldValues], previousData[fieldValues], sameId)
       .filter(f => (f[fieldType] !== actionType.CLONE && f[fieldType] !== actionType.CREATE))
       .filter(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
-        return !isEqual(resources[resource]
-          .CREATE.variables({ data: value }).input, resources[resource].CREATE.variables({ data: f }).input);
+        return !isEqual(
+          resources.queries(field.ref, queries.CREATE)
+            .variables({ data: value }).input,
+          resources.queries(field.ref, queries.CREATE)
+            .variables({ data: f }).input);
       })
       .map(f => {
         const value = (previousData[fieldValues] as { id: string }[]).find(p => p.id === f.id);
-        return resources[resource].UPDATE.variables({ data: f, previousData: value }).input;
+        return resources.queries(field.ref, queries.UPDATE)
+          .variables({ data: f, previousData: value }).input;
       });
 
     if (removed.length > 0) {
@@ -68,7 +76,7 @@ export default function (data, previousData, field, resource, resources) {
     }
 
     if (changed.length > 0) {
-      result[field] = changed;
+      result[field.name] = changed;
     }
 
     return result;

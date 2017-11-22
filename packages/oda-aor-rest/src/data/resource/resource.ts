@@ -12,7 +12,7 @@ import {
   VariablesFunction,
   IResourceContainer,
   IResourceOperationOverride,
-  Field,
+  IField,
   FieldsDefinition,
 } from './interfaces';
 import { ResourceContainer } from './resourceContainer';

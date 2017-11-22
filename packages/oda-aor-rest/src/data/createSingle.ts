@@ -1,7 +1,9 @@
 import * as comparator from 'comparator.js';
 import { actionType } from './../ui/consts';
+import { IResourceContainer, INamedField } from './resource/interfaces';
+import { queries } from './resource/consts';
 
-export default function (data, field, resource, resources) {
+export default function (data: object, field: INamedField, resources: IResourceContainer) {
   const fieldId = field + 'Id';
   const fieldType = field + 'Type';
   const fieldCreate = field + 'Create';
@@ -12,16 +14,18 @@ export default function (data, field, resource, resources) {
     case actionType.USE:
       if (data[fieldId]) {
         return {
-          [field]: { id: data[fieldId] },
+          [field.name]: { id: data[fieldId] },
         };
       }
     case actionType.CLONE:
     case actionType.CREATE:
-      if (data[field] && typeof data[field] === 'object') {
-        let res = resources[resource].CREATE.variables({ data: data[field] }).input;
+      if (data[field.name] && typeof data[field.name] === 'object') {
+        let res = resources
+          .queries(field.ref, queries.CREATE)
+          .variables({ data: data[field.name] }).input;
         delete res.id;
         return {
-          [field]: {
+          [field.name]: {
             ...res,
           },
         };

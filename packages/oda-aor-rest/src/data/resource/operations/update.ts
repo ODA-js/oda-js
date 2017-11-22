@@ -22,15 +22,22 @@ export default class extends ResourceOperation {
     let input = {};
     Object.keys(this.resource.fields).forEach(f => {
       if (!this.resource.fields[f].refResource) {
-        if (this.resource.fields[f].refResource === refType.many) {
+        if (
+          this.resource.fields[f].refResource === refType.hasMany || this.resource.fields[f].refResource === refType.belongsToMany
+        ) {
           input = {
             ...input,
-            ...updateMany(data, previousData, f, this.resource.fields[f].ref, ),
+            ...updateMany(data, previousData, {
+              name: f,
+              ...this.resource.fields[f]
+            }, this.resource.resourceContainer),
           };
         } else {
           input = {
             ...input,
-            ...updateSingle(data, previousData, f, this.resource.fields[f].ref, ),
+            ...updateSingle(data, previousData, {
+              name: f, ...this.resource.fields[f]
+            }, this.resource.resourceContainer),
           };
         }
       } else {

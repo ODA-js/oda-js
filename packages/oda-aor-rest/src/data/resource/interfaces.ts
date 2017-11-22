@@ -8,8 +8,10 @@ export type FilterByFunction = (field) => object | undefined;
 export type RefetchQueriesFunction = (variables) => any;
 
 export enum refType {
-  single = 'single',
-  many = 'many',
+  hasMany = 'hasMany',
+  hasOne = 'hasOne',
+  belongsTo = 'belongsTo',
+  belongsToMany = 'belongsToMany',
 }
 
 export enum fieldType {
@@ -18,16 +20,19 @@ export enum fieldType {
   date = 'date',
 }
 
-export interface Field {
+export interface IField {
   ref?: refType,
   refResource?: string;
   type?: fieldType;
 }
 
-export type FieldsDefinition = {
-  [name: string]: Field
+export interface INamedField extends IField {
+  name: string;
 }
 
+export type FieldsDefinition = {
+  [name: string]: IField
+}
 
 /**
  * list of fields for specific Resource
