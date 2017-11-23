@@ -9,15 +9,15 @@ export default function (data: object, previousData: object, field: INamedField,
   const fieldCreate = field.name + 'Create';
   const fieldUnlink = field.name + 'Unlink';
   let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
-  // tslint:disable-next-line:switch-default
+
   switch (embedType) {
     case actionType.USE:
-      if (data[fieldId] || (previousData[field.name] && previousData[field.name].id)) {
+      if (!comparator.looseEq(data[fieldId], (previousData[fieldId] || (previousData[field.name] && previousData[field.name].id)))) {
         return {
           [field.name]: { id: data[fieldId] },
         };
       }
-    // tslint:disable-next-line:no-switch-case-fall-through
+      break;
     case actionType.UPDATE:
       if (data[field.name] && typeof data[field.name] === 'object') {
         let res = resources.queries(field.ref.resource, queries.UPDATE)
@@ -29,7 +29,7 @@ export default function (data: object, previousData: object, field: INamedField,
           },
         };
       };
-    // tslint:disable-next-line:no-switch-case-fall-through
+      break;
     case actionType.CLONE:
     case actionType.CREATE:
       if (data[field.name] && typeof data[field.name] === 'object') {
@@ -53,8 +53,7 @@ export default function (data: object, previousData: object, field: INamedField,
           };
         }
       }
-
-    // tslint:disable-next-line:no-switch-case-fall-through
+      break;
     case actionType.UNLINK:
       if (previousData[fieldId] || (previousData[field.name] && previousData[field.name].id)) {
         return {
@@ -63,5 +62,6 @@ export default function (data: object, previousData: object, field: INamedField,
           },
         };
       }
+      break;
   }
 }

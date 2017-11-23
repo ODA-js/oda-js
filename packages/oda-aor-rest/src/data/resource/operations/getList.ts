@@ -9,7 +9,7 @@ import set from 'lodash/set';
 
 export default class extends ResourceOperation {
   _parseResponse = (response) => {
-    debugger
+    // debugger
     const data = reshape(this._resultQuery, response.data);
     return {
       data: data.items.data,

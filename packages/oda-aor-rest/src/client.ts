@@ -35,40 +35,45 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
 
     const variables = typeof operation.variables === 'function' ? operation.variables(params) : operation.variables;
 
+    const shouldFakeExecute = typeof operation.shouldFakeExecute === 'function' ? operation.shouldFakeExecute(variables) : operation.shouldFakeExecute;
+
     const currentfetchPolicy = typeof operation.fetchPolicy === 'function' ? operation.fetchPolicy(params) : operation.fetchPolicy || fetchPolicy;
 
     const refetchQueries = typeof operation.refetchQueries === 'function' ? operation.refetchQueries(variables) : operation.refetchQueries;
 
     const update = typeof operation.update === 'function' ? operation.update : false;
     const query = typeof operation.query === 'function' ? operation.query(params) : operation.query;
+    if (!shouldFakeExecute) {
+      if (QUERY_TYPES.includes(type)) {
+        const apolloQuery: any = {
+          query,
+          variables,
+        };
+        if (fetchPolicy) {
+          apolloQuery.fetchPolicy = currentfetchPolicy;
+        }
+        action = client.query(apolloQuery);
+      } else {
+        const apolloQuery: any = {
+          mutation: operation.query,
+          variables,
+        };
 
-    if (QUERY_TYPES.includes(type)) {
-      const apolloQuery: any = {
-        query,
-        variables,
-      };
-      if (fetchPolicy) {
-        apolloQuery.fetchPolicy = currentfetchPolicy;
+        if (refetchQueries) {
+          apolloQuery.refetchQueries = refetchQueries;
+        }
+
+        if (update) {
+          apolloQuery.update = update;
+        }
+
+        action = client.mutate(apolloQuery)
       }
-      action = client.query(apolloQuery);
+      return action.then(response => operation.parseResponse(response, params)).catch(er => {
+        throw er;
+      });
     } else {
-      const apolloQuery: any = {
-        mutation: operation.query,
-        variables,
-      };
-
-      if (refetchQueries) {
-        apolloQuery.refetchQueries = refetchQueries;
-      }
-
-      if (update) {
-        apolloQuery.update = update;
-      }
-
-      action = client.mutate(apolloQuery)
+      return Promise.resolve(shouldFakeExecute);
     }
-    return action.then(response => operation.parseResponse(response, params)).catch(er => {
-      throw er;
-    });
   };
 }

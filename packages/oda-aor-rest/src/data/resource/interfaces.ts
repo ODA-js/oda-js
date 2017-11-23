@@ -6,6 +6,7 @@ export type VariablesFunction = (params: any) => any;
 export type OrderByFunction = (field) => string | undefined;
 export type FilterByFunction = (field) => object | undefined;
 export type RefetchQueriesFunction = (variables) => any;
+export type ShouldFakeExecuteFunction = ((variables: object) => boolean | object) | boolean;
 
 export enum refType {
   HasMany = 'HasMany',
@@ -72,6 +73,7 @@ export interface IResourceOperationDefinition {
   orderBy?: OrderByFunction;
   filterBy?: FilterByFunction;
   refetchQueries?: RefetchQueriesFunction;
+  shouldFakeExecute?: ShouldFakeExecuteFunction;
 }
 
 export interface IResource extends IResourceDefinition {

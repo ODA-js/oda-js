@@ -7,7 +7,7 @@ import createMany from './../../createMany';
 
 export default class extends ResourceOperation {
   _parseResponse = (response) => {
-    debugger
+    // debugger
     const data = reshape(this._resultQuery, response.data);
     return { data: data.item };
   }

@@ -1,9 +1,10 @@
 import { SortOrder } from './../../constants';
 
-import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationDefinition, IResource, FilterByFunction, OrderByFunction } from "./interfaces";
+import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationDefinition, IResource, FilterByFunction, OrderByFunction, ShouldFakeExecuteFunction } from "./interfaces";
 import { reshape } from "oda-lodash";
 import { result } from './consts';
 import { queries } from './resourceContainer';
+import { shouldInclude } from 'graphql-anywhere/lib/src/directives';
 
 export default abstract class implements IResourceOperation {
   public get query(): any {
@@ -40,8 +41,13 @@ export default abstract class implements IResourceOperation {
     return this._refetchQueries;
   }
 
+  public get shouldFakeExecute() {
+    return this._shouldFakeExecute;
+  }
+
   public override({
     query,
+    resultQuery,
     parseResponse,
     update,
     variables,
@@ -49,9 +55,13 @@ export default abstract class implements IResourceOperation {
     filterBy,
     fetchPolicy = 'network-only',
     refetchQueries,
+    shouldFakeExecute,
 }: IResourceOperationDefinition) {
     if (query) {
       this._query = query;
+    }
+    if (resultQuery) {
+      this._resultQuery = resultQuery;
     }
     if (parseResponse) {
       this._parseResponse = parseResponse;
@@ -74,6 +84,9 @@ export default abstract class implements IResourceOperation {
     if (refetchQueries) {
       this._refetchQueries = refetchQueries;
     }
+    if (shouldFakeExecute) {
+      this._shouldFakeExecute = shouldFakeExecute;
+    }
     return this;
   }
 
@@ -86,21 +99,18 @@ export default abstract class implements IResourceOperation {
   }
 
   public initDefaults({
-    query,
-    resultQuery,
+    shouldFakeExecute,
     update,
   }: IResourceOperationDefinition) {
-    if (query) {
-      this._query = query;
-    }
-    if (resultQuery) {
-      this._resultQuery = resultQuery;
-    }
-    if (update) {
+    if (!update) {
       this._update = this.defaultUpdate;
+    }
+    if (!shouldFakeExecute) {
+      this._shouldFakeExecute = false;
     }
   }
 
+  protected _shouldFakeExecute: ShouldFakeExecuteFunction;
   protected _resource: IResource;
   protected _query: any;
   protected _resultQuery: any;
@@ -114,7 +124,6 @@ export default abstract class implements IResourceOperation {
   protected _refetchQueries: any;
 
   constructor(options?: IResourceOperationDefinition, resource?: IResource) {
-    debugger;
     if (options) {
       this.initDefaults(options);
       this.override(options);
