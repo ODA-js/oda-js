@@ -10,13 +10,13 @@ export default abstract class implements IResourceOperation {
     return this._query;
   }
   public get resultQuery(): any {
-    return this._query;
+    return this._resultQuery;
   }
   public get parseResponse(): ResponseFunction {
     return this._parseResponse;
   }
   public get update(): UpdateFunction {
-    return this.update;
+    return this._update;
   }
   public get variables(): VariablesFunction {
     return this._variables;
@@ -41,7 +41,6 @@ export default abstract class implements IResourceOperation {
   }
 
   public override({
-    type,
     query,
     parseResponse,
     update,
@@ -51,9 +50,6 @@ export default abstract class implements IResourceOperation {
     fetchPolicy = 'network-only',
     refetchQueries,
 }: IResourceOperationDefinition) {
-    if (type) {
-      this._type = type;
-    }
     if (query) {
       this._query = query;
     }
@@ -90,20 +86,17 @@ export default abstract class implements IResourceOperation {
   }
 
   public initDefaults({
-    type,
     query,
+    resultQuery,
     update,
   }: IResourceOperationDefinition) {
-    if (!name) {
-      throw new Error('name is required param');
-    }
-    if (!type) {
-      throw new Error('type is required param');
-    }
-    if (!query) {
+    if (query) {
       this._query = query;
     }
-    if (!update) {
+    if (resultQuery) {
+      this._resultQuery = resultQuery;
+    }
+    if (update) {
       this._update = this.defaultUpdate;
     }
   }
@@ -121,6 +114,7 @@ export default abstract class implements IResourceOperation {
   protected _refetchQueries: any;
 
   constructor(options?: IResourceOperationDefinition, resource?: IResource) {
+    debugger;
     if (options) {
       this.initDefaults(options);
       this.override(options);

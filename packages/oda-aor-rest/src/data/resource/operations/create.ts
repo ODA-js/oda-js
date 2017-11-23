@@ -4,9 +4,11 @@ import { reshape } from "oda-lodash";
 import createField from './../../createField';
 import createSingle from './../../createSingle';
 import createMany from './../../createMany';
+import { debug } from "util";
 
 export default class extends ResourceOperation {
   _parseResponse = (response) => {
+    debugger;
     const data = reshape(this._resultQuery, response.data);
     return { data: data.item };
   }

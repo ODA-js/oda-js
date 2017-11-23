@@ -46,7 +46,6 @@ export default class extends Component {
     this.state = {
       restClient: null,
       authClient: null,
-      queries: null,
       resources: null,
       uix: null,
     };
@@ -64,10 +63,8 @@ export default class extends Component {
       restClient: client({
         client: nextProps.connection,
         resources: nextProps.resources,
-        queries: nextProps.queries,
       }),
       authClient: nextProps.authClientInit(nextProps.connection),
-      queries: this.props.queries,
       resources: this.props.resources,
       uix: this.props.uix,
     });

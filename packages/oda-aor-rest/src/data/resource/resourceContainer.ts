@@ -25,10 +25,17 @@ export default class implements IResourceContainer {
       resource.forEach(this.override.bind(this));
     } else if (resource) {
       let res = this.resources[resource.name];
-      res.override(resource);
+      if (!res) {
+        this.register(resource);
+      } else {
+        res.override(resource);
+      }
     }
   }
   public queries(resource: string, query: queries) {
-    return this.resources[resource].query[query];
+    return this.resource(resource).query[query];
+  }
+  public resource(resource: string): IResource {
+    return this.resources[resource];
   }
 }

@@ -1,8 +1,13 @@
 import buildApolloClient from './apollo';
 import { ApolloClient } from 'apollo-client';
 import { QUERY_TYPES } from './constants';
+import { IResourceContainer, IResource, IResourceOperation } from './data/resource/interfaces';
 
-export default ({ client: clientOptions, resources: resourceList, queries = {}, fetchPolicy = 'network-only' }) => {
+export default ({ client: clientOptions, resources, fetchPolicy = 'network-only' }: {
+  client: any,
+  resources: IResourceContainer,
+  fetchPolicy: string;
+}) => {
 
   const client = clientOptions && clientOptions instanceof ApolloClient
     ? clientOptions
@@ -16,17 +21,17 @@ export default ({ client: clientOptions, resources: resourceList, queries = {}, 
   */
   return (type, resourceName, params) => {
     console.log("Type is ", type);
-    const resource = resourceList[resourceName];
+    const resource: IResource = resources.resource(resourceName);
     if (!resource) {
       throw new Error(`No matching resource found for name ${resourceName}`);
     }
 
     let action;
-    if (!resource.hasOwnProperty(type)) {
+    if (!resource.query[type]) {
       throw new Error(`No ${type} method found for name ${resourceName}`);
     }
 
-    const operation = resource[type];
+    const operation: IResourceOperation = resource.query[type];
 
     const variables = typeof operation.variables === 'function' ? operation.variables(params) : operation.variables;
 

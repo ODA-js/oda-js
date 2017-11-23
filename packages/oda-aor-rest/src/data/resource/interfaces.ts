@@ -64,10 +64,10 @@ export interface IResourceDefinition {
 
 export interface IResourceOperationDefinition {
   query?: any;
+  resultQuery?: any;
   parseResponse?: ResponseFunction;
   update?: UpdateFunction;
   variables?: VariablesFunction;
-  type?: queries;
   fetchPolicy?: string;
   orderBy?: OrderByFunction;
   filterBy?: FilterByFunction;
@@ -87,6 +87,7 @@ export interface IResourceContainer {
   register: (resource: IResourceDefinition) => void
   override: (resource: IResourceDefinition) => void
   queries: (resource: string, query: queries) => any
+  resource(resource: string);
 }
 
 export interface IResourceOperation extends IResourceOperationDefinition {

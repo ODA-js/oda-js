@@ -54,31 +54,31 @@ export default class extends data.resource.Resource {
       GET_LIST: new GetList({
         query: getListOf#{entity.name},
         resultQuery: getListOf#{entity.name}Result,
-      }),
+      }, this),
       GET_ONE: new GetOne({
         query: getOneOf#{entity.name},
         resultQuery: getOneOf#{entity.name}Result,
-      }),
+      }, this),
       GET_MANY: new GetMany({
         query: getManyOf#{entity.name},
         resultQuery: getManyOf#{entity.name}Result,
-      }),
+      }, this),
       GET_MANY_REFERENCE: new GetManyReference({
         query: getManyReferenceOf#{entity.name},
         resultQuery: getManyReferenceOf#{entity.name}Result,
-      }),
+      }, this),
       CREATE: new Create({
         query: createOf#{entity.name},
         resultQuery: createOf#{entity.name}Result,
-      }),
+      }, this),
       UPDATE: new Update({
-        query: createOf#{entity.name},
-        resultQuery: createOf#{entity.name}Result,
-      }),
+        query: updateOf#{entity.name},
+        resultQuery: updateOf#{entity.name}Result,
+      }, this),
       DELETE: new Delete({
-        query: createOf#{entity.name},
-        resultQuery: createOf#{entity.name}Result,
-      }),
+        query: deleteOf#{entity.name},
+        resultQuery: deleteOf#{entity.name}Result,
+      }, this),
     };
   }
 };

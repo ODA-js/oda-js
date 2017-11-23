@@ -7,8 +7,9 @@ import createMany from './../../createMany';
 
 export default class extends ResourceOperation {
   _parseResponse = (response) => {
+    debugger
     const data = reshape(this._resultQuery, response.data);
-    return { data: data.item };
+    return { data: data.items };
   }
   _variables = params => ({
     filter: {
