@@ -457,7 +457,7 @@ if(manyRels.length > 0){#>
         </DependentField>
 <#} else {#>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> >
+          <ReferenceField sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
             <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
           </ReferenceField>
         </DependentField>

@@ -23,9 +23,6 @@ export default class extends ResourceOperation {
     if (key === 'ids') {
       return { ...acc, id: { in: params.filter[key] } };
     }
-    if (key === 'q') {
-      return { ...acc, email: { imatch: params.filter[key] } };
-    }
     return set(acc, key.replace('-', '.'), params.filter[key]);
   }, {})
 

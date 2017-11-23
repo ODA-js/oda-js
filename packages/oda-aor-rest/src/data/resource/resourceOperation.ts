@@ -22,7 +22,7 @@ export default abstract class implements IResourceOperation {
     return this._variables;
   }
   public get resource(): IResource {
-    return this.resource;
+    return this._resource;
   }
   public get type(): queries {
     return this._type;
