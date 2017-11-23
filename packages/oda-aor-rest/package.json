@@ -1,6 +1,6 @@
 {
   "name": "oda-aor-rest",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "apollo-client": "^1.9.2",
     "comparator.js": "0.0.10",
     "material-ui": "^0.19.4",
-    "oda-lodash": "0.0.42",
+    "oda-lodash": "^0.0.43",
     "prop-types": "^15.6.0",
     "redux-form": "^7.1.1",
     "redux-saga": "^0.16.0"
