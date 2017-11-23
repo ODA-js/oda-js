@@ -418,7 +418,7 @@ export class Entity extends ModelBase {
       let res = super.toObject();
       return clean({
         ...res,
-        fields: [...props.fields.values()].map(f => f.toObject()),
+        fields: [...Array.from(props.fields.values())].map(f => f.toObject()),
       });
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -427,7 +427,7 @@ export class Entity extends ModelBase {
         let res = super.toObject();
         return clean({
           ...res,
-          fields: [...props.fields.values()].map(f => {
+          fields: [...Array.from(props.fields.values())].map(f => {
             let result;
             if (this.relations.has(f.name)) {
               if (modelRelations && modelRelations.has(f.name)) {
@@ -449,7 +449,7 @@ export class Entity extends ModelBase {
       let res = super.toJSON();
       return clean({
         ...res,
-        fields: [...props.fields.values()],
+        fields: [...Array.from(props.fields.values())],
       }) as any;
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -458,7 +458,7 @@ export class Entity extends ModelBase {
         let res = super.toJSON();
         return clean({
           ...res,
-          fields: [...props.fields.values()].map(f => {
+          fields: [...Array.from(props.fields.values())].map(f => {
             let result;
             if (this.relations.has(f.name)) {
               if (modelRelations && modelRelations.has(f.name)) {
