@@ -204,7 +204,7 @@ class Form extends Component {
 #>
         <Label text="#{f.label}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-          <ReferenceInput sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+          <ReferenceInput label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
         </DependentInput>
@@ -233,7 +233,7 @@ class Form extends Component {
         } else {
 #>
         <Label text="#{f.label}" />
-        <ReferenceInput sortable={false} label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+        <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
 <#}#>
@@ -241,7 +241,7 @@ class Form extends Component {
       } else {
   #>
 <# if(embedded){#>
-        <EmbeddedArrayInput sortable={false} label="#{f.label}" source="#{f.field}Values" allowEmpty >
+        <EmbeddedArrayInput label="#{f.label}" source="#{f.field}Values" allowEmpty >
           <SelectInput
             source="#{f.field}Type"
             label="Expected to"
@@ -249,7 +249,7 @@ class Form extends Component {
             defaultValue={actionType.USE}
           />
           <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-            <ReferenceInput sortable={false} label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+            <ReferenceInput label="#{f.ref.entity}" source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
           </DependentInput>
@@ -266,7 +266,7 @@ class Form extends Component {
         </EmbeddedArrayInput>
 <#} else {#>
         <Label text="#{f.label}" />
-        <ReferenceArrayInput sortable={false} label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
 <#}#>
@@ -457,7 +457,7 @@ if(manyRels.length > 0){#>
         </DependentField>
 <#} else {#>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField sortable={false} label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+          <ReferenceField label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
             <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
           </ReferenceField>
         </DependentField>
@@ -468,7 +468,7 @@ if(manyRels.length > 0){#>
         let current = entity.UI.embedded.names[fName];
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
-          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" sortable={false} label="#{f.label}" source="#{f.field}Values" allowEmpty >
+          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" label="#{f.label}" source="#{f.field}Values" allowEmpty >
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
@@ -481,7 +481,7 @@ if(manyRels.length > 0){#>
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-        <ReferenceManyField sortable={false} label="#{f.label}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceManyField label="#{f.label}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#}#>
