@@ -86,25 +86,53 @@ export default class implements IResource {
     }
 
     if (overrides.query.CREATE) {
-      this._query.CREATE = (overrides.query.CREATE instanceof ResourceOperation) ? overrides.query.CREATE.connect(this) : new Create(overrides.query.CREATE, this);
+      if (!this._query.CREATE) {
+        this._query.CREATE = (overrides.query.CREATE instanceof ResourceOperation) ? overrides.query.CREATE.connect(this) : new Create(overrides.query.CREATE, this);
+      } else {
+        this._query.CREATE.override(overrides.query.CREATE);
+      }
     }
     if (overrides.query.UPDATE) {
-      this._query.UPDATE = (overrides.query.UPDATE instanceof ResourceOperation) ? overrides.query.UPDATE.connect(this) : new Update(overrides.query.UPDATE, this);
+      if (!this._query.UPDATE) {
+        this._query.UPDATE = (overrides.query.UPDATE instanceof ResourceOperation) ? overrides.query.UPDATE.connect(this) : new Update(overrides.query.UPDATE, this);
+      } else {
+        this._query.UPDATE.override(overrides.query.UPDATE);
+      }
     }
     if (overrides.query.DELETE) {
-      this._query.DELETE = (overrides.query.DELETE instanceof ResourceOperation) ? overrides.query.DELETE.connect(this) : new Delete(overrides.query.DELETE, this);
+      if (!this._query.DELETE) {
+        this._query.DELETE = (overrides.query.DELETE instanceof ResourceOperation) ? overrides.query.DELETE.connect(this) : new Delete(overrides.query.DELETE, this);
+      } else {
+        this._query.DELETE.override(overrides.query.DELETE);
+      }
     }
     if (overrides.query.GET_ONE) {
-      this._query.GET_ONE = (overrides.query.GET_ONE instanceof ResourceOperation) ? overrides.query.GET_ONE.connect(this) : new GetOne(overrides.query.GET_ONE, this);
+      if (!this._query.GET_ONE) {
+        this._query.GET_ONE = (overrides.query.GET_ONE instanceof ResourceOperation) ? overrides.query.GET_ONE.connect(this) : new GetOne(overrides.query.GET_ONE, this);
+      } else {
+        this._query.GET_ONE.override(overrides.query.GET_ONE);
+      }
     }
     if (overrides.query.GET_LIST) {
-      this._query.GET_LIST = (overrides.query.GET_LIST instanceof ResourceOperation) ? overrides.query.GET_LIST.connect(this) : new GetList(overrides.query.GET_LIST, this);
+      if (!this._query.GET_LIST) {
+        this._query.GET_LIST = (overrides.query.GET_LIST instanceof ResourceOperation) ? overrides.query.GET_LIST.connect(this) : new GetList(overrides.query.GET_LIST, this);
+      } else {
+        this._query.GET_LIST.override(overrides.query.GET_LIST);
+      }
     }
     if (overrides.query.GET_MANY) {
-      this._query.GET_MANY = (overrides.query.GET_MANY instanceof ResourceOperation) ? overrides.query.GET_MANY.connect(this) : new GetMany(overrides.query.GET_MANY, this);
+      if (!this._query.GET_MANY) {
+        this._query.GET_MANY = (overrides.query.GET_MANY instanceof ResourceOperation) ? overrides.query.GET_MANY.connect(this) : new GetMany(overrides.query.GET_MANY, this);
+      } else {
+        this._query.GET_MANY.override(overrides.query.GET_MANY);
+      }
     }
     if (overrides.query.GET_MANY_REFERENCE) {
-      this._query.GET_MANY_REFERENCE = (overrides.query.GET_MANY_REFERENCE instanceof ResourceOperation) ? overrides.query.GET_MANY_REFERENCE.connect(this) : new GetManyReference(overrides.query.GET_MANY_REFERENCE, this);
+      if (!this._query.GET_MANY_REFERENCE) {
+        this._query.GET_MANY_REFERENCE = (overrides.query.GET_MANY_REFERENCE instanceof ResourceOperation) ? overrides.query.GET_MANY_REFERENCE.connect(this) : new GetManyReference(overrides.query.GET_MANY_REFERENCE, this);
+      } else {
+        this._query.GET_MANY_REFERENCE.override(overrides.query.GET_MANY_REFERENCE);
+      }
     }
     return this;
   }
