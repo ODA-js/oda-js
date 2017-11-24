@@ -24,3 +24,7 @@ export enum SortOrder {
   ASC = 'Asc',
   DESC = 'Desc',
 }
+export enum SortReverseOrder {
+  ASC = 'Desc',
+  DESC = 'Asc',
+}
