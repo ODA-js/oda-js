@@ -1,6 +1,6 @@
 {
   "name": "oda-gen-graphql",
-  "version": "0.4.49",
+  "version": "0.4.50",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
