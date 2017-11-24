@@ -6,9 +6,15 @@ import updateSingle from './../../updateSingle';
 import updateMany from './../../updateMany';
 
 export default class extends ResourceOperation {
+  public get query(): any {
+    return this.resource.queries.update(this.resource.fragments, this.resource.queries);
+  }
+  public get resultQuery(): any {
+    return this.resource.queries.updateResult(this.resource.fragments, this.resource.queries);
+  }
   _parseResponse = (response) => {
     // debugger
-    const data = reshape(this._resultQuery, response.data);
+    const data = reshape(this.resultQuery, response.data);
     return { data: data.item };
   }
   _shouldFakeExecute = (variables) => {

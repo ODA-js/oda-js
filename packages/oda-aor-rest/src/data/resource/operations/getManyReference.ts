@@ -5,20 +5,19 @@ import createField from './../../createField';
 import createSingle from './../../createSingle';
 import createMany from './../../createMany';
 import { SortOrder } from "../../../constants";
-import set from 'lodash/set';
+import * as set from 'lodash/set';
 
 export default class extends ResourceOperation {
   public get query() {
-    return params => this._query[params.target]
+    return params => this.resource.queries.getManyReference(this.resource.fragments, this.resource.queries)[params.target];
   }
 
   public get resultQuery() {
-    return params => this._resultQuery[params.target]
+    return params => this.resource.queries.getManyReferenceResult(this.resource.fragments, this.resource.queries)[params.target]
   }
 
   _parseResponse = (response, params) => {
-    // debugger
-    const data = reshape(this._resultQuery[params.target], response.data);
+    const data = reshape(this.resultQuery(params), response.data);
     return {
       data: data.items.data,
       total: data.items.total,

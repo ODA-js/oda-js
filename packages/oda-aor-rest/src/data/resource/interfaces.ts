@@ -40,6 +40,10 @@ export type FieldsDefinition = {
   [name: string]: IField
 }
 
+export type FragmentsDefintions = {
+  [name: string]: any;
+}
+
 /**
  * list of fields for specific Resource
  */
@@ -47,7 +51,7 @@ export interface IResourceFields {
   fields?: FieldsDefinition;
 }
 
-export interface IResourceQueryDefinition {
+export interface IResourceOperationsDefinition {
   GET_LIST?: IResourceOperation;
   GET_ONE?: IResourceOperation;
   CREATE?: IResourceOperation;
@@ -57,15 +61,34 @@ export interface IResourceQueryDefinition {
   GET_MANY_REFERENCE?: IResourceOperation;
 }
 
+export interface IResourceQueryDefinitions {
+  getList?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getOne?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getMany?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  delete?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  create?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  update?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getManyReference?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getListResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getOneResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getManyResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  deleteResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  createResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  updateResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getManyReferenceResult?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getManyReferenceResultOpposite?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+  getManyReferenceResultRegular?: (fragments: FragmentsDefintions, queries: IResourceQueryDefinitions) => any,
+}
+
 export interface IResourceDefinition {
   name: string;
   fields?: FieldsDefinition;
-  query?: IResourceQueryDefinition;
+  operations?: IResourceOperationsDefinition;
+  queries?: IResourceQueryDefinitions;
+  fragments?: FragmentsDefintions;
 }
 
 export interface IResourceOperationDefinition {
-  query?: any;
-  resultQuery?: any;
   parseResponse?: ResponseFunction;
   update?: UpdateFunction;
   variables?: VariablesFunction;
@@ -79,7 +102,9 @@ export interface IResourceOperationDefinition {
 export interface IResource extends IResourceDefinition {
   name: string;
   fields: FieldsDefinition;
-  query: IResourceQueryDefinition;
+  operations: IResourceOperationsDefinition;
+  queries: IResourceQueryDefinitions;
+  fragments: FragmentsDefintions;
   resourceContainer: IResourceContainer;
   override: (overrides: IResourceDefinition) => IResource
   connect: (resourceContainer: IResourceContainer) => IResource

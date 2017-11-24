@@ -4,10 +4,10 @@ import { IResourceContainer, INamedField } from './resource/interfaces';
 import { queries } from './resource/consts';
 
 export default function (data: object, field: INamedField, resources: IResourceContainer) {
-  const fieldId = field + 'Id';
-  const fieldType = field + 'Type';
-  const fieldCreate = field + 'Create';
-  const fieldUnlink = field + 'Unlink';
+  const fieldId = field.name + 'Id';
+  const fieldType = field.name + 'Type';
+  const fieldCreate = field.name + 'Create';
+  const fieldUnlink = field.name + 'Unlink';
   let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
 
   switch (embedType) {

@@ -7,9 +7,15 @@ import createMany from './../../createMany';
 import { debug } from "util";
 
 export default class extends ResourceOperation {
+  public get query(): any {
+    return this.resource.queries.create(this.resource.fragments, this.resource.queries);
+  }
+  public get resultQuery(): any {
+    return this.resource.queries.createResult(this.resource.fragments, this.resource.queries);
+  }
   _parseResponse = (response) => {
     // debugger;
-    const data = reshape(this._resultQuery, response.data);
+    const data = reshape(this.resultQuery, response.data);
     return { data: data.item };
   }
   _variables = (params) => {

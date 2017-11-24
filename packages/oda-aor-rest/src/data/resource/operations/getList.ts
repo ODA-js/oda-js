@@ -5,12 +5,18 @@ import createField from './../../createField';
 import createSingle from './../../createSingle';
 import createMany from './../../createMany';
 import { SortOrder } from "../../../constants";
-import set from 'lodash/set';
+import * as set from 'lodash/set';
 
 export default class extends ResourceOperation {
+  public get query(): any {
+    return this.resource.queries.getList(this.resource.fragments, this.resource.queries);
+  }
+  public get resultQuery(): any {
+    return this.resource.queries.getListResult(this.resource.fragments, this.resource.queries);
+  }
   _parseResponse = (response) => {
     // debugger
-    const data = reshape(this._resultQuery, response.data);
+    const data = reshape(this.resultQuery, response.data);
     return {
       data: data.items.data,
       total: data.items.total,
@@ -22,6 +28,10 @@ export default class extends ResourceOperation {
   _filterBy = (params) => Object.keys(params.filter).reduce((acc, key) => {
     if (key === 'ids') {
       return { ...acc, id: { in: params.filter[key] } };
+    }
+    if (key === 'q') {
+      return acc;
+      // return { ...acc, id: { imatch: params.filter[key] } };
     }
     return set(acc, key.replace('-', '.'), params.filter[key]);
   }, {})

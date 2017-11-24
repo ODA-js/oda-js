@@ -17,7 +17,7 @@ export default class implements IResourceContainer {
     if (Array.isArray(resource)) {
       resource.forEach(this.register.bind(this));
     } else if (resource) {
-      this.resources[resource.name] = (resource instanceof Resource) ? resource.connect(this) : new Resource(resource, this);
+      this.resources[resource.name] = (resource instanceof Resource) ? resource.connect(this) : new Resource({ overrides: resource, resourceContainer: this });
     }
   }
   public override(resource: IResourceDefinition[] | IResourceDefinition) {
@@ -33,7 +33,7 @@ export default class implements IResourceContainer {
     }
   }
   public queries(resource: string, query: queries) {
-    return this.resource(resource).query[query];
+    return this.resource(resource).operations[query];
   }
   public resource(resource: string): IResource {
     return this.resources[resource];

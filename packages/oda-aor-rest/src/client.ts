@@ -26,12 +26,11 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
       throw new Error(`No matching resource found for name ${resourceName}`);
     }
 
-    let action;
-    if (!resource.query[type]) {
+    if (!resource.operations[type]) {
       throw new Error(`No ${type} method found for name ${resourceName}`);
     }
 
-    const operation: IResourceOperation = resource.query[type];
+    const operation: IResourceOperation = resource.operations[type];
 
     const variables = typeof operation.variables === 'function' ? operation.variables(params) : operation.variables;
 
@@ -44,6 +43,7 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
     const update = typeof operation.update === 'function' ? operation.update : false;
     const query = typeof operation.query === 'function' ? operation.query(params) : operation.query;
     if (!shouldFakeExecute) {
+      let action;
       if (QUERY_TYPES.includes(type)) {
         const apolloQuery: any = {
           query,

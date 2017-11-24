@@ -1,4 +1,4 @@
-import { IResourceQueryDefinition } from './interfaces';
+import { IResourceOperationsDefinition, IResourceQueryDefinitions, FragmentsDefintions } from './interfaces';
 import { reshape } from 'oda-lodash';
 import { PageInfoType } from 'oda-gen-common/dist/types';
 import {
@@ -26,7 +26,16 @@ import {
 } from './interfaces';
 
 export default class implements IResource {
+  public get fragments() {
+    return this._fragments;
+  }
+  protected _fragments: FragmentsDefintions;
 
+  public get queries() {
+    return this._queries;
+  }
+
+  protected _queries: IResourceQueryDefinitions;
   public get fields(): FieldsDefinition {
     return this._fields;
   }
@@ -43,8 +52,8 @@ export default class implements IResource {
   /**
    * list of available queries
    */
-  public get query() {
-    return this._query;
+  public get operations() {
+    return this._operations;
   }
 
   /**
@@ -62,7 +71,7 @@ export default class implements IResource {
   /**
    * internal query storage
    */
-  private _query: IResourceQueryDefinition;
+  private _operations: IResourceOperationsDefinition;
 
   /**
    * internal name store
@@ -85,53 +94,77 @@ export default class implements IResource {
       }
     }
 
-    if (overrides.query.CREATE) {
-      if (!this._query.CREATE) {
-        this._query.CREATE = (overrides.query.CREATE instanceof ResourceOperation) ? overrides.query.CREATE.connect(this) : new Create(overrides.query.CREATE, this);
+    if (overrides.fragments) {
+      if (this._fragments) {
+        this._fragments = {
+          ...this._fragments,
+          ...overrides.fragments,
+        }
       } else {
-        this._query.CREATE.override(overrides.query.CREATE);
+        this._fragments = overrides.fragments;
       }
     }
-    if (overrides.query.UPDATE) {
-      if (!this._query.UPDATE) {
-        this._query.UPDATE = (overrides.query.UPDATE instanceof ResourceOperation) ? overrides.query.UPDATE.connect(this) : new Update(overrides.query.UPDATE, this);
+
+    if (overrides.queries) {
+      if (this._queries) {
+        this._queries = {
+          ...this._queries,
+          ...overrides.queries,
+        }
       } else {
-        this._query.UPDATE.override(overrides.query.UPDATE);
+        this._queries = overrides.queries;
       }
     }
-    if (overrides.query.DELETE) {
-      if (!this._query.DELETE) {
-        this._query.DELETE = (overrides.query.DELETE instanceof ResourceOperation) ? overrides.query.DELETE.connect(this) : new Delete(overrides.query.DELETE, this);
-      } else {
-        this._query.DELETE.override(overrides.query.DELETE);
+
+    if (overrides.operations) {
+      if (overrides.operations.CREATE) {
+        if (!this._operations.CREATE) {
+          this._operations.CREATE = (overrides.operations.CREATE instanceof ResourceOperation) ? overrides.operations.CREATE.connect(this) : new Create({ overrides: overrides.operations.CREATE, resource: this });
+        } else {
+          this._operations.CREATE.override(overrides.operations.CREATE);
+        }
       }
-    }
-    if (overrides.query.GET_ONE) {
-      if (!this._query.GET_ONE) {
-        this._query.GET_ONE = (overrides.query.GET_ONE instanceof ResourceOperation) ? overrides.query.GET_ONE.connect(this) : new GetOne(overrides.query.GET_ONE, this);
-      } else {
-        this._query.GET_ONE.override(overrides.query.GET_ONE);
+      if (overrides.operations.UPDATE) {
+        if (!this._operations.UPDATE) {
+          this._operations.UPDATE = (overrides.operations.UPDATE instanceof ResourceOperation) ? overrides.operations.UPDATE.connect(this) : new Update({ overrides: overrides.operations.UPDATE, resource: this });
+        } else {
+          this._operations.UPDATE.override(overrides.operations.UPDATE);
+        }
       }
-    }
-    if (overrides.query.GET_LIST) {
-      if (!this._query.GET_LIST) {
-        this._query.GET_LIST = (overrides.query.GET_LIST instanceof ResourceOperation) ? overrides.query.GET_LIST.connect(this) : new GetList(overrides.query.GET_LIST, this);
-      } else {
-        this._query.GET_LIST.override(overrides.query.GET_LIST);
+      if (overrides.operations.DELETE) {
+        if (!this._operations.DELETE) {
+          this._operations.DELETE = (overrides.operations.DELETE instanceof ResourceOperation) ? overrides.operations.DELETE.connect(this) : new Delete({ overrides: overrides.operations.DELETE, resource: this });
+        } else {
+          this._operations.DELETE.override(overrides.operations.DELETE);
+        }
       }
-    }
-    if (overrides.query.GET_MANY) {
-      if (!this._query.GET_MANY) {
-        this._query.GET_MANY = (overrides.query.GET_MANY instanceof ResourceOperation) ? overrides.query.GET_MANY.connect(this) : new GetMany(overrides.query.GET_MANY, this);
-      } else {
-        this._query.GET_MANY.override(overrides.query.GET_MANY);
+      if (overrides.operations.GET_ONE) {
+        if (!this._operations.GET_ONE) {
+          this._operations.GET_ONE = (overrides.operations.GET_ONE instanceof ResourceOperation) ? overrides.operations.GET_ONE.connect(this) : new GetOne({ overrides: overrides.operations.GET_ONE, resource: this });
+        } else {
+          this._operations.GET_ONE.override(overrides.operations.GET_ONE);
+        }
       }
-    }
-    if (overrides.query.GET_MANY_REFERENCE) {
-      if (!this._query.GET_MANY_REFERENCE) {
-        this._query.GET_MANY_REFERENCE = (overrides.query.GET_MANY_REFERENCE instanceof ResourceOperation) ? overrides.query.GET_MANY_REFERENCE.connect(this) : new GetManyReference(overrides.query.GET_MANY_REFERENCE, this);
-      } else {
-        this._query.GET_MANY_REFERENCE.override(overrides.query.GET_MANY_REFERENCE);
+      if (overrides.operations.GET_LIST) {
+        if (!this._operations.GET_LIST) {
+          this._operations.GET_LIST = (overrides.operations.GET_LIST instanceof ResourceOperation) ? overrides.operations.GET_LIST.connect(this) : new GetList({ overrides: overrides.operations.GET_LIST, resource: this });
+        } else {
+          this._operations.GET_LIST.override(overrides.operations.GET_LIST);
+        }
+      }
+      if (overrides.operations.GET_MANY) {
+        if (!this._operations.GET_MANY) {
+          this._operations.GET_MANY = (overrides.operations.GET_MANY instanceof ResourceOperation) ? overrides.operations.GET_MANY.connect(this) : new GetMany({ overrides: overrides.operations.GET_MANY, resource: this });
+        } else {
+          this._operations.GET_MANY.override(overrides.operations.GET_MANY);
+        }
+      }
+      if (overrides.operations.GET_MANY_REFERENCE) {
+        if (!this._operations.GET_MANY_REFERENCE) {
+          this._operations.GET_MANY_REFERENCE = (overrides.operations.GET_MANY_REFERENCE instanceof ResourceOperation) ? overrides.operations.GET_MANY_REFERENCE.connect(this) : new GetManyReference({ overrides: overrides.operations.GET_MANY_REFERENCE, resource: this });
+        } else {
+          this._operations.GET_MANY_REFERENCE.override(overrides.operations.GET_MANY_REFERENCE);
+        }
       }
     }
     return this;
@@ -142,17 +175,19 @@ export default class implements IResource {
    * @param name name of the resource
    * @param overrides configuration options
    */
-  constructor(overrides?: IResourceDefinition, resourceContainer?: IResourceContainer) {
-    if (overrides) {
-      if (overrides.name) {
-        this._name = overrides.name;
-      } else {
-        throw new Error('name is required param');
+  constructor(options?: { overrides?: IResourceDefinition, resourceContainer?: IResourceContainer }) {
+    if (options) {
+      if (options.overrides) {
+        if (options.overrides.name) {
+          this._name = options.overrides.name;
+        } else {
+          throw new Error('name is required param');
+        }
+        this.override(options.overrides);
       }
-      this.override(overrides);
-    }
-    if (resourceContainer) {
-      this.connect(resourceContainer)
+      if (options.resourceContainer) {
+        this.connect(options.resourceContainer)
+      }
     }
   }
   public connect(resourceContainer: IResourceContainer) {

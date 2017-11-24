@@ -8,10 +8,10 @@ import { shouldInclude } from 'graphql-anywhere/lib/src/directives';
 
 export default abstract class implements IResourceOperation {
   public get query(): any {
-    return this._query;
+    throw new Error('unimplemented');
   }
   public get resultQuery(): any {
-    return this._resultQuery;
+    throw new Error('unimplemented');
   }
   public get parseResponse(): ResponseFunction {
     return this._parseResponse;
@@ -46,8 +46,6 @@ export default abstract class implements IResourceOperation {
   }
 
   public override({
-    query,
-    resultQuery,
     parseResponse,
     update,
     variables,
@@ -57,12 +55,6 @@ export default abstract class implements IResourceOperation {
     refetchQueries,
     shouldFakeExecute,
 }: IResourceOperationDefinition) {
-    if (query) {
-      this._query = query;
-    }
-    if (resultQuery) {
-      this._resultQuery = resultQuery;
-    }
     if (parseResponse) {
       this._parseResponse = parseResponse;
     }
@@ -112,8 +104,6 @@ export default abstract class implements IResourceOperation {
 
   protected _shouldFakeExecute: ShouldFakeExecuteFunction;
   protected _resource: IResource;
-  protected _query: any;
-  protected _resultQuery: any;
   protected _parseResponse: ResponseFunction;
   protected _update: UpdateFunction;
   protected _variables: VariablesFunction;
@@ -123,13 +113,15 @@ export default abstract class implements IResourceOperation {
   protected _filterBy: FilterByFunction;
   protected _refetchQueries: any;
 
-  constructor(options?: IResourceOperationDefinition, resource?: IResource) {
+  constructor(options?: { overrides?: IResourceOperationDefinition, resource?: IResource }) {
     if (options) {
-      this.initDefaults(options);
-      this.override(options);
-    }
-    if (resource) {
-      this.connect(resource)
+      if (options.overrides) {
+        this.initDefaults(options.overrides);
+        this.override(options.overrides);
+      }
+      if (options.resource) {
+        this.connect(options.resource)
+      }
     }
   }
 
