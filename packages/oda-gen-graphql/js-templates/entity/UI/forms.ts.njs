@@ -91,13 +91,13 @@ import {
   NullableBooleanInput,
   Filter,
 } from "admin-on-rest";
-
+<#var filteredFields = entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
+  .filter(f=>entity.UI.list[f.name]); #>
 export default props => (
   <Filter {...props} >
+<#if(filteredFields.length > 0) {#>
     <TextInput label="Search" source="q" allowEmpty alwaysOn />
-<# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
-  .filter(f=>entity.UI.list[f.name])
-  .forEach(f=>{-#>
+<# filteredFields.forEach( f=> {-#>
     <NullableBooleanInput label="#{f.label} exists" source="#{f.name}-exists" />
 <#
     switch(f.filterType) {
@@ -137,6 +137,7 @@ export default props => (
       break;
     }
   })-#>
+<#}#>
   </Filter>
 );
 
@@ -191,16 +192,16 @@ class Form extends Component {
       <SimpleForm {...props} >
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
-  .forEach(f=>{-#>
+  .forEach( f=> {-#>
         <#{f.type}Input label="#{f.label}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
 <#})-#>
 <# entity.relations
-.filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
-.forEach(f=>{
+.filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
+.forEach(f => {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
 <#-   if ( f.single ) {
-        if(embedded){
+        if(embedded) {
 #>
         <Label text="#{f.label}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
