@@ -12,7 +12,7 @@ export default class extends ResourceOperation {
     return { data: data.item };
   }
   _shouldFakeExecute = (variables) => {
-    return (Object.keys(variables).length === 1) ? { data: variables.input } : false;
+    return (Object.keys(variables.input).length === 1) ? { data: variables.input } : false;
   }
   _variables = (params) => {
     const { data, previousData } = params;
