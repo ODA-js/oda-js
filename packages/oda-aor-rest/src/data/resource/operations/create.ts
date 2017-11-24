@@ -16,7 +16,7 @@ export default class extends ResourceOperation {
     const { data } = params;
     let input = {};
     Object.keys(this.resource.fields).forEach(f => {
-      if (!this.resource.fields[f].ref) {
+      if (this.resource.fields[f].ref) {
         if (
           this.resource.fields[f].ref.type === refType.HasMany || this.resource.fields[f].ref.type === refType.BelongsToMany
         ) {
