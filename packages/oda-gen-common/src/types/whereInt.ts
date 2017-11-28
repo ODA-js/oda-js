@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class WhereInt extends GQLModule {
+  protected _name = 'WhereInt';
   protected _typeDef = {
     entry: [`
       input WhereInt {

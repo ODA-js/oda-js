@@ -3,6 +3,8 @@ import { Kind } from 'graphql/language';
 import { GQLModule } from './empty';
 
 export class JSONType extends GQLModule {
+  protected _name = 'JSONType';
+
   protected _resolver: { [key: string]: any } = {
     JSON: {
       __serialize: identity,

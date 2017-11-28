@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class WhereDate extends GQLModule {
+  protected _name = 'WhereDate';
   protected _typeDef = {
     entry: [`
       input WhereDate {

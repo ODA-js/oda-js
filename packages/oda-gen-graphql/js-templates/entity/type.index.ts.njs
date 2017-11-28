@@ -25,6 +25,7 @@ import { subscriptions as entitySubscription, resolver as subscriptionsUnions } 
 export class #{entity.name}Entity extends common.types.GQLModule {
   constructor(_args) {
     super(_args);
+    this.name = '#{entity.name}Entity';
     this._query = fillDefaults(this._query, query);
     this._viewer = fillDefaults(this._viewer, viewer);
     this._resolver = fillDefaults(this._resolver, resolver, subscriptionsUnions);

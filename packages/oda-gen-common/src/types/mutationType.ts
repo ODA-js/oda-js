@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class MutationKindType extends GQLModule {
+  protected _name = 'MutationKindType';
   protected _resolver: { [key: string]: any } = {
     ImageSize: {
       __getValues: () => ([{

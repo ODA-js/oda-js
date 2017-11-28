@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class StateOfFieldType extends GQLModule {
+  protected _name = 'StateOfFieldType';
   protected _resolver: { [key: string]: any } = {
     ImageSize: {
       __getValues: () => ([{

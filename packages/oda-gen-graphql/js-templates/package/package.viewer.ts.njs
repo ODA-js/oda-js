@@ -11,6 +11,7 @@ import {
 let { fillDefaults } = common.lib;
 
 export class ViewerEntity extends common.types.GQLModule {
+  protected _name: 'ViewerEntity';
   constructor(_args) {
     super(_args);
 

@@ -2,6 +2,7 @@ import { Kind } from 'graphql/language';
 import { GQLModule } from './empty';
 
 export class IdType extends GQLModule {
+  protected _name: 'IdType';
   protected _resolver: { [key: string]: any } = {
     ID: {
       __serialize: String,

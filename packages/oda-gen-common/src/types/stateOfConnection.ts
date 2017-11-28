@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class StateOfConectionType extends GQLModule {
+  protected _name = 'StateOfConectionType';
   protected _resolver: { [key: string]: any } = {
     ImageSize: {
       __getValues: () => ([{

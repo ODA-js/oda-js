@@ -2,13 +2,15 @@
 <#@ chunks "$$$main$$$" -#>
 
 <#- chunkStart(`../../../${entity.name}/uix/index`); -#>
-import Title from "./title";
-import Form from "./form";
-import Create from "./create";
-import Show from "./show";
-import Edit from "./edit";
-import Grid from "./grid";
-import List from "./list";
+import loadable from 'loadable-components'
+
+const Title = loadable(() => import('./title'));
+const Form = loadable(() => import('./form'));
+const Create = loadable(() => import('./create'));
+const Show = loadable(() => import('./show'));
+const Edit = loadable(() => import('./edit'));
+const Grid = loadable(() => import('./grid'));
+const List = loadable(() => import('./list'));
 
 export default {
   Create,

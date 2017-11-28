@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class ImageSizeType extends GQLModule {
+  protected _name = 'ImageSizeType';
   protected _resolver: { [key: string]: any } = {
     ImageSize: {
       __getValues: () => ([{

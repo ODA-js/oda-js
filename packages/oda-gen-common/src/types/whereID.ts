@@ -1,6 +1,7 @@
 import { GQLModule } from './empty';
 
 export class WhereID extends GQLModule {
+  protected _name = 'WhereID';
   protected _typeDef = {
     entry: [`
       input WhereID {

@@ -11,6 +11,7 @@ import { #{entity.name}Entity } from './#{entity.name}';
 <#}-#>
 
 export class #{pack.name}Entities extends common.types.GQLModule {
+  protected _name = '#{pack.name}Entities';
   protected _extend = [
     new NodeEntity({}),
     new ViewerEntity({}),

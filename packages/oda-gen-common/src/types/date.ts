@@ -5,6 +5,7 @@ import { GQLModule } from './empty';
 // import { GraphQLScalarType } from 'graphql';
 
 export class DateType extends GQLModule {
+  protected _name = 'DateType';
   protected _resolver: { [key: string]: any } = {
     Date: {
       __serialize: (value) => {
@@ -14,7 +15,7 @@ export class DateType extends GQLModule {
         return makeDate(value);
       },
       __parseLiteral: (node) => {
-        const {kind, value} = node;
+        const { kind, value } = node;
         let result;
         switch (kind) {
           case Kind.INT:

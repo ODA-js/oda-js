@@ -8,6 +8,7 @@ import {
 let { fillDefaults } = common.lib;
 
 export class NodeEntity extends common.types.GQLModule {
+  protected _name = 'NodeEntity';
   constructor(_args) {
     super(_args);
 
