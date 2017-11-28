@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "name": "oda-js",
   "devDependencies": {
-    "lerna": "2.0.0-rc.5"
+    "lerna": "2.5.1"
   },
   "scripts": {
     "clean": "./tasks/clean.sh",
