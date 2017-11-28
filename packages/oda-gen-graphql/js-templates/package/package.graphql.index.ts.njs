@@ -4,7 +4,7 @@ import { #{pack.name}Entities } from './entity';
 import { #{pack.name}Mutations } from './mutation';
 
 export class #{pack.name}Package extends common.types.GQLModule {
-  protected _name: stirng = '#{pack.name}Package';
+  protected _name = '#{pack.name}Package';
   protected _extend: common.types.GQLModule[] = [
     new #{pack.name}Entities({}),
     new #{pack.name}Mutations({}),

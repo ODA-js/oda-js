@@ -6,6 +6,7 @@ import { #{mutation.entry}Mutation } from './#{mutation.name}';
 <#}-#>
 
 export class #{pack.name}Mutations extends common.types.GQLModule {
+  protected _name = '#{pack.name}Mutations';
   protected _extend = [
 <# for(let mutation of pack.mutations){-#>
     new #{mutation.entry}Mutation({}),

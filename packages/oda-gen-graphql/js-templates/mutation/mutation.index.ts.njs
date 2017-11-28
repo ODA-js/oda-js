@@ -8,7 +8,7 @@ let { fillDefaults } = common.lib;
 export class #{entity.name}Mutation extends common.types.GQLModule {
   constructor(_args) {
     super(_args);
-    this.name = '#{entity.name}Mutation';
+    this._name = '#{entity.name}Mutation';
     this._typeDef = fillDefaults(this._typeDef, {
       types: [
         `#{partial(entity.partials['types'], 'types')}`,
