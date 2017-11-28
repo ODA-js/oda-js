@@ -5,6 +5,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { LodashModule } from './lodash'
 
 class LodashSchema extends types.GQLModule {
+  protected _name = 'LodashSchema';
   protected _extend: types.GQLModule[] = [
     new types.DefaultTypes({}),
     new LodashModule({}),

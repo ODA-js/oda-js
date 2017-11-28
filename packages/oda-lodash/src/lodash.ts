@@ -88,6 +88,7 @@ values: DummyArgument
 `;
 
 export class Path extends types.GQLModule {
+  protected _name = 'Path';
   protected _resolver: { [key: string]: any } = {
     Path: {
       __serialize: String,
@@ -103,6 +104,8 @@ export class Path extends types.GQLModule {
 }
 
 export class RegularExpression extends types.GQLModule {
+  protected _name = 'RegularExpression';
+
   protected _typeDef = {
     type: [`
         input RegExpr {
@@ -114,6 +117,7 @@ export class RegularExpression extends types.GQLModule {
 }
 
 export class Predicate extends types.GQLModule {
+  protected _name = 'Predicate';
   protected _typeDef = {
     type: [`
         input Predicate {
@@ -133,6 +137,7 @@ export class Predicate extends types.GQLModule {
 }
 
 export class DirectiveLodash extends types.GQLModule {
+  protected _name = 'DirectiveLodash';
   protected _typeDef = {
     type: [`
       directive @_(
@@ -143,6 +148,7 @@ export class DirectiveLodash extends types.GQLModule {
 }
 
 export class LodashOperations extends types.GQLModule {
+  protected _name = 'LodashOperations';
   protected _typeDef = {
     type: [`
         input LodashOperations {
@@ -153,6 +159,7 @@ export class LodashOperations extends types.GQLModule {
 }
 
 export class DummyArgument extends types.GQLModule {
+  protected _name = 'DummyArgument';
   protected _typeDef = {
     type: [`
       enum DummyArgument{
@@ -163,6 +170,7 @@ export class DummyArgument extends types.GQLModule {
 }
 
 export class ConvertTypeArgument extends types.GQLModule {
+  protected _name = 'ConvertTypeArgument';
   protected _typeDef = {
     type: [`
       enum ConvertTypeArgument{
@@ -174,6 +182,7 @@ export class ConvertTypeArgument extends types.GQLModule {
 }
 
 export class LodashModule extends types.GQLModule {
+  protected _name = 'LodashModule';
   protected _extend = [
     new RegularExpression({}),
     new Path({}),
