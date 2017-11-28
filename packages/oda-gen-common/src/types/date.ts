@@ -6,6 +6,7 @@ import { GQLModule } from './empty';
 
 export class DateType extends GQLModule {
   protected _name = 'DateType';
+
   protected _resolver: { [key: string]: any } = {
     Date: {
       __serialize: (value) => {

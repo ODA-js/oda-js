@@ -1,7 +1,8 @@
 import { GQLModule } from './empty';
 
 export class FileType extends GQLModule {
-  protected _name: 'FileType';
+  protected _name = 'FileType'
+
   protected _typeDef = {
     entry: [`
       input File {
@@ -11,6 +12,6 @@ export class FileType extends GQLModule {
         path: String!
       }
   `],
-  };
+  }
 }
 
