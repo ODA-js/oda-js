@@ -189,8 +189,8 @@ export const resolver: { [key: string]: any } = {
                   ? edges[0].cursor : undefined,
                 endCursor: get(selectionSet, 'pageInfo.endCursor')
                   ? edges[edges.length - 1].cursor : undefined,
-                hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
-                hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
+                hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? edges.length === cursor.limit : false) : undefined,
+                hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? edges.length === cursor.limit : false) : undefined,
                 count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{connection.ref.entity}.getCount({
                   filter: {
                     #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
