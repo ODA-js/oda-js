@@ -5,41 +5,55 @@
 import loadable from 'loadable-components'
 
 const Title = loadable(() => import('./title'));
+const Filter = loadable(() => import('./filter'));
 const Form = loadable(() => import('./form'));
 const Create = loadable(() => import('./create'));
 const Show = loadable(() => import('./show'));
 const Edit = loadable(() => import('./edit'));
-const Grid = loadable(() => import('./grid'));
 const List = loadable(() => import('./list'));
+const Grid = loadable(() => import('./grid'));
 
 export default {
+  Title,
+  Filter,
+  Form,
   Create,
-  Edit,
   Show,
+  Edit,
   List,
   Grid,
 };
 
 <#- chunkStart(`../../../${entity.name}/uix/title`); -#>
 import React from "react";
-export default ({ record }) => {
-  return <span>#{entity.name} {record ? `"${record.#{entity.listLabel.source}}"` : ""}</span>;
-};
+export default ({ record }) => (
+  <span>
+    #{entity.name} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
+  </span>
+);
 
 <#- chunkStart(`../../../${entity.name}/uix/list`); -#>
 import React from "react";
+import PropTypes from 'prop-types';
 import {
   List,
 } from "admin-on-rest";
 
-import Grid from "./grid";
-import Filter from "./filter";
+const ListView = (props, context) => {
+  const Grid = context.uix.#{entity.name}.Grid;
+  const Filter = context.uix.#{entity.name}.Filter;
 
-export default props => (
-  <List {...props} filters={<Filter />}>
-    <Grid {...props} />
-  </List>
-);
+  return (
+    <List {...props} filters={<Filter />}>
+      <Grid {...props} />
+    </List>
+)};
+
+ListView.contextTypes = {
+  uix: PropTypes.object.isRequired,
+}
+
+export default ListView;
 
 <#- chunkStart(`../../../${entity.name}/uix/grid`); -#>
 import React from "react";
@@ -279,7 +293,6 @@ class Form extends Component {
   }
 }
 
-
 const formName = 'record-form';
 const selector = formValueSelector(formName);
 // сделать сразу с переводом...
@@ -307,17 +320,20 @@ export default compose(
 
 <#- chunkStart(`../../../${entity.name}/uix/edit`); -#>
 import React from "react";
+import PropTypes from 'prop-types';
 import {
   Edit,
 } from "admin-on-rest";
-import #{entity.name}Form from "./form";
-import #{entity.name}Title from "./title";
 import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
-export default props => (
-  <Edit title={<#{entity.name}Title />} {...props}>
-    <#{entity.name}Form
+const EditForm = (props, context) => {
+  const Form = context.uix.#{entity.name}.Form;
+  const Title = context.uix.#{entity.name}.Title;
+
+  return (
+  <Edit title={<Title />} {...props}>
+    <Form
       {...props}
       singleRelActions={[
         { id: actionType.CREATE, name: 'Create' },
@@ -334,21 +350,30 @@ export default props => (
       ]}
     />
   </Edit >
-);
+)};
+
+EditForm.contextTypes = {
+  uix: PropTypes.object.isRequired,
+}
+
+export default EditForm;
 
 <#- chunkStart(`../../../${entity.name}/uix/create`); -#>
 import React from "react";
+import PropTypes from 'prop-types';
 import {
   Create,
 } from "admin-on-rest";
-import #{entity.name}Form from "./form";
-import #{entity.name}Title from "./title";
 import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
-export default props => (
-  <Create title={<#{entity.name}Title />} {...props} >
-    <#{entity.name}Form
+const CreateForm = (props, context) =>{
+  const Form = context.uix.#{entity.name}.Form;
+  const Title = context.uix.#{entity.name}.Title;
+
+  return (
+  <Create title={<Title />} {...props} >
+    <Form
       {...props}
       singleRelActions={[
         { id: actionType.CREATE, name: 'Create' },
@@ -365,10 +390,17 @@ export default props => (
       ]}
     />
   </Create >
-);
+)};
+
+CreateForm.contextTypes = {
+  uix: PropTypes.object.isRequired,
+}
+
+export default CreateForm;
 
 <#- chunkStart(`../../../${entity.name}/uix/show`); -#>
 import React from "react";
+import PropTypes from 'prop-types';
 import {
   Datagrid,
   TextField,
@@ -384,12 +416,7 @@ import {
   required,
 } from "admin-on-rest";
 
-import {
-  uix
-} from "./../../";
-
 // import { EmbeddedArrayField } from 'aor-embedded-array';
-import #{entity.name}Title from "./title";
 import { ui } from 'oda-aor-rest';
 
 const {
@@ -405,7 +432,9 @@ const showIfExists = field => root => !!root[field];
 
 const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
 
-export default (props) => {
+const ShowView = (props, context) => {
+  const { uix } = context.uix;
+  const Title = uix.#{entity.name}.Title;
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
 if(manyRels.length > 0){#>
@@ -426,7 +455,7 @@ if(manyRels.length > 0){#>
 <#-}-#>
 
   return (
-    <Show title={<#{entity.name}Title />} {...props} >
+    <Show title={<Title />} {...props} >
       <SimpleShowLayout {...props}>
 <#entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
@@ -495,3 +524,8 @@ if(manyRels.length > 0){#>
   );
 };
 
+ShowView.contextTypes = {
+  uix: PropTypes.object.isRequired,
+}
+
+export default ShowView;
