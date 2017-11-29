@@ -36,38 +36,19 @@ export const uix = {
 
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { client } from 'oda-aor-rest';
 import Loading from 'react-loading-animation'
 import { Admin, Resource, Delete } from 'admin-on-rest';
 
-export default class extends Component {
-  constructor(props) {
-    super(props);
+class OdaClientApp extends Component {
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-      restClient: null,
-      authClient: null,
-      resources: null,
-      uix: null,
+      restClient: context.restClient,
+      authClient: context.authClient,
+      uix: context.uix,
     };
-  }
-
-  componentDidMount() {
-    this.init(this.props, this.context);
-  }
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.init(nextProps, nextContext);
-  }
-
-  init(nextProps/* , nextContext */) {
-    this.setState({
-      restClient: client({
-        client: nextProps.connection,
-        resources: nextProps.resources,
-      }),
-      authClient: nextProps.authClientInit(nextProps.connection),
-      resources: this.props.resources,
-      uix: this.props.uix,
-    });
   }
 
   render() {
@@ -101,5 +82,10 @@ export default class extends Component {
   }
 }
 
+OdaClientApp.contextTypes = {
+  uix: PropTypes.object.isRequired,
+  authClient: PropTypes.func.isRequired,
+  restClient: PropTypes.func.isRequired,
+}
 
-
+export default OdaClientApp;
