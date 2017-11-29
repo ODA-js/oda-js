@@ -17,7 +17,18 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
 
   return (req: express.Request, res: express.Response, next): void => {
     const originalQuery = req.method === 'POST' ? req.body : req.query;
-    const { transform, apply } = graphqlLodash(originalQuery.query, originalQuery.operationName);
+
+    let transform, apply, isBatch = false;
+    if (Array.isArray(originalQuery)) {
+      isBatch = true;
+      let res = originalQuery.map(q => graphqlLodash(q.query, q.operationName));
+      transform = res.map(t => t.transform);
+      apply = res.map(t => t.apply);
+    } else {
+      let res = graphqlLodash(originalQuery.query, originalQuery.operationName);
+      transform = res.transform;
+      apply = res.apply;
+    }
 
     runHttpQuery([req, res], {
       method: req.method,
@@ -25,12 +36,23 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
       query: originalQuery,
     })
       .then((gqlResponse) => {
-        if (apply) {
-          return JSON.stringify({
-            data: transform(JSON.parse(gqlResponse).data)
-          });
+        if (isBatch) {
+          const result = JSON.parse(gqlResponse) as object[];
+          return JSON.stringify(result.map((r, i) => {
+            if (apply[i]) {
+              return transform[i](r);
+            } else {
+              return r;
+            }
+          }));
         } else {
-          return gqlResponse;
+          if (apply) {
+            return JSON.stringify({
+              data: transform(JSON.parse(gqlResponse).data)
+            });
+          } else {
+            return gqlResponse;
+          }
         }
       })
       .then((gqlResponse) => {
