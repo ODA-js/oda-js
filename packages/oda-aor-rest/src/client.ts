@@ -9,9 +9,9 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
   fetchPolicy: string;
 }) => {
 
-  const client = clientOptions && clientOptions instanceof ApolloClient
-    ? clientOptions
-    : buildApolloClient(clientOptions);
+  const client = clientOptions && (clientOptions.constructor === Object || clientOptions.__proto__ === {}.__proto__)
+    ? buildApolloClient(clientOptions)
+    : clientOptions;
 
   /**
   * @param {string} type Request type, e.g GET_LIST
