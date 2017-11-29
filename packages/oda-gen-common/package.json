@@ -13,6 +13,7 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "graphql": "^0.11.7",
+    "invariant": "^2.2.2",
     "lodash": "^4.17.4"
   },
   "devDependencies": {

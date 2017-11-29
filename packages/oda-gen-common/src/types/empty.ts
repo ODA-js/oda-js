@@ -1,7 +1,7 @@
 import deepMerge from './../lib/deepMerge';
 import fillDefaults from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
-
+import * as invariant from 'invariant';
 // let padding = 0;
 
 const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
@@ -18,7 +18,7 @@ const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr)
 export class GQLModule {
   public get name(): string {
     if (!this._name) {
-      throw new Error('Module must have name');
+      invariant(this._name, 'module name no initialized');
     }
     return this._name || this.constructor.name;
   }
