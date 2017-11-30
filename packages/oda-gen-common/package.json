@@ -1,6 +1,6 @@
 {
   "name": "oda-gen-common",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -14,7 +14,8 @@
   "dependencies": {
     "graphql": "^0.11.7",
     "invariant": "^2.2.2",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "warning": "^3.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.0.36",
