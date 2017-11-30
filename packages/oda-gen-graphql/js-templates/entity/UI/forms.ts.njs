@@ -209,7 +209,7 @@ class Form extends Component {
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
   .forEach( f=> {-#>
-        <#{f.type}Input label="#{f.label}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  />
+        <#{f.type}Input label="#{f.label}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
@@ -221,7 +221,7 @@ class Form extends Component {
 #>
         <Label text="#{f.label}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-          <ReferenceInput label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+          <ReferenceInput label="#{f.label}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
         </DependentInput>
@@ -250,7 +250,7 @@ class Form extends Component {
         } else {
 #>
         <Label text="#{f.label}" />
-        <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#>  >
+        <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
 <#}#>
@@ -433,7 +433,7 @@ const showIfExists = field => root => !!root[field];
 const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
 
 const ShowView = (props, context) => {
-  const { uix } = context.uix;
+  const { uix } = context;
   const Title = uix.#{entity.name}.Title;
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
