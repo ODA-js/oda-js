@@ -2,6 +2,7 @@ import deepMerge from './../lib/deepMerge';
 import fillDefaults from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
 import * as invariant from 'invariant';
+import * as warning from 'warning';
 // let padding = 0;
 
 const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
@@ -17,8 +18,11 @@ const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr)
 
 export class GQLModule {
   public get name(): string {
-    if (!this._name) {
-      invariant(this._name, 'module name no initialized');
+    if (!this._name && !(this.constructor && this.constructor.name)) {
+      invariant(this._name, 'module has no name neither _name nor constructor.name to be initialized');
+    }
+    if (!this._name && this.constructor && this.constructor.name) {
+      warning(this._name, `module ${this.constructor.name} has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`)
     }
     return this._name || this.constructor.name;
   }
