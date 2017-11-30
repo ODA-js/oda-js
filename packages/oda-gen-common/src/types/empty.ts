@@ -20,9 +20,13 @@ export class GQLModule {
   public get name(): string {
     if (!this._name && !(this.constructor && this.constructor.name)) {
       invariant(this._name, 'module has no name neither _name nor constructor.name to be initialized');
+      //TODO: remove asap
+      console.trace();
     }
     if (!this._name && this.constructor && this.constructor.name) {
-      warning(this._name, `module ${this.constructor.name} has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`)
+      warning(this._name, `module ${this.constructor.name} has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`);
+      //TODO: remove asap
+      console.trace();
     }
     return this._name || this.constructor.name;
   }
