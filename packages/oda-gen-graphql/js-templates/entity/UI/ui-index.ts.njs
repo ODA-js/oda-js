@@ -74,7 +74,14 @@ export default
 <#}-#>
   )
 
-<#- chunkStart(`./index-override.js`); -#>
+<#- chunkStart(`./menuItems.js`); -#>
+
+// Посмотреть иконки ...
+export default [
+<# for(let entity of pack.entities){-#>
+  { name: '#{entity.name}' },
+<#}-#>
+];
 
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';
@@ -84,11 +91,14 @@ import Loading from 'react-loading-animation'
 import { Admin, Resource, Delete } from 'admin-on-rest';
 import { englishMessages } from 'admin-on-rest';
 import translation from './i18n';
+import merge from 'lodash/merge';
 
 const messages = {
     'en': {
-      ...englishMessages,
-      ...translation,
+      ...merge(
+          englishMessages,
+          translation
+        ),
     },
 };
 
