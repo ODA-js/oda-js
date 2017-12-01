@@ -75,7 +75,7 @@ import {
   Datagrid,
   TextField,
   DateField,
-  NumberField,`
+  NumberField,
   BooleanField,
   EditButton,
   DeleteButton,
