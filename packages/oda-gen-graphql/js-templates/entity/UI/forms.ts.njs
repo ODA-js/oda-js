@@ -2,7 +2,6 @@
 <#
   var formatJson = require('format-json-pretty');
   const translation = {};
-  const set = ()=>{}
 #>
 <#@ chunks "$$$main$$$" -#>
 
@@ -35,8 +34,7 @@ import PropTypes from 'prop-types';
 
 const Title = ({ record },{translate}) => (
   <span>
-<# set(translation, `uix.${entity.name}.label`, entity.name) #>
-    {translate(`uix.#{entity.name}.label`)} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
+    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
   </span>
 );
 
@@ -77,7 +75,7 @@ import {
   Datagrid,
   TextField,
   DateField,
-  NumberField,
+  NumberField,`
   BooleanField,
   EditButton,
   DeleteButton,
@@ -89,17 +87,14 @@ const Grid = (props, context) => (
   <Datagrid {...props} >
 <# entity.fields.filter(f=>f.name!== "id")
 .filter(f=>entity.UI.list[f.name])
-.forEach(f=>{
-  let label = `uix.${entity.name}.fields.${f.name}`;
-  -#>
-    <#{f.type}Field sortable={#{!f.derived}} label={context.translate("#{label}")} source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+.forEach(f=>{-#>
+    <#{f.type}Field sortable={#{!f.derived}} label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f=>entity.UI.list[f.field])
 .forEach(f=>{
-  let label = `uix.${entity.name}.fields.${f.name}`;
 -#><#-if(f.single){#>
-    <ReferenceField sortable={false} label={context.translate("#{label}")} source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+    <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
       <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
 <#-}-#>
@@ -135,65 +130,48 @@ import {
 } from "admin-on-rest";
 <#var filteredFields = entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>entity.UI.list[f.name]); #>
-const FilterPanel = (props, context) => (
+const FilterPanel = (props, {translate}) => (
   <Filter {...props} >
-<#if(filteredFields.length > 0) {
-    let label = `uix.filter.search`
-#>
-    <TextInput label={context.translate("#{label}")} source="q" allowEmpty alwaysOn />
+<#if(filteredFields.length > 0) {#>
+    <TextInput label="uix.filter.search" source="q" allowEmpty alwaysOn />
 <# filteredFields.forEach( f=> {
     let label = `uix.${entity.name}.filter.${f.name}`;
 -#>
-<# set(translation, `${label}.exists`, `${f.label} exists`);-#>
-    <NullableBooleanInput label={context.translate("#{label}.exists")} source="#{f.name}-exists" />
+    <NullableBooleanInput label={translate("uix.filter.exists",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-exists" />
 <#
     switch(f.filterType) {
       case "Number":
 #>
-<# set(translation, `${label}.eq`, `${f.label} =`);-#>
-    <NumberInput label={context.translate("#{label}.eq")} source="#{f.name}-eq" allowEmpty />
-<# set(translation, `${label}.lte`, `${f.label} <=`);-#>
-    <NumberInput label={context.translate("#{label}.lte")} source="#{f.name}-lte" allowEmpt />
-<# set(translation, `${label}.gte`, `${f.label} >=`);-#>
-    <NumberInput label={context.translate("#{label}.gte")} source="#{f.name}-gte" allowEmpty />
-<# set(translation, `${label}.lt`, `${f.label} <`);-#>
-    <NumberInput label={context.translate("#{label}.lt")} source="#{f.name}-lt" allowEmpt />
-<# set(translation, `${label}.gt`, `${f.label} >`);-#>
-    <NumberInput label={context.translate("#{label}.gt")} source="#{f.name}-gt" allowEmpty />
+    <NumberInput label={translate("uix.filter.eq",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-eq" allowEmpty />
+    <NumberInput label={translate("uix.filter.lte",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-lte" allowEmpt />
+    <NumberInput label={translate("uix.filter.gte",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-gte" allowEmpty />
+    <NumberInput label={translate("uix.filter.lt",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-lt" allowEmpt />
+    <NumberInput label={translate("uix.filter.gt",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-gt" allowEmpty />
 <#
       break;
       case "Text":
 #>
-<# set(translation, `${label}.imatch`, `${f.label}`);-#>
-    <#{f.filterType}Input label={context.translate("#{label}.imatch")} source="#{f.name}-imatch" allowEmpty />
-<# set(translation, `${label}.in`, `${f.label} in`);-#>
-    <SelectArrayInput label={context.translate("#{label}.in")} source="#{f.name}-in" allowEmpty />
-<# set(translation, `${label}.nin`, `${f.label} not in`);-#>
-    <SelectArrayInput label={context.translate("#{label}.nin")} source="#{f.name}-nin" allowEmpty />
+    <#{f.filterType}Input label={translate("uix.filter.exists",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-imatch" allowEmpty />
+    <SelectArrayInput label={translate("uix.filter.in",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-in" allowEmpty />
+    <SelectArrayInput label={translate("uix.filter.nin",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-nin" allowEmpty />
 <#
       break;
       case "ID":
 #>
-<# set(translation, `${label}.eq`, `${f.label} =`);-#>
-    <TextInput label={context.translate("#{label}.eq")}source="#{f.name}-eq" allowEmpty />
-<# set(translation, `${label}.in`, `${f.label} in`);-#>
-    <SelectArrayInput label={context.translate("#{label}.in")} source="#{f.name}-in" allowEmpty />
-<# set(translation, `${label}.nin`, `${f.label} not in`);-#>
-    <SelectArrayInput label={context.translate("#{label}.nin")} source="#{f.name}-nin" allowEmpty />
+    <TextInput label={translate("uix.filter.eq",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-eq" allowEmpty />
+    <SelectArrayInput label={translate("uix.filter.in",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-in" allowEmpty />
+    <SelectArrayInput label={translate("uix.filter.nin",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-nin" allowEmpty />
 <#
       break;
       case "Date":
 #>
-<# set(translation, `${label}.lte`, `${f.label} <=`);-#>
-    <DateInput label={context.translate("#{label}.lte")} source="#{f.name}-lte" allowEmpty />
-<# set(translation, `${label}.gte`, `${f.label} >=`);-#>
-    <DateInput label={context.translate("#{label}.gte")} source="#{f.name}-gte" allowEmpty />
+    <DateInput label={translate("uix.filter.lte",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-lte" allowEmpty />
+    <DateInput label={translate("uix.filter.gte",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-gte" allowEmpty />
 <#
       break;
       case "Boolean":
 #>
-<# set(translation, `${label}.eq`, `${f.label}`);-#>
-    <BooleanInput label={context.translate("#{label}.eq")} source="#{f.name}-eq" allowEmpty />
+    <BooleanInput label={translate("uix.filter.eq",{ name: translate('resources.#{entity.name}.fields.#{f.name}')})} source="#{f.name}-eq" allowEmpty />
 <#
       break;
     }
@@ -260,49 +238,39 @@ class Form extends Component {
       <SimpleForm {...props} >
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
-  .forEach( f=> {
-    let label = `uix.${entity.name}.fields.${f.name}`;
-    set(translation, label, f.label);
--#>
-        <#{f.type}Input label={translate("#{label}")} source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+  .forEach( f=> {-#>
+        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
 .forEach(f => {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
-  let labelRoot = `uix.${entity.name}.fields`;
-  let label = `${labelRoot}.${f.field}`;
-  let expectLabel = 'uix.actionType.ExpectedTo';
-  set(translation, label, f.label);
 #>
 <#-   if ( f.single ) {
         if(embedded) {
 #>
-        <Label text={translate("#{label}")} />
+        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-          <ReferenceInput label={translate("#{label}")} source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+          <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
         </DependentInput>
         <SelectInput
           source="#{f.field}Type"
-          label={translate("#{expectLabel}")}
+          label="uix.actionType.ExpectedTo"
           choices={singleRelActions}
           defaultValue={actionType.USE}
         />
 <#
-        const fName = f.field;
-        let current = entity.UI.embedded.names[fName];
+        let current = entity.UI.embedded.names[f.field];
 #>
-        <DependentInput resolve={detailsFor('#{fName}')} >
-          <EmbeddedInput label={translate("#{label}")} source="#{fName}" addLabel={false}>
+        <DependentInput resolve={detailsFor('#{f.field}')} >
+          <EmbeddedInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}" addLabel={false}>
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
-
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
-          let label = `uix.${embededEntity}.fields.${f.name}`;
 -#>
-            <#{f.type}Input label={translate("#{label}")} source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+            <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
@@ -311,7 +279,7 @@ class Form extends Component {
 <#
         } else {
 #>
-        <Label text={translate("#{label}")}/>
+        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
         <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
@@ -320,16 +288,15 @@ class Form extends Component {
       } else {
   #>
 <# if(embedded){#>
-        <EmbeddedArrayInput label={translate("#{label}")} source="#{f.field}Values" allowEmpty >
+        <EmbeddedArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
           <SelectInput
             source="#{f.field}Type"
-            label="Expected to"
+            label="uix.actionType.ExpectedTo"
             choices={manyRelAction}
             defaultValue={actionType.USE}
           />
           <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-<# set(translation, `${labelRoot}.${f.field}Ref`, `${f.ref.entity}`); -#>
-            <ReferenceInput label={translate("#{labelRoot}.#{f.field}Ref")} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+            <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
           </DependentInput>
@@ -338,17 +305,15 @@ class Form extends Component {
         let current = entity.UI.embedded.names[f.field];
         let embededEntity = entity.UI.embedded.items[current].entity;
 
-        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
-           let label = `uix.${embededEntity}.fields.${f.name}`;
--#>
-            <#{f.type}Input label={translate("#{label}")} source="#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
+            <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
           </DependentInput>
         </EmbeddedArrayInput>
 <#} else {#>
-        <Label text={translate("#{label}")} />
+        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
         <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
@@ -401,15 +366,6 @@ const EditForm = (props, context) => {
   const Title = context.uix.#{entity.name}.Title;
   const { translate } = context;
 
-<#
- set(translation, 'uix.actionType.CREATE', 'Create');
- set(translation, 'uix.actionType.UPDATE', 'Update Existing');
- set(translation, 'uix.actionType.CLONE', 'Copy Selected');
- set(translation, 'uix.actionType.USE', 'Use Existing');
- set(translation, 'uix.actionType.UNLINK', 'Unlink');
- set(translation, 'uix.actionType.ExpectedTo', 'Expected To');
--#>
-
   return (
   <Edit title={<Title />} {...props}>
     <Form
@@ -451,15 +407,6 @@ const CreateForm = (props, context) =>{
   const Form = context.uix.#{entity.name}.Form;
   const Title = context.uix.#{entity.name}.Title;
   const { translate } = context;
-
-<#
- set(translation, 'uix.actionType.CREATE', 'Create');
- set(translation, 'uix.actionType.UPDATE', 'Update Existing');
- set(translation, 'uix.actionType.CLONE', 'Copy Selected');
- set(translation, 'uix.actionType.USE', 'Use Existing');
- set(translation, 'uix.actionType.UNLINK', 'Unlink');
- set(translation, 'uix.actionType.ExpectedTo', 'Expected To');
--#>
 
   return (
   <Create title={<Title />} {...props} >
@@ -551,36 +498,27 @@ if(manyRels.length > 0){#>
       <SimpleShowLayout {...props}>
 <#entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
-.forEach(f=>{
-    let label = `uix.${entity.name}.fields.${f.name}`;
--#>
+.forEach(f=>{-#>
         <DependentField resolve={showIfExists('#{f.name}')}>
-          <#{f.type=="Number" ? "Text" : f.type}Field label={translate("#{label}")} source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+          <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
         </DependentField>
 <#})-#>
 <# entity.relations
 .filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
 .forEach(f=>{
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
-  let labelRoot = `uix.${entity.name}.fields`;
-  let label = `${labelRoot}.${f.field}`;
 -#><#-if(f.single){#>
 <#-if(embedded){
-        const fName = f.field;
-
-        let current = entity.UI.embedded.names[fName];
+        let current = entity.UI.embedded.names[f.field];
 #>
-        <DependentField resolve={showIfNotEmptyRel('#{fName}Id')} source="#{fName}" >
-          <EmbeddedRefField label={translate("#{label}")} source="#{fName}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
+        <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}" >
+          <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
 
-        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
-          let label = `uix.${embededEntity}.fields.${f.name}`;
-
--#>
+        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
             <DependentField resolve={showIfExists('#{f.name}')} scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label={translate("#{label}")} <# if (!f.required){#> allowEmpty<#}#> />
+              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#}#> />
             </DependentField>
 <#
         });
@@ -589,25 +527,23 @@ if(manyRels.length > 0){#>
         </DependentField>
 <#} else {#>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField label={translate("#{label}")} source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+          <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
             <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
           </ReferenceField>
         </DependentField>
 <#}#>
 <#-} else {#>
 <#-if(embedded){
-        const fName = f.field;
-        let current = entity.UI.embedded.names[fName];
+        let current = entity.UI.embedded.names[f.field];
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
-          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" label={translate("#{label}")} source="#{f.field}Values" allowEmpty >
+          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
-            let label = `uix.${embededEntity}.fields.${f.name}`;
 -#>
             <DependentField resolve={showIfExists('#{f.name}')} source="#{f.name}" scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field source="#{f.name}" label={translate("#{label}")}<# if (!f.required){#> allowEmpty<#}#> />
+              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#}#> />
             </DependentField>
 <#
         });
@@ -615,7 +551,7 @@ if(manyRels.length > 0){#>
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-        <ReferenceManyField label={translate("#{label}")} reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#}#>
@@ -635,7 +571,7 @@ export default ShowView;
 
 <#- chunkStart(`../../../${entity.name}/uix/i18n`); -#>
 export default {
-  resource: {
+  resources: {
     #{entity.name}: {
       name: '#{entity.name} |||| #{entity.plural}',
       fields: {
@@ -644,11 +580,6 @@ export default {
 <#})-#>
 <#-entity.relations.forEach(f=>{-#>
         #{f.field}: '#{f.label}',
-<#if (f.single ) {-#>
-        #{f.field}Id: '#{f.label}',
-<#} else {-#>
-        #{f.field}Ids: '#{f.label}',
-<#}-#>
 <#})-#>
       },
     },

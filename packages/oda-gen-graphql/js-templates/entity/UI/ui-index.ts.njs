@@ -9,6 +9,7 @@ import #{entity.name}Resource from './#{entity.name}/queries';
 <# for(let entity of pack.entities){-#>
 import #{entity.name}UIX from './#{entity.name}/uix';
 <#}-#>
+
 import { data } from 'oda-aor-rest';
 
 import Admin from './admin';
@@ -32,6 +33,47 @@ export const uix = {
 <#}-#>
 };
 
+<#- chunkStart(`./i18n.js`); -#>
+import merge from 'lodash/merge';
+
+<# for(let entity of pack.entities){-#>
+import #{entity.name}Translate from './#{entity.name}/uix/i18n';
+<#}-#>
+
+const messages = {
+  uix: {
+    "filter": {
+      "search": "Search",
+      "exists": "%{name} exists",
+      "eq": "%{name} =",
+      "ne": "%{name} !=",
+      "lte": "%{name} <=",
+      "gte": "%{name} >=",
+      "lt": "%{name} <",
+      "gt": "%{name} >",
+      "imatch": "%{name}",
+      "in": "%{name} in",
+      "nin": "%{name} not in",
+    },
+    "actionType": {
+      "CREATE": "Create",
+      "UPDATE": "Update Existing",
+      "CLONE": "Copy Selected",
+      "USE": "Use Existing",
+      "UNLINK": "Unlink",
+      "ExpectedTo": "Expected To"
+    }
+  }
+}
+
+export default
+  merge(
+    messages,
+<# for(let entity of pack.entities){-#>
+    #{entity.name}Translate,
+<#}-#>
+  )
+
 <#- chunkStart(`./index-override.js`); -#>
 
 <#- chunkStart(`./admin.js`); -#>
@@ -40,6 +82,15 @@ import PropTypes from 'prop-types';
 import { client } from 'oda-aor-rest';
 import Loading from 'react-loading-animation'
 import { Admin, Resource, Delete } from 'admin-on-rest';
+import { englishMessages } from 'admin-on-rest';
+import translation from './i18n';
+
+const messages = {
+    'en': {
+      ...englishMessages,
+      ...translation,
+    },
+};
 
 class OdaClientApp extends Component {
   constructor(props, context) {
@@ -65,6 +116,8 @@ class OdaClientApp extends Component {
     return (
       <Admin
         {...this.props}
+        messages={messages}
+        locale="en"
         authClient={authClient}
         restClient={restClient}>
 <# for(let entity of pack.entities){-#>

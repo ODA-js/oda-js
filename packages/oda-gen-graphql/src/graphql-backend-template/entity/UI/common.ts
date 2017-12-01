@@ -188,7 +188,7 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
       }
       return r;
     }, {});
-  debugger;
+
   if (first) {
     const embedItems = allFields.filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
       .map(f => {
