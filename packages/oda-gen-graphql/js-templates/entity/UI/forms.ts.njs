@@ -249,7 +249,7 @@ class Form extends Component {
 <#-   if ( f.single ) {
         if(embedded) {
 #>
-        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
+        <Label text="resources.#{entity.name}.fields.#{f.field}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
           <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
@@ -279,7 +279,7 @@ class Form extends Component {
 <#
         } else {
 #>
-        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
+        <Label text="resources.#{entity.name}.fields.#{f.field}" />
         <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
@@ -313,7 +313,7 @@ class Form extends Component {
           </DependentInput>
         </EmbeddedArrayInput>
 <#} else {#>
-        <Label text={translate("resources.#{entity.name}.fields.#{f.field}")} />
+        <Label text="resources.#{entity.name}.fields.#{f.field}" />
         <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
@@ -569,7 +569,7 @@ ShowView.contextTypes = {
 
 export default ShowView;
 
-<#- chunkStart(`../../../${entity.name}/uix/i18n`); -#>
+<#- chunkStart(`../../../i18n/${entity.name}`); -#>
 export default {
   resources: {
     #{entity.name}: {
@@ -584,12 +584,4 @@ export default {
       },
     },
   },
-  uix: {
-    #{entity.name}:{
-      label: '#{entity.name}',
-    }
-  },
-  filter: {
-
-  }
 }

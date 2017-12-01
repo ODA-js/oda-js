@@ -33,11 +33,11 @@ export const uix = {
 <#}-#>
 };
 
-<#- chunkStart(`./i18n.js`); -#>
+<#- chunkStart(`./i18n/index.js`); -#>
 import merge from 'lodash/merge';
 
 <# for(let entity of pack.entities){-#>
-import #{entity.name}Translate from './#{entity.name}/uix/i18n';
+import #{entity.name}Translate from './#{entity.name}';
 <#}-#>
 
 const messages = {
