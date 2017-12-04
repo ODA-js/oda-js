@@ -117,6 +117,9 @@ export default class implements IResource {
     }
 
     if (overrides.operations) {
+      if (!this._operations) {
+        this._operations = {};
+      }
       if (overrides.operations.CREATE) {
         if (!this._operations.CREATE) {
           this._operations.CREATE = (overrides.operations.CREATE instanceof ResourceOperation) ? overrides.operations.CREATE.connect(this) : new Create({ overrides: overrides.operations.CREATE, resource: this });
