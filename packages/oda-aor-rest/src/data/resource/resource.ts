@@ -85,10 +85,10 @@ export default class implements IResource {
   public override(overrides: IResourceDefinition) {
     if (overrides.fields) {
       const { fields } = overrides;
-      if (fields.fields) {
+      if (fields) {
         const existingFields = Object.keys(this._fields);
-        Object.keys(fields.fields).reduce((res, cur) => {
-          res[cur] = fields.fields[cur];
+        Object.keys(fields).reduce((res, cur) => {
+          res[cur] = fields[cur];
           return res;
         }, this._fields)
       }

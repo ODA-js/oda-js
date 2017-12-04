@@ -12,49 +12,32 @@ import _delete from './delete';
 import { data } from 'oda-aor-rest';
 import { fragments, queries } from './queries';
 
-const {
-  GetList,
-  GetOne,
-  Create,
-  Update,
-  Delete,
-  GetMany,
-  GetManyReference,
-} = data.resource.operations
-
-export default class extends data.resource.Resource {
-  constructor(...args) {
-    super(...args);
-    this._queries = queries;
-    this._fragments = fragments;
-    this._name = '#{entity.name}';
-    this._fields = {
-  <#- entity.fields.forEach(f => {
-  #>
-      #{f.name}: { type: '#{f.resourceType}' },
-  <#-
-  })#>
-  <#- entity.relations.forEach(f => {
-  #>
-      #{f.field}: {
-        ref: {
-          resource: '#{f.ref.entity}',
-          type: data.resource.interfaces.refType.#{f.verb},
-        },
+export default {
+  queries,
+  fragments,
+  name: '#{entity.name}',
+  fields: {
+  <#- entity.fields.forEach(f => {#>
+    #{f.name}: { type: '#{f.resourceType}' },
+  <#-})#>
+  <#- entity.relations.forEach(f => {#>
+    #{f.field}: {
+      ref: {
+        resource: '#{f.ref.entity}',
+        type: data.resource.interfaces.refType.#{f.verb},
       },
-  <#-
-  })#>
-    };
-    this._operations = {
-      GET_LIST: new GetList({ overrides: _getList, resource: this }),
-      GET_ONE: new GetOne({ overrides: _getOne, resource: this }),
-      GET_MANY: new GetMany({ overrides: _getMany, resource: this }),
-      GET_MANY_REFERENCE: new GetManyReference({ overrides: _getManyReference, resource: this }),
-      CREATE: new Create({ overrides: _create, resource: this }),
-      UPDATE: new Update({ overrides: _update, resource: this }),
-      DELETE: new Delete({ overrides: _delete, resource: this }),
-    };
-  }
+    },
+  <#-})#>
+  },
+  operations: {
+    GET_LIST: _getList,
+    GET_ONE: _getOne,
+    GET_MANY: _getMany,
+    GET_MANY_REFERENCE: _getManyReference,
+    CREATE: _create,
+    UPDATE: _update,
+    DELETE: _delete,
+  },
 };
 
 <#- chunkStart(`../../../${entity.name}/queries/getList`); -#>

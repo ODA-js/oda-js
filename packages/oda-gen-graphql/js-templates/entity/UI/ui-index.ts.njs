@@ -21,7 +21,7 @@ export class Resources extends data.resource.ResourceContainer {
     super(...args);
     this.override([
 <# for(let entity of pack.entities){-#>
-      new #{entity.name}Resource(),
+      #{entity.name}Resource,
 <#}-#>
     ]);
   }

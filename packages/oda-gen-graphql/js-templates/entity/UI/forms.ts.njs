@@ -34,7 +34,7 @@ import PropTypes from 'prop-types';
 
 const Title = ({ record },{translate}) => (
   <span>
-    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : `${record.id}`
+    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : `${record.id}`}
   </span>
 );
 
