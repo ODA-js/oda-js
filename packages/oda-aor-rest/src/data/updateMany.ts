@@ -11,11 +11,12 @@ function sameId(a, b) {
 }
 
 export default function (data: object, previousData: object, field: INamedField, resources: IResourceContainer) {
-  const fieldIds = field + 'Ids';
-  const fieldValues = field + 'Values';
-  const fieldUnlink = field + 'Unlink';
-  const fieldCreate = field + 'Create';
-  const fieldType = field + 'Type';
+  debugger;
+  const fieldIds = field.name + 'Ids';
+  const fieldValues = field.name + 'Values';
+  const fieldUnlink = field.name + 'Unlink';
+  const fieldCreate = field.name + 'Create';
+  const fieldType = field.name + 'Type';
   if (!comparator.strictEq(previousData[fieldIds], data[fieldIds])) {
     const diff = comparator.diff(previousData[fieldIds], data[fieldIds]);
     if (diff.inserted) {

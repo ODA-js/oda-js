@@ -2,8 +2,8 @@ import { IResourceContainer, INamedField } from "./resource/interfaces";
 import { queries } from "./resource/resourceContainer";
 
 export default function (data: object, field: INamedField, resources: IResourceContainer) {
-  const fieldIds = field + 'Ids';
-  const fieldValues = field + 'Values';
+  const fieldIds = field.name + 'Ids';
+  const fieldValues = field.name + 'Values';
   if (data[fieldIds] !== undefined && Array.isArray(data[fieldIds]) && data[fieldIds].length > 0) {
     return {
       [field.name]: data[fieldIds].map(f => ({ id: f })),
