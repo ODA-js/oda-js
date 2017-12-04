@@ -38,7 +38,7 @@ export default class extends data.resource.Resource {
   #>
       #{f.field}: {
         ref: {
-          ref: '#{f.ref.entity}',
+          resource: '#{f.ref.entity}',
           type: data.resource.interfaces.refType.#{f.verb},
         },
       },

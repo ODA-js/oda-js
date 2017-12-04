@@ -11,7 +11,6 @@ function sameId(a, b) {
 }
 
 export default function (data: object, previousData: object, field: INamedField, resources: IResourceContainer) {
-  debugger;
   const fieldIds = field.name + 'Ids';
   const fieldValues = field.name + 'Values';
   const fieldUnlink = field.name + 'Unlink';
