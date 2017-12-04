@@ -75,11 +75,12 @@ export default
   )
 
 <#- chunkStart(`./menuItems.js`); -#>
+import React from 'react';
+import ListIcon from 'material-ui/svg-icons/action/view-list';
 
-// Посмотреть иконки ...
 export default [
 <# for(let entity of pack.entities){-#>
-  { name: '#{entity.name}' },
+  { name: '#{entity.name}', icon: <ListIcon /> },
 <#}-#>
 ];
 
