@@ -2,15 +2,9 @@
 <#@ chunks '$$$main$$$' -#>
 
 <#- chunkStart(`../../../${entity.name}/queries/index`); -#>
-import _getList from './getList';
-import _getOne from './getOne';
-import _getMany from './getMany';
-import _getManyReference from './getManyReference';
-import _create from './create';
-import _update from './update';
-import _delete from './delete';
 import { data } from 'oda-aor-rest';
 import { fragments, queries } from './queries';
+import set from 'lodash/set';
 
 export default {
   queries,
@@ -30,48 +24,25 @@ export default {
   <#-})#>
   },
   operations: {
-    GET_LIST: _getList,
-    GET_ONE: _getOne,
-    GET_MANY: _getMany,
-    GET_MANY_REFERENCE: _getManyReference,
-    CREATE: _create,
-    UPDATE: _update,
-    DELETE: _delete,
+    GET_LIST: {
+      _filterBy: (params) => Object.keys(params.filter).reduce((acc, key) => {
+        if (key === 'ids') {
+          return { ...acc, id: { in: params.filter[key] } };
+        }
+        if (key === 'q') {
+          return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
+        }
+        return set(acc, key.replace('-', '.'), params.filter[key]);
+      }, {}),
+    },
+    // GET_ONE: {},
+    // GET_MANY: {},
+    // GET_MANY_REFERENCE: {},
+    // CREATE: {},
+    // UPDATE: {},
+    // DELETE: {},
   },
 };
-
-<#- chunkStart(`../../../${entity.name}/queries/getList`); -#>
-import set from 'lodash/set';
-
-export default {
-  _filterBy: (params) => Object.keys(params.filter).reduce((acc, key) => {
-    if (key === 'ids') {
-      return { ...acc, id: { in: params.filter[key] } };
-    }
-    if (key === 'q') {
-      return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
-    }
-    return set(acc, key.replace('-', '.'), params.filter[key]);
-  }, {}),
-}
-
-<#- chunkStart(`../../../${entity.name}/queries/getOne`); -#>
-export default { }
-
-<#- chunkStart(`../../../${entity.name}/queries/getMany`); -#>
-export default { }
-
-<#- chunkStart(`../../../${entity.name}/queries/getManyReference`); -#>
-export default { }
-
-<#- chunkStart(`../../../${entity.name}/queries/delete`); -#>
-export default { }
-
-<#- chunkStart(`../../../${entity.name}/queries/create`); -#>
-export default { }
-
-<#- chunkStart(`../../../${entity.name}/queries/update`); -#>
-export default { }
 
 <#- chunkStart(`../../../${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';

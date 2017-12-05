@@ -1,3 +1,4 @@
+import * as merge from 'lodash/merge';
 import { IResourceOperationsDefinition, IResourceQueryDefinitions, FragmentsDefintions } from './interfaces';
 import { reshape } from 'oda-lodash';
 import { PageInfoType } from 'oda-gen-common/dist/types';
@@ -118,7 +119,9 @@ export default class implements IResource {
 
     if (overrides.operations) {
       if (!this._operations) {
-        this._operations = {};
+        this._operations = {
+
+        };
       }
       if (overrides.operations.CREATE) {
         if (!this._operations.CREATE) {
@@ -186,7 +189,22 @@ export default class implements IResource {
         } else {
           throw new Error('name is required param');
         }
-        this.override(options.overrides);
+
+        this.override(
+          merge({
+            operations: {
+              GET_LIST: {},
+              GET_ONE: {},
+              GET_MANY: {},
+              GET_MANY_REFERENCE: {},
+              CREATE: {},
+              UPDATE: {},
+              DELETE: {},
+            }
+          },
+            options.overrides,
+          )
+        );
       }
       if (options.resourceContainer) {
         this.connect(options.resourceContainer)
