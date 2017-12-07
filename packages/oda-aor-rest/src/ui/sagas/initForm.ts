@@ -25,7 +25,7 @@ export default function ({ form, relation }: {
             const list = yield selector(state, `${relNames[i]}Values`);
             if (list) {
               const data = list.map(item => ({
-                id: item.id,
+                ...item,
                 [`${relNames[i]}Type`]: actionType.USE,
               }));
               yield put(change(form, `${relNames[i]}Values`, data));
