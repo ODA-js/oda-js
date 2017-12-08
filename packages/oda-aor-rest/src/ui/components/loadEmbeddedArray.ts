@@ -22,16 +22,30 @@ export default compose(
   connect((state, props) => {
     const { record, source, reference, field = 'id', ...rest } = props;
     if (reference) {
-      const ids =
-        (get(record, source) || emptyIds)
-          .map(f => typeof f === 'object' ? f[field] : f);
+      let idSource = (get(record, source) || emptyIds);
+      let map = idSource.reduce((hash, curr) => {
+        hash[curr[field]] = curr;
+        return hash;
+      }, {});
+      let ids = idSource.map(f => typeof f === 'object' ? f[field] : f);
       let data = getReferences(state, reference, ids);
 
       return {
         ...rest,
         ids,
         isLoading: state.admin.loading > 0,
-        record: data ? Object.assign({}, record, { [source]: data }) : record,
+        record: data ? Object.assign({}, record, {
+          [source]: data.map(d => {
+            if (typeof d === 'object') {
+              return {
+                ...map[d[field]],
+                ...d,
+              };
+            } else {
+              return d;
+            }
+          }),
+        }) : record,
       }
     } else { return props; }
   }, {

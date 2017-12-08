@@ -11,11 +11,12 @@ export const detailsFor = (relName) => {
   )
 }
 
-export const selectorFor = (relName) => {
+export const selectorFor = (relName, belongsToMany) => {
   const relType = `${relName}Type`;
   return (root) => !!((root &&
     ((root[relType]
       && (
+        (root[relType] === actionType.CREATE && belongsToMany) ||
         root[relType] === actionType.UPDATE ||
         root[relType] === actionType.CLONE ||
         root[relType] === actionType.USE
