@@ -32,7 +32,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       .filter(persistentRelations(pack))
       .map(f => {
         let relFields = [];
-        if (f.relation.fields && f.relation.fields.length > 0) {
+        if (f.relation.fields && f.relation.fields.size > 0) {
           f.relation.fields.forEach(field => {
             relFields.push({
               name: field.name,

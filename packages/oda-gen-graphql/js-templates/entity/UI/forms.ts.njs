@@ -34,7 +34,7 @@ import PropTypes from 'prop-types';
 
 const Title = ({ record },{translate}) => (
   <span>
-    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : `${record.id}`}
+    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
   </span>
 );
 
@@ -244,6 +244,7 @@ class Form extends Component {
 <# entity.relations
 .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
 .forEach(f => {
+  const verb = f.verb;
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
 <#-   if ( f.single ) {
@@ -300,17 +301,30 @@ class Form extends Component {
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
           </DependentInput>
-          <DependentInput resolve={detailsFor('#{f.field}')} scoped >
+<#-
+  let current = entity.UI.embedded.names[f.field];
+  let embededEntity = entity.UI.embedded.items[current].entity;
+  let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
+  const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
+  if(fieldCount > 0) { debugger;#>
+          <DependentInput resolve={detailsFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
 <#
-        let current = entity.UI.embedded.names[f.field];
-        let embededEntity = entity.UI.embedded.items[current].entity;
-
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
             <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
+<#-
+        if(verb === 'BelongsToMany') {
+          debugger;
+          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{ debugger;-#>
+            <#{fld.type}Input label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+<#
+          });
+        }
+-#>
           </DependentInput>
+<#-  }#>
         </EmbeddedArrayInput>
 <#} else {#>
         <Label text="resources.#{entity.name}.fields.#{f.field}" />
@@ -506,6 +520,7 @@ if(manyRels.length > 0){#>
 <# entity.relations
 .filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
 .forEach(f=>{
+  const verb = f.verb;
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#><#-if(f.single){#>
 <#-if(embedded){
@@ -535,18 +550,36 @@ if(manyRels.length > 0){#>
 <#-} else {#>
 <#-if(embedded){
         let current = entity.UI.embedded.names[f.field];
+        let embededEntity = entity.UI.embedded.items[current].entity;
+        let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
+        const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
+        if(fieldCount > 0) {;
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
           <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+            <ReferenceField label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+              <TextField source="#{f.ref.listLabel.source}" />
+            </ReferenceField>
 <#
-        let embededEntity = entity.UI.embedded.items[current].entity;
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
             <DependentField resolve={showIfExists('#{f.name}')} source="#{f.name}" scoped >
               <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#}#> />
             </DependentField>
 <#
-        });
+        });-#>
+<#
+        if(verb === 'BelongsToMany') {
+          debugger;
+          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{ debugger;-#>
+            <DependentField resolve={showIfExists('#{fld.name}')} source="#{fld.name}" scoped >
+              <#{fld.type}Field label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#}#> />
+            </DependentField>
+<#
+          });
+        }
+-#>
+<#      }
 -#>
           </EmbeddedArrayField>
         </DependentField>

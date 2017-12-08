@@ -76,7 +76,11 @@ async function ensure#{relEntity.name}({
           }
           `,
         variables: {
-          #{relEntity.findQuery}: args,
+          #{relEntity.findQuery}: {
+<#- relEntity.fields.forEach(f=>{#>
+            #{f.name}: args.#{f.name},
+<#-})#>
+          },
         }
       }).then(r => r.data.create#{relEntity.name}.#{relEntity.findQuery}.node);
     }
@@ -92,7 +96,11 @@ async function ensure#{relEntity.name}({
           }
           `,
       variables: {
-        #{relEntity.findQuery}: args,
+        #{relEntity.findQuery}: {
+<#- relEntity.fields.forEach(f=>{#>
+          #{f.name}: args.#{f.name},
+<#-})#>
+        },
       }
     }).then(r => r.data.update#{relEntity.name}.#{relEntity.findQuery});
   }
@@ -103,7 +111,12 @@ async function ensure#{relEntity.name}({
 <#- for (let r of entity.relations) {#>
 
 async function linkTo#{r.cField}({
-  context, #{r.field},  #{entity.ownerFieldName},
+  context,
+  #{r.field},
+  #{entity.ownerFieldName},
+<#-r.fields.forEach(f=>{#>
+  #{f.name},
+<#-})#>
 }) {
   if (#{r.field}) {
     await context.userGQL({
@@ -118,6 +131,9 @@ async function linkTo#{r.cField}({
         input: {
           #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
           #{r.ref.fieldName}: #{r.field}.id,
+<#-r.fields.forEach(f=>{#>
+          #{f.name},
+<#-})#>
         }
       }
     });
@@ -267,7 +283,7 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
     <#}#>
-      let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#>;
+      let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -279,6 +295,9 @@ export const mutation = {
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
+          <#-r.fields.forEach(f=>{#>
+          #{f.name}: $item.#{f.name},
+          <#-})#>
         });
       }
     <#if(!r.single){#>
@@ -385,7 +404,7 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}Create.length; i < len; i++) {
     <#}#>
-      let $item = args.#{r.field}Create<#if(!r.single){#>[i]<#}#>;
+      let $item = args.#{r.field}Create<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -397,6 +416,9 @@ export const mutation = {
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
+          <#-r.fields.forEach(f=>{#>
+          #{f.name}: $item.#{f.name},
+          <#-})#>
         });
       }
     <#if(!r.single){#>
@@ -408,7 +430,7 @@ export const mutation = {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
     <#}#>
-      let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#>;
+      let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -420,6 +442,9 @@ export const mutation = {
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
+          <#-r.fields.forEach(f=>{#>
+          #{f.name}: $item.#{f.name},
+          <#-})#>
         });
       }
     <#if(!r.single){#>

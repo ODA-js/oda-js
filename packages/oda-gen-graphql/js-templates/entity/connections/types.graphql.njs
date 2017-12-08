@@ -30,12 +30,12 @@ type #{connection.connectionName}Edge {
   #additional Edge fields
 <#
 connection.fields.forEach(f=>{#>
-<#- if(f.description){#>
+<#-if(f.description){#>
   # #{f.description}
-<#-}-#>
+<#}-#>
   #{f.name}#{f.argsString}: #{f.type}
-<# });#>
-<#-}#>
+<#- });-#>
+<#}#>
   # put here your additiona edge fields
 }
 

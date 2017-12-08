@@ -44,6 +44,19 @@ export default {
   },
 };
 
+export const extension = [
+  <#- entity.relations.filter(f=> f.verb === 'BelongsToMany').forEach(f => {#>
+    {
+      name:'#{f.ref.entity}',
+      fields:{
+      <#- f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(f => {#>
+        #{f.name}: { type: '#{f.resourceType}' },
+      <#-})#>
+      }
+    },
+  <#-})#>
+];
+
 <#- chunkStart(`../../../${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';
 // fragments
@@ -61,9 +74,12 @@ export const fragments = {
     }
 <#-} else {#>
     #{f.field}<#if(embedded) {#>Values<#} else {#>Ids<#}#>: #{f.field} @_(get:"edges") {
-      edges @_(map:"node") {
+      edges @_(each: {assign:"node"}) {
         node <#if(!embedded) {#>@_(get:"id") <#}#> {
           id
+<#- f.ref.fields.forEach(fld=>{#>
+          #{fld.name}
+<#-})#>
         }
       }
     }
@@ -80,6 +96,9 @@ export const fragments = {
       id
     <#} else {#>
       edges {
+<#- f.ref.fields.forEach(fld=>{#>
+        #{fld.name}
+<#-})#>
         node {
           id
         }
@@ -127,7 +146,7 @@ export const queries = {
   }
   ${resultFragment}
   `,
-  getOne: ({fullFragment}) => gql`query #{entity.name}($id: ID) {
+  getOne: ({ fullFragment }) => gql`query #{entity.name}($id: ID) {
     item: #{entity.ownerFieldName}(id: $id) {
       ...#{entity.name}Full
     }
@@ -288,13 +307,13 @@ export const queries = {
   }
     ${resultFragment}
   `,
-  getManyReferenceResult: ({ resultFragment }, { getManyReferenceResultOpposite , getManyReferenceResultRegular }) => ({
-  <# entity.relations
+  getManyReferenceResult: ({ resultFragment }, { getManyReferenceResultOpposite, getManyReferenceResultRegular }) => ({
+<# entity.relations
   .forEach(f => {
-    if( f.verb === 'BelongsToMany' ) {
-  -#>
+    if( f.verb === 'BelongsToMany' ) {-#>
     #{f.field}: getManyReferenceResultOpposite({ resultFragment }),
-  <#} else {#>
+<#} else {-#>
     #{f.field}: getManyReferenceResultRegular({ resultFragment }),
-  <#}})-#>}),
+<#}})-#>
+  }),
 }

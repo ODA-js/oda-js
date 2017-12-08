@@ -55,7 +55,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         let removeArgs = [...addArgs];
 
         if (verb === 'BelongsToMany') {
-          if (f.relation.fields && f.relation.fields.length > 0) {
+          if (f.relation.fields && f.relation.fields.size > 0) {
             f.relation.fields.forEach(field => {
               ref.fields.push(field.name);
               addArgs.push({

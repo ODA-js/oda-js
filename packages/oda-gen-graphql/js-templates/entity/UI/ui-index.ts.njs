@@ -3,7 +3,7 @@
 
 <#- chunkStart(`./index.js`); -#>
 <# for(let entity of pack.entities){-#>
-import #{entity.name}Resource from './#{entity.name}/queries';
+import #{entity.name}Resource, {extension as #{entity.name}Extension } from './#{entity.name}/queries';
 <#}-#>
 
 <# for(let entity of pack.entities){-#>
@@ -22,6 +22,9 @@ export class Resources extends data.resource.ResourceContainer {
     this.override([
 <# for(let entity of pack.entities){-#>
       #{entity.name}Resource,
+<#}-#>
+<# for(let entity of pack.entities){-#>
+      ...#{entity.name}Extension,
 <#}-#>
     ]);
   }

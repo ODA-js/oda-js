@@ -260,6 +260,17 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   const mapResourceTypes = typeMapper.resource;
   const mapAORFilterTypes = typeMapper.aor;
   const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
+  const mapFields = f => ({
+    name: f.name,
+    persistent: f.persistent,
+    derived: f.derived,
+    cName: capitalize(f.name),
+    label: humanize(f.name),
+    required: f.required,
+    type: mapAORTypes(f.type),
+    resourceType: mapResourceTypes(f.type),
+    filterType: mapAORFilterTypes(f.type),
+  })
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
@@ -279,6 +290,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         fields: [],
         listName: '',
         using: {
+          UI: undefined,
           backField: '',
           entity: '',
           field: '',
@@ -306,9 +318,12 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         } else {
           ref.usingField = decapitalize(ref.entity);
         }
-        if (f.relation.fields && f.relation.fields.length > 0) {
+        if (f.relation.fields && f.relation.fields.size > 0) {
+          const using = pack.entities.get(ref.using.entity);
+          ref.using.UI = visibility(pack, using, aclAllow, role, mapAORTypes);
+          debugger;
           f.relation.fields.forEach(field => {
-            ref.fields.push(field.name);
+            ref.fields.push(mapFields(using.fields.get(field.name)));
           });
         }
       }
@@ -346,16 +361,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       ...ids,
       ...fieldsAcl
         .filter(f => fields(f) && !idField(f))]
-      .map(f => ({
-        name: f.name,
-        persistent: f.persistent,
-        derived: f.derived,
-        cName: capitalize(f.name),
-        label: humanize(f.name),
-        required: f.required,
-        type: mapAORTypes(f.type),
-        resourceType: mapResourceTypes(f.type),
-        filterType: mapAORFilterTypes(f.type),
-      })),
+      .map(mapFields),
   };
 }

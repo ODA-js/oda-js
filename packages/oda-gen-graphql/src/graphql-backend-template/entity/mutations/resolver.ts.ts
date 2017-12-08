@@ -24,6 +24,7 @@ export interface MapperOutupt {
     field: string;
     single: boolean;
     name: string;
+    fields: any[];
     ref: {
       entity: string;
       fieldName: string;
@@ -65,6 +66,7 @@ import {
   getFieldsForAcl,
   singleStoredRelationsExistingIn,
   mutableFields,
+  persistentFields,
   identityFields,
   getRelationNames,
   relationFieldsExistsIn,
@@ -87,6 +89,12 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       let verb = f.relation.verb;
       let sameEntity = entity.name === f.relation.ref.entity;
       let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+      let fields = [];
+      if (f.relation.fields && f.relation.fields.size > 0) {
+        f.relation.fields.forEach(field => {
+          fields.push({ name: field.name, type: mapToTSTypes(field.type) });
+        });
+      }
       return {
         persistent: f.persistent,
         derived: f.derived,
@@ -94,6 +102,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         name: f.relation.fullName,
         cField: capitalize(f.name),
         single: (verb === 'BelongsTo' || verb === 'HasOne'),
+        fields,
         ref: {
           entity: f.relation.ref.entity,
           fieldName: decapitalize(refFieldName),
@@ -120,16 +129,13 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           name: entity.name,
           findQuery: decapitalize(entity.name),
           ownerFieldName: decapitalize(entity.name),
+          fields: fieldsEntityAcl
+            .filter(persistentFields)
+            .map(f => ({
+              name: f.name,
+              type: typeMapper.typescript(f.type),
+            })),
           unique: {
-            args: [
-              ...ids,
-              ...fieldsEntityAcl
-                .filter(identityFields)
-                .filter(oneUniqueInIndex(entity))]
-              .map(f => ({
-                name: f.name,
-                type: typeMapper.graphql(f.type),
-              })),
             find: [
               ...fieldsEntityAcl
                 .filter(identityFields)

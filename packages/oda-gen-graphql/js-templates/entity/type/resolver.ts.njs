@@ -151,7 +151,7 @@ export const resolver: { [key: string]: any } = {
               return itemCheck({
                 ...result,
               <#- for(let field of connection.ref.fields){#>
-                #{field}: l.#{field},
+                #{field}: link.#{field},
               <#-}#>
                 });
             } else {

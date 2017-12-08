@@ -53,6 +53,12 @@ for (let fname of connection.ref.fields){
               args: {
                 #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
                 #{connection.refFieldName}: args.#{connection.refFieldName},
+<#- for (let fname of connection.ref.fields){
+  if (fname !== 'id') { #>
+                #{fname}: args.#{fname},
+<#-
+  }
+}#>
               },
               relation: '#{connection.name}'
             }

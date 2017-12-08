@@ -18,8 +18,10 @@ export interface MapperOutput {
     persistent: boolean;
     field: string;
     single: boolean,
+    fields: any[];
     ref: {
       entity: string;
+      eEntity: MapperOutput;
     }
   }[];
   create: {
@@ -49,6 +51,7 @@ import {
 export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
+  const mapToGQLTypes = typeMapper.graphql;
 
   return {
     name: entity.name,
@@ -58,13 +61,28 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       .filter(relationFieldsExistsIn(pack))
       .map(f => {
         let verb = f.relation.verb;
+        let fields = [];
+
+        if (verb === 'BelongsToMany' && f.relation.fields && f.relation.fields.size > 0) {
+          f.relation.fields.forEach(field => {
+            fields.push({ name: field.name, type: mapToGQLTypes(field.type) });
+          });
+        }
+        let refEntity;
+        if (fields.length > 0) {
+          refEntity = mapper(pack.get(f.relation.ref.entity), pack, role, aclAllow, typeMapper);
+
+        }
         return {
           persistent: f.persistent,
           derived: f.derived,
           field: f.name,
           single: (verb === 'BelongsTo' || verb === 'HasOne'),
+          fields,
+          cField: capitalize(f.name),
           ref: {
             entity: f.relation.ref.entity,
+            eEntity: refEntity,
           },
         };
       }),
