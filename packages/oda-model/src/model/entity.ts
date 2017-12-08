@@ -338,12 +338,12 @@ export class Entity extends ModelBase {
       const required = new Set();
       const indexed = new Set();
 
-      let traverse = (f, index) => {
+      let traverse = (fld, index) => {
         let field = new Field({
-          ...(f.toJSON ? f.toJSON() : f),
+          ...(fld.toJSON ? fld.toJSON() : fld),
           metadata: {
             order: index,
-            ...f.metadata,
+            ...fld.metadata,
           },
           entity: result.name,
         });

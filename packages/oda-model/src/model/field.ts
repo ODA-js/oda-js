@@ -106,7 +106,9 @@ export class Field extends FieldBase {
       }
 
       // identity can't have relation definition
-      if (obj.relation && !this.getMetadata('storage.identity', false)) {
+      // why? because! we need to existing code.
+      const isIdentity = this.getMetadata('storage.identity', false);
+      if (obj.relation && !(isIdentity)) {
         let $relation = obj.relation;
         let relation: RelationBase;
 

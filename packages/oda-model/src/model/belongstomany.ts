@@ -1,3 +1,4 @@
+import * as merge from 'lodash/merge';
 import capitalize from './../lib/capitalize';
 import decapitalize from './../lib/decapitalize';
 import { RelationBase } from './relationbase';
@@ -54,10 +55,10 @@ export class BelongsToMany extends RelationBase {
             type: refe.fields.get(this.ref.field).type,
             identity: this.using.entity,
           },
-          ...(this.fields || []),
+          ...(this.fields && Array.from(this.fields.values()) || []),
           ].reduce((hash, curr) => {
             if (hash.has(curr.name)) {
-              curr = { ...hash.get(curr.name), ...curr };
+              curr = merge(hash.get(curr.name), curr);
             }
             hash.set(curr.name, curr as FieldInput);
             return hash;
@@ -80,10 +81,11 @@ export class BelongsToMany extends RelationBase {
             type: refe.fields.get(this.ref.field).type,
             identity: this.using.entity,
           },
-          ...(this.fields || []),
+          ...(this.fields && Array.from(this.fields.values()) || []),
           ].reduce((hash, curr) => {
             if (hash.has(curr.name)) {
-              curr = { ...hash.get(curr.name), ...curr };
+              curr = merge(hash.get(curr.name), curr);
+              // { ...hash.get(curr.name), ...curr };
             }
             hash.set(curr.name, curr as FieldInput);
             return hash;
@@ -110,11 +112,12 @@ export class BelongsToMany extends RelationBase {
             type: refe.fields.get(this.ref.field).type,
             identity: this.using.entity,
           },
-          ...(this.fields || []),
+          ...(this.fields && Array.from(this.fields.values()) || []),
           ...update.fields as FieldInput[],
         ].reduce((hash, curr) => {
           if (hash.has(curr.name)) {
-            curr = { ...hash.get(curr.name), ...curr };
+            curr = merge(hash.get(curr.name), curr);
+            // curr = { ...hash.get(curr.name), ...curr };
           }
           hash.set(curr.name, curr as FieldInput);
           return hash;

@@ -4,6 +4,7 @@ import { EntityReference } from './entityreference';
 import { Metadata } from './metadata';
 import fold from './../lib/json/fold';
 import clean from '../lib/json/clean';
+import { Field } from './index';
 
 export class RelationBase extends Metadata {
   /**
@@ -29,7 +30,7 @@ export class RelationBase extends Metadata {
     return this.$obj.field;
   }
 
-  get fields(): RelationFields[] | undefined {
+  get fields(): Map<string, Field> | undefined {
     return this.$obj.fields;
   }
 
@@ -114,7 +115,7 @@ export class RelationBase extends Metadata {
       name: props.name || props.name_,
       entity: props.entity,
       field: props.field,
-      fields: props.fields,
+      fields: props.fields && Array.from(props.fields.values()),
       opposite: props.opposite,
     });
   }
@@ -124,7 +125,7 @@ export class RelationBase extends Metadata {
     return clean({
       ...super.toJSON(),
       name: props.name_,
-      fields: props.fields,
+      fields: props.fields && Array.from(props.fields.values()),
       opposite: props.opposite,
     });
   }
@@ -143,8 +144,23 @@ export class RelationBase extends Metadata {
       result.name = name;
 
       result.opposite = opposite;
-
-      result.fields = obj.fields;
+      if (obj.fields) {
+        result.fields = new Map<string, Field>();
+        if (Array.isArray(obj.fields)) {
+          obj.fields.forEach(
+            f => {
+              result.fields.set(f.name, new Field(f));
+            },
+          );
+        } else {
+          Object.keys(obj.fields).forEach(f => {
+            result.fields.set(f, new Field({
+              name: f,
+              ...obj.fields[f],
+            }));
+          });
+        }
+      }
 
       let $entity = obj.entity;
       let entity = $entity;

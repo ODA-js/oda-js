@@ -165,7 +165,9 @@ export interface RelationBaseInput {
   name?: string;
   entity: string;
   field: string;
-  fields?: RelationFields[];
+  fields?: FieldInput[]| {
+    [field: string]: FieldInput,
+  };
   opposite?: string;
 }
 
@@ -176,7 +178,7 @@ export interface RelationBaseJSON {
    */
   metadata?: { [key: string]: any };
   name?: string;
-  fields?: RelationFields[];
+  fields?: FieldInput[];
   opposite?: string;
 }
 
@@ -199,7 +201,7 @@ export interface RelationBaseStorage {
   entity_: string;
   field: string;
   field_: string;
-  fields: RelationFields[];
+  fields: Map<string, Field>;
   opposite: string;
 }
 
