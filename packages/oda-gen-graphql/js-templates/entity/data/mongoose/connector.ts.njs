@@ -263,7 +263,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName} );
     if (opposite) {
       await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName},
-      { #{connection.field}: opposite.#{connection.ref.field} });
+      { #{connection.ref.backField || connection.field}: opposite.#{connection.ref.field} });
     }
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
@@ -314,7 +314,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     await this.connectors.#{connection.ref.entity}.findOneByIdAndUpdate(args.#{connection.refFieldName},
     { #{connection.ref.field}: null });
 <#} else if (connection.verb === 'BelongsTo') {#>
-    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, { #{connection.field}: null });
+    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, { #{connection.ref.backField || connection.field}: null });
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
     let opposite = await this.connectors.#{connection.ref.entity}.findOneById( args.#{connection.refFieldName} );
@@ -348,36 +348,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 
-/*   public async _findOneBy#{f.cName}(#{ukey}?: #{type}) {
-    logger.trace(`_findOneBy#{f.cName} with ${#{ukey}} ${typeof #{ukey}} `);
-    let condition: any;
-    if (
-    <#- if(type == 'string'){ #>
-        #{ukey} !== undefined
-        && #{ukey} !== ''
-    <#- } else if(type == 'number') {#>
-        #{ukey} !== undefined
-        && !isNaN(Number(#{ukey}))
-    <#- } else if(type == 'boolean'){#>
-        #{ukey} !== undefined
-        && #{ukey} !== ''
-        && (!!args.#{ukey}.match(/true/i) || !!args.#{ukey}.match(/false/i))
-    <#}-#>
-    ) {
-      condition = {#{ukey}};
-    }
-    if (!condition) {
-      logger.error('no unique key provided findOneBy#{f.cName} "#{entity.name}"');
-      throw new Error('no unique key provided findOneBy#{f.cName} "#{entity.name}"');
-    }
-    <#-if (ukey === 'id') {#>
-    let result = await this.model.findById(condition.id).exec();
-    <#-} else {#>
-    let result = await this.model.findOne(condition).exec();
-    <#-}#>
-    return result;
-  } */
-
 <#-}-#>
 
 <#- entity.complexUniqueIndex.forEach(f=> {
@@ -393,39 +363,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
-
-/*   public async _findOneBy#{findBy}(args: {#{findArgs}}) {
-    logger.trace(`_findOneBy#{findBy} with #{withArgs2} #{withArgsTypeof} `);
-    let condition: any = {};
-    <# for (let i=0, len = f.fields.length; i < len; i++ ){
-    let ukey = f.fields[i].name;
-    let type = f.fields[i].type;
-    #>
-    if (
-    <#- if(type == 'string') { #>
-        args.#{ukey} !== undefined
-        && args.#{ukey} !== ''
-    <#- } else if(type == 'number') {#>
-        args.#{ukey} !== undefined
-        && !isNaN(Number(args.#{ukey}))
-    <#- } else if(type == 'boolean'){#>
-       args.#{ukey} !== undefined
-        && args.#{ukey} !== ''
-        && (!!args.#{ukey}.match(/true/i) || !!args.#{ukey}.match(/false/i))
-    <#}-#>
-    ) {
-      condition = {
-        ...condition,
-        #{ukey}: args.#{ukey},
-        };
-    } else {
-      throw new Error('All parameters required for findOneBy#{findBy}! "#{entity.name}"');
-    }
-  <#}#>
-    let result = await this.model.findOne(condition).exec();
-
-    return result;
-  } */
 
 <#-});-#>
 

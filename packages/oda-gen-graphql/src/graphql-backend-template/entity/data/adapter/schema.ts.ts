@@ -75,6 +75,7 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
       }),
     relations: getFields(entity)
       .filter(singleStoredRelationsExistingIn(pack))
+      .filter(r => !r.relation.ref.backField)
       .map(f => {
         let retKeyType = pack.entities.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type;
         return {
