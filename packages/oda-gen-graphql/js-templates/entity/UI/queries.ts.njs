@@ -30,7 +30,17 @@ export default {
           return { ...acc, id: { in: params.filter[key] } };
         }
         if (key === 'q') {
-          return { ...acc, #{entity.UI.listName}: { imatch: params.filter[key] } };
+<#-if (Array.isArray(entity.UI.quickSearch) && entity.UI.quickSearch.length > 0){#>
+          return { ...acc,
+            or: [
+<#- entity.UI.quickSearch.forEach(sf=>{ #>
+              { #{sf}: { imatch: params.filter[key] } },
+<# });-#>
+            ]
+          };
+<#-} else {#>
+          return acc;
+<#-}#>
         }
         return set(acc, key.replace('-', '.'), params.filter[key]);
       }, {}),

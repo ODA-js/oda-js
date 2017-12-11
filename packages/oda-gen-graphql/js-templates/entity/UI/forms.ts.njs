@@ -86,7 +86,7 @@ import {
 const Grid = (props, context) => (
   <Datagrid {...props} >
 <# entity.fields.filter(f=>f.name!== "id")
-.filter(f=>entity.UI.list[f.name])
+.filter(f=>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
 .forEach(f=>{-#>
     <#{f.type}Field sortable={#{!f.derived}} label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#})-#>
@@ -132,8 +132,10 @@ import {
   .filter(f=>entity.UI.list[f.name]); #>
 const FilterPanel = (props, {translate}) => (
   <Filter {...props} >
-<#if(filteredFields.length > 0) {#>
+<#-if (Array.isArray(entity.UI.quickSearch) && entity.UI.quickSearch.length > 0) {#>
     <TextInput label="uix.filter.search" source="q" allowEmpty alwaysOn />
+<#}-#>
+<#if(filteredFields.length > 0) {#>
 <# filteredFields.forEach( f=> {
     let label = `uix.${entity.name}.filter.${f.name}`;
 -#>

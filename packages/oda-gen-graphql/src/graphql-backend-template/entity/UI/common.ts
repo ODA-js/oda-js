@@ -11,6 +11,7 @@ const formPriority = {
 
 export interface UIResult {
   listName: string;
+  quickSearch: string[];
   hidden?: string[];
   edit?: string[];
   show?: string[];
@@ -33,6 +34,7 @@ export interface embedded {
 
 export interface UIView {
   listName: string;
+  quickSearch: string[];
   hidden?: { [key: string]: boolean };
   edit?: { [key: string]: boolean };
   show?: { [key: string]: boolean };
@@ -97,6 +99,7 @@ import { platform } from 'os';
 function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, first = false): UIView {
   const result: UIResult = {
     listName: guessListLabel(entity, aclAllow, role, aor).source,
+    quickSearch: guessQuickSearch(entity, aclAllow, role, aor),
     hidden: [],
     edit: [],
     show: [],
@@ -137,10 +140,19 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
     if (UI.embedded && Array.isArray(UI.embedded)) {
       result.embedded.push(...UI.embedded);
     }
+    if (UI.quickSearch && Array.isArray(UI.quickSearch)) {
+      result.quickSearch.push(...UI.quickSearch);
+    }
   }
 
   const res: UIView = {
     listName: result.listName,
+    quickSearch: result.quickSearch.reduce((r, c) => {
+      if (r.indexOf(c) === -1) {
+        r.push(c);
+      }
+      return r;
+    }, []),
     hidden: result.hidden.reduce((r, c) => {
       if (r[c] !== false) {
         if (!/\^/.test(c)) {
@@ -247,6 +259,20 @@ function guessListLabel(entity, aclAllow, role, aor) {
       result.source = res.name;
     }
   }
+  return result;
+}
+
+function guessQuickSearch(entity: Entity, aclAllow, role, aor) {
+  let UI = entity.getMetadata('UI');
+  let result = [];
+  if (UI && UI.listName) {
+    const lf = entity.fields.get(UI.listName);
+    if (lf && lf.persistent) {
+      result.push(UI.listName);
+    }
+  }
+  result.push(...getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
+    .filter(oneUniqueInIndex(entity)).map(i => i.name));
   return result;
 }
 
