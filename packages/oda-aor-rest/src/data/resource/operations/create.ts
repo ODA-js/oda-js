@@ -13,42 +13,48 @@ export default class extends ResourceOperation {
   public get resultQuery(): any {
     return this.resource.queries.createResult(this.resource.fragments, this.resource.queries);
   }
-  _parseResponse = (response) => {
-    // debugger;
-    const data = reshape(this.resultQuery, response.data);
-    return { data: data.item };
-  }
-  _variables = (params) => {
-    const { data } = params;
-    let input = {};
-    Object.keys(this.resource.fields).forEach(f => {
-      if (this.resource.fields[f].ref) {
-        if (
-          this.resource.fields[f].ref.type === refType.HasMany || this.resource.fields[f].ref.type === refType.BelongsToMany
-        ) {
-          input = {
-            ...input,
-            ...createMany(data, {
-              name: f,
-              ...this.resource.fields[f]
-            }, this.resource.resourceContainer),
-          };
-        } else {
-          input = {
-            ...input,
-            ...createSingle(data, {
-              name: f,
-              ...this.resource.fields[f],
-            }, this.resource.resourceContainer),
-          };
-        }
-      } else {
-        input = {
-          ...input,
-          ...createField(data, f),
-        };
+  constructor(options) {
+    super(options);
+    if (!this._parseResponse) {
+      this._parseResponse = (response) => {
+        const data = reshape(this.resultQuery, response.data);
+        return { data: data.item };
       }
-    });
-    return { input };
+    }
+    if (!this._variables) {
+      this._variables = (params) => {
+        const { data } = params;
+        let input = {};
+        Object.keys(this.resource.fields).forEach(f => {
+          if (this.resource.fields[f].ref) {
+            if (
+              this.resource.fields[f].ref.type === refType.HasMany || this.resource.fields[f].ref.type === refType.BelongsToMany
+            ) {
+              input = {
+                ...input,
+                ...createMany(data, {
+                  name: f,
+                  ...this.resource.fields[f]
+                }, this.resource.resourceContainer),
+              };
+            } else {
+              input = {
+                ...input,
+                ...createSingle(data, {
+                  name: f,
+                  ...this.resource.fields[f],
+                }, this.resource.resourceContainer),
+              };
+            }
+          } else {
+            input = {
+              ...input,
+              ...createField(data, f),
+            };
+          }
+        });
+        return { input };
+      };
+    }
   }
 }
