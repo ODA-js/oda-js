@@ -25,7 +25,7 @@ export default {
   },
   operations: {
     GET_LIST: {
-      _filterBy: (params) => Object.keys(params.filter).reduce((acc, key) => {
+      filterBy: (params) => Object.keys(params.filter).reduce((acc, key) => {
         if (key === 'ids') {
           return { ...acc, id: { in: params.filter[key] } };
         }
