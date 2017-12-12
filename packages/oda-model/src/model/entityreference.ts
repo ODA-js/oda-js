@@ -32,7 +32,7 @@ export class EntityReference {
 
   /** the Identity field */
   public get backField(): string {
-    return this.$obj.backField || this.$obj.backField_ || DEFAULT_ID_FIELDNAME;
+    return this.$obj.backField || this.$obj.backField_;
   }
 
   public set backField(value: string) {
@@ -55,7 +55,7 @@ export class EntityReference {
     } else if (typeof entity === 'string') {
       this.$obj = {
         backField: backField,
-        backField_: backField || DEFAULT_ID_FIELDNAME,
+        backField_: backField,
         entity: inflected.classify(entity),
         entity_: entity,
         field: field,
@@ -64,7 +64,7 @@ export class EntityReference {
     } else if (entity instanceof Object) {
       this.$obj = {
         backField: entity.backField,
-        backField_: entity.backField || DEFAULT_ID_FIELDNAME,
+        backField_: entity.backField,
         entity: inflected.classify(entity.entity),
         entity_: entity.entity,
         field: entity.field,
