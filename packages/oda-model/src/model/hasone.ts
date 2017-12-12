@@ -25,7 +25,14 @@ export class HasOne extends RelationBase {
       this.setMetadata('verb', 'HasOne');
 
       let $hasOne = obj.hasOne;
-      let hasOne = new EntityReference($hasOne);
+
+      let hasOne;
+      if ($hasOne) {
+        hasOne = new EntityReference($hasOne);
+        if (!hasOne.backField) {
+          hasOne.backField = 'id';
+        }
+      }
 
       result.hasOne_ = $hasOne;
       result.hasOne = hasOne;

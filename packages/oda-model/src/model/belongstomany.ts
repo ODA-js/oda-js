@@ -144,6 +144,9 @@ export class BelongsToMany extends RelationBase {
       let belongsToMany;
       if ($belongsToMany) {
         belongsToMany = new EntityReference($belongsToMany);
+        if (!belongsToMany.backField) {
+          belongsToMany.backField = 'id';
+        }
       }
 
       let using;

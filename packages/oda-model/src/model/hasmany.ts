@@ -31,6 +31,9 @@ export class HasMany extends RelationBase {
       let hasMany;
       if ($hasMany) {
         hasMany = new EntityReference($hasMany);
+        if (!hasMany.backField) {
+          hasMany.backField = 'id';
+        }
       }
 
       result.hasMany_ = $hasMany;

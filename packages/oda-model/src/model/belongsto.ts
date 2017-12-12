@@ -39,6 +39,7 @@ export class BelongsTo extends RelationBase {
       let belongsTo;
       if ($belongsTo) {
         belongsTo = new EntityReference($belongsTo);
+        // no default backField!!! at all!!!
       }
 
       result.belongsTo_ = $belongsTo;
