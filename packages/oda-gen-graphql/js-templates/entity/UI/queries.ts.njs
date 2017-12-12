@@ -84,10 +84,10 @@ export const fragments = {
     }
 <#-} else {#>
     #{f.field}<#if(embedded) {#>Values<#} else {#>Ids<#}#>: #{f.field} @_(get:"edges") {
-      edges @_(each: {assign:"node"}) {
+      edges @_( <#if(embedded) {#>each: {assign:"node"}<#} else {#>map:"node"<#}#> ) {
         node <#if(!embedded) {#>@_(get:"id") <#}#> {
           id
-<#- f.ref.fields.forEach(fld=>{#>
+<#- embedded && f.ref.fields.forEach(fld=>{#>
           #{fld.name}
 <#-})#>
         }
@@ -101,12 +101,13 @@ export const fragments = {
     #{f.name}
 <#})-#>
 <# entity.relations.forEach( f=> {
+  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#>
     #{f.field} {<#if(f.single) {#>
       id
     <#} else {#>
       edges {
-<#- f.ref.fields.forEach(fld=>{#>
+<#- embedded && f.ref.fields.forEach(fld=>{#>
         #{fld.name}
 <#-})#>
         node {

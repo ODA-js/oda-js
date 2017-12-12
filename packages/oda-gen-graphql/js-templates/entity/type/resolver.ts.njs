@@ -107,8 +107,8 @@ export const resolver: { [key: string]: any } = {
         }
 <#} else if (connection.verb === 'BelongsTo') {#>
       //BelongsTo
-      if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.field}) {
-        result = await context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.cField}(#{entity.ownerFieldName}.#{connection.field});
+      if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField || connection.field}) {
+        result = await context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.cField}(#{entity.ownerFieldName}.#{connection.ref.backField || connection.field});
 <#} else if (connection.verb === 'BelongsToMany') {#>
       //BelongsToMany
 

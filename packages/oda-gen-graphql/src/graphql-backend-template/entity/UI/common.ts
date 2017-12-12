@@ -300,6 +300,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
+    .sort((a, b) => a.order > b.order ? 1 : -1)
     .map(f => {
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
@@ -386,7 +387,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     fields: [
       ...ids,
       ...fieldsAcl
-        .filter(f => fields(f) && !idField(f))]
+        .filter(f => fields(f) && !idField(f))
+        .sort((a, b) => a.order > b.order ? 1 : -1)
+    ]
       .map(mapFields),
   };
 }

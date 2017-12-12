@@ -58,6 +58,10 @@ export class Field extends FieldBase {
     return this.$obj.idKey;
   }
 
+  get order(): string {
+    return this.getMetadata('order');
+  }
+
   get relation(): RelationBase {
     return this.$obj.relation;
   }
