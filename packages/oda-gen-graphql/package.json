@@ -1,6 +1,6 @@
 {
   "name": "oda-gen-graphql",
-  "version": "0.4.70",
+  "version": "0.4.71",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "lodash": "^4.17.4",
     "oda-api-graphql": "^0.4.16",
     "oda-gen-common": "^0.0.13",
-    "oda-model": "^0.0.23",
+    "oda-model": "^0.0.24",
     "string-humanize": "^1.0.0"
   },
   "typescript": {
