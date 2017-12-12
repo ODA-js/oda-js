@@ -1,6 +1,5 @@
 <#@ context "entity" -#>
 <#
-  var formatJson = require('format-json-pretty');
   const translation = {};
 #>
 <#@ chunks "$$$main$$$" -#>
