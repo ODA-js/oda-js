@@ -40,7 +40,7 @@ export class Field extends FieldBase {
 
   // this is to make sure that if we internally set
   public makeIdentity() {
-    this.$obj.idKey = new EntityReference(this.$obj.entity, this.$obj.name);
+    this.$obj.idKey = new EntityReference(this.$obj.entity, this.$obj.name, 'id');
     this.setMetadata('storage.identity', true);
     this.setMetadata('storage.indexed', true);
     this.setMetadata('storage.required', true);
@@ -106,7 +106,7 @@ export class Field extends FieldBase {
 
       if (this.getMetadata('storage.identity', false)) {
         // это то как выглядит ключ для внешних ссылок
-        result.idKey = new EntityReference(result.entity, result.name);
+        result.idKey = new EntityReference(result.entity, result.name, 'id');
       }
 
       // identity can't have relation definition
