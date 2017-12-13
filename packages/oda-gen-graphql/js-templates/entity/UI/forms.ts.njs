@@ -58,7 +58,8 @@ const ListView = (props, context) => {
     <List {...props} filters={<Filter />}>
       <Grid {...props} />
     </List>
-)};
+  )
+};
 
 ListView.contextTypes = {
   uix: PropTypes.object.isRequired,

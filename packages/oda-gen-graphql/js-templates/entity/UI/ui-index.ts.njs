@@ -77,15 +77,15 @@ export default
 <#}-#>
   )
 
-<#- chunkStart(`./menuItems.js`); -#>
+<#- chunkStart(`./resources.js`); -#>
 import React from 'react';
 import ListIcon from 'material-ui/svg-icons/action/view-list';
 
-export default [
+export default {
 <# for(let entity of pack.entities){-#>
-  { name: '#{entity.name}', icon: <ListIcon /> },
+  #{entity.name}: { icon: <ListIcon />, visible: true },
 <#}-#>
-];
+};
 
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';
@@ -98,34 +98,21 @@ import translation from './i18n';
 import merge from 'lodash/merge';
 
 const messages = {
-    'en': {
-      ...merge(
-          englishMessages,
-          translation
-        ),
-    },
+  'en': {
+    ...merge(
+        {},
+        englishMessages,
+        translation
+      ),
+  },
 };
 
 class OdaClientApp extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      restClient: context.restClient,
-      authClient: context.authClient,
-      uix: context.uix,
-    };
-  }
-
   render() {
-    const { restClient, authClient, uix } = this.state;
+    const { restClient, authClient, uix } = this.context;
     if (!restClient) {
       return <div className="loading-component"><Loading /></div>;
     }
-    const {
-<# for(let entity of pack.entities){-#>
-      #{entity.name},
-<#}-#>
-    } = uix;
 
     return (
       <Admin
@@ -134,16 +121,17 @@ class OdaClientApp extends Component {
         locale="en"
         authClient={authClient}
         restClient={restClient}>
-<# for(let entity of pack.entities){-#>
-        <Resource
-          show={#{entity.name}.Show}
-          name="#{entity.name}"
-          edit={#{entity.name}.Edit}
-          create={#{entity.name}.Create}
-          list={#{entity.name}.List}
-          remove={Delete}
-        />
-<#}-#>
+        {Object.keys(uix).map(resource =>
+          <Resource
+            key={resource}
+            show={uix[resource].Show}
+            name={resource}
+            edit={uix[resource].Edit}
+            create={uix[resource].Create}
+            list={uix[resource].List}
+            remove={Delete}
+          />
+        )}
       </Admin>
     );
   }
