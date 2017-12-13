@@ -18,6 +18,7 @@ export interface RelationsList {
 };
 
 export interface MapperOutupt {
+  name: string;
   relations: RelationsList[];
   entities: {
     name: string;
@@ -70,6 +71,7 @@ export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string)
     return result;
   }, []);
   return {
+    name: pack.name,
     relations,
     entities: getEntities(pack)
       .map(e => ({

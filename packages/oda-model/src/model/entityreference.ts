@@ -100,6 +100,6 @@ export class EntityReference {
   }
 
   public toString(): string {
-    return `${this.backField}@${this.entity}#${this.field || DEFAULT_ID_FIELDNAME}`;
+    return `${this.backField ? (this.backField + '@') : '' }${this.entity}#${this.field || DEFAULT_ID_FIELDNAME}`;
   }
 }
