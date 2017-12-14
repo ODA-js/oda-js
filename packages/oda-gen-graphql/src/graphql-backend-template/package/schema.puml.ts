@@ -44,12 +44,20 @@ import {
 } from '../queries';
 
 export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
-
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {
+    if (entity === 'Student') debugger;
     rels.forEach((rel, fiedls) => {
       if (rel.relation.opposite) {
         relList.get(rel.relation.ref.entity).delete(rel.relation.opposite);
+      } else {
+        let ent = pack.entities.get(rel.relation.ref.entity);
+        let opposites = Array.from(ent.fields.values())
+          .filter(f => (f.relation && f.relation.ref.entity === entity && f.relation.ref.field === rel.name) || (f.relation && f.relation.verb === 'BelongsToMany' && rel.relation.verb === 'BelongsToMany' && (f.relation as BelongsToMany).using.entity === (rel.relation as BelongsToMany).using.entity));
+        if (opposites[0]) {
+          relList.get(rel.relation.ref.entity).delete(opposites[0].name);
+          rel.relation.opposite = opposites[0].name;
+        }
       }
     });
   });
