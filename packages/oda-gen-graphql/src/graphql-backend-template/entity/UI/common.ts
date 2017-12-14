@@ -348,7 +348,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         if (f.relation.fields && f.relation.fields.size > 0) {
           const using = pack.entities.get(ref.using.entity);
           ref.using.UI = visibility(pack, using, aclAllow, role, mapAORTypes);
-          debugger;
           f.relation.fields.forEach(field => {
             ref.fields.push(mapFields(using.fields.get(field.name)));
           });
