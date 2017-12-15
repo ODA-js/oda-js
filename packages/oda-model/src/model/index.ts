@@ -12,7 +12,10 @@ import { Mutation } from './mutation';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
-import { FieldArgs, MetaModelStore, ModelHook } from './interfaces';
+import {
+  FieldArgs, MetaModelStore,
+  ModelHook, IValidationResult, ValidationResultType,
+} from './interfaces';
 import { Metadata } from './metadata';
 
 export {
@@ -34,4 +37,6 @@ export {
   FieldBase,
   EntityReference,
   ModelBase,
+  IValidationResult,
+  ValidationResultType,
 };

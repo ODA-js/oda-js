@@ -1,12 +1,16 @@
 import get from './../lib/json/get';
 import set from './../lib/json/set';
-import { MetadataInput } from './interfaces';
+import { MetadataInput, IValidate, IValidationResult } from './interfaces';
 import deepMerge from './../lib/json/deepMerge';
 import clean from '../lib/json/clean';
+import { ModelPackage } from './modelpackage';
 
-export class Metadata {
-
+export class Metadata implements IValidate {
   public metadata: { [key: string]: any };
+
+  public validate(pkg?: ModelPackage): IValidationResult[] {
+    return [];
+  }
 
   constructor(inp: { metadata?: { [key: string]: any } }) {
     if (inp && inp.metadata) {

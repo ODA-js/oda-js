@@ -1,17 +1,102 @@
 import * as inflected from 'inflected';
-import { RelationBaseStorage, RelationBaseInput, RelationFields, RelationBaseJSON } from './interfaces';
+import {
+  RelationBaseStorage, RelationBaseInput, RelationFields,
+  RelationBaseJSON, IValidationResult, ValidationResultType,
+} from './interfaces';
 import { EntityReference } from './entityreference';
 import { Metadata } from './metadata';
 import fold from './../lib/json/fold';
 import clean from '../lib/json/clean';
 import { Field } from './index';
+import { ModelPackage } from './modelpackage';
+import { BelongsToMany } from './belongstomany';
 
 export class RelationBase extends Metadata {
   /**
    * represents internal object storage
    */
   protected $obj: RelationBaseStorage;
-
+  public validate(pkg?: ModelPackage): IValidationResult[] {
+    const result: IValidationResult[] = super.validate(pkg);
+    if (pkg) {
+      //ref Entity
+      const refEntity = pkg.entities.get(this.ref.entity);
+      if (!refEntity) {
+        result.push({
+          message: 'no referenced entity found',
+          result: ValidationResultType.error,
+        });
+      } else {
+        let refField = refEntity.fields.get(this.ref.field);
+        if (!refField) {
+          result.push({
+            message: 'referenced field not found',
+            result: ValidationResultType.error,
+          });
+        }
+      }
+      // entity
+      const entity = pkg.entities.get(this.entity);
+      if (!entity) {
+        result.push({
+          message: 'owner entity not found',
+          result: ValidationResultType.error,
+        });
+      } else {
+        const field = entity.fields.get(this.field);
+        if (!field) {
+          result.push({
+            message: 'owner field not found if the entity',
+            result: ValidationResultType.error,
+          });
+        } else {
+          if (this.ref.backField) {
+            const bf = entity.fields.get(this.ref.backField);
+            if (!bf) {
+              result.push({
+                message: 'back field not exists',
+                result: ValidationResultType.error,
+              });
+            } else if (!bf.indexed) {
+              result.push({
+                message: 'back field is not indexed',
+                result: ValidationResultType.error,
+              });
+            }
+          }
+          if (this.opposite) {
+            const opposite = refEntity.fields.get(this.opposite);
+            if (!opposite) {
+              result.push({
+                message: 'opposite field not found',
+                result: ValidationResultType.error,
+              });
+            }
+          } else {
+            let opposites = Array.from(refEntity.fields.values())
+              .filter(f => f.relation && (
+                (f.relation.ref.entity === entity.name && f.relation.ref.field === field.name) ||
+                ((f.relation as BelongsToMany).using && (this as any).using
+                  && (f.relation as BelongsToMany).using.entity === (this as any).using.entity)),
+              );
+            if (opposites.length > 2) {
+              result.push({
+                message: 'more than one possible opposite',
+                result: ValidationResultType.error,
+              });
+            }
+            if (opposites.length === 0) {
+              result.push({
+                message: 'no possible opposite',
+                result: ValidationResultType.critics,
+              });
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
   /**
    * construct object
    */
@@ -30,6 +115,10 @@ export class RelationBase extends Metadata {
     return this.$obj.field;
   }
 
+  get entity(): string {
+    return this.$obj.entity;
+  }
+
   get fields(): Map<string, Field> | undefined {
     return this.$obj.fields;
   }
@@ -38,7 +127,7 @@ export class RelationBase extends Metadata {
     return new EntityReference({ entity: '', field: '', backField: '' });
   }
 
-  get verb() {
+  get verb(): string {
     return this.getMetadata('verb');
   }
 

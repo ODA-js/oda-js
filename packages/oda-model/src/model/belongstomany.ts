@@ -3,7 +3,7 @@ import capitalize from './../lib/capitalize';
 import decapitalize from './../lib/decapitalize';
 import { RelationBase } from './relationbase';
 import { EntityReference } from './entityreference';
-import { BelongsToManyStorage, BelongsToManyInput, EntityInput, FieldInput } from './interfaces';
+import { BelongsToManyStorage, BelongsToManyInput, EntityInput, FieldInput, ValidationResultType, IValidationResult } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { Entity } from './entity';
 import clean from '../lib/json/clean';
@@ -24,6 +24,47 @@ export class BelongsToMany extends RelationBase {
 
   get ref(): EntityReference {
     return this.$obj.belongsToMany;
+  }
+
+  constructor(obj: BelongsToManyInput) {
+    super(obj);
+  }
+
+  public validate(pkg?: ModelPackage): IValidationResult[] {
+    const result: IValidationResult[] = super.validate(pkg);
+    // using
+    const refEntity = pkg.entities.get(this.using.entity);
+    const entity = pkg.entities.get(this.entity);
+    if (!refEntity) {
+      result.push({
+        message: 'no using entity found',
+        result: ValidationResultType.error,
+      });
+    } else {
+      let refField = refEntity.fields.get(this.using.field);
+      if (!refField) {
+        result.push({
+          message: 'using field not found',
+          result: ValidationResultType.error,
+        });
+      }
+      if (this.using.backField) {
+        const bf = entity.fields.get(this.using.backField);
+        if (!bf) {
+          result.push({
+            message: 'using entity back field not exists',
+            result: ValidationResultType.error,
+          });
+        } else if (!bf.identity) {
+          result.push({
+            message: 'using entity back field is not identity',
+            result: ValidationResultType.error,
+          });
+        }
+      }
+    }
+    // using
+    return result;
   }
 
   public ensureRelationClass(modelPackage: ModelPackage) {

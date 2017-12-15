@@ -1,13 +1,14 @@
 import { Entity } from './entity';
 import { Field } from './field';
 // tslint:disable-next-line:no-unused-variable
-import { ModelPackageInput, EntityInput, EntityJSON } from './interfaces';
+import { ModelPackageInput, EntityInput, EntityJSON, IValidate, IValidationResult } from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
 import clean from '../lib/json/clean';
 
 /** Model package is the storage place of Entities */
-export class ModelPackage {
+export class ModelPackage implements IValidate {
+
   /** name of the package */
   public name: string;
   /** display title */
@@ -25,6 +26,17 @@ export class ModelPackage {
   public mutations: Map<string, Mutation> = new Map();
 
   public metaModel: MetaModel;
+
+  public validate(): IValidationResult[] {
+      const result: IValidationResult[] = [];
+      ['entities', 'mutations'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
+        result.push(...e.validate(this).map(p => ({
+          ...p,
+          package: this.name,
+        })));
+      }));
+      return result;
+  }
 
   constructor(name?: string | ModelPackageInput, title?: string, description?: string, parent?: MetaModel) {
     if (typeof name === 'string') {

@@ -6,7 +6,7 @@ import { BelongsTo } from './belongsto';
 import { BelongsToMany } from './belongstomany';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { ModelPackage } from './modelpackage';
-import { EntityStorage, EntityInput, FieldInput, EntityJSON } from './interfaces';
+import { EntityStorage, EntityInput, FieldInput, EntityJSON, IValidate, IValidationResult, ValidationResultType } from './interfaces';
 import * as inflected from 'inflected';
 import deepMerge from './../lib/json/deepMerge';
 import clean from '../lib/json/clean';
@@ -311,16 +311,30 @@ export class Entity extends ModelBase {
     }
   }
 
+  public validate(...args): IValidationResult[] {
+    const result: IValidationResult[] = [];
+    if (this.name === this.plural) {
+      result.push({
+        entity: this.name,
+        message: 'plural form of entity`s name of entity must be different from its singular form',
+        result: ValidationResultType.error,
+      });
+    }
+    Array.from(this.fields.values()).forEach(f => {
+      result.push(...f.validate(...args).map(e => ({
+        ...e,
+        entity: this.name,
+      })));
+    });
+    return result;
+  }
+
   public updateWith(obj: EntityInput) {
     if (obj) {
       super.updateWith(obj);
 
       const result = { ...this.$obj };
       result.name = this.getMetadata('name.singular') || inflected.classify(result.name);
-
-      if (result.name !== obj.name) {
-        console.warn(`Please use singular form of Noun to name entity ${result.name}!=${obj.name}`);
-      }
 
       let $plural = obj.plural || this.getMetadata('name.plural');
       if (!$plural) {

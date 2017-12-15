@@ -6,7 +6,7 @@ import { BelongsToMany } from './belongstomany';
 import { EntityReference } from './entityreference';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
-import { FieldStorage, FieldInput } from './interfaces';
+import { FieldStorage, FieldInput, IValidationResult, ValidationResultType } from './interfaces';
 import clean from '../lib/json/clean';
 
 function discoverFieldType(obj) {
@@ -70,6 +70,24 @@ export class Field extends FieldBase {
     this.$obj.relation = value;
   }
 
+  public validate(pkg?: ModelPackage): IValidationResult[] {
+    const result: IValidationResult[] = [];
+    if (!this.name) {
+      result.push({
+        field: this.name,
+        message: 'name is empty',
+        result: ValidationResultType.error,
+      });
+    }
+    if (this.relation) {
+      result.push(...this.relation.validate(pkg).map(r => ({
+        ...r,
+        field: this.name,
+      })));
+    }
+    return result;
+  }
+
   public getRefType(pkg: ModelPackage): string | void {
     if (this.relation) {
       let ref = this.relation.ref;
@@ -118,16 +136,16 @@ export class Field extends FieldBase {
 
         switch (discoverFieldType($relation)) {
           case 'HasOne':
-            relation = new HasOne({ ...$relation, entity: obj.entity, field: obj.name });
+            relation = new HasOne({ ...$relation as { hasOne: string}, entity: obj.entity, field: obj.name });
             break;
           case 'HasMany':
-            relation = new HasMany({ ...$relation, entity: obj.entity, field: obj.name });
+            relation = new HasMany({ ...$relation  as { hasMany: string}, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsToMany':
-            relation = new BelongsToMany({ ...$relation, entity: obj.entity, field: obj.name });
+            relation = new BelongsToMany({ ...$relation as { belongsToMany: string; using: string}, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsTo':
-            relation = new BelongsTo({ ...$relation, entity: obj.entity, field: obj.name });
+            relation = new BelongsTo({ ...$relation as { belongsTo: string}, entity: obj.entity, field: obj.name });
             break;
           default:
             throw new Error('undefined type');

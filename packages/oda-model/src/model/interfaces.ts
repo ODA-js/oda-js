@@ -1,6 +1,22 @@
 import { EntityReference } from './entityreference';
 import { RelationBase } from './relationbase';
 import { Field } from './field';
+import { Entity } from './index';
+import { ModelPackage } from './modelpackage';
+
+export enum ValidationResultType { error= 'error', warning= 'warning', critics= 'critics' }
+
+export interface IValidationResult {
+  package?: string;
+  entity?: string;
+  field?: string;
+  result: ValidationResultType;
+  message?: string;
+}
+
+export interface IValidate {
+  validate(pkg?: ModelPackage): IValidationResult[];
+}
 
 export interface FieldInput extends FieldBaseInput {
   type?: string;

@@ -1,14 +1,14 @@
 import { RelationBase } from './relationbase';
 import { EntityReference } from './entityreference';
-import { BelongsToStorage, BelongsToInput } from './interfaces';
+import { BelongsToStorage, BelongsToInput, IValidationResult, ValidationResultType } from './interfaces';
 import clean from '../lib/json/clean';
+import { ModelPackage } from './index';
 
 /**
  * BelongsTo Relation
  */
 export class BelongsTo extends RelationBase {
   protected $obj: BelongsToStorage;
-
   get belongsTo(): EntityReference {
     return this.$obj.belongsTo;
   }
@@ -18,6 +18,72 @@ export class BelongsTo extends RelationBase {
    */
   get ref(): EntityReference {
     return this.$obj.belongsTo;
+  }
+
+  constructor(obj: BelongsToInput) {
+    super(obj);
+  }
+
+  public validate(pkg?: ModelPackage): IValidationResult[] {
+    const result: IValidationResult[] = super.validate(pkg);
+    if (pkg) {
+      //ref Entity
+      const refEntity = pkg.entities.get(this.ref.entity);
+      if (refEntity) {
+        let refField = refEntity.fields.get(this.ref.field);
+        if (refField) {
+          if (!refField.identity) {
+            result.push({
+              message: 'referenced field for BelongsTo relation is not identity',
+              result: ValidationResultType.error,
+            });
+          }
+        }
+      }
+      // entity
+      const entity = pkg.entities.get(this.entity);
+      if (entity) {
+        const field = entity.fields.get(this.field);
+        if (field) {
+          if (this.ref.backField) {
+            const bf = entity.fields.get(this.ref.backField);
+            if (bf.identity && typeof bf.identity === 'boolean') {
+              debugger;
+              result.push({
+                message: 'back field for BelongsTo relation is identity',
+                result: ValidationResultType.critics,
+              });
+            }
+          } else {
+            if (!field.indexed) {
+              result.push({
+                message: 'field for BelongsTo relation must be indexed',
+                result: ValidationResultType.error,
+              });
+            }
+
+            if (field.identity && typeof field.identity === 'boolean') {
+              result.push({
+                message: 'field for BelongsTo relation is identity',
+                result: ValidationResultType.critics,
+              });
+            }
+          }
+          if (this.opposite) {
+            const opposite = refEntity.fields.get(this.opposite);
+            if (opposite) {
+              if (opposite.relation.verb === 'BelongsTo') {
+                result.push({
+                  message: 'opposite relation BelongsTo -> BelongstTo not supported',
+                  result: ValidationResultType.error,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
   }
 
   /**

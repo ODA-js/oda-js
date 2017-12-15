@@ -4,6 +4,8 @@ import {
   MetaModelStore, EntityInput,
   MutationInput, FieldInput, ModelHook,
   ModelPackageStore,
+  IValidationResult,
+  IValidate,
 } from './interfaces';
 import { Mutation } from './mutation';
 import deepMerge from '../lib/json/deepMerge';
@@ -51,6 +53,18 @@ export class MetaModel extends ModelPackage {
   public packages: Map<string, ModelPackage> = new Map();
   public store: string = 'default.json';
   public defaultPackage: ModelPackage;
+
+  public validate(): IValidationResult[] {
+    const result: IValidationResult[] = super.validate();
+    ['packages'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
+      result.push(...e.validate().map(p => ({
+        ...p,
+        package: this.name,
+      })));
+    }));
+
+    return result;
+  }
 
   constructor(name: string = 'default') {
     super(name);

@@ -36,14 +36,12 @@ export class FieldBase extends ModelBase {
       let $args = obj.args;
 
       // wheather it is explicitly defined or has arguments
-      // if (obj.name === 'isLiked') debugger;
 
       this.setMetadata('storage.derived', obj.derived || (Array.isArray(obj.args) && obj.args.length > 0) ||
         this.getMetadata('storage.derived'));
       this.setMetadata('storage.persistent', obj.persistent || !((obj.derived || this.getMetadata('storage.derived')) ||
         (Array.isArray(obj.args) && obj.args.length > 0)));
 
-      // if (obj.name === 'isLiked') debugger;
       result.entity = entity;
       result.entity_ = $entity;
 
