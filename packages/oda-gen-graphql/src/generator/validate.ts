@@ -1,5 +1,8 @@
 import { Factory } from 'fte.js';
-import { MetaModel } from 'oda-model';
+import {
+  MetaModel, IValidationResult,
+  ValidationResultType,
+} from 'oda-model';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as template from '../graphql-backend-template';
@@ -20,6 +23,7 @@ import $generatePkg from './generators/package';
 import $generateModel from './generators/model';
 import templateEngine from './templateEngine';
 import initModel from './initModel';
+import { error } from 'util';
 
 
 function printWarning(...args) {
@@ -56,69 +60,46 @@ export default (args: Generator) => {
   //mutating config...
   const { packages } = initModel({ pack, hooks, secureAcl, config });
 
+  const actualTypeMapper = deepMerge(defaultTypeMapper, context.typeMapper || {});
+
+  function knownTypes(typeMapper: { [key: string]: { [key: string]: string[] } }) {
+    const result = {};
+    Object.keys(typeMapper).forEach(mapper => {
+      Object.keys(typeMapper[mapper]).forEach(type => {
+        typeMapper[mapper][type].reduce((mapper, type) => {
+          result[type.toLowerCase()] = true;
+          return result;
+        }, result);
+      });
+    });
+    return result;
+  }
+
+  const existingTypes = knownTypes(actualTypeMapper);
+
   // generate per package
+  const errors: IValidationResult[] = [];
   packages.forEach(pkg => {
+    errors.push(...pkg.validate());
+    debugger;
     Array.from(pkg.entities.values()).forEach((cur) => {
       Array.from(cur.fields.values())
-        .filter(f => f.relation)
-        .forEach((r) => {
-          let ent = pkg.entities.get(r.relation.ref.entity);
-          let fld = ent.fields.get(r.relation.ref.field);
-          if (!fld) {
-            printError(`${cur.name} has wrong relation ${r.name} references to not existing field`);
-          } else {
-            switch (r.relation.verb) {
-              case 'BelongsTo': {
-                if (!r.indexed && !r.relation.ref.backField) {
-                  printError(`${cur.name}\t has wrong relataion ${r.name} BelongsTo must be indexed`);
-                }
-
-                if (!fld.identity) {
-                  printError(`${cur.name}\t has wrong relation ${r.name} BelongsTo must ref to identity field`);
-                }
-
-                let opposites = Array.from(ent.fields.values())
-                  .filter(f => f.relation && f.relation.ref.entity === cur.name && f.relation.ref.field === r.name);
-
-                if (opposites.length > 2) {
-                  printError(`${ent.name}\t has more than one relation referenced to ${cur.name}#${r.name} while it is "BelongsTo" type`);
-                }
-
-                if (opposites.length === 0) {
-                  printWarning(`${ent.name}\t has no relation referenced to ${cur.name}#${r.name} while it is "BelongsTo" type`);
-                }
-
-                if (opposites.length === 1) {
-                  const verb = opposites[0].relation.verb;
-                  debugger;
-                  if (!(verb === 'HasOne' || verb === 'HasMany')) {
-                    printWarning(`${cur.name}\t has wrong opposite relation type to ${ent.name}.${r.name} must be one from: HasOne, HasMany`);
-                  }
-                }
-
-                break;
-              }
-              case 'BelongsToMany':
-                if (!fld.identity) {
-                  console.log(`${cur.name} ${r.name}\t HasOne must ref to identity field`);
-                }
-                break;
-              case 'HasOne': {
-                if (fld.identity) {
-                  console.log(`${cur.name} ${r.name}\t HasOne must not reference to identity field`);
-                }
-              }
-                break;
-              case 'HasMany': {
-                if (fld.identity) {
-                  console.log(`WARNING: ${cur.name} ${r.name}\t HasMany must ref to indexed field not to identity`);
-                }
-              }
-                break;
-            }
+        .filter(f => !f.relation)
+        .forEach(fld => {
+          if (!existingTypes[fld.type.toLowerCase()]) {
+            errors.push({
+              entity: cur.name,
+              field: fld.name,
+              result: ValidationResultType.error,
+              message: 'type have proper mapping'
+            });
           }
         });
     }, {});
   });
+  console.log(errors.filter(f => f.result === ValidationResultType.error));
 
+  console.log(errors.filter(f => f.result === ValidationResultType.warning));
+
+  console.log(errors.filter(f => f.result === ValidationResultType.critics));
 };
