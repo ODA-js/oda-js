@@ -84,6 +84,14 @@ export class Field extends FieldBase {
         ...r,
         field: this.name,
       })));
+
+      if (this.relation.verb !== 'BelongsTo' && (this.indexed || this.identity)) {
+        result.push({
+          field: this.name,
+          message: `unnecessery ${this.indexed ? 'indexed' : 'identity'} field`,
+          result: ValidationResultType.error,
+        });
+      }
     }
     return result;
   }
@@ -128,7 +136,7 @@ export class Field extends FieldBase {
       }
 
       // identity can't have relation definition
-      // why? because! we need to existing code.
+      // why? because! we need to support existing code.
       const isIdentity = this.getMetadata('storage.identity', false);
       if (obj.relation && !(isIdentity)) {
         let $relation = obj.relation;

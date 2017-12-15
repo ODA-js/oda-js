@@ -48,7 +48,6 @@ export class BelongsTo extends RelationBase {
           if (this.ref.backField) {
             const bf = entity.fields.get(this.ref.backField);
             if (bf.identity && typeof bf.identity === 'boolean') {
-              debugger;
               result.push({
                 message: 'back field for BelongsTo relation is identity',
                 result: ValidationResultType.critics,
