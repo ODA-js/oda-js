@@ -61,7 +61,6 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       .map(f => {
         let relFields = [];
         if (f.relation.fields && f.relation.fields.size > 0) {
-          debugger
           f.relation.fields.forEach(field => {
             relFields.push({
               name: field.name,

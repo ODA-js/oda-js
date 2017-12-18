@@ -67,7 +67,7 @@ export default function ({
     pushToAppropriate({
       item: mutation,
       acl: get(mutation, 'metadata.acl.execute'),
-      path: 'entities',
+      path: 'mutations',
       secureAcl,
       packages: pckgs
     });
@@ -75,7 +75,7 @@ export default function ({
     pushToAppropriate({
       item: mutation,
       acl: 'system',
-      path: 'entities',
+      path: 'mutations',
       secureAcl,
       packages: pckgs
     });
