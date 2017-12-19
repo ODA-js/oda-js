@@ -1,3 +1,4 @@
+import * as util from 'util';
 import { Factory } from 'fte.js';
 import {
   MetaModel, IValidationResult,
@@ -24,6 +25,8 @@ import $generateModel from './generators/model';
 import templateEngine from './templateEngine';
 import initModel from './initModel';
 import { error } from 'util';
+import { ValidationErrorItem } from '../../../oda-api-graphql/node_modules/@types/sequelize';
+import { index } from '../graphql-backend-template/entity/index';
 
 
 function printWarning(...args) {
@@ -97,9 +100,53 @@ export default (args: Generator) => {
         });
     }, {});
   });
-  console.log(errors.filter(f => f.result === ValidationResultType.error));
 
-  console.log(errors.filter(f => f.result === ValidationResultType.warning));
+  function showLog(log,
+    visibility: ValidationResultType[] = [
+      ValidationResultType.error,
+      ValidationResultType.warning,
+      ValidationResultType.critics
+    ]) {
+    visibility.forEach(visibilityItem => {
+      const current = errors
+        .filter(item => item.result === visibilityItem);
 
-  console.log(errors.filter(f => f.result === ValidationResultType.critics));
-};
+      const errorLog = current.reduce((status, item) => {
+        if (!status[item.package]) {
+          status[item.package] = {}
+        }
+        if (!status[item.package][item.entity]) {
+          status[item.package][item.entity] = {}
+        }
+        if (!status[item.package][item.entity][item.field]) {
+          status[item.package][item.entity][item.field] = {};
+        }
+        if (!status[item.package][item.entity][item.field][item.result]) {
+          status[item.package][item.entity][item.field][item.result] = [];
+        }
+        status[item.package][item.entity][item.field][item.result].push(item.message);
+        return status;
+      }, {});
+
+      if (current.length > 0) {
+        console.log(visibilityItem);
+        Object.keys(errorLog).forEach(pkg => {
+          console.log(`package: ${pkg}`);
+          Object.keys(errorLog[pkg]).forEach(entity => {
+            console.log(`  ${entity}`);
+            Object.keys(errorLog[pkg][entity]).forEach(field => {
+              const errList = Object.keys(errorLog[pkg][entity][field]).filter(c => c === visibilityItem);
+              if (errList.length > 0) {
+                console.log(`    ${field}`);
+                errorLog[pkg][entity][field][errList[0]].forEach(m => {
+                  console.log(`      ${m}`);
+                })
+              }
+            });
+          });
+        });
+      }
+    });
+  }
+  showLog(errors);
+}
