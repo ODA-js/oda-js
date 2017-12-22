@@ -1,11 +1,13 @@
-import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from './definitions';
 import * as camelcase from 'camelcase';
-import { EntityReferenceInput } from './interfaces';
 import * as inflected from 'inflected';
+
 import clean from '../lib/json/clean';
+import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from './definitions';
+import { EntityReferenceInput, IEntityRef, MetaModelType } from './interfaces';
 
 /** Entityt reference implementation */
-export class EntityReference {
+export class EntityReference implements IEntityRef {
+  public modelType: MetaModelType = 'ref';
   protected $obj: {
     backField_: string;
     entity_: string;

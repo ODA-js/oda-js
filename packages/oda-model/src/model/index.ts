@@ -17,6 +17,7 @@ import {
   ModelHook, IValidationResult, ValidationResultType,
 } from './interfaces';
 import { Metadata } from './metadata';
+import Validator from './validator/index';
 
 export {
   ModelHook,
@@ -39,4 +40,5 @@ export {
   ModelBase,
   IValidationResult,
   ValidationResultType,
+  Validator,
 };

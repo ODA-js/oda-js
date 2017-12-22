@@ -1,12 +1,13 @@
 import * as merge from 'lodash/merge';
+
+import clean from '../lib/json/clean';
 import capitalize from './../lib/capitalize';
 import decapitalize from './../lib/decapitalize';
-import { RelationBase } from './relationbase';
-import { EntityReference } from './entityreference';
-import { BelongsToManyStorage, BelongsToManyInput, EntityInput, FieldInput, ValidationResultType, IValidationResult } from './interfaces';
-import { ModelPackage } from './modelpackage';
 import { Entity } from './entity';
-import clean from '../lib/json/clean';
+import { EntityReference } from './entityreference';
+import { BelongsToManyInput, BelongsToManyStorage, EntityInput, FieldInput } from './interfaces';
+import { ModelPackage } from './modelpackage';
+import { RelationBase } from './relationbase';
 
 // http://ooad.asf.ru/standarts/UML/spr/Association_class.aspx
 
@@ -30,42 +31,84 @@ export class BelongsToMany extends RelationBase {
     super(obj);
   }
 
-  public validate(pkg?: ModelPackage): IValidationResult[] {
-    const result: IValidationResult[] = super.validate(pkg);
-    // using
-    const refEntity = pkg.entities.get(this.using.entity);
-    const entity = pkg.entities.get(this.entity);
-    if (!refEntity) {
-      result.push({
-        message: 'no using entity found',
-        result: ValidationResultType.error,
-      });
-    } else {
-      let refField = refEntity.fields.get(this.using.field);
-      if (!refField) {
-        result.push({
-          message: 'using field not found',
-          result: ValidationResultType.error,
-        });
-      }
-      if (this.using.backField) {
-        const bf = entity.fields.get(this.using.backField);
-        if (!bf) {
-          result.push({
-            message: 'using entity back field not exists',
-            result: ValidationResultType.error,
-          });
-        } else if (!bf.identity) {
-          result.push({
-            message: 'using entity back field is not identity',
-            result: ValidationResultType.error,
-          });
-        }
-      }
-    }
-    // using
-    return result;
-  }
+  // public validate(pkg?: ModelPackage): IValidationResult[] {
+  //   const result: IValidationResult[] = super.validate(pkg);
+  //   // using
+  //   const refEntity = pkg.entities.get(this.using.entity);
+  //   const entity = pkg.entities.get(this.entity);
+
+
+  //   if (this.ref.backField) {
+  //     const bf = entity.fields.get(this.ref.backField);
+  //     if (!bf) {
+  //       result.push({
+  //         message: 'back field not exists',
+  //         result: ValidationResultType.error,
+  //       });
+  //     } else if (!bf.indexed) {
+  //       result.push({
+  //         message: 'back field is not indexed',
+  //         result: ValidationResultType.error,
+  //       });
+  //     }
+  //   }
+
+  //   if (!refEntity) {
+  //     result.push({
+  //       message: 'no using entity found',
+  //       result: ValidationResultType.error,
+  //     });
+  //   } else {
+  //     let refField = refEntity.fields.get(this.using.field);
+  //     if (!refField) {
+  //       let update = refEntity.toJSON();
+  //       const field = entity.fields.get(this.field);
+  //       update.fields.push({
+  //         name: this.using.field,
+  //         type: field.type,
+  //       });
+  //       result.push({
+  //         message: 'using field not found',
+  //         result: ValidationResultType.fixable,
+  //       });
+  //       refEntity.updateWith(update);
+  //     }
+  //     if (this.using.backField) {
+  //       const bf = entity.fields.get(this.using.backField);
+  //       if (!bf) {
+  //         result.push({
+  //           message: 'using entity back field not exists',
+  //           result: ValidationResultType.error,
+  //         });
+  //       } else if (!bf.identity) {
+  //         result.push({
+  //           message: 'using entity back field is not identity',
+  //           result: ValidationResultType.error,
+  //         });
+  //       }
+  //     }
+  //     if (this.fields) {
+  //       this.fields.forEach(field => {
+  //         const found = refEntity.fields.get(field.name);
+  //         if (found) {
+  //           if (found.type !== field.type) {
+  //             result.push({
+  //               message: `type of relation field '${field.name}' and in using entity differs`,
+  //               result: ValidationResultType.error,
+  //             });
+  //           }
+  //         } else {
+  //           result.push({
+  //             message: `${field.name} is not met in using entity`,
+  //             result: ValidationResultType.error,
+  //           });
+  //         }
+  //       });
+  //     }
+  //   }
+  //   // using
+  //   return result;
+  // }
 
   public ensureRelationClass(modelPackage: ModelPackage) {
     if (modelPackage) {

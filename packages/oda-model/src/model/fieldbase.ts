@@ -1,8 +1,9 @@
-import { ModelBase } from './modelbase';
-import { FieldBaseStorage, FieldBaseInput, FieldArgs } from './interfaces';
 import clean from '../lib/json/clean';
+import { FieldArgs, FieldBaseInput, FieldBaseStorage, MetaModelType } from './interfaces';
+import { ModelBase } from './modelbase';
 
 export class FieldBase extends ModelBase {
+  public modelType: MetaModelType = 'field';
   protected $obj: FieldBaseStorage;
 
   get entity(): string {

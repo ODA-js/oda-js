@@ -1,14 +1,23 @@
 import { Entity } from './entity';
 import { Field } from './field';
 // tslint:disable-next-line:no-unused-variable
-import { ModelPackageInput, EntityInput, EntityJSON, IValidate, IValidationResult } from './interfaces';
+import {
+  ModelPackageInput,
+  EntityInput,
+  EntityJSON,
+  IValidate,
+  IValidationResult,
+  MetaModelType,
+  IPackage,
+  IValidator,
+} from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
 import clean from '../lib/json/clean';
 
 /** Model package is the storage place of Entities */
-export class ModelPackage implements IValidate {
-
+export class ModelPackage implements IValidate , IPackage {
+  public modelType: MetaModelType = 'package';
   /** name of the package */
   public name: string;
   /** display title */
@@ -27,15 +36,8 @@ export class ModelPackage implements IValidate {
 
   public metaModel: MetaModel;
 
-  public validate(): IValidationResult[] {
-      const result: IValidationResult[] = [];
-      ['entities', 'mutations'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
-        result.push(...e.validate(this).map(p => ({
-          ...p,
-          package: this.name,
-        })));
-      }));
-      return result;
+  public validate(validator: IValidator): IValidationResult[] {
+    return validator.check(this);
   }
 
   constructor(name?: string | ModelPackageInput, title?: string, description?: string, parent?: MetaModel) {
@@ -103,15 +105,10 @@ export class ModelPackage implements IValidate {
   }
 
   /** ensure all foreign keys */
-  public ensureAll(): Field[] {
-    let missing: Field[] = [];
+  public ensureAll() {
     this.entities.forEach((e) => {
-      missing = [
-        ...missing,
-        ...e.ensureFKs(this),
-      ];
+      e.ensureFKs(this);
     });
-    return missing;
   }
 
   public toJSON(): ModelPackageInput {

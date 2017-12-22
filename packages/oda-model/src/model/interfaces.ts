@@ -1,12 +1,123 @@
 import { EntityReference } from './entityreference';
-import { RelationBase } from './relationbase';
 import { Field } from './field';
-import { Entity } from './index';
-import { ModelPackage } from './modelpackage';
+import { RelationBase } from './relationbase';
 
-export enum ValidationResultType { error= 'error', warning= 'warning', critics= 'critics' }
+export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
+
+export type MetaModelType =
+  'model'
+  |'package'
+  | 'entity'
+  | 'field'
+  | 'relation'
+  | 'ref'
+  | RelationType
+  ;
+
+export interface IModelType extends IValidate {
+  modelType: MetaModelType;
+}
+
+export interface IModel extends IModelType {
+  name: string;
+  packages: Map<string, IPackage>;
+}
+
+export interface IPackage extends IModelType {
+  name: string;
+  metaModel: IModel;
+  entities: Map<string, IEntity>;
+}
+
+export interface IEntity extends IModelType {
+  name: string;
+  plural: string;
+  fields: Map<string, Field>;
+}
+
+export interface IField extends IModelType {
+  name: string;
+  type: string;
+  relation: IRelation;
+}
+
+export interface IRelation extends IModelType {
+  verb: RelationType;
+  ref: IEntityRef;
+}
+
+export interface IBelongsToManyRelation extends IRelation {
+
+  belongsToMany: IEntityRef;
+}
+
+export interface IBelongsToRelation extends IRelation {
+  belongsTo: IEntityRef;
+}
+
+export interface IHasOneRelation extends IRelation {
+  hasOne: IEntityRef;
+}
+
+export interface IHasManyRelation extends IRelation {
+  hasMany: IEntityRef;
+}
+
+export interface IEntityRef {
+  backField: string;
+  entity: string;
+  field: string;
+}
+
+export type ModelItem = IModel | IPackage | IEntity | IField | IRelation;
+
+export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToRelation;
+
+export function isModel(item: ModelItem ): item is IModel {
+  return item.modelType === 'model';
+}
+
+export function isPackage(item: ModelItem ): item is IPackage {
+  return item.modelType === 'package';
+}
+
+export function isEntity(item: ModelItem): item is IEntity {
+  return item.modelType === 'entity';
+}
+
+export function isField(item: ModelItem): item is IField {
+  return item.modelType === 'field';
+}
+
+export function isRelation(item: ModelItem): item is IRelation {
+  return (
+    item.modelType === 'BelongsTo'
+    || item.modelType === 'BelongsToMany'
+    || item.modelType === 'HasOne'
+    || item.modelType === 'HasMany'
+  );
+}
+
+export function IsBelongsTo(item: Relation): item is IBelongsToRelation {
+  return isRelation(item) && item.modelType === 'BelongsTo';
+}
+
+export function IsBelongsToMany(item: Relation): item is IBelongsToRelation {
+  return isRelation(item) && item.modelType === 'BelongsToMany';
+}
+
+export function IsHasOne(item: Relation): item is IBelongsToRelation {
+  return isRelation(item) && item.modelType === 'HasOne';
+}
+
+export function IsHasMany(item: Relation): item is IBelongsToRelation {
+  return isRelation(item) && item.modelType === 'HasMany';
+}
+
+export enum ValidationResultType { error = 'error', warning = 'warning', critics = 'critics', fixable = 'fixable' }
 
 export interface IValidationResult {
+  model?: string;
   package?: string;
   entity?: string;
   field?: string;
@@ -14,8 +125,12 @@ export interface IValidationResult {
   message?: string;
 }
 
+export interface IValidator {
+  check(item: IValidate): IValidationResult[];
+}
+
 export interface IValidate {
-  validate(pkg?: ModelPackage): IValidationResult[];
+  validate(validator: IValidator): IValidationResult[];
 }
 
 export interface FieldInput extends FieldBaseInput {
@@ -181,7 +296,7 @@ export interface RelationBaseInput {
   name?: string;
   entity: string;
   field: string;
-  fields?: FieldInput[]| {
+  fields?: FieldInput[] | {
     [field: string]: FieldInput,
   };
   opposite?: string;

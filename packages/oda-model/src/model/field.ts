@@ -1,13 +1,13 @@
-import { FieldBase } from './fieldbase';
-import { HasOne } from './hasone';
-import { HasMany } from './hasmany';
+import clean from '../lib/json/clean';
 import { BelongsTo } from './belongsto';
 import { BelongsToMany } from './belongstomany';
 import { EntityReference } from './entityreference';
+import { FieldBase } from './fieldbase';
+import { HasMany } from './hasmany';
+import { HasOne } from './hasone';
+import { FieldInput, FieldStorage, IField } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
-import { FieldStorage, FieldInput, IValidationResult, ValidationResultType } from './interfaces';
-import clean from '../lib/json/clean';
 
 function discoverFieldType(obj) {
   // сделать проверку по полю...
@@ -25,7 +25,7 @@ function discoverFieldType(obj) {
   }
 }
 
-export class Field extends FieldBase {
+export class Field extends FieldBase implements IField {
   protected $obj: FieldStorage;
   constructor(obj: FieldInput) {
     super(obj);
@@ -68,32 +68,6 @@ export class Field extends FieldBase {
 
   set relation(value: RelationBase) {
     this.$obj.relation = value;
-  }
-
-  public validate(pkg?: ModelPackage): IValidationResult[] {
-    const result: IValidationResult[] = [];
-    if (!this.name) {
-      result.push({
-        field: this.name,
-        message: 'name is empty',
-        result: ValidationResultType.error,
-      });
-    }
-    if (this.relation) {
-      result.push(...this.relation.validate(pkg).map(r => ({
-        ...r,
-        field: this.name,
-      })));
-
-      if (this.relation.verb !== 'BelongsTo' && (this.indexed || this.identity)) {
-        result.push({
-          field: this.name,
-          message: `unnecessery ${this.indexed ? 'indexed' : 'identity'} field`,
-          result: ValidationResultType.error,
-        });
-      }
-    }
-    return result;
   }
 
   public getRefType(pkg: ModelPackage): string | void {
@@ -144,16 +118,16 @@ export class Field extends FieldBase {
 
         switch (discoverFieldType($relation)) {
           case 'HasOne':
-            relation = new HasOne({ ...$relation as { hasOne: string}, entity: obj.entity, field: obj.name });
+            relation = new HasOne({ ...$relation as { hasOne: string }, entity: obj.entity, field: obj.name });
             break;
           case 'HasMany':
-            relation = new HasMany({ ...$relation  as { hasMany: string}, entity: obj.entity, field: obj.name });
+            relation = new HasMany({ ...$relation as { hasMany: string }, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsToMany':
-            relation = new BelongsToMany({ ...$relation as { belongsToMany: string; using: string}, entity: obj.entity, field: obj.name });
+            relation = new BelongsToMany({ ...$relation as { belongsToMany: string; using: string }, entity: obj.entity, field: obj.name });
             break;
           case 'BelongsTo':
-            relation = new BelongsTo({ ...$relation as { belongsTo: string}, entity: obj.entity, field: obj.name });
+            relation = new BelongsTo({ ...$relation as { belongsTo: string }, entity: obj.entity, field: obj.name });
             break;
           default:
             throw new Error('undefined type');

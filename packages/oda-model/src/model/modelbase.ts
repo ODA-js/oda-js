@@ -1,9 +1,10 @@
 import * as inflected from 'inflected';
-import { ModelPackage } from './modelpackage';
-import { ModelBaseStorage, ModelBaseInput } from './interfaces';
-import { Metadata } from './metadata';
-import fold from './../lib/json/fold';
+
 import clean from '../lib/json/clean';
+import fold from './../lib/json/fold';
+import { ModelBaseInput, ModelBaseStorage } from './interfaces';
+import { Metadata } from './metadata';
+import { ModelPackage } from './modelpackage';
 
 export class ModelBase extends Metadata {
   protected $obj: ModelBaseStorage;

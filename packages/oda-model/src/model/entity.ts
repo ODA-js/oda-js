@@ -1,15 +1,14 @@
-import { ModelBase } from './modelbase';
-import { Field } from './field';
-import { HasOne } from './hasone';
-import { HasMany } from './hasmany';
-import { BelongsTo } from './belongsto';
+import * as inflected from 'inflected';
+
+import clean from '../lib/json/clean';
+import deepMerge from './../lib/json/deepMerge';
 import { BelongsToMany } from './belongstomany';
 import { DEFAULT_ID_FIELD } from './definitions';
+import { Field } from './field';
+import { HasMany } from './hasmany';
+import { EntityInput, EntityJSON, EntityStorage, FieldInput, IEntity, MetaModelType } from './interfaces';
+import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';
-import { EntityStorage, EntityInput, FieldInput, EntityJSON, IValidate, IValidationResult, ValidationResultType } from './interfaces';
-import * as inflected from 'inflected';
-import deepMerge from './../lib/json/deepMerge';
-import clean from '../lib/json/clean';
 
 /**
  * 1. тип объекта который входит на updateWith
@@ -18,7 +17,9 @@ import clean from '../lib/json/clean';
  * 3. тип объекта который идет на выходе clone
  */
 
-export class Entity extends ModelBase {
+export class Entity extends ModelBase implements IEntity {
+  public modelType: MetaModelType = 'entity';
+
   protected $obj: EntityStorage;
 
   constructor(obj: EntityInput) {
@@ -34,8 +35,7 @@ export class Entity extends ModelBase {
     });
   }
 
-  public ensureFKs(modelPackage: ModelPackage): Field[] {
-    let missing: Field[] = [];
+  public ensureFKs(modelPackage: ModelPackage) {
     if (modelPackage) {
       let modelRelations;
       if (modelPackage.relations.has(this.name)) {
@@ -55,121 +55,21 @@ export class Entity extends ModelBase {
         });
       }
 
-      missing = [
-        ...missing,
-        ...this.checkRelations(modelPackage),
-      ];
-      missing.forEach((r) => {
-        if (modelRelations) {
-          modelRelations.delete(r.name);
-        }
-      });
+      // this.checkRelations(modelPackage);
     }
-    return missing || [];
   }
 
-  public checkRelations(modelPackage: ModelPackage): Field[] {
-    let missing = [];
+  public checkRelations(modelPackage: ModelPackage) {
     if (modelPackage.relations.has(this.name)) {
       let modelRelations = modelPackage.relations.get(this.name);
       if (modelRelations) {
         modelRelations.forEach((field) => {
           let r = field.relation;
-          let missingRef = true;
-          if (!r.ref.field) {
-            // discover fieldName
-            if (modelPackage.entities.has(r.ref.entity)) {
-              let e = modelPackage.entities.get(r.ref.entity);
-              if (e) {
-                let identity = e.identity;
-                // посмотреть насколько возможна подобная ситуация...
-                (r.ref.field = identity.values().next().value || 'id');
-                missingRef = false;
-              }
-            }
-          }
-
-          if (r instanceof HasOne) {
-            if (modelPackage.entities.has(r.ref.entity)) {
-              let refe = modelPackage.entities.get(r.ref.entity);
-              if (refe && refe.fields.has(r.ref.field) && refe.indexed.has(r.ref.field)) {
-                missingRef = false;
-              }
-
-              if (r.opposite) {
-                let opposite = Array.from(refe.relations)
-                  .find(rel => rel === r.opposite);
-
-                if (refe.fields.has(opposite)) {
-                  let rel = refe.fields.get(opposite).relation;
-                  let wellformed = opposite && refe.fields.has(opposite)
-                    && (rel instanceof BelongsTo);
-
-                  if (rel.opposite !== field.name) {
-                    rel.opposite = field.name;
-                  }
-
-                  if (!wellformed) {
-                    missingRef = true;
-                  }
-                } else {
-                  missingRef = true;
-                }
-              }
-            }
-          } else if (r instanceof HasMany) {
-            if (modelPackage.entities.has(r.ref.entity)) {
-              let refe = modelPackage.entities.get(r.ref.entity);
-              if (refe && refe.fields.has(r.ref.field) && refe.indexed.has(r.ref.field)) {
-                missingRef = false;
-              }
-
-              if (r.opposite) {
-                let opposite = Array.from(refe.relations)
-                  .find(rel => rel === r.opposite);
-                if (refe.fields.has(opposite)) {
-                  let rel = refe.fields.get(opposite).relation;
-                  let wellformed = opposite && refe.fields.has(opposite)
-                    && (rel instanceof BelongsTo);
-
-                  if (rel.opposite !== field.name) {
-                    rel.opposite = field.name;
-                  }
-
-                  if (!wellformed) {
-                    missingRef = true;
-                  }
-                } else {
-                  missingRef = true;
-                }
-              }
-            }
-          } else if (r instanceof BelongsToMany) {
+          if (r instanceof BelongsToMany) {
             if (modelPackage.entities.has(r.ref.entity)) {
               let refe = modelPackage.entities.get(r.ref.entity);
               if (refe && refe.fields.has(r.ref.field) && refe.identity.has(r.ref.field)) {
-                missingRef = false;
                 (r as BelongsToMany).ensureRelationClass(modelPackage);
-              }
-
-              if (r.opposite) {
-                let opposite = Array.from(refe.relations)
-                  .find(rel => rel === r.opposite);
-                if (refe.fields.has(opposite)) {
-                  let rel = refe.fields.get(opposite).relation;
-                  let wellformed = opposite && refe.fields.has(opposite)
-                    && (rel instanceof BelongsToMany);
-
-                  if (rel.opposite !== field.name) {
-                    rel.opposite = field.name;
-                  }
-
-                  if (!wellformed) {
-                    missingRef = true;
-                  }
-                } else {
-                  missingRef = true;
-                }
               }
             } else {
               let using = r.using;
@@ -184,62 +84,12 @@ export class Entity extends ModelBase {
                 delete replaceRef.using;
 
                 field.relation = new HasMany(replaceRef);
-                missingRef = false;
-
-                // no need to has opposite here
-                if (r.opposite) {
-                  r.opposite = undefined;
-                }
               }
             }
-          } else if (r instanceof BelongsTo) {
-            // if (modelPackage.identityFields.has(r.ref.toString())) {
-            //   missingRef = false;
-            // }
-            if (modelPackage.entities.has(r.ref.entity)) {
-              let refe = modelPackage.entities.get(r.ref.entity);
-              if (refe && refe.fields.has(r.ref.field) && refe.identity.has(r.ref.field)) {
-                missingRef = false;
-              }
-
-              if (r.opposite) {
-                let opposite = Array.from(refe.relations)
-                  .find(rel => rel === r.opposite);
-                if (refe.fields.has(opposite)) {
-                  let rel = refe.fields.get(opposite).relation;
-                  let wellformed = opposite && refe.fields.has(opposite)
-                    && (rel instanceof HasOne || rel instanceof HasMany);
-
-                  if (rel.opposite !== field.name) {
-                    rel.opposite = field.name;
-                  }
-
-                  if (!wellformed) {
-                    missingRef = true;
-                  }
-                } else {
-                  missingRef = true;
-                }
-              }
-              if (r.opposite) {
-                let opposite = Array.from(refe.relations)
-                  .find(rel => rel === r.opposite);
-                let wellformed = opposite && refe.fields.has(opposite)
-                  && (refe.fields.get(opposite).relation instanceof HasOne || refe.fields.get(opposite).relation instanceof HasMany);
-                if (!wellformed) {
-                  missingRef = true;
-                }
-              }
-            }
-          }
-
-          if (missingRef) {
-            missing.push(field);
           }
         });
       }
     }
-    return missing;
   }
 
   public removeIds(modelPackage: ModelPackage) {
@@ -309,24 +159,6 @@ export class Entity extends ModelBase {
         }
       }
     }
-  }
-
-  public validate(...args): IValidationResult[] {
-    const result: IValidationResult[] = [];
-    if (this.name === this.plural) {
-      result.push({
-        entity: this.name,
-        message: 'plural form of entity`s name of entity must be different from its singular form',
-        result: ValidationResultType.error,
-      });
-    }
-    Array.from(this.fields.values()).forEach(f => {
-      result.push(...f.validate(...args).map(e => ({
-        ...e,
-        entity: this.name,
-      })));
-    });
-    return result;
   }
 
   public updateWith(obj: EntityInput) {

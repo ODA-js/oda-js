@@ -1,17 +1,22 @@
-import { Entity } from './entity';
-import { ModelPackage } from './modelpackage';
-import {
-  MetaModelStore, EntityInput,
-  MutationInput, FieldInput, ModelHook,
-  ModelPackageStore,
-  IValidationResult,
-  IValidate,
-} from './interfaces';
-import { Mutation } from './mutation';
+import * as fs from 'fs';
+
 import deepMerge from '../lib/json/deepMerge';
 import fold from '../lib/json/fold';
-
-import * as fs from 'fs';
+import { Entity } from './entity';
+import {
+  EntityInput,
+  FieldInput,
+  IModel,
+  IValidationResult,
+  IValidator,
+  MetaModelStore,
+  MetaModelType,
+  ModelHook,
+  ModelPackageStore,
+  MutationInput,
+} from './interfaces';
+import { ModelPackage } from './modelpackage';
+import { Mutation } from './mutation';
 
 function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
   let result = {
@@ -49,22 +54,27 @@ function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
 /**
  * Represents meta-model store
  */
-export class MetaModel extends ModelPackage {
+export class MetaModel extends ModelPackage implements IModel {
+  public modelType: MetaModelType = 'model';
   public packages: Map<string, ModelPackage> = new Map();
   public store: string = 'default.json';
   public defaultPackage: ModelPackage;
 
-  public validate(): IValidationResult[] {
-    const result: IValidationResult[] = super.validate();
-    ['packages'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
-      result.push(...e.validate().map(p => ({
-        ...p,
-        package: this.name,
-      })));
-    }));
-
-    return result;
+  public validate(validator: IValidator): IValidationResult[] {
+    return validator.check(this);
   }
+
+  // public validate(): IValidationResult[] {
+  //   const result: IValidationResult[] = super.validate();
+  //   ['packages'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
+  //     result.push(...e.validate().map(p => ({
+  //       ...p,
+  //       package: this.name,
+  //     })));
+  //   }));
+
+  //   return result;
+  // }
 
   constructor(name: string = 'default') {
     super(name);
