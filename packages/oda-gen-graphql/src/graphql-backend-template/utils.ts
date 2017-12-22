@@ -16,19 +16,21 @@ export function printRequired(field: { required: boolean }): string {
 export const defaultTypeMapper = {
   aor: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
-    Text: ['string', 'text', "*", 'uuid', 'id', 'identity'],
+    Text: ['string', "*", 'uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
+    LongText: ['text'],
+    RichText: ['richtext'],
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
-    string: ['string', 'text', "*", 'uuid', 'id', 'identity'],
+    string: ['string', 'text', "*", 'uuid', 'id', 'identity', 'richtext'],
     date: ['date', 'time', 'datetime'],
     boolean: ['bool', 'boolean'],
   },
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
-    Text: ['string', 'text', "*"],
+    Text: ['string', 'text', "*", 'richtext'],
     ID: [, 'uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
@@ -36,7 +38,7 @@ export const defaultTypeMapper = {
   graphql: {
     Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
-    String: ['string', 'text', "*", 'uuid'],
+    String: ['string', 'text', "*", 'uuid', 'richtext'],
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
@@ -44,7 +46,7 @@ export const defaultTypeMapper = {
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
-    String: ['string', 'text', '*', 'uuid'],
+    String: ['string', 'text', '*', 'uuid', 'richtext'],
     'mongoose.Schema.Types.Mixed': ['object', 'json'],
     Boolean: ['bool', 'boolean'],
     Date: ['date'],
@@ -53,7 +55,7 @@ export const defaultTypeMapper = {
   sequelize: {
     'DataTypes.INTEGER': ['int', 'integer', 'identity'],
     'DataTypes.FLOAT': ['number', 'float', 'double'],
-    'DataTypes.STRING(1000)': ['string', 'text', '*'],
+    'DataTypes.STRING(1000)': ['string', 'text', '*', 'richtext'],
     'DataTypes.BOOLEAN': ['bool', 'boolean'],
     'DataTypes.DATE': ['date'],
     'DataTypes.CHAR(24)': ['id'],
@@ -64,7 +66,7 @@ export const defaultTypeMapper = {
   },
   typescript: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
-    string: ['string', 'text', 'id', '*', 'uuid'],
+    string: ['string', 'text', 'id', '*', 'uuid', 'richtext'],
     boolean: ['bool', 'boolean'],
     Date: ['date'],
     object: ['json', 'object'],
