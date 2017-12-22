@@ -23,66 +23,6 @@ export class BelongsTo extends RelationBase {
     super(obj);
   }
 
-  // public validate(pkg?: ModelPackage): IValidationResult[] {
-  //   const result: IValidationResult[] = super.validate(pkg);
-  //   // if (pkg) {
-  //   //   if (!refField.identity) {
-  //   //     const update = refField.toJSON();
-  //   //     update.identity = true;
-  //   //     refField.updateWith(update);
-  //   //     result.push({
-  //   //       message: 'referenced field for BelongsTo relation is not identity',
-  //   //       result: ValidationResultType.fixable,
-  //   //     });
-  //   //   }
-
-  //   //   // entity
-  //   //   if (this.ref.backField) {
-  //   //     let bf = entity.fields.get(this.ref.backField);
-  //   //     if (!bf) {
-  //   //       result.push({
-  //   //         message: 'back field not exists. removed.',
-  //   //         result: ValidationResultType.fixable,
-  //   //       });
-  //   //       this.ref.backField = '';
-  //   //       bf = field;
-  //   //     }
-  //   //     if (!bf.indexed) {
-  //   //       result.push({
-  //   //         message: 'back field is not indexed',
-  //   //         result: ValidationResultType.error,
-  //   //       });
-  //   //       const update = bf.toJSON();
-  //   //       update.indexed = true;
-  //   //       bf.updateWith(update);
-  //   //     }
-  //   //     if (bf && bf.identity && typeof bf.identity === 'boolean') {
-  //   //       result.push({
-  //   //         message: 'back field for BelongsTo relation is identity',
-  //   //         result: ValidationResultType.critics,
-  //   //       });
-  //   //     }
-  //   //   } else {
-  //   //     if (!field.indexed) {
-  //   //       const update = field.toJSON();
-  //   //       update.indexed = true;
-  //   //       field.updateWith(update);
-  //   //       result.push({
-  //   //         message: 'field for BelongsTo relation must be indexed',
-  //   //         result: ValidationResultType.fixable,
-  //   //       });
-  //   //     }
-  //   //     if (field.identity && typeof field.identity === 'boolean') {
-  //   //       result.push({
-  //   //         message: 'field for BelongsTo relation is identity',
-  //   //         result: ValidationResultType.critics,
-  //   //       });
-  //   //     }
-  //   //   }
-  //   // }
-  //   return result;
-  // }
-
   /**
    * single point update
    */

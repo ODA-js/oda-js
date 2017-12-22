@@ -38,6 +38,8 @@ export interface IEntity extends IModelType {
 export interface IField extends IModelType {
   name: string;
   type: string;
+  indexed: boolean | string | string[];
+  identity: boolean | string | string[];
   relation: IRelation;
 }
 

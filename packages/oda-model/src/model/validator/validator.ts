@@ -88,41 +88,6 @@ export interface IVisitor<T extends IModelType, C extends ValidationContext> {
 //     this.relation = rel;
 //     const entity = pkg.entities.get(rel.entity);
 
-//     if (!entity) {
-//       this.errors.push({
-//         message: 'owner entity not found',
-//         result: ValidationResultType.error,
-//       });
-//       return;
-//     }
-
-//     const field = entity.fields.get(rel.field);
-//     if (!field) {
-//       this.errors.push({
-//         message: 'owner field not found if the entity',
-//         result: ValidationResultType.error,
-//       });
-//       return;
-//     }
-
-//     const refEntity = pkg.entities.get(rel.ref.entity);
-//     if (!refEntity) {
-//       this.errors.push({
-//         message: 'no referenced entity found',
-//         result: ValidationResultType.error,
-//       });
-//       return;
-//     }
-
-//     let refField = refEntity.fields.get(rel.ref.field);
-//     if (!refField) {
-//       this.errors.push({
-//         message: 'referenced field not found',
-//         result: ValidationResultType.error,
-//       });
-//     }
-//   }
-
 //   public validateOpposite() {
 //     if (!this.isValid) {
 //       return;
