@@ -1,7 +1,8 @@
-import { initPackages, pushToAppropriate } from './utils';
 import { utils } from 'oda-api-graphql';
+import { MetaModel, ModelPackage } from 'oda-model';
 import * as path from 'path';
-import { MetaModel } from 'oda-model';
+
+import { initPackages, pushToAppropriate } from './utils';
 import { expandConfig } from './utils';
 
 const { get } = utils;
