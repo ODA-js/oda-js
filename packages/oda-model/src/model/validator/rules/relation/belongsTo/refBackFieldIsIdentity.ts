@@ -14,9 +14,6 @@ export default class implements Rule<IRelationContext> {
           message: this.description,
           result: ValidationResultType.critics,
         });
-        const update = bf.toJSON();
-        update.indexed = true;
-        bf.updateWith(update);
       }
     }
     return result;

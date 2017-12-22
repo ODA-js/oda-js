@@ -17,18 +17,6 @@ export class HasMany extends RelationBase {
   // public validate(pkg?: ModelPackage): IValidationResult[] {
   //   const result: IValidationResult[] = super.validate(pkg);
   //   // if (pkg) {
-  //   //   if (field.indexed || field.identity) {
-  //   //     const update = field.toJSON();
-  //   //     delete update.identity;
-  //   //     delete update.indexed;
-  //   //     field.updateWith(update);
-  //   //     result.push({
-  //   //       field: this.name,
-  //   //       message: `unnecessery ${field.indexed ? 'indexed' : 'identity'} field`,
-  //   //       result: ValidationResultType.fixable,
-  //   //     });
-  //   //   }
-
   //   //   if (this.ref.backField) {
   //   //     let bf = entity.fields.get(this.ref.backField);
   //   //     if (!bf) {

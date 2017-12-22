@@ -10,13 +10,13 @@ export default class implements Rule<IRelationContext> {
     if (context.relation.ref.backField) {
       const bf = context.entity.fields.get(context.relation.ref.backField);
       if (bf && !bf.indexed) {
+        const update = bf.toJSON();
+        update.indexed = true;
+        bf.updateWith(update);
         result.push({
           message: this.description,
           result: ValidationResultType.error,
         });
-        const update = bf.toJSON();
-        update.indexed = true;
-        bf.updateWith(update);
       }
     }
     return result;

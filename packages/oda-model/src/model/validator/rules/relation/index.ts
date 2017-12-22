@@ -8,6 +8,8 @@ import refBackFieldIsIdentity from './belongsTo/refBackFieldIsIdentity';
 import refEntityNotFound from './common/refEntityNotFound';
 import refFieldNotFound from './common/refFieldNotFound';
 
+import ownerFieldUnnecesseryIndexed from './common/ownerFieldUnnecesseryIndexed';
+
 export const common = [
   new refFieldNotFound(),
 ];
@@ -24,12 +26,15 @@ export const belongsTo = [
 
 export const belongsToMany = [
   // new emptyName(),
+  new ownerFieldUnnecesseryIndexed(),
 ];
 
 export const hasOne = [
   new refEntityNotFound(),
+  new ownerFieldUnnecesseryIndexed(),
 ];
 
 export const hasMany = [
   new refEntityNotFound(),
+  new ownerFieldUnnecesseryIndexed(),
 ];
