@@ -1,6 +1,6 @@
 export default function clean(obj) {
   if (Array.isArray(obj)) {
-    return obj.map(clean)
+    return obj.map(clean);
   } else if (typeof obj === 'object') {
     if (obj.toJSON) {
       return obj.toJSON();

@@ -1,6 +1,7 @@
+import { isEqual } from 'lodash';
+
 import get from './get';
 import set from './set';
-import { isEqual } from 'lodash';
 
 function find(array: any[], item) {
   let result = array.indexOf(item);
