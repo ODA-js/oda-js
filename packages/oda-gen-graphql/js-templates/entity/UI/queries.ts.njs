@@ -85,11 +85,11 @@ export const fragments = {
 <#-} else {#>
     #{f.field}<#if(embedded) {#>Values<#} else {#>Ids<#}#>: #{f.field} @_(get:"edges") {
       edges @_( <#if(embedded) {#>each: {assign:"node"}<#} else {#>map:"node"<#}#> ) {
+<#- embedded && f.ref.fields.forEach(fld=>{#>
+        #{fld.name}
+<#-})#>
         node <#if(!embedded) {#>@_(get:"id") <#}#> {
           id
-<#- embedded && f.ref.fields.forEach(fld=>{#>
-          #{fld.name}
-<#-})#>
         }
       }
     }

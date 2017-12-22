@@ -33,7 +33,7 @@ import PropTypes from 'prop-types';
 
 const Title = ({ record },{translate}) => (
   <span>
-    {translate('resources.#{entity.name}.name', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
+    {translate('resources.#{entity.name}.#{entity.listLabel.source}', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
   </span>
 );
 
@@ -198,11 +198,13 @@ import {
   SelectArrayInput,
   SimpleForm,
   TextInput,
+  LongTextInput,
   DateInput,
   NumberInput,
   BooleanInput,
   required,
 } from "admin-on-rest";
+import RichTextInput from 'aor-rich-text-input';
 
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
@@ -240,7 +242,7 @@ class Form extends Component {
       <SimpleForm {...props} >
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
-  .forEach( f=> {-#>
+  .forEach( f=> { if(f.name === 'specialNotes') debugger;-#>
         <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#})-#>
 <# entity.relations
@@ -298,7 +300,7 @@ class Form extends Component {
             choices={manyRelAction}
             defaultValue={actionType.USE}
           />
-          <DependentInput resolve={selectorFor('#{f.field}')} scoped >
+          <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
             <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
@@ -309,7 +311,7 @@ class Form extends Component {
   let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
   const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
   if(fieldCount > 0) { debugger;#>
-          <DependentInput resolve={detailsFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
+          <DependentInput resolve={detailsFor('#{f.field}')} scoped >
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
             <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
@@ -468,10 +470,13 @@ import {
   Show,
   SimpleShowLayout,
   required,
+  RichTextField,
 } from "admin-on-rest";
 
 // import { EmbeddedArrayField } from 'aor-embedded-array';
 import { ui } from 'oda-aor-rest';
+
+const LongTextField = TextField;
 
 const {
   DependentField,
