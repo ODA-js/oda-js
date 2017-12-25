@@ -45,7 +45,9 @@ export interface IField extends IModelType {
 
 export interface IRelation extends IModelType {
   verb: RelationType;
+  using?: IEntityRef;
   ref: IEntityRef;
+  fields?: Map<string, Field>;
 }
 
 export interface IBelongsToManyRelation extends IRelation {

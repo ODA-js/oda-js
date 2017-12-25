@@ -14,46 +14,6 @@ export class HasMany extends RelationBase {
     return this.$obj.hasMany;
   }
 
-  // public validate(pkg?: ModelPackage): IValidationResult[] {
-  //   const result: IValidationResult[] = super.validate(pkg);
-  //   // if (pkg) {
-  //   //   if (this.ref.backField) {
-  //   //     let bf = entity.fields.get(this.ref.backField);
-  //   //     if (!bf) {
-  //   //       result.push({
-  //   //         message: 'back field not exists',
-  //   //         result: ValidationResultType.fixable,
-  //   //       });
-
-  //   //       this.ref.backField = 'id';
-  //   //       bf = entity.fields.get(this.ref.backField);
-  //   //     }
-
-  //   //     if (!bf.identity) {
-  //   //       const update = bf.toJSON();
-  //   //       update.identity = true;
-  //   //       bf.updateWith(update);
-  //   //       result.push({
-  //   //         message: 'back field is not identity',
-  //   //         result: ValidationResultType.fixable,
-  //   //       });
-  //   //     }
-  //   //   }
-
-  //   //   if (!refField.indexed) {
-  //   //     const update = refField.toJSON();
-  //   //     update.indexed = true;
-  //   //     refField.updateWith(update);
-  //   //     result.push({
-  //   //       message: 'referenced field for HasMany relation must be indexed. fixed.',
-  //   //       result: ValidationResultType.fixable,
-  //   //     });
-  //   //   }
-
-  //   // }
-  //   return result;
-  // }
-
   constructor(obj: HasManyInput) {
     super(obj);
   }
