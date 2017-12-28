@@ -54,41 +54,6 @@ export class Entity extends ModelBase implements IEntity {
           }
         });
       }
-
-      // this.checkRelations(modelPackage);
-    }
-  }
-
-  public checkRelations(modelPackage: ModelPackage) {
-    if (modelPackage.relations.has(this.name)) {
-      let modelRelations = modelPackage.relations.get(this.name);
-      if (modelRelations) {
-        modelRelations.forEach((field) => {
-          let r = field.relation;
-          if (r instanceof BelongsToMany) {
-            if (modelPackage.entities.has(r.ref.entity)) {
-              let refe = modelPackage.entities.get(r.ref.entity);
-              if (refe && refe.fields.has(r.ref.field) && refe.identity.has(r.ref.field)) {
-                (r as BelongsToMany).ensureRelationClass(modelPackage);
-              }
-            } else {
-              let using = r.using;
-              // make sure that relationClass exists or created otherwise
-              (r as BelongsToMany).ensureRelationClass(modelPackage);
-              if (using && modelPackage.entities.has(using.entity)) {
-                // здесь нужно будет изменить тип ассоциации
-                let replaceRef = r.toJSON();
-                replaceRef.hasMany = replaceRef.using;
-
-                delete replaceRef.belongsToMany;
-                delete replaceRef.using;
-
-                field.relation = new HasMany(replaceRef);
-              }
-            }
-          }
-        });
-      }
     }
   }
 

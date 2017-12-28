@@ -19,11 +19,14 @@ export interface IModelType extends IValidate {
 }
 
 export interface IModel extends IModelType {
+  acl?: number;
   name: string;
   packages: Map<string, IPackage>;
 }
 
 export interface IPackage extends IModelType {
+  acl?: number;
+  abstract: boolean;
   name: string;
   metaModel: IModel;
   entities: Map<string, IEntity>;
@@ -267,6 +270,7 @@ export interface ModelBaseStorage {
 export interface ModelPackageInput extends ModelBaseInput {
   name: string;
   title?: string;
+  acl?: number;
   description?: string;
   abstract?: boolean;
   entities: string[];
@@ -275,6 +279,7 @@ export interface ModelPackageInput extends ModelBaseInput {
 
 export interface ModelPackageStore {
   name: string;
+  acl?: number;
   title?: string;
   description?: string;
   entities: string[];

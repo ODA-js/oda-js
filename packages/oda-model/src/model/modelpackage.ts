@@ -16,10 +16,12 @@ import { Mutation } from './mutation';
 import clean from '../lib/json/clean';
 
 /** Model package is the storage place of Entities */
-export class ModelPackage implements IValidate , IPackage {
+export class ModelPackage implements IValidate, IPackage {
   public modelType: MetaModelType = 'package';
   /** name of the package */
   public name: string;
+  /** acl level for security sort issues */
+  public acl: number;
   /** display title */
   public title?: string;
   /** description */
@@ -40,18 +42,25 @@ export class ModelPackage implements IValidate , IPackage {
     return validator.check(this);
   }
 
-  constructor(name?: string | ModelPackageInput, title?: string, description?: string, parent?: MetaModel) {
+  constructor(name?: string | ModelPackageInput, title?: string, description?: string, acl?: number) {
     if (typeof name === 'string') {
       this.name = name;
       this.title = title || this.name;
       this.description = description || this.name;
+      if (typeof acl === 'number') {
+        this.acl = acl;
+      }
     } else if (!name) {
       this.name = 'DefaultPackage';
+      this.acl = Number.MAX_VALUE;
     } else {
       this.name = name.name;
       this.title = name.title;
       this.description = name.description;
       this.abstract = this.abstract || name.abstract;
+      if (!this.abstract && name.acl) {
+        this.acl = name.acl;
+      }
     }
   }
 

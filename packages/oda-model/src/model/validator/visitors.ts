@@ -11,13 +11,9 @@ export class ModelVisitor {
     if (context.isValid) {
       const rules = this.validator.getRules('model');
       rules.forEach(rule => result.push(...rule.validate(context)));
-      model.packages.forEach(p => {
-        result.push(...this.validator.check(p, { model: context }).map(r => ({
-          ...r,
-          model: context.model.name,
-        })));
+      Array.from(model.packages.values()).filter(p => p.name !== model.name).forEach(p => {
+        result.push(...this.validator.check(p, { model: context }));
       });
-      return result;
     } else {
       result.push({
         model: context.model.name,
@@ -25,6 +21,10 @@ export class ModelVisitor {
         result: ValidationResultType.error,
       });
     }
+    return result.map(r => ({
+      ...r,
+      model: context.model.name,
+    }));
   }
   constructor(validator: Validator) {
     this.validator = validator;
@@ -44,10 +44,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
       const rules = this.validator.getRules('package');
       rules.forEach(rule => result.push(...rule.validate(context)));
       item.entities.forEach(p => {
-        result.push(... this.validator.check(p, { package: context }).map(r => ({
-          ...r,
-          package: context.package.name,
-        })));
+        result.push(... this.validator.check(p, { package: context }));
       });
     } else {
       result.push({
@@ -56,7 +53,10 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
         result: ValidationResultType.error,
       });
     }
-    return result;
+    return result.map(r => ({
+      ...r,
+      package: context.package.name,
+    }));
   }
 
   constructor(validator: Validator, model?: IModelContext) {
@@ -75,10 +75,7 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
       const rules = this.validator.getRules('entity');
       rules.forEach(rule => result.push(...rule.validate(context)));
       item.fields.forEach(p => {
-        result.push(...this.validator.check(p, { entity: context }).map(r => ({
-          ...r,
-          entity: context.entity.name,
-        })));
+        result.push(...this.validator.check(p, { entity: context }));
       });
     } else {
       result.push({
@@ -87,7 +84,10 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
         result: ValidationResultType.error,
       });
     }
-    return result;
+    return result.map(r => ({
+      ...r,
+      entity: context.entity.name,
+    }));
   }
 
   constructor(validator: Validator, pkg: IPackageContext) {
@@ -106,10 +106,7 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
       const rules = this.validator.getRules('field');
       rules.forEach(rule => result.push(...rule.validate(context)));
       if (item.relation) {
-        result.push(...this.validator.check(item.relation, { field: context }).map(r => ({
-          ...r,
-          field: context.field.name,
-        })));
+        result.push(...this.validator.check(item.relation, { field: context }));
       }
     } else {
       result.push({
@@ -117,7 +114,10 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
         result: ValidationResultType.error,
       });
     }
-    return result;
+    return result.map(r => ({
+      ...r,
+      field: context.field.name,
+    }));
   }
 
   constructor(validator: Validator, pkg: IEntityContext) {

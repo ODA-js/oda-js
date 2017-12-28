@@ -16,6 +16,8 @@ import refEntityNotFound from './common/refEntityNotFound';
 import refFieldNotFound from './common/refFieldNotFound';
 import refFieldNotIndexed from './common/refFieldNotIndexed';
 
+import BTMRefEntityNotFound from './belongsToMany/refEntityNotFound';
+
 export const common = [
   new refFieldNotFound(),
 ];
@@ -31,7 +33,7 @@ export const belongsTo = [
 ];
 
 export const belongsToMany = [
-  // new emptyName(),
+  new BTMRefEntityNotFound(),
   new ownerFieldUnnecesseryIndexed(),
   new refFieldNotIdentity(),
   new refBackFieldNotIdentity(),
