@@ -64,20 +64,9 @@ export class MetaModel extends ModelPackage implements IModel {
     return validator.check(this);
   }
 
-  // public validate(): IValidationResult[] {
-  //   const result: IValidationResult[] = super.validate();
-  //   ['packages'].forEach(item => Array.from(this[item].values()).forEach((e: IValidate) => {
-  //     result.push(...e.validate().map(p => ({
-  //       ...p,
-  //       package: this.name,
-  //     })));
-  //   }));
-
-  //   return result;
-  // }
-
   constructor(name: string = 'default') {
     super(name);
+    this.acl = Number.MAX_VALUE;
     this.ensureDefaultPackage();
   }
 
@@ -224,16 +213,21 @@ export class MetaModel extends ModelPackage implements IModel {
   }
 
   public addPackage(pckg: ModelPackageStore) {
-    let pack = new ModelPackage(pckg);
-    pack.connect(this);
-    this.packages.set(pckg.name, pack);
+    let pack: ModelPackage;
+    if (pckg.name && this.packages.has(pckg.name)) {
+      pack = this.packages.get(pckg.name);
+    } else {
+      pack = new ModelPackage(pckg);
+      pack.connect(this);
+      this.packages.set(pckg.name, pack);
+    }
     pckg.entities.forEach(e => {
-      if (this.entities.has(e)) {
-        pack.addEntity(this.entities.get(e));
+      if (this.entities.has(e) && !pack.entities.has(e)) {
+          pack.addEntity(this.entities.get(e));
       }
     });
     pckg.mutations.forEach(m => {
-      if (this.mutations.has(m)) {
+      if (this.mutations.has(m) && !pack.mutations.has(m)) {
         pack.addMutation(this.mutations.get(m));
       }
     });
