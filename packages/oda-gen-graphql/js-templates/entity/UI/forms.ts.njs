@@ -242,7 +242,7 @@ class Form extends Component {
       <SimpleForm {...props} >
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
-  .forEach( f=> { if(f.name === 'specialNotes') debugger;-#>
+  .forEach( f=> {-#>
         <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#})-#>
 <# entity.relations
@@ -310,7 +310,7 @@ class Form extends Component {
   let embededEntity = entity.UI.embedded.items[current].entity;
   let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
   const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
-  if(fieldCount > 0) { debugger;#>
+  if(fieldCount > 0) {#>
           <DependentInput resolve={detailsFor('#{f.field}')} scoped >
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
@@ -320,8 +320,7 @@ class Form extends Component {
 -#>
 <#-
         if(verb === 'BelongsToMany') {
-          debugger;
-          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{ debugger;-#>
+          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{-#>
             <#{fld.type}Input label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
           });
@@ -577,8 +576,7 @@ if(manyRels.length > 0){#>
         });-#>
 <#
         if(verb === 'BelongsToMany') {
-          debugger;
-          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{ debugger;-#>
+          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{-#>
             <DependentField resolve={showIfExists('#{fld.name}')} source="#{fld.name}" scoped >
               <#{fld.type}Field label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#}#> />
             </DependentField>

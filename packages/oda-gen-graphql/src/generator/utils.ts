@@ -1,5 +1,6 @@
 import { GeneratorConfig } from "./interfaces";
 import defaultConfig from './defaultConfig';
+import AclDefault from "../acl";
 
 export function ensureConfigValues(cp, pname) {
   if (!(cp.hasOwnProperty(pname)
@@ -122,17 +123,42 @@ export const expandConfig = (config: any, packages: string[]) => {
   return packConfig;
 };
 
-export function initPackages(secureAcl) {
+export interface IPackageDef {
+  [security: string]: {
+    acl: number;
+    entities: { [name: string]: boolean }
+    mutations: { [name: string]: boolean }
+  }
+}
+
+export function initPackages(secureAcl: AclDefault): IPackageDef {
   return Object.keys(secureAcl.map).reduce((store, cur) => {
-    store[cur] = {
-      entities: {},
-      mutations: {},
-    };
+    // only create if not exists!
+    if (!store[cur]) {
+      store[cur] = {
+        acl: secureAcl.acl(cur),
+        entities: {},
+        mutations: {},
+      };
+    }
     return store;
   }, {});
 }
 
-export function pushToAppropriate({ item, acl, path, secureAcl, packages }) {
+export function pushToAppropriate(
+  { item,
+    acl,
+    path,
+    secureAcl,
+    packages
+  }:
+    {
+      item: { name: string },
+      acl: any,
+      secureAcl: AclDefault,
+      path: string,
+      packages: IPackageDef,
+    }) {
   if (Array.isArray(acl)) {
     for (let i = 0, len = acl.length; i < len; i++) {
       pushToAppropriate({ item, acl: acl[i], path, secureAcl, packages });
@@ -141,7 +167,7 @@ export function pushToAppropriate({ item, acl, path, secureAcl, packages }) {
     let count = secureAcl.map[acl] + 1;
     let list = secureAcl.names.slice(0, count);
     for (let i = 0, len = list.length; i < len; i++) {
-      packages[list[i]][path][item.name] = 1;
+      packages[list[i]][path][item.name] = true;
     }
   }
 };

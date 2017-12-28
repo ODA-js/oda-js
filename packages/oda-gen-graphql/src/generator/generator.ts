@@ -66,7 +66,7 @@ export default (args: Generator) => {
 
   const existingTypes = knownTypes(actualTypeMapper);
   // generate per package
-  const errors: IValidationResult[] = collectErrors(packages, existingTypes);
+  const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
   if (hasResult(errors, ValidationResultType.error)) {
     console.error('please fix followings errors to proceed');
     showLog(errors);

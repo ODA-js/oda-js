@@ -46,7 +46,6 @@ import {
 export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {
-    if (entity === 'Student') debugger;
     rels.forEach((rel, fiedls) => {
       if (rel.relation.opposite) {
         relList.get(rel.relation.ref.entity).delete(rel.relation.opposite);

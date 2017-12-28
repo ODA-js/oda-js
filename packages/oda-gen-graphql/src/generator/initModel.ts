@@ -4,6 +4,7 @@ import * as path from 'path';
 
 import { initPackages, pushToAppropriate } from './utils';
 import { expandConfig } from './utils';
+import AclDefault from '../acl';
 
 const { get } = utils;
 
@@ -12,7 +13,10 @@ export default function ({
   hooks,
   secureAcl,
   config,
-}) {
+}: {
+    [keys: string]: any,
+    secureAcl: AclDefault,
+  }) {
 
   let modelStore = new MetaModel('system');
   if (typeof pack === 'string') {
@@ -86,6 +90,7 @@ export default function ({
     result.push({
       name: cur,
       abstract: false,
+      acl: pckgs[cur].acl,
       entities: Object.keys(pckgs[cur].entities),
       mutations: Object.keys(pckgs[cur].mutations),
     });

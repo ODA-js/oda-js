@@ -18,7 +18,9 @@ export default class AclDefault {
   public names: string[];
   // reverse order
   public map: { [key: string]: number };
-
+  public acl(pack) {
+    return this._acl[pack];
+  }
   public allow(role: string, access: string | string[]): boolean {
     if (Array.isArray(access)) {
       return access.some(a => this._acl[a] <= this._acl[role]);

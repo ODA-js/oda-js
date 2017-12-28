@@ -6,6 +6,7 @@ import AclDefault from '../acl';
 import * as template from '../graphql-backend-template';
 import initModel from './initModel';
 import { Generator } from './interfaces';
+import { MetaModel } from '../../../oda-model/dist/model/metamodel';
 
 const { get, deepMerge } = utils;
 const { defaultTypeMapper, prepareMapper } = template.utils;
@@ -85,11 +86,11 @@ export function knownTypes(typeMapper: { [key: string]: { [key: string]: string[
   return result;
 }
 
-export function collectErrors(packages: Map<string, ModelPackage>, existingTypes: object) {
-  const errors: IValidationResult[] = [];
-  packages.forEach((pkg: ModelPackage) => {
-    const validator = Validator();
-    errors.push(...pkg.validate(validator));
+export function collectErrors(model: MetaModel, existingTypes: object) {
+  const validator = Validator();
+  const errors: IValidationResult[] = model.validate(validator);
+  //custom validator
+  model.packages.forEach((pkg: ModelPackage) => {
     Array.from(pkg.entities.values()).forEach((cur) => {
       Array.from(cur.fields.values())
         .filter(f => !f.relation)
@@ -132,13 +133,16 @@ export default (args: Generator) => {
   let secureAcl = new AclDefault(acl)
 
   //mutating config...
-  const { packages } = initModel({ pack, hooks, secureAcl, config });
+  const { packages, modelStore } = initModel({ pack, hooks, secureAcl, config });
 
   const actualTypeMapper = deepMerge(defaultTypeMapper, context.typeMapper || {});
 
   const existingTypes = knownTypes(actualTypeMapper);
   // generate per package
-  const errors: IValidationResult[] = collectErrors(packages, existingTypes);
+
+  // const errors: IValidationResult[] = collectErrors(packages, existingTypes);
+  const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
+
   showLog(errors);
 }
 
