@@ -1,6 +1,19 @@
 import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult, ValidationResultType } from '../interfaces';
-import { EntityContext, FieldContext, ModelContext, PackageContext, RelationContext } from './contexts';
-import { IVisitor, Validator } from './validator';
+import {
+  EntityContext, FieldContext, ModelContext, PackageContext,
+  RelationContext,
+  RestartType,
+  RestartLevelError,
+  ModelLevel,
+  PackageLevel,
+  EntityLevel,
+  FieldLevel,
+  RelationLevel,
+} from './contexts';
+import {
+  IVisitor,
+  Validator,
+} from './validator';
 import { IEntityContext, IFieldContext, IModelContext, IPackageContext } from './interfaces';
 
 export class ModelVisitor {
@@ -9,11 +22,21 @@ export class ModelVisitor {
     const context = new ModelContext(model);
     const result: IValidationResult[] = [];
     if (context.isValid) {
-      const rules = this.validator.getRules('model');
-      rules.forEach(rule => result.push(...rule.validate(context)));
-      Array.from(model.packages.values()).filter(p => p.name !== model.name).forEach(p => {
-        result.push(...this.validator.check(p, { model: context }));
-      });
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('model');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          Array.from(model.packages.values()).filter(p => p.name !== model.name).forEach(p => {
+            result.push(...this.validator.check(p, { model: context }));
+          });
+          done = true;
+        } catch (err) {
+          if (!(err instanceof RestartLevelError)) {
+            throw err;
+          }
+        }
+      }
     } else {
       result.push({
         model: context.model.name,
@@ -41,11 +64,21 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
     const context = new PackageContext(this.context, item);
     const result = [];
     if (context.isValid) {
-      const rules = this.validator.getRules('package');
-      rules.forEach(rule => result.push(...rule.validate(context)));
-      item.entities.forEach(p => {
-        result.push(... this.validator.check(p, { package: context }));
-      });
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('package');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          item.entities.forEach(p => {
+            result.push(... this.validator.check(p, { package: context }));
+          });
+          done = true;
+        } catch (err) {
+          if (!(err instanceof PackageLevel)) {
+            throw err;
+          }
+        }
+      }
     } else {
       result.push({
         package: context.package.name,
@@ -72,11 +105,21 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
     const context = new EntityContext(this.context, item);
     const result = [];
     if (context.isValid) {
-      const rules = this.validator.getRules('entity');
-      rules.forEach(rule => result.push(...rule.validate(context)));
-      item.fields.forEach(p => {
-        result.push(...this.validator.check(p, { entity: context }));
-      });
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('entity');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          item.fields.forEach(p => {
+            result.push(...this.validator.check(p, { entity: context }));
+          });
+          done = true;
+        } catch (err) {
+          if (!(err instanceof EntityLevel)) {
+            throw err;
+          }
+        }
+      }
     } else {
       result.push({
         entity: context.entity.name,
@@ -103,10 +146,20 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
     const context = new FieldContext(this.context, item);
     const result = [];
     if (context.isValid) {
-      const rules = this.validator.getRules('field');
-      rules.forEach(rule => result.push(...rule.validate(context)));
-      if (item.relation) {
-        result.push(...this.validator.check(item.relation, { field: context }));
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('field');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          if (item.relation) {
+            result.push(...this.validator.check(item.relation, { field: context }));
+          }
+          done = true;
+        } catch (err) {
+          if (!(err instanceof FieldLevel)) {
+            throw err;
+          }
+        }
       }
     } else {
       result.push({
@@ -133,30 +186,40 @@ export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
     const context = new RelationContext(this.context, item);
     const result = [];
     if (context.isValid) {
-      const rules = this.validator.getRules('relation');
-      rules.forEach(rule => result.push(...rule.validate(context)));
-      switch (item.verb) {
-        case 'BelongsTo': {
-          const belongsTo = this.validator.getRules('BelongsTo');
-          belongsTo.forEach(rule => result.push(...rule.validate(context)));
-          break;
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('relation');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          switch (item.verb) {
+            case 'BelongsTo': {
+              const belongsTo = this.validator.getRules('BelongsTo');
+              belongsTo.forEach(rule => result.push(...rule.validate(context)));
+              break;
+            }
+            case 'BelongsToMany': {
+              const belongsToMany = this.validator.getRules('BelongsToMany');
+              belongsToMany.forEach(rule => result.push(...rule.validate(context)));
+              break;
+            }
+            case 'HasOne': {
+              const hasOne = this.validator.getRules('HasOne');
+              hasOne.forEach(rule => result.push(...rule.validate(context)));
+              break;
+            }
+            case 'HasMany': {
+              const hasMany = this.validator.getRules('HasMany');
+              hasMany.forEach(rule => result.push(...rule.validate(context)));
+              break;
+            }
+            default:
+          }
+          done = true;
+        } catch (err) {
+          if (!(err instanceof RelationLevel)) {
+            throw err;
+          }
         }
-        case 'BelongsToMany': {
-          const belongsToMany = this.validator.getRules('BelongsToMany');
-          belongsToMany.forEach(rule => result.push(...rule.validate(context)));
-          break;
-        }
-        case 'HasOne': {
-          const hasOne = this.validator.getRules('HasOne');
-          hasOne.forEach(rule => result.push(...rule.validate(context)));
-          break;
-        }
-        case 'HasMany': {
-          const hasMany = this.validator.getRules('HasMany');
-          hasMany.forEach(rule => result.push(...rule.validate(context)));
-          break;
-        }
-        default:
       }
     } else {
       result.push({

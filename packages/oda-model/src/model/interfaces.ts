@@ -51,6 +51,9 @@ export interface IRelation extends IModelType {
   using?: IEntityRef;
   ref: IEntityRef;
   fields?: Map<string, Field>;
+  opposite?: string;
+  toObject(): RelationBaseInput;
+  updateWith(obj: RelationBaseInput): void;
 }
 
 export interface IBelongsToManyRelation extends IRelation {

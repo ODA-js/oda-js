@@ -156,7 +156,7 @@ export class Field extends FieldBase implements IField {
   }
 
   // it get clean object with no default values
-  public toJSON(modelPackage?: ModelPackage): any {
+  public toJSON(modelPackage?: ModelPackage): FieldInput {
     let props = this.$obj;
     let res = super.toJSON();
     return clean({

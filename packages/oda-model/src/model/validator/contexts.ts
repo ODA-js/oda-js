@@ -1,6 +1,33 @@
 import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult } from '../interfaces';
 import { IEntityContext, IFieldContext, IModelContext, IPackageContext, IRelationContext } from './interfaces';
 
+export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation';
+
+export class RestartLevelError extends Error { }
+
+export class ModelLevel extends RestartLevelError { }
+export class PackageLevel extends RestartLevelError { }
+export class EntityLevel extends RestartLevelError { }
+export class FieldLevel extends RestartLevelError { }
+export class RelationLevel extends RestartLevelError { }
+
+export function restart(type: RestartType) {
+  switch (type) {
+    case 'model':
+      throw new ModelLevel();
+    case 'package':
+      throw new PackageLevel();
+    case 'entity':
+      throw new EntityLevel();
+    case 'field':
+      throw new FieldLevel();
+    case 'relation':
+      throw new RelationLevel();
+    default:
+      throw Error('unknown restart level');
+  }
+}
+
 export class ModelContext implements IModelContext {
   public model: IModel;
   public errors: IValidationResult[];
@@ -10,6 +37,10 @@ export class ModelContext implements IModelContext {
   }
   public get isValid() {
     return !!(this.model);
+  }
+
+  public restart(level: RestartType) {
+    restart('model');
   }
 }
 
@@ -25,6 +56,10 @@ export class PackageContext implements IPackageContext {
   }
   public get isValid() {
     return !!(this.model && this.package);
+  }
+
+  public restart(level: RestartType) {
+    restart('package');
   }
 }
 
@@ -42,6 +77,10 @@ export class EntityContext implements IEntityContext {
   public get isValid() {
     return !!(this.model && this.package && this.entity);
   }
+
+  public restart(level: RestartType) {
+    restart('entity');
+  }
 }
 
 export class FieldContext implements IFieldContext {
@@ -58,6 +97,10 @@ export class FieldContext implements IFieldContext {
   }
   public get isValid() {
     return !!(this.model && this.package && this.entity && this.field);
+  }
+
+  public restart(level: RestartType) {
+    restart('field');
   }
 }
 
@@ -77,5 +120,9 @@ export class RelationContext implements IRelationContext {
   }
   public get isValid() {
     return !!(this.model && this.package && this.entity && this.field && this.relation);
+  }
+
+  public restart(level: RestartType) {
+    restart('relation');
   }
 }

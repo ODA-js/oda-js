@@ -4,22 +4,27 @@ import refBackFieldIsIdentity from './belongsTo/refBackFieldIsIdentity';
 import BTRefBackFieldNotExists from './belongsTo/refBackFieldNotExists';
 import refBackFieldNotIndexed from './belongsTo/refBackFieldNotIndexed';
 import refFieldNotIdentity from './belongsTo/refFieldNotIdentity';
+import BTMRefEntityNotFound from './belongsToMany/refEntityNotFound';
 import usingBackFieldNotExists from './belongsToMany/usingBackFieldNotExists';
 import usingBackFieldNotIdentity from './belongsToMany/usingBackFieldNotIdentity';
 import usingEntityNotFound from './belongsToMany/usingEntityNotFound';
 import usingFieldNotExists from './belongsToMany/usingFieldNotExists';
 import usingFieldsCheck from './belongsToMany/usingFieldsCheck';
+import notCompatibleRelationEnds from './common/notCompatibleRelationEnds';
+import oppositeNotFound from './common/oppositeNotFound';
 import ownerFieldUnnecesseryIndexed from './common/ownerFieldUnnecesseryIndexed';
+import possibleOppositeNotFound from './common/possibleOppositeNotFound';
 import refBackFieldNotExists from './common/refBackFieldNotExists';
 import refBackFieldNotIdentity from './common/refBackFieldNotIdentity';
 import refEntityNotFound from './common/refEntityNotFound';
 import refFieldNotFound from './common/refFieldNotFound';
 import refFieldNotIndexed from './common/refFieldNotIndexed';
 
-import BTMRefEntityNotFound from './belongsToMany/refEntityNotFound';
-
 export const common = [
   new refFieldNotFound(),
+  new notCompatibleRelationEnds(),
+  new oppositeNotFound(),
+  new possibleOppositeNotFound(),
 ];
 
 export const belongsTo = [
