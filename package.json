@@ -8,7 +8,8 @@
     "clean": "./tasks/clean.sh",
     "compile": "./tasks/compile.sh",
     "install-it": "./tasks/install.sh",
-    "run-publish": "lerna publish"
+    "run-publish": "lerna publish",
+    "bootstrap": "lerna bootstrap"
   },
   "dependencies": {}
 }

@@ -2,7 +2,7 @@
 for i in $(ls -d packages/*/); do
   echo ${i%%/};
   pushd ${i%%/}
-  yarn
+  npm i 
   ./compile.sh
   popd
 done
