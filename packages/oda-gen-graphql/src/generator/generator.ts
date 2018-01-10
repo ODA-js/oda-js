@@ -1,5 +1,5 @@
 import { Factory } from 'fte.js';
-import { MetaModel, IValidationResult } from 'oda-model';
+import { MetaModel, IValidationResult, ValidationResultType } from 'oda-model';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as template from '../graphql-backend-template';
@@ -22,7 +22,6 @@ import templateEngine from './templateEngine';
 import initModel from './initModel';
 import { collectErrors, showLog, knownTypes, hasResult } from './validate';
 import { error } from 'util';
-import { ValidationResultType } from '../../../oda-model/dist/model/interfaces';
 
 export default (args: Generator) => {
   let {
