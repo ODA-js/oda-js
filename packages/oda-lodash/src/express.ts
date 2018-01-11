@@ -1,9 +1,9 @@
-
-import * as express from 'express';
-import * as url from 'url';
-import { GraphQLOptions, HttpQueryError, runHttpQuery, resolveGraphqlOptions } from 'apollo-server-core';
+import { GraphQLOptions, HttpQueryError, runHttpQuery } from 'apollo-server-core';
 import { ExpressGraphQLOptionsFunction, ExpressHandler } from 'apollo-server-express';
+import * as express from 'express';
+
 import { graphqlLodash } from './gql';
+
 
 export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOptionsFunction): ExpressHandler {
   if (!options) {
@@ -48,7 +48,7 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
         } else {
           if (apply) {
             return JSON.stringify({
-              data: transform(JSON.parse(gqlResponse).data)
+              data: transform(JSON.parse(gqlResponse).data),
             });
           } else {
             return gqlResponse;

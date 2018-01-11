@@ -1,4 +1,5 @@
 import graphql from 'graphql-anywhere';
+
 import { graphqlLodash } from './gql';
 
 export function filter(doc, data) {

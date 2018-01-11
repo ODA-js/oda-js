@@ -126,6 +126,7 @@ const transformations = {
             return parseFloat(obj);
           case 'toString':
             return obj.toString();
+          default:
         }
       } else {
         switch (type) {
@@ -133,6 +134,7 @@ const transformations = {
             return NaN;
           case 'toString':
             return '';
+          default:
         }
       }
     },

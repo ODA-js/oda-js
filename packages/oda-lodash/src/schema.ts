@@ -2,7 +2,7 @@
 import { types, lib } from 'oda-gen-common';
 const { deepMerge } = lib;
 import { makeExecutableSchema } from 'graphql-tools';
-import { LodashModule } from './lodash'
+import { LodashModule } from './lodash';
 
 class LodashSchema extends types.GQLModule {
   protected _name = 'LodashSchema';
@@ -40,7 +40,7 @@ class LodashSchema extends types.GQLModule {
   }
 }
 
-var _lodashAST;
+let _lodashAST;
 
 export function lodashAST() {
   if (!_lodashAST) {

@@ -1,5 +1,6 @@
-import { QueryOptions, GraphQLResponse } from 'apollo-server-core/dist/runQuery';
 import { runQuery } from 'apollo-server-core';
+import { GraphQLResponse, QueryOptions } from 'apollo-server-core/dist/runQuery';
+
 import { graphqlLodash } from './gql';
 
 export function runQueryLodash(options: QueryOptions): Promise<GraphQLResponse> {
