@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
-import * as  PropTypes from 'prop-types';
-import * as get from 'lodash.get';
 import { SimpleShowLayout } from 'admin-on-rest';
+import * as PropTypes from 'prop-types';
+
 import dataLoadWrapper from './loadEmbeddedRef';
 
 /**

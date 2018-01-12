@@ -2,9 +2,10 @@ import * as comparator from 'comparator.js';
 import * as differenceWith from 'lodash/differenceWith';
 import * as intersectionWith from 'lodash/intersectionWith';
 import * as isEqual from 'lodash/isEqual';
+
 import { actionType } from './../ui/consts';
-import { IResourceContainer, INamedField } from './resource/interfaces';
 import { queries } from './resource/consts';
+import { INamedField, IResourceContainer } from './resource/interfaces';
 
 function sameId(a, b) {
   return a.id === b.id;

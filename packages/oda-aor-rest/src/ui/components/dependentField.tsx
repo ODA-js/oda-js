@@ -1,10 +1,11 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import FormField from 'admin-on-rest/lib/mui/form/FormField';
-import getValue from './getValue';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import * as PropTypes from 'prop-types';
+
+import getValue from './getValue';
 
 export const DependentInputComponent = ({ children, show, root, ...props }) => {
   if (!show) {

@@ -1,10 +1,10 @@
-import ResourceOperation from "../resourceOperation";
-import { IResourceOperation, refType, IResource, IResourceOperationDefinition } from "../interfaces";
-import { reshape } from "oda-lodash";
+import { reshape } from 'oda-lodash';
+
+import { refType } from '../interfaces';
+import ResourceOperation from '../resourceOperation';
 import createField from './../../createField';
-import createSingle from './../../createSingle';
 import createMany from './../../createMany';
-import { debug } from "util";
+import createSingle from './../../createSingle';
 
 export default class extends ResourceOperation {
   public get query(): any {

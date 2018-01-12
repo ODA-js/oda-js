@@ -1,8 +1,7 @@
+import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'admin-on-rest/lib/actions/accumulateActions';
+import * as get from 'lodash/get';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
-import * as get from 'lodash/get';
-
-import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'admin-on-rest/lib/actions/accumulateActions';
 
 export const getReferences = (state, reference, ids) => {
   if (ids.length === 0) return [];

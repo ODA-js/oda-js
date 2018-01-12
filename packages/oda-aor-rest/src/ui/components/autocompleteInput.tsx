@@ -1,15 +1,11 @@
 import * as React from 'react';
 import { Component } from 'react';
-import * as PropTypes from 'prop-types';
-import * as get from 'lodash/get';
-import * as _ from 'lodash';
-import * as isEqual from 'lodash/isEqual';
-import * as diff from 'lodash/difference';
-
-import AutoComplete from 'material-ui/AutoComplete';
-
-import FieldTitle from 'admin-on-rest/lib/util/FieldTitle';
 import * as translate from 'admin-on-rest/lib/i18n/translate';
+import FieldTitle from 'admin-on-rest/lib/util/FieldTitle';
+import * as _ from 'lodash';
+import * as get from 'lodash/get';
+import AutoComplete from 'material-ui/AutoComplete';
+import * as PropTypes from 'prop-types';
 
 /**
  * An Input component for an autocomplete field, using an array of objects for the options

@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { connect } from 'react-redux';
-import compose from 'recompose/compose';
-import * as PropTypes from 'prop-types';
-import * as get from 'lodash/get';
-import { SimpleShowLayout } from 'admin-on-rest';
 import { EmbeddedArrayField as Extendee } from 'aor-embedded-array';
+import * as PropTypes from 'prop-types';
+
 import dataLoadWrapper from './loadEmbeddedArray';
-import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'admin-on-rest/lib/actions/accumulateActions';
 
 /**
  * A container component that shows embedded array elements as a list of input sets

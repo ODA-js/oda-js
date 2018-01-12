@@ -1,11 +1,8 @@
-import ResourceOperation from "../resourceOperation";
-import { IResourceOperation, IResourceOperationDefinition, IResource } from "../interfaces";
-import { reshape } from "oda-lodash";
-import createField from './../../createField';
-import createSingle from './../../createSingle';
-import createMany from './../../createMany';
-import { SortOrder } from "../../../constants";
 import * as set from 'lodash/set';
+import { reshape } from 'oda-lodash';
+
+import { SortOrder } from '../../../constants';
+import ResourceOperation from '../resourceOperation';
 
 export default class extends ResourceOperation {
   public get query(): any {

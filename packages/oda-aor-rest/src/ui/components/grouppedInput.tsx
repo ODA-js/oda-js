@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Component } from 'react';
 import * as PropTypes from 'prop-types';
-import { Field } from 'redux-form';
-import * as inflection from 'inflection';
 import { translate } from 'admin-on-rest';
-import EmbeddedArrayInputFormField from './embeddedArrayInputFormField';
+import * as inflection from 'inflection';
+import { Field } from 'redux-form';
 
+import EmbeddedArrayInputFormField from './embeddedArrayInputFormField';
 import Label from './label';
 import styles from './styles';
 

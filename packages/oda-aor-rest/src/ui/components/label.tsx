@@ -1,10 +1,9 @@
 import * as React from 'react';
-
+import * as translate from 'admin-on-rest/lib/i18n/translate';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextFieldLabel from 'material-ui/TextField/TextFieldLabel';
 
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import * as translate from 'admin-on-rest/lib/i18n/translate';
 import styles from './styles';
 
 const Label = ({ style, text, children, translate }, { muiTheme = getMuiTheme(lightBaseTheme) }) => {

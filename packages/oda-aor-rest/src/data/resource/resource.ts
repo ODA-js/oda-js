@@ -1,30 +1,9 @@
 import * as merge from 'lodash/merge';
-import { IResourceOperationsDefinition, IResourceQueryDefinitions, FragmentsDefintions } from './interfaces';
-import { reshape } from 'oda-lodash';
-import { PageInfoType } from 'oda-gen-common/dist/types';
-import {
-  Create,
-  Delete,
-  GetMany,
-  GetList,
-  GetManyReference,
-  GetOne,
-  Update
-} from './operations';
 
+import { FragmentsDefintions, IResourceOperationsDefinition, IResourceQueryDefinitions } from './interfaces';
+import { FieldsDefinition, IResource, IResourceContainer, IResourceDefinition } from './interfaces';
+import { Create, Delete, GetList, GetMany, GetManyReference, GetOne, Update } from './operations';
 import ResourceOperation from './resourceOperation';
-
-import {
-  IResource,
-  IResourceDefinition,
-  ResponseFunction,
-  UpdateFunction,
-  VariablesFunction,
-  IResourceContainer,
-  IResourceOperationDefinition,
-  IField,
-  FieldsDefinition,
-} from './interfaces';
 
 export default class implements IResource {
   public get fragments() {

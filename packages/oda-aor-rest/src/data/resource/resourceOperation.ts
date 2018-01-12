@@ -1,10 +1,16 @@
 import { SortOrder } from './../../constants';
-
-import { IResourceOperation, ResponseFunction, UpdateFunction, VariablesFunction, IResourceContainer, IResourceOperationDefinition, IResource, FilterByFunction, OrderByFunction, ShouldFakeExecuteFunction } from "./interfaces";
-import { reshape } from "oda-lodash";
-import { result } from './consts';
+import {
+  FilterByFunction,
+  IResource,
+  IResourceOperation,
+  IResourceOperationDefinition,
+  OrderByFunction,
+  ResponseFunction,
+  ShouldFakeExecuteFunction,
+  UpdateFunction,
+  VariablesFunction,
+} from './interfaces';
 import { queries } from './resourceContainer';
-import { shouldInclude } from 'graphql-anywhere/lib/src/directives';
 
 export default abstract class implements IResourceOperation {
   public get query(): any {

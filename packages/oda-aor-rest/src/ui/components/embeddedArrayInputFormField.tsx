@@ -1,7 +1,7 @@
 import * as React from 'react';
+import Labeled from 'admin-on-rest';
 import { Field } from 'redux-form';
 
-import Labeled from 'admin-on-rest';
 import isRequired from './isRequired';
 
 /**

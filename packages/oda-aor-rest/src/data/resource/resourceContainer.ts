@@ -1,6 +1,7 @@
-import { IResourceContainer, IResource, IResourceDefinition, IResourceOperation } from './interfaces';
 import { queries } from './consts';
+import { IResource, IResourceContainer, IResourceDefinition } from './interfaces';
 import Resource from './resource';
+
 export { queries }
 
 export default class implements IResourceContainer {

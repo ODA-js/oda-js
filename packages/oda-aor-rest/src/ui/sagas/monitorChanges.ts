@@ -1,8 +1,8 @@
-import { take, race, call, TakeEffect, RaceEffect } from 'redux-saga/effects';
-import { SELECTOR_INIT, SELECTOR_CLEAR } from './../consts';
+import { call, race, take, TakeEffect, RaceEffect } from 'redux-saga/effects';
 
-import getChanges from './getChanges';
+import { SELECTOR_CLEAR, SELECTOR_INIT } from './../consts';
 import getEmbedForm from './embedForm';
+import getChanges from './getChanges';
 import getInitForm from './initForm';
 
 export default function* () {

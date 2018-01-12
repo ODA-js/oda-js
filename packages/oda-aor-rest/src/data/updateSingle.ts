@@ -1,7 +1,8 @@
 import * as comparator from 'comparator.js';
+
 import { actionType } from './../ui/consts';
 import { queries } from './resource/consts';
-import { IResourceContainer, INamedField } from './resource/interfaces';
+import { INamedField, IResourceContainer } from './resource/interfaces';
 
 export default function (data: object, previousData: object, field: INamedField, resources: IResourceContainer) {
   const fieldId = field.name + 'Id';

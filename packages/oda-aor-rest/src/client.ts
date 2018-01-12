@@ -1,7 +1,6 @@
 import buildApolloClient from './apollo';
-import { ApolloClient } from 'apollo-client';
 import { QUERY_TYPES } from './constants';
-import { IResourceContainer, IResource, IResourceOperation } from './data/resource/interfaces';
+import { IResource, IResourceContainer, IResourceOperation } from './data/resource/interfaces';
 
 export default ({ client: clientOptions, resources, fetchPolicy = 'network-only' }: {
   client: any,

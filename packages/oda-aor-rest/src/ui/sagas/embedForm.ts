@@ -1,7 +1,7 @@
-import { FORM_EMBED_RELATION } from './../consts';
-import { take, put, select, TakeEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
 import { change, formValueSelector } from 'redux-form';
-import { actionType } from './../consts';
+import { put, select, take, TakeEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
+
+import { FORM_EMBED_RELATION } from './../consts';
 
 export default function ({ form }) {
   return function* () {

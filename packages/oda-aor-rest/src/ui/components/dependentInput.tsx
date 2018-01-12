@@ -1,7 +1,8 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import * as PropTypes from 'prop-types';
 import { formValueSelector, getFormValues } from 'redux-form';
+
 import FormInput from './formInput';
 import getValue from './getValue';
 
