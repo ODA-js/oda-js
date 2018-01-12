@@ -94,4 +94,5 @@ export type Generator = {
     };
     defaultAdapter?: string;
   };
+  logs?: string | string[];
 };

@@ -26,10 +26,10 @@ export function hasResult(log: IValidationResult[], type: ValidationResultType) 
 
 export function showLog(log,
   visibility: ValidationResultType[] = [
-    ValidationResultType.error,
-    ValidationResultType.warning,
-    ValidationResultType.critics,
-    ValidationResultType.fixable,
+    'error',
+    'warning',
+    'critics',
+    'fixable',
   ]) {
   visibility.forEach(visibilityItem => {
     const current = log
@@ -97,10 +97,11 @@ export function collectErrors(model: MetaModel, existingTypes: object) {
         .forEach(fld => {
           if (!existingTypes[fld.type.toLowerCase()]) {
             errors.push({
+              package: pkg.name,
               entity: cur.name,
               field: fld.name,
-              result: ValidationResultType.error,
-              message: 'type have proper mapping'
+              result: 'error',
+              message: `type '${fld.type}' have no proper mapping`,
             });
           }
         });
@@ -127,6 +128,7 @@ export default (args: Generator) => {
       typeMapper: any,
       defaultAdapter: string,
     },
+    logs,
   } = args;
 
   // передавать в методы кодогенерации.

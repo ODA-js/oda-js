@@ -24,7 +24,7 @@ export default class extends ResourceOperation {
     }
 
     if (!this._shouldFakeExecute) {
-      this._shouldFakeExecute = (variables) => {
+      this._shouldFakeExecute = (variables: { input: object }) => {
         return (Object.keys(variables.input).length === 1) ? { data: variables.input } : false;
       }
     }

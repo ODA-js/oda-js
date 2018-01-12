@@ -1,5 +1,5 @@
 import { Factory } from 'fte.js';
-import { MetaModel, IValidationResult, ValidationResultType } from 'oda-model';
+import { MetaModel, IValidationResult } from 'oda-model';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as template from '../graphql-backend-template';
@@ -41,6 +41,7 @@ export default (args: Generator) => {
       typeMapper: any,
       defaultAdapter: string,
     },
+    logs,
   } = args;
 
   const actualTypeMapper = deepMerge(defaultTypeMapper, context.typeMapper || {});
@@ -66,11 +67,11 @@ export default (args: Generator) => {
   const existingTypes = knownTypes(actualTypeMapper);
   // generate per package
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
-  if (hasResult(errors, ValidationResultType.error)) {
+  if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
-    showLog(errors);
+    showLog(errors, ['error']);
   } else {
-    showLog(errors, [ValidationResultType.fixable, ValidationResultType.warning])
+    showLog(errors, ['fixable', 'warning'])
     config = _config;
 
     fs.ensureDirSync(rootDir);
