@@ -29,11 +29,12 @@ export default () => {
 
 <#for(let i = 0, len = entity.indexes.length; i < len; i++){
     let index = entity.indexes[i];
+    let textIndex = index.name === 'text' ? '\'text\'': 0;
   -#>
 
   $#{entity.name}.index({
 <#- for(let field in index.fields){#>
-    #{field}: #{index.fields[field]},<#}#>
+    #{field}: #{textIndex || index.fields[field]},<#}#>
   }, {
 <#- for(let field in index.options){#>
 <#- if(index.options[field]){#>
