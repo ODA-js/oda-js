@@ -88,9 +88,11 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
     indexes: indexes(entity).map(i => adapter === 'mongoose' ? ({
       fields: i.fields,
       options: i.options,
+      name: i.name,
     }) : ({
       fields: i.fields,
       options: i.options,
+      name: i.name,
     })),
   };
 }

@@ -103,26 +103,64 @@ export class Entity extends ModelBase implements IEntity {
         // indexName = indexName.length > 1 ? indexName : indexName[0];
       }
       let entry = {
+        name: indexName,
         fields: {
           [f.name]: 1,
         },
         options: {
           sparse: true,
-          unique: f.identity,
         },
       };
       if (typeof indexName === 'string') {
-        indexes[indexName] = entry;
+        this.mergeIndex(indexes, indexName, entry);
       } else {
         for (let i = 0, len = indexName.length; i < len; i++) {
           let index = indexName[i];
-          if (indexes.hasOwnProperty(index)) {
-            indexes[index] = deepMerge(indexes[index], entry);
-          } else {
-            indexes[index] = entry;
-          }
+          this.mergeIndex(indexes, index, entry);
         }
       }
+    }
+  }
+
+  protected updateUniqueIndex(f: Field) {
+    let indexes = this.getMetadata('storage.indexes', {});
+    if (f.identity) {
+      let indexName: string | string[];
+      if (typeof f.identity === 'boolean') {
+        indexName = f.name;
+      } else if (Array.isArray(f.identity)) {
+        indexName = f.identity;
+      } else if (typeof f.identity === 'string') {
+        indexName = f.identity.split(' ');
+        // indexName = indexName.length > 1 ? indexName : indexName[0];
+      }
+      let entry = {
+        name: indexName,
+        fields: {
+          [f.name]: 1,
+        },
+        options: {
+          sparse: true,
+          unique: true,
+        },
+      };
+      if (typeof indexName === 'string') {
+        this.mergeIndex(indexes, indexName, entry);
+      } else {
+        for (let i = 0, len = indexName.length; i < len; i++) {
+          let index = indexName[i];
+          this.mergeIndex(indexes, index, entry);
+        }
+      }
+    }
+  }
+
+  protected mergeIndex(indexes: any, index: string, entry: any) {
+    if (indexes.hasOwnProperty(index)) {
+      indexes[index] = deepMerge(indexes[index], entry);
+      indexes[index].name = indexes[index].name[0];
+    } else {
+      indexes[index] = entry;
     }
   }
 
@@ -167,6 +205,7 @@ export class Entity extends ModelBase implements IEntity {
 
         if (field.identity) {
           identity.add(field.name);
+          this.updateUniqueIndex(field);
         }
 
         if (field.required) {
