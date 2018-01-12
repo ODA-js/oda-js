@@ -160,9 +160,9 @@ function applyOnPath(result, pathToArgs) {
   return traverse(result, pathToArgs);
 
   function traverse(root, pathRoot) {
-    // if (root === null || root === undefined)
-    //   debugger;
+    // if (root === null || root === undefined) {
     //   return null;
+    // }
     if (Array.isArray(root)) {
       return root.map(item => traverse(item, pathRoot));
     }
@@ -176,8 +176,9 @@ function applyOnPath(result, pathToArgs) {
         currentPath.push(key);
 
         let changedValue = traverse(get(root, key), get(pathRoot, key));
-        // if (changedValue === null || changedValue === undefined)
+        // if (changedValue === null || changedValue === undefined){
         //   continue;
+        // }
 
         const lodashArgs = get(pathRoot, [key, '@_'].join('.'));
         changedValue = applyLodashArgs(currentPath, changedValue, lodashArgs);
