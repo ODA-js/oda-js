@@ -106,7 +106,6 @@ function getLodashDirectiveArgs(node, lodashDirectiveDef) {
   if (lodashNode === null) {
     return null;
   }
-  debugger;
   const args = argumentsObjectFromField(lodashNode, lodashDirectiveDef);
   return normalizeLodashArgs(lodashNode.arguments, args);
 }
