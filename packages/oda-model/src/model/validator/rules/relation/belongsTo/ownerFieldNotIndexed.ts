@@ -1,7 +1,7 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
-import { Rule } from '../../../rules';
 import { Field } from '../../../../index';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
+import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-belongsTo-owner-field-is-not-indexed';
@@ -14,7 +14,7 @@ export default class implements Rule<IRelationContext> {
       (<Field>context.field).updateWith(update);
       result.push({
         message: this.description,
-        result: ValidationResultType.fixable,
+        result: 'fixable',
       });
     }
     return result;

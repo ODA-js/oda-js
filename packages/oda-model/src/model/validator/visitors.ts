@@ -1,20 +1,18 @@
 import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult, ValidationResultType } from '../interfaces';
 import {
-  EntityContext, FieldContext, ModelContext, PackageContext,
-  RelationContext,
-  RestartType,
-  RestartLevelError,
-  ModelLevel,
-  PackageLevel,
+  EntityContext,
   EntityLevel,
+  FieldContext,
   FieldLevel,
+  ModelContext,
+  PackageContext,
+  PackageLevel,
+  RelationContext,
   RelationLevel,
+  RestartLevelError,
 } from './contexts';
-import {
-  IVisitor,
-  Validator,
-} from './validator';
 import { IEntityContext, IFieldContext, IModelContext, IPackageContext } from './interfaces';
+import { IVisitor, Validator } from './validator';
 
 export class ModelVisitor {
   public validator: Validator;
@@ -41,7 +39,7 @@ export class ModelVisitor {
       result.push({
         model: context.model.name,
         message: 'Validation context invalid',
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result.map(r => ({
@@ -83,7 +81,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
       result.push({
         package: context.package.name,
         message: 'Validation context invalid',
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result.map(r => ({
@@ -124,7 +122,7 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
       result.push({
         entity: context.entity.name,
         message: 'Validation context invalid',
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result.map(r => ({
@@ -164,7 +162,7 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
     } else {
       result.push({
         message: 'Validation context invalid',
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result.map(r => ({
@@ -224,7 +222,7 @@ export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
     } else {
       result.push({
         message: 'Validation context invalid',
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result;

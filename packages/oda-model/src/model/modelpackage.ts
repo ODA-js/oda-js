@@ -1,20 +1,19 @@
+import clean from '../lib/json/clean';
 import { Entity } from './entity';
 import { Field } from './field';
-// tslint:disable-next-line:no-unused-variable
 import {
-  ModelPackageInput,
   EntityInput,
-  EntityJSON,
+  IPackage,
   IValidate,
   IValidationResult,
-  MetaModelType,
-  IPackage,
   IValidator,
+  MetaModelType,
+  ModelPackageInput,
 } from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
-import clean from '../lib/json/clean';
 
+// tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */
 export class ModelPackage implements IValidate, IPackage {
   public modelType: MetaModelType = 'package';

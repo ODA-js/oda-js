@@ -1,6 +1,6 @@
 import { Entity } from '../../../../entity';
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
@@ -21,7 +21,7 @@ export default class implements Rule<IRelationContext> {
                 found.updateWith(update);
                 result.push({
                   message: `type of relation field '${field.name}' and in using entity differs`,
-                  result: ValidationResultType.fixable,
+                  result: 'fixable',
                 });
               }
             } else {
@@ -30,7 +30,7 @@ export default class implements Rule<IRelationContext> {
               (<Entity>entity).updateWith(update);
               result.push({
                 message: `${field.name} is not met in using entity`,
-                result: ValidationResultType.fixable,
+                result: 'fixable',
               });
             }
           });

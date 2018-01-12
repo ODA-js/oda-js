@@ -6,7 +6,7 @@ export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
 export type MetaModelType =
   'model'
-  |'package'
+  | 'package'
   | 'entity'
   | 'field'
   | 'relation'
@@ -83,11 +83,11 @@ export type ModelItem = IModel | IPackage | IEntity | IField | IRelation;
 
 export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToRelation;
 
-export function isModel(item: ModelItem ): item is IModel {
+export function isModel(item: ModelItem): item is IModel {
   return item.modelType === 'model';
 }
 
-export function isPackage(item: ModelItem ): item is IPackage {
+export function isPackage(item: ModelItem): item is IPackage {
   return item.modelType === 'package';
 }
 
@@ -124,7 +124,7 @@ export function IsHasMany(item: Relation): item is IBelongsToRelation {
   return isRelation(item) && item.modelType === 'HasMany';
 }
 
-export enum ValidationResultType { error = 'error', warning = 'warning', critics = 'critics', fixable = 'fixable' }
+export type ValidationResultType = 'error' | 'warning' | 'critics' | 'fixable';
 
 export interface IValidationResult {
   model?: string;

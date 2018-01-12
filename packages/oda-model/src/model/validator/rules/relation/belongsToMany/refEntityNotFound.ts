@@ -1,9 +1,8 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
-import { Rule } from '../../../rules';
-import { BelongsToMany } from '../../../../index';
 import { HasMany } from '../../../../hasmany';
-import { PassThrough } from 'stream';
+import { BelongsToMany } from '../../../../index';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
+import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-ref-entity-not-found-relink';
@@ -22,7 +21,7 @@ export default class implements Rule<IRelationContext> {
           context.field.relation = new HasMany(replaceRef);
           result.push({
             message: this.description,
-            result: ValidationResultType.fixable,
+            result: 'fixable',
           });
         }
       }

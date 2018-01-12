@@ -1,25 +1,17 @@
-import { ModelVisitor, PackageVisitor, EntityVisitor, RelationVisitor, FieldVisitor } from './visitors';
 import {
-  IModel,
   IModelType,
-  IPackage,
   isEntity,
   isField,
   isModel,
   isPackage,
   isRelation,
-  IValidate,
   IValidationResult,
   IValidator,
   MetaModelType,
-  IEntity,
-  IEntityRef,
-  IField,
-  IRelation,
 } from '../interfaces';
-import { ModelContext, PackageContext, EntityContext, FieldContext, RelationContext } from './contexts';
-import { IModelContext, ValidationContext, IPackageContext, IEntityContext, IFieldContext } from './interfaces';
+import { IEntityContext, IFieldContext, IModelContext, IPackageContext, ValidationContext } from './interfaces';
 import { Rule } from './rules';
+import { EntityVisitor, FieldVisitor, ModelVisitor, PackageVisitor, RelationVisitor } from './visitors';
 
 export class Validator implements IValidator {
   public errors: IValidationResult[];

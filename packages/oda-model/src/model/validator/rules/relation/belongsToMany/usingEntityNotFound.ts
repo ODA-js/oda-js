@@ -1,8 +1,8 @@
-import { ModelPackage } from '../../../../modelpackage';
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
-import { Rule } from '../../../rules';
 import { Entity } from '../../../../entity';
+import { IValidationResult } from '../../../../interfaces';
+import { ModelPackage } from '../../../../modelpackage';
+import { IRelationContext } from '../../../interfaces';
+import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-using-entity-not-found';
@@ -18,12 +18,12 @@ export default class implements Rule<IRelationContext> {
           (<ModelPackage>context.package).addEntity((<Entity>sysEntity));
           result.push({
             message: 'using entity resolved from system package',
-            result: ValidationResultType.fixable,
+            result: 'fixable',
           });
         } else {
           result.push({
             message: this.description,
-            result: ValidationResultType.error,
+            result: 'error',
           });
         }
       }

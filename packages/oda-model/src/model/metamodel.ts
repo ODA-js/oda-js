@@ -223,7 +223,7 @@ export class MetaModel extends ModelPackage implements IModel {
     }
     pckg.entities.forEach(e => {
       if (this.entities.has(e) && !pack.entities.has(e)) {
-          pack.addEntity(this.entities.get(e));
+        pack.addEntity(this.entities.get(e));
       }
     });
     pckg.mutations.forEach(m => {

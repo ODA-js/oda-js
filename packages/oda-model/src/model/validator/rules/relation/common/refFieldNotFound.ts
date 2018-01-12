@@ -1,3 +1,4 @@
+import { error } from 'util';
 import { IValidationResult, ValidationResultType } from '../../../../interfaces';
 import { IFieldContext, IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
@@ -13,7 +14,7 @@ export default class implements Rule<IRelationContext> {
       if (!refField) {
         result.push({
           message: this.description,
-          result: ValidationResultType.error,
+          result: 'error',
         });
       }
     }

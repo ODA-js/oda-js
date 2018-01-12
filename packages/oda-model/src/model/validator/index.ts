@@ -1,12 +1,9 @@
-import { Validator } from './validator';
-import model from './rules/model';
-import packages from './rules/package';
 import entity from './rules/entity';
 import field from './rules/field';
-import { common, belongsTo, belongsToMany, hasMany, hasOne} from './rules/relation';
-
-import { ValidationContext } from './interfaces';
-import { Rule } from './rules';
+import model from './rules/model';
+import packages from './rules/package';
+import { belongsTo, belongsToMany, common, hasMany, hasOne } from './rules/relation';
+import { Validator } from './validator';
 
 const validator = new Validator();
 validator.registerRule('model', [

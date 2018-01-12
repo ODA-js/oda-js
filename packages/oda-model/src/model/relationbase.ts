@@ -1,23 +1,20 @@
 import * as inflected from 'inflected';
-import {
-  RelationBaseStorage,
-  RelationBaseInput,
-  RelationFields,
-  RelationBaseJSON,
-  IValidationResult,
-  ValidationResultType,
-  RelationType,
-  IValidator,
-  IRelation,
-  MetaModelType,
-} from './interfaces';
-import { EntityReference } from './entityreference';
-import { Metadata } from './metadata';
-import fold from './../lib/json/fold';
+
 import clean from '../lib/json/clean';
+import fold from './../lib/json/fold';
+import { EntityReference } from './entityreference';
 import { Field } from './index';
-import { ModelPackage } from './modelpackage';
-import { BelongsToMany } from './belongstomany';
+import {
+  IRelation,
+  IValidationResult,
+  IValidator,
+  MetaModelType,
+  RelationBaseInput,
+  RelationBaseJSON,
+  RelationBaseStorage,
+  RelationType,
+} from './interfaces';
+import { Metadata } from './metadata';
 
 export class RelationBase extends Metadata implements IRelation {
   public get modelType(): MetaModelType {

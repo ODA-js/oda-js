@@ -1,4 +1,4 @@
-import { IValidationResult, ValidationResultType } from '../../../interfaces';
+import { IValidationResult } from '../../../interfaces';
 import { IEntityContext } from '../../interfaces';
 import { Rule } from '../../rules';
 
@@ -11,7 +11,7 @@ export default class implements Rule<IEntityContext> {
       result.push({
         entity: context.entity.name,
         message: this.description,
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result;

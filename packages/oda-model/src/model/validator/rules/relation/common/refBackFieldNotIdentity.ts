@@ -1,5 +1,5 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
@@ -9,13 +9,13 @@ export default class implements Rule<IRelationContext> {
     const result: IValidationResult[] = [];
     if (context.relation.ref.backField) {
       const bf = context.entity.fields.get(context.relation.ref.backField);
-      if (bf && !bf.identity ) {
+      if (bf && !bf.identity) {
         const update = bf.toJSON();
         update.identity = true;
         bf.updateWith(update);
         result.push({
           message: this.description,
-          result: ValidationResultType.fixable,
+          result: 'fixable',
         });
       }
     }

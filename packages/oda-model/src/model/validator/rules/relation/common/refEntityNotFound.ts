@@ -1,5 +1,5 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
@@ -11,7 +11,7 @@ export default class implements Rule<IRelationContext> {
     if (!entity) {
       result.push({
         message: this.description,
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result;

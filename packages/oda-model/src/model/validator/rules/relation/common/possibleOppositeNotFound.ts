@@ -1,8 +1,7 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
-import { Rule } from '../../../rules';
-import { connect } from 'http2';
 import { BelongsToMany } from '../../../../belongstomany';
+import { IValidationResult, ValidationResultType } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
+import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-possible-opposite';
@@ -22,7 +21,7 @@ export default class implements Rule<IRelationContext> {
         if (opposites.length > 2) {
           result.push({
             message: 'more than one possible opposite',
-            result: ValidationResultType.error,
+            result: 'error',
           });
         }
 
@@ -30,7 +29,7 @@ export default class implements Rule<IRelationContext> {
           context.relation.opposite = opposites[0].name;
           result.push({
             message: 'found one possible opposite. assigned.',
-            result: ValidationResultType.fixable,
+            result: 'fixable',
           });
 
         }
@@ -38,7 +37,7 @@ export default class implements Rule<IRelationContext> {
         if (opposites.length === 0) {
           result.push({
             message: 'no possible opposite',
-            result: ValidationResultType.critics,
+            result: 'critics',
           });
         }
       }

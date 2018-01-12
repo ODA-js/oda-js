@@ -2,10 +2,8 @@ import * as inflected from 'inflected';
 
 import clean from '../lib/json/clean';
 import deepMerge from './../lib/json/deepMerge';
-import { BelongsToMany } from './belongstomany';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { Field } from './field';
-import { HasMany } from './hasmany';
 import { EntityInput, EntityJSON, EntityStorage, FieldInput, IEntity, MetaModelType } from './interfaces';
 import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';

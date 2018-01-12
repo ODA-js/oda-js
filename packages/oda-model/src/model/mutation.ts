@@ -1,6 +1,6 @@
-import { ModelBase } from './modelbase';
-import { MutationStorage, MutationInput, FieldArgs } from './interfaces';
 import clean from '../lib/json/clean';
+import { FieldArgs, MutationInput, MutationStorage } from './interfaces';
+import { ModelBase } from './modelbase';
 
 export class Mutation extends ModelBase {
   protected $obj: MutationStorage;

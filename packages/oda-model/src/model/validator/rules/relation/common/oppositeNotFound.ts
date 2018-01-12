@@ -1,7 +1,6 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
-import { connect } from 'http2';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-opposite-not-found';
@@ -16,7 +15,7 @@ export default class implements Rule<IRelationContext> {
         (context.relation).updateWith(update);
         result.push({
           message: this.description,
-          result: ValidationResultType.fixable,
+          result: 'fixable',
         });
       }
     }

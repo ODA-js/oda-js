@@ -1,4 +1,4 @@
-import { IValidationResult, ValidationResultType } from '../../../interfaces';
+import { IValidationResult } from '../../../interfaces';
 import { IFieldContext } from '../../interfaces';
 import { Rule } from '../../rules';
 
@@ -10,7 +10,7 @@ export default class implements Rule<IFieldContext> {
     if (!context.field.name) {
       result.push({
         message: this.description,
-        result: ValidationResultType.error,
+        result: 'error',
       });
     }
     return result;

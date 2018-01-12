@@ -1,10 +1,7 @@
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
-import { IFieldContext, IRelationContext } from '../../../interfaces';
-import { Rule } from '../../../rules';
-import { BelongsToMany } from '../../../../index';
-import { HasMany } from '../../../../hasmany';
-import { PassThrough } from 'stream';
 import { Field } from '../../../../field';
+import { IValidationResult } from '../../../../interfaces';
+import { IRelationContext } from '../../../interfaces';
+import { Rule } from '../../../rules';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-ref-and-using-entities-not-found-remove';
@@ -21,7 +18,7 @@ export default class implements Rule<IRelationContext> {
           (<Field>context.field).updateWith(update);
           result.push({
             message: this.description,
-            result: ValidationResultType.fixable,
+            result: 'fixable',
           });
         }
       }
