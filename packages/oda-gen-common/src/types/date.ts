@@ -1,5 +1,5 @@
-import { Kind } from 'graphql/language';
-import { GraphQLError } from 'graphql/error';
+import { Kind } from 'graphql';
+import { GraphQLError } from 'graphql';
 import { GQLModule } from './empty';
 
 // import { GraphQLScalarType } from 'graphql';

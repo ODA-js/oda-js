@@ -1,5 +1,4 @@
-import { getArgumentValues } from 'graphql/execution/values';
-import { DocumentNode, Kind, parse, visit, getOperationAST } from 'graphql';
+import { DocumentNode, Kind, parse, visit, getOperationAST, getArgumentValues } from 'graphql';
 import * as each from 'lodash/each.js';
 import * as get from 'lodash/get.js';
 import * as isEqual from 'lodash/isEqual.js';

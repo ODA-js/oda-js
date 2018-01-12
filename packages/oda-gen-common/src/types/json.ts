@@ -1,4 +1,4 @@
-import { Kind } from 'graphql/language';
+import { Kind } from 'graphql';
 
 import { GQLModule } from './empty';
 
