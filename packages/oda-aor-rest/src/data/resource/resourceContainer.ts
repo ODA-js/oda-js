@@ -1,5 +1,5 @@
 import { queries } from './consts';
-import { IResource, IResourceContainer, IResourceDefinition } from './interfaces';
+import { IResource, IResourceContainer, IResourceDefinition, IResourceOperation } from './interfaces';
 import Resource from './resource';
 
 export { queries }
@@ -33,9 +33,11 @@ export default class implements IResourceContainer {
       }
     }
   }
+
   public queries(resource: string, query: queries) {
     return this.resource(resource).operations[query];
   }
+
   public resource(resource: string): IResource {
     return this.resources[resource];
   }
