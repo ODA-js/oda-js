@@ -85,7 +85,7 @@ const transformations = {
   },
   object: {
     get,
-    assign: (src, args) => args.reduce((obj, path) => {
+    assign: (src, args) => (Array.isArray(args) ? args : [args]).reduce((obj, path) => {
       const source = get(obj, path);
       if (source && typeof source === 'object') {
         return omit(assign(obj, get(obj, path)), path);

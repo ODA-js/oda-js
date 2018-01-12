@@ -1,4 +1,8 @@
-import { DocumentNode, Kind, parse, visit, getOperationAST, getArgumentValues } from 'graphql';
+import { DocumentNode, Kind, parse, visit, getOperationAST } from 'graphql';
+
+import {
+  argumentsObjectFromField,
+} from 'apollo-utilities';
 import * as each from 'lodash/each.js';
 import * as get from 'lodash/get.js';
 import * as isEqual from 'lodash/isEqual.js';
@@ -102,8 +106,8 @@ function getLodashDirectiveArgs(node, lodashDirectiveDef) {
   if (lodashNode === null) {
     return null;
   }
-
-  const args = getArgumentValues(lodashDirectiveDef, lodashNode);
+  debugger;
+  const args = argumentsObjectFromField(lodashNode, lodashDirectiveDef);
   return normalizeLodashArgs(lodashNode.arguments, args);
 }
 
