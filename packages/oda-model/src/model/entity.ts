@@ -100,7 +100,7 @@ export class Entity extends ModelBase implements IEntity {
         indexName = f.indexed;
       } else if (typeof f.indexed === 'string') {
         indexName = f.indexed.split(' ');
-        // indexName = indexName.length > 1 ? indexName : indexName[0];
+        indexName = indexName.length > 1 ? indexName : indexName[0];
       }
       let entry = {
         name: indexName,
@@ -132,7 +132,7 @@ export class Entity extends ModelBase implements IEntity {
         indexName = f.identity;
       } else if (typeof f.identity === 'string') {
         indexName = f.identity.split(' ');
-        // indexName = indexName.length > 1 ? indexName : indexName[0];
+        indexName = indexName.length > 1 ? indexName : indexName[0];
       }
       let entry = {
         name: indexName,
