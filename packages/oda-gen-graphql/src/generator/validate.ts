@@ -25,12 +25,17 @@ export function hasResult(log: IValidationResult[], type: ValidationResultType) 
 }
 
 export function showLog(log,
-  visibility: ValidationResultType[] = [
+  visibility: ValidationResultType | ValidationResultType[] = [
     'error',
     'warning',
     'critics',
     'fixable',
   ]) {
+
+  if (!Array.isArray(visibility)) {
+    visibility = [visibility];
+  }
+
   visibility.forEach(visibilityItem => {
     const current = log
       .filter(item => item.result === visibilityItem);
@@ -145,7 +150,7 @@ export default (args: Generator) => {
   // const errors: IValidationResult[] = collectErrors(packages, existingTypes);
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
 
-  showLog(errors);
+  showLog(errors, logs);
 }
 
 

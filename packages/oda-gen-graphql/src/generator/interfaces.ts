@@ -1,4 +1,4 @@
-import { ModelHook } from 'oda-model';
+import { ModelHook, ValidationResultType } from 'oda-model';
 
 export type GeneratorConfigPackage = {
   mutation?: boolean | string[] | {
@@ -94,5 +94,5 @@ export type Generator = {
     };
     defaultAdapter?: string;
   };
-  logs?: string | string[];
+  logs?: ValidationResultType | ValidationResultType[];
 };
