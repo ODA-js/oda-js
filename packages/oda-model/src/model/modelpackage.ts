@@ -57,7 +57,7 @@ export class ModelPackage implements IValidate, IPackage {
       this.title = name.title;
       this.description = name.description;
       this.abstract = this.abstract || name.abstract;
-      if (!this.abstract && name.acl) {
+      if (!this.abstract && typeof name.acl === 'number') {
         this.acl = name.acl;
       }
     }
