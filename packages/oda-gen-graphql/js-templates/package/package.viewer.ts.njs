@@ -37,20 +37,24 @@ export class ViewerEntity extends common.types.GQLModule {
         _user: async (owner: { id: string }, args,
           context: { connectors: RegisterConnectors, user: { id: string, userName: string } },
           info) => {
-          let result = await context.connectors.User.findOneById(owner.id);
-          if (!result) {
-            result = {
+          if (owner.id !== undefined && owner.id !== null) {
+            let result = await context.connectors.User.findOneById(owner.id);
+            if (!result) {
+              result = {
+                ...context.user,
+              };
+              result.id = fromGlobalId(result.id).id;
+            } else {
+              result.id = result.id;
+            }
+            return {
               ...context.user,
+              ...result,
+              id: result.id,
             };
-            result.id = fromGlobalId(result.id).id;
           } else {
-            result.id = result.id;
+            return null;
           }
-          return {
-            ...context.user,
-            ...result,
-            id: result.id,
-          };
         },
       },
     });
