@@ -69,9 +69,9 @@ export default (args: Generator) => {
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
   if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
-    showLog(errors, ['error']);
+    showLog(errors, logs);
   } else {
-    showLog(errors, ['fixable', 'warning'])
+    showLog(errors, logs)
     config = _config;
 
     fs.ensureDirSync(rootDir);
