@@ -5,9 +5,13 @@ import { EntityReference } from './entityreference';
 import { FieldBase } from './fieldbase';
 import { HasMany } from './hasmany';
 import { HasOne } from './hasone';
-import { FieldInput, FieldStorage, IField } from './interfaces';
+import { FieldInput, FieldStorage } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
+import { IField } from '../validation/interfaces/IField';
+import { IValidator } from '../validation/interfaces/IValidator';
+import { IValidationResult } from '../validation/interfaces/IValidationResult';
+import { IRelation } from '../validation/interfaces/IRelation';
 
 function discoverFieldType(obj) {
   // сделать проверку по полю...
@@ -58,15 +62,15 @@ export class Field extends FieldBase implements IField {
     return this.$obj.idKey;
   }
 
-  get order(): string {
+  get order(): number {
     return this.getMetadata('order');
   }
 
-  get relation(): RelationBase {
+  get relation(): IRelation {
     return this.$obj.relation;
   }
 
-  set relation(value: RelationBase) {
+  set relation(value: IRelation) {
     this.$obj.relation = value;
   }
 

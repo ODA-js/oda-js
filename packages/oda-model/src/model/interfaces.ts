@@ -1,147 +1,8 @@
 import { EntityReference } from './entityreference';
 import { Field } from './field';
 import { RelationBase } from './relationbase';
-
-export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
-
-export type MetaModelType =
-  'model'
-  | 'package'
-  | 'entity'
-  | 'field'
-  | 'relation'
-  | 'ref'
-  | RelationType
-  ;
-
-export interface IModelType extends IValidate {
-  modelType: MetaModelType;
-}
-
-export interface IModel extends IModelType {
-  acl?: number;
-  name: string;
-  packages: Map<string, IPackage>;
-}
-
-export interface IPackage extends IModelType {
-  acl?: number;
-  abstract: boolean;
-  name: string;
-  metaModel: IModel;
-  entities: Map<string, IEntity>;
-}
-
-export interface IEntity extends IModelType {
-  name: string;
-  plural: string;
-  fields: Map<string, Field>;
-}
-
-export interface IField extends IModelType {
-  name: string;
-  type: string;
-  indexed: boolean | string | string[];
-  identity: boolean | string | string[];
-  relation: IRelation;
-}
-
-export interface IRelation extends IModelType {
-  verb: RelationType;
-  using?: IEntityRef;
-  ref: IEntityRef;
-  fields?: Map<string, Field>;
-  opposite?: string;
-  toObject(): RelationBaseInput;
-  updateWith(obj: RelationBaseInput): void;
-}
-
-export interface IBelongsToManyRelation extends IRelation {
-
-  belongsToMany: IEntityRef;
-}
-
-export interface IBelongsToRelation extends IRelation {
-  belongsTo: IEntityRef;
-}
-
-export interface IHasOneRelation extends IRelation {
-  hasOne: IEntityRef;
-}
-
-export interface IHasManyRelation extends IRelation {
-  hasMany: IEntityRef;
-}
-
-export interface IEntityRef {
-  backField: string;
-  entity: string;
-  field: string;
-}
-
-export type ModelItem = IModel | IPackage | IEntity | IField | IRelation;
-
-export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToRelation;
-
-export function isModel(item: ModelItem): item is IModel {
-  return item.modelType === 'model';
-}
-
-export function isPackage(item: ModelItem): item is IPackage {
-  return item.modelType === 'package';
-}
-
-export function isEntity(item: ModelItem): item is IEntity {
-  return item.modelType === 'entity';
-}
-
-export function isField(item: ModelItem): item is IField {
-  return item.modelType === 'field';
-}
-
-export function isRelation(item: ModelItem): item is IRelation {
-  return (
-    item.modelType === 'BelongsTo'
-    || item.modelType === 'BelongsToMany'
-    || item.modelType === 'HasOne'
-    || item.modelType === 'HasMany'
-  );
-}
-
-export function IsBelongsTo(item: Relation): item is IBelongsToRelation {
-  return isRelation(item) && item.modelType === 'BelongsTo';
-}
-
-export function IsBelongsToMany(item: Relation): item is IBelongsToRelation {
-  return isRelation(item) && item.modelType === 'BelongsToMany';
-}
-
-export function IsHasOne(item: Relation): item is IBelongsToRelation {
-  return isRelation(item) && item.modelType === 'HasOne';
-}
-
-export function IsHasMany(item: Relation): item is IBelongsToRelation {
-  return isRelation(item) && item.modelType === 'HasMany';
-}
-
-export type ValidationResultType = 'error' | 'warning' | 'critics' | 'fixable';
-
-export interface IValidationResult {
-  model?: string;
-  package?: string;
-  entity?: string;
-  field?: string;
-  result: ValidationResultType;
-  message?: string;
-}
-
-export interface IValidator {
-  check(item: IValidate): IValidationResult[];
-}
-
-export interface IValidate {
-  validate(validator: IValidator): IValidationResult[];
-}
+import { IRelation } from '../validation/interfaces/IRelation';
+import { IField } from '../validation/interfaces/IField';
 
 export interface FieldInput extends FieldBaseInput {
   type?: string;
@@ -163,7 +24,7 @@ export interface FieldStorage extends FieldBaseStorage {
   arguments?: [FieldArgs];
   type_: string;
   idKey: EntityReference;
-  relation: RelationBase;
+  relation: IRelation;
 }
 
 export interface BelongsToInput extends RelationBaseInput {
@@ -344,7 +205,7 @@ export interface RelationBaseStorage {
   entity_: string;
   field: string;
   field_: string;
-  fields: Map<string, Field>;
+  fields: Map<string, IField>;
   opposite: string;
 }
 

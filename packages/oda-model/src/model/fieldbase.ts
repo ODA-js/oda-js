@@ -1,9 +1,10 @@
 import clean from '../lib/json/clean';
-import { FieldArgs, FieldBaseInput, FieldBaseStorage, MetaModelType } from './interfaces';
+import { FieldArgs, FieldBaseInput, FieldBaseStorage } from './interfaces';
 import { ModelBase } from './modelbase';
+import { MetaModelType } from '../validation/interfaces/types';
 
 export class FieldBase extends ModelBase {
-  public modelType: MetaModelType = 'field';
+  public modelType: 'field';
   protected $obj: FieldBaseStorage;
 
   get entity(): string {

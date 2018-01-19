@@ -5,18 +5,24 @@ import fold from './../lib/json/fold';
 import { EntityReference } from './entityreference';
 import { Field } from './index';
 import {
-  IRelation,
-  IValidationResult,
-  IValidator,
-  MetaModelType,
   RelationBaseInput,
   RelationBaseJSON,
   RelationBaseStorage,
-  RelationType,
 } from './interfaces';
 import { Metadata } from './metadata';
+import { IRelation } from '../validation/interfaces/IRelation';
+import { MetaModelType, RelationType } from '../validation/interfaces/types';
+import { IValidator } from '../validation/interfaces/IValidator';
+import { IValidationResult } from '../validation/interfaces/IValidationResult';
+import { IEntityRef } from '../validation/interfaces/IEntityRef';
+import { IField } from '../validation/interfaces/IField';
 
 export class RelationBase extends Metadata implements IRelation {
+
+  public using?: IEntityRef;
+  public title: string;
+  public description: string;
+
   public get modelType(): MetaModelType {
     return this.verb;
   }
@@ -49,7 +55,7 @@ export class RelationBase extends Metadata implements IRelation {
     return this.$obj.entity;
   }
 
-  get fields(): Map<string, Field> | undefined {
+  get fields(): Map<string, IField> | undefined {
     return this.$obj.fields;
   }
 
@@ -164,7 +170,7 @@ export class RelationBase extends Metadata implements IRelation {
 
       result.opposite = opposite;
       if (obj.fields) {
-        result.fields = new Map<string, Field>();
+        result.fields = new Map<string, IField>();
         if (Array.isArray(obj.fields)) {
           obj.fields.forEach(
             f => {

@@ -1,6 +1,6 @@
 import clean from '../lib/json/clean';
 import { EntityReference } from './entityreference';
-import { BelongsToInput, BelongsToStorage, MetaModelType } from './interfaces';
+import { BelongsToInput, BelongsToStorage } from './interfaces';
 import { RelationBase } from './relationbase';
 
 /**

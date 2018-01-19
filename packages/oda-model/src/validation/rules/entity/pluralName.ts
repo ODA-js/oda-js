@@ -1,6 +1,6 @@
-import { IValidationResult } from '../../../model/interfaces';
 import { IEntityContext } from '../../interfaces/IEntityContext';
 import { Rule } from '../../rule';
+import { IValidationResult } from '../../interfaces/IValidationResult';
 
 export default class implements Rule<IEntityContext> {
   public name = 'entity-plural-name-the-same';
