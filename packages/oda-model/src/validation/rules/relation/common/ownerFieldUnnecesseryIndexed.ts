@@ -1,5 +1,5 @@
-import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 
 export default class implements Rule<IRelationContext> {
@@ -8,10 +8,10 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!!context.field.identity || !!context.field.indexed) {
-      const update = (<Field>context.field).toJSON();
+      const update = context.field.toJSON();
       delete update.identity;
       delete update.indexed;
-      (<Field>context.field).updateWith(update);
+      context.field.updateWith(update);
       result.push({
         message: this.description,
         result: 'fixable',

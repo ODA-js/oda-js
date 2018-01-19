@@ -1,5 +1,5 @@
-import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 
 export default class implements Rule<IRelationContext> {

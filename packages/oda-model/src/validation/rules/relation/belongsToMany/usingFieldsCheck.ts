@@ -1,6 +1,8 @@
-import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
+import { IEntity } from '../../../interfaces/IEntity';
+import { isEntity } from '../../../helpers';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-using-fields-check';
@@ -8,8 +10,8 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (context.relation.using) {
-      const entity = context.package.entities.get(context.relation.using.entity);
-      if (entity) {
+      const entity = context.package.items.get(context.relation.using.entity) as IEntity;
+      if (isEntity(entity)) {
         if (context.relation.fields) {
           context.relation.fields.forEach(field => {
             const found = entity.fields.get(field.name);
@@ -24,9 +26,9 @@ export default class implements Rule<IRelationContext> {
                 });
               }
             } else {
-              const update = (<Entity>entity).toJSON();
+              const update = entity.toJSON();
               update.fields.push(field.toJSON());
-              (<Entity>entity).updateWith(update);
+              entity.updateWith(update);
               result.push({
                 message: `${field.name} is not met in using entity`,
                 result: 'fixable',

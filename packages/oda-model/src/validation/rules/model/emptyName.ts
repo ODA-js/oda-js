@@ -1,5 +1,5 @@
-import { IValidationResult } from '../../interfaces/IValidationResult';
 import { IModelContext } from '../../interfaces/IModelContext';
+import { IValidationResult } from '../../interfaces/IValidationResult';
 import { Rule } from '../../rule';
 
 export default class implements Rule<IModelContext> {

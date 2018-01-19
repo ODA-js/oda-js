@@ -1,6 +1,8 @@
-import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
+import { IEntity } from '../../../interfaces/IEntity';
+import { isEntity } from '../../../helpers';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-using-entity-not-found';
@@ -8,12 +10,12 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (context.relation.using) {
-      const entity = context.package.entities.get(context.relation.using.entity);
-      if (!entity) {
+      const entity = context.package.items.get(context.relation.using.entity) as IEntity;
+      if (!isEntity(entity)) {
         const sysEntity = context.model.packages.get('system')
-          .entities.get(context.relation.using.entity);
-        if (sysEntity) {
-          (<ModelPackage>context.package).addEntity((<Entity>sysEntity));
+          .items.get(context.relation.using.entity)as IEntity;
+        if (isEntity(sysEntity)) {
+          context.package.addEntity(sysEntity);
           result.push({
             message: 'using entity resolved from system package',
             result: 'fixable',

@@ -1,6 +1,8 @@
-import { IValidationResult } from '../../../interfaces/IValidationResult';
+import { IEntity } from '../../../interfaces/IEntity';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
+import { isEntity } from '../../../helpers';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-possible-opposite';
@@ -8,13 +10,13 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!context.relation.opposite) {
-      const entity = context.package.entities.get(context.relation.ref.entity);
-      if (entity) {
+      const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+      if (isEntity(entity)) {
         let opposites = Array.from(entity.fields.values())
           .filter(f => f.relation && (
             (f.relation.ref.entity === context.entity.name && f.relation.ref.field === context.field.name) ||
-            ((f.relation as BelongsToMany).using && (this as any).using
-              && (f.relation as BelongsToMany).using.entity === (this as any).using.entity)),
+            (f.relation.using && context.relation.using
+              && f.relation.using.entity === context.relation.using.entity)),
         );
 
         if (opposites.length > 2) {

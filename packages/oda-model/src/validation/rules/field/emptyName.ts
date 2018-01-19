@@ -1,6 +1,6 @@
 import { IFieldContext } from '../../interfaces/IFieldContext';
-import { Rule } from '../../rule';
 import { IValidationResult } from '../../interfaces/IValidationResult';
+import { Rule } from '../../rule';
 
 export default class implements Rule<IFieldContext> {
   public name = 'field-empty-name';
