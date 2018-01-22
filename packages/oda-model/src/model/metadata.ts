@@ -2,7 +2,13 @@ import clean from '../lib/json/clean';
 import deepMerge from './../lib/json/deepMerge';
 import get from './../lib/json/get';
 import set from './../lib/json/set';
-import { IValidate, IValidationResult, IValidator, MetadataInput, MetaModelType } from './interfaces';
+import {
+  MetadataInput,
+} from './interfaces';
+import { IValidate } from '../validation/interfaces/IValidate';
+import { MetaModelType } from '../validation/interfaces/types';
+import { IValidator } from '../validation/interfaces/IValidator';
+import { IValidationResult } from '../validation/interfaces/IValidationResult';
 
 export class Metadata implements IValidate {
   public modelType: MetaModelType;

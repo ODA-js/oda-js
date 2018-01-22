@@ -3,7 +3,9 @@ import * as inflected from 'inflected';
 
 import clean from '../lib/json/clean';
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from './definitions';
-import { EntityReferenceInput, IEntityRef, MetaModelType } from './interfaces';
+import { EntityReferenceInput } from './interfaces';
+import { IEntityRef } from '../validation/interfaces/IEntityRef';
+import { MetaModelType } from '../validation/interfaces/types';
 
 /** Entityt reference implementation */
 export class EntityReference implements IEntityRef {
