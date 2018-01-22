@@ -1,19 +1,21 @@
-import { IBelongsToManyRelation } from './IBelongsToManyRelation';
-import { IHasOneRelation } from './IHasOneRelation';
-import { IHasManyRelation } from './IHasManyRelation';
+import { IBelongsToManyRelation, IBelongsToManyRelationProps } from './IBelongsToManyRelation';
+import { IHasOneRelation, IHasOneRelationProps } from './IHasOneRelation';
+import { IHasManyRelation, IHasManyRelationProps } from './IHasManyRelation';
 import { IModel } from './IModel';
 import { IPackage } from './IPackage';
 import { IEntity } from './IEntity';
 import { IField } from './IField';
 import { IRelation } from './IRelation';
-import { IBelongsToRelation } from './IBelongsToRelation';
+import { IBelongsToRelation, IBelongsToRelationProps } from './IBelongsToRelation';
 import { IModelContext } from './IModelContext';
 import { IPackageContext } from './IPackageContext';
 import { IEntityContext } from './IEntityContext';
 import { IFieldContext } from './IFieldContext';
 import { IRelationContext } from './IRelationContext';
 
-export type ModelItem = IModel | IPackage | IEntity | IField | IRelation;
+export type RelationProps = IHasManyRelationProps | IHasOneRelationProps | IBelongsToRelationProps | IBelongsToManyRelationProps;
+
+export type ModelItem = IModel | IPackage | IEntity | IField | IRelation<RelationProps>;
 
 export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToManyRelation;
 

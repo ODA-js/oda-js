@@ -3,6 +3,6 @@ import { IMutation } from './IMutation';
 import { RestartType } from './types';
 
 export interface IMutationContext extends IPackageContext {
-  mutation: IMutation;
+  readonly mutation: IMutation;
   restart(level: RestartType);
 }

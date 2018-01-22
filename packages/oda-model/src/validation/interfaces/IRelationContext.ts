@@ -1,8 +1,8 @@
 import { IFieldContext } from './IFieldContext';
 import { IRelation } from './IRelation';
-import { RestartType } from './types';
+import { RestartType, RelationProps } from './types';
 
 export interface IRelationContext extends IFieldContext {
-  relation: IRelation;
+  readonly relation: IRelation<RelationProps>;
   restart(level: RestartType);
 }
