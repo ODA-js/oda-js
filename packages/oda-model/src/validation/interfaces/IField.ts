@@ -1,6 +1,15 @@
-import { IModelType, IModelTypeProps } from './IModelType';
-import { IRelation } from './IRelation';
 import { IEntityRef } from './IEntityRef';
+import { IModelType, IModelTypeProps } from './IModelType';
+import { Relation } from './types';
+
+export type FieldACL = {
+  read: string[];
+  update: string[];
+};
+
+export type FieldMetaData = {
+  acl: Partial<FieldACL>;
+};
 
 export interface IFieldArgs {
   name: string;
@@ -9,7 +18,7 @@ export interface IFieldArgs {
   defaultValue?: string;
 }
 
-export type IFieldProps = IModelTypeProps &{
+export type IFieldProps = FieldMetaData & IModelTypeProps &{
   entity?: string;
   type?: string;
   args: IFieldArgs[];
@@ -20,7 +29,7 @@ export type IFieldProps = IModelTypeProps &{
   identity?: boolean | string | string[];
   idKey?: IEntityRef;
   order?: number;
-  relation?: IRelation;
+  relation?: Relation;
 };
 
 export interface IField extends IModelType<IFieldProps> {

@@ -12,8 +12,7 @@ export interface IMutationMetaData {
   readonly acl?: IMutationACL;
 }
 
-export type IMutationProps = IModelTypeProps & {
-  metadata?: IMutationMetaData;
+export type IMutationProps = IMutationMetaData & IModelTypeProps & {
   args: IFieldArgs[];
   payload: IFieldArgs[];
 };
@@ -42,13 +41,11 @@ export class EnsureMutationMetadata implements Rule<IMutationContext> {
   public description: string = 'name for mutations must be set';
   public validate(context: IMutationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    if (!context.mutation.metadata) {
+    if (!context.mutation.acl) {
       context.mutation.updateWith({
-        metadata: {
           acl: {
             execute: [],
           },
-        },
       });
       result.push({
         message: this.description,

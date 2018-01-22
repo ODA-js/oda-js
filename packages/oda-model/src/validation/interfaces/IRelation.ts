@@ -6,7 +6,6 @@ import { RelationType } from './types';
 
 export type IRelationProps = IModelTypeProps & {
   verb: RelationType;
-  using?: IEntityRef;
   ref: IEntityRef;
   fields?: Map<string, IField>;
   opposite?: string;
