@@ -14,10 +14,9 @@ import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
 import {
   FieldArgs, MetaModelStore,
-  ModelHook, IValidationResult, ValidationResultType,
+  ModelHook,
 } from './interfaces';
 import { Metadata } from './metadata';
-import Validator from './validator/index';
 
 export {
   ModelHook,
@@ -38,7 +37,4 @@ export {
   FieldBase,
   EntityReference,
   ModelBase,
-  IValidationResult,
-  ValidationResultType,
-  Validator,
 };

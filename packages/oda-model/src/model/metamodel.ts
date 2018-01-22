@@ -6,17 +6,18 @@ import { Entity } from './entity';
 import {
   EntityInput,
   FieldInput,
-  IModel,
-  IValidationResult,
-  IValidator,
   MetaModelStore,
-  MetaModelType,
   ModelHook,
   ModelPackageStore,
   MutationInput,
 } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { Mutation } from './mutation';
+import { IModel } from '../validation/interfaces/IModel';
+import { MetaModelType } from '../validation/interfaces/types';
+import { IValidator } from '../validation/interfaces/IValidator';
+import { IValidationResult } from '../validation/interfaces/IValidationResult';
+import { IPackage } from '../validation/interfaces/IPackage';
 
 function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
   let result = {
@@ -56,7 +57,7 @@ function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
  */
 export class MetaModel extends ModelPackage implements IModel {
   public modelType: MetaModelType = 'model';
-  public packages: Map<string, ModelPackage> = new Map();
+  public packages: Map<string, IPackage> = new Map();
   public store: string = 'default.json';
   public defaultPackage: ModelPackage;
 
@@ -213,7 +214,7 @@ export class MetaModel extends ModelPackage implements IModel {
   }
 
   public addPackage(pckg: ModelPackageStore) {
-    let pack: ModelPackage;
+    let pack: IPackage;
     if (pckg.name && this.packages.has(pckg.name)) {
       pack = this.packages.get(pckg.name);
     } else {

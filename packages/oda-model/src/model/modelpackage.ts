@@ -3,15 +3,15 @@ import { Entity } from './entity';
 import { Field } from './field';
 import {
   EntityInput,
-  IPackage,
-  IValidate,
-  IValidationResult,
-  IValidator,
-  MetaModelType,
   ModelPackageInput,
 } from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
+import { IValidate } from '../validation/interfaces/IValidate';
+import { MetaModelType } from '../validation/interfaces/types';
+import { IPackage } from '../validation/interfaces/IPackage';
+import { IValidator } from '../validation/interfaces/IValidator';
+import { IValidationResult } from '../validation/interfaces/IValidationResult';
 
 // tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */

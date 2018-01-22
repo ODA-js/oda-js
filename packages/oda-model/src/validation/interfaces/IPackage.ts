@@ -1,11 +1,11 @@
 import { IValidationResult } from './IValidationResult';
-import { IPackageContext } from '../validator/interfaces';
 import { IModelType } from './IModelType';
 import { IMutation } from './IMutation';
 import { IEntity } from './IEntity';
 import { IField } from './IField';
-import { Rule } from '../validator/rule';
 import { IModel } from './IModel';
+import { Rule } from '../rule';
+import { IPackageContext } from './IPackageContext';
 
 export interface IPackage extends IModelType {
   modelType: 'package';

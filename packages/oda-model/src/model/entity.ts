@@ -4,9 +4,11 @@ import clean from '../lib/json/clean';
 import deepMerge from './../lib/json/deepMerge';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { Field } from './field';
-import { EntityInput, EntityJSON, EntityStorage, FieldInput, IEntity, MetaModelType } from './interfaces';
+import { EntityInput, EntityJSON, EntityStorage, FieldInput } from './interfaces';
 import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';
+import { IEntity } from '../validation/interfaces/IEntity';
+import { MetaModelType } from '../validation/interfaces/types';
 
 /**
  * 1. тип объекта который входит на updateWith

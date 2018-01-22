@@ -1,8 +1,8 @@
-import { Rule } from '../validator/rule';
-import { IMutationContext } from '../validator/interfaces';
 import { IModelType } from './IModelType';
 import { IValidationResult } from './IValidationResult';
 import { IFieldArgs } from './IField';
+import { Rule } from '../rule';
+import { IMutationContext } from './IMutationContext';
 
 export interface IMutationACL {
   execute: string[];
