@@ -1,4 +1,4 @@
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 import { IRelation } from './IRelation';
 import { IEntityRef } from './IEntityRef';
 
@@ -9,8 +9,7 @@ export interface IFieldArgs {
   defaultValue?: string;
 }
 
-export interface IField extends IModelType {
-  modelType: 'field';
+export type IFieldProps = IModelTypeProps &{
   entity?: string;
   type?: string;
   args: IFieldArgs[];
@@ -22,4 +21,8 @@ export interface IField extends IModelType {
   idKey?: IEntityRef;
   order?: number;
   relation?: IRelation;
+};
+
+export interface IField extends IModelType<IFieldProps> {
+  readonly modelType: 'field';
 }

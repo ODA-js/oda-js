@@ -1,7 +1,7 @@
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 import { ValidationContext } from './types';
 
-export interface IVisitor<T extends IModelType, C extends ValidationContext> {
-  context: C;
+export interface IVisitor<TProps extends IModelTypeProps, T extends IModelType<TProps>, C extends ValidationContext> {
+  readonly context: C;
   visit(item: T);
 }

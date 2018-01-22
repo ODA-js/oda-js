@@ -1,13 +1,15 @@
 
 import { IField } from './IField';
 import { IEntityRef } from './IEntityRef';
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 import { RelationType } from './types';
 
-export interface IRelation extends IModelType {
+export type IRelationProps = IModelTypeProps & {
   verb: RelationType;
   using?: IEntityRef;
   ref: IEntityRef;
   fields?: Map<string, IField>;
   opposite?: string;
-}
+};
+
+export type IRelation<TProps extends IRelationProps> = IModelType<TProps>;

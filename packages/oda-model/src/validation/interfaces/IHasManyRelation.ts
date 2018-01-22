@@ -1,6 +1,8 @@
 import { IEntityRef } from './IEntityRef';
-import { IRelation } from './IRelation';
+import { IRelation, IRelationProps } from './IRelation';
 
-export interface IHasManyRelation extends IRelation {
+export type IHasManyRelationProps  = IRelationProps & {
   hasMany: IEntityRef;
-}
+};
+
+export interface IHasManyRelation extends IRelation<IHasManyRelationProps> {}

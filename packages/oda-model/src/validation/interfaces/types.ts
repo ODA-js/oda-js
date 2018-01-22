@@ -20,12 +20,11 @@ export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation |
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
 export type MetaModelType =
-  'model'
+  |'model'
   | 'package'
   | 'mutation'
   | 'entity'
   | 'field'
-  | 'relation'
   | 'ref'
   | RelationType
   ;

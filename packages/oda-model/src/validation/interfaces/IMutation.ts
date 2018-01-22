@@ -1,22 +1,25 @@
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 import { IValidationResult } from './IValidationResult';
 import { IFieldArgs } from './IField';
 import { Rule } from '../rule';
 import { IMutationContext } from './IMutationContext';
 
 export interface IMutationACL {
-  execute: string[];
+  readonly execute: string[];
 }
 
 export interface IMutationMetaData {
-  acl?: IMutationACL;
+  readonly acl?: IMutationACL;
 }
 
-export interface IMutation extends IModelType {
-  modelType: 'mutation';
+export type IMutationProps = IModelTypeProps & {
   metadata?: IMutationMetaData;
   args: IFieldArgs[];
   payload: IFieldArgs[];
+};
+
+export interface IMutation extends IModelType<IMutationProps> {
+  readonly modelType: 'mutation';
 }
 
 export class CheckMutationName implements Rule<IMutationContext> {
@@ -40,11 +43,13 @@ export class EnsureMutationMetadata implements Rule<IMutationContext> {
   public validate(context: IMutationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!context.mutation.metadata) {
-      context.mutation.metadata = {
-        acl: {
-          execute: [],
+      context.mutation.updateWith({
+        metadata: {
+          acl: {
+            execute: [],
+          },
         },
-      };
+      });
       result.push({
         message: this.description,
         result: 'fixable',

@@ -1,18 +1,22 @@
 import { IValidationResult } from './IValidationResult';
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 import { IMutation } from './IMutation';
 import { IEntity } from './IEntity';
 import { IField } from './IField';
 import { IModel } from './IModel';
 import { Rule } from '../rule';
 import { IPackageContext } from './IPackageContext';
+import { ModelItem } from './types';
 
-export interface IPackage extends IModelType {
-  modelType: 'package';
+export type IPackageProps = IModelTypeProps & {
   acl: number;
   abstract?: boolean;
-  items: Map<string, IModelType>;
+  items: Map<string, ModelItem>;
   model?: IModel;
+};
+
+export interface IPackage extends IModelType<IPackageProps> {
+  readonly modelType: 'package';
 }
 
 export class CheckMutationName implements Rule<IPackageContext> {

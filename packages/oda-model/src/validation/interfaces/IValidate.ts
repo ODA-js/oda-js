@@ -1,6 +1,6 @@
 import { IValidator } from './IValidator';
 import { IValidationResult } from './IValidationResult';
 
-export interface IValidate {
+export type IValidate  = {
   validate(validator: IValidator): IValidationResult[];
-}
+};

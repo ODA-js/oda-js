@@ -1,7 +1,10 @@
 import { IPackage } from './IPackage';
-import { IModelType } from './IModelType';
+import { IModelType, IModelTypeProps } from './IModelType';
 
-export interface IModel extends IModelType {
+export type IModelProps = IModelTypeProps & {
   packages: Map<string, IPackage>;
-  defaultPackage: IPackage;
+};
+
+export interface IModel extends IModelType<IModelProps> {
+  readonly defaultPackage: IPackage;
 }
