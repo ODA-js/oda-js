@@ -13,7 +13,7 @@ export type FieldMetaData = {
 
 export interface IFieldArgs {
   name: string;
-  type: string;
+  type?: string;
   required?: boolean;
   defaultValue?: string;
 }

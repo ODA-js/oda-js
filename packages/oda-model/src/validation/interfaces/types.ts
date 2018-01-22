@@ -13,9 +13,7 @@ import { IEntityContext } from './IEntityContext';
 import { IFieldContext } from './IFieldContext';
 import { IRelationContext } from './IRelationContext';
 
-export type RelationProps = IHasManyRelationProps | IHasOneRelationProps | IBelongsToRelationProps | IBelongsToManyRelationProps;
-
-export type ModelItem = IModel | IPackage | IEntity | IField | IRelation<RelationProps>;
+export type ModelItem = IModel | IPackage | IEntity | IField | Relation;
 
 export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToManyRelation;
 

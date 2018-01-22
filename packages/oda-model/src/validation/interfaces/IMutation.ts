@@ -3,6 +3,8 @@ import { IValidationResult } from './IValidationResult';
 import { IFieldArgs } from './IField';
 import { Rule } from '../rule';
 import { IMutationContext } from './IMutationContext';
+import { IValidator } from './IValidator';
+import { Record } from 'immutable';
 
 export interface IMutationACL {
   readonly execute: string[];
@@ -13,6 +15,7 @@ export interface IMutationMetaData {
 }
 
 export type IMutationProps = IMutationMetaData & IModelTypeProps & {
+  modelType: 'mutation';
   args: IFieldArgs[];
   payload: IFieldArgs[];
 };
@@ -37,15 +40,15 @@ export class CheckMutationName implements Rule<IMutationContext> {
 }
 
 export class EnsureMutationMetadata implements Rule<IMutationContext> {
-  public name: string = 'mutation name is empty';
-  public description: string = 'name for mutations must be set';
+  public name: string = 'mutaion default acl';
+  public description: string = 'set default acl to mutation';
   public validate(context: IMutationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!context.mutation.acl) {
       context.mutation.updateWith({
-          acl: {
-            execute: [],
-          },
+        acl: {
+          execute: [],
+        },
       });
       result.push({
         message: this.description,
@@ -55,4 +58,3 @@ export class EnsureMutationMetadata implements Rule<IMutationContext> {
     return result;
   }
 }
-
