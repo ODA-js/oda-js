@@ -38,7 +38,7 @@ export type EntityMetaData = {
   name: Partial<EntityName>;
 };
 
-export type EntityProps = Partial<EntityMetaData> & IModelTypeProps & {
+export type EntityPropsStore = Partial<EntityMetaData> & IModelTypeProps & {
   plural: string;
   relations: Set<string>;
   required: Set<string>;
@@ -46,6 +46,11 @@ export type EntityProps = Partial<EntityMetaData> & IModelTypeProps & {
   fields: Map<string, IField>;
 };
 
-export interface IEntity extends IModelType<EntityProps> {
+export type EntityProps = Partial<EntityMetaData> & IModelTypeProps & {
+  plural: string;
+  fields: IField[];
+};
+
+export interface IEntity extends IModelType<EntityProps, EntityPropsStore> {
   readonly modelType: 'entity';
 }

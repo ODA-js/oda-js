@@ -7,15 +7,24 @@ import { IModel } from './IModel';
 import { Rule } from '../rule';
 import { IPackageContext } from './IPackageContext';
 import { ModelItem } from './types';
+import { Map } from 'immutable';
 
 export type IPackageProps = IModelTypeProps & {
+  modelType: 'package';
+  acl: number;
+  abstract?: boolean;
+  items: ModelItem[];
+};
+
+export type IPackagePropsStored = IModelTypeProps & {
+  modelType: 'package';
   acl: number;
   abstract?: boolean;
   items: Map<string, ModelItem>;
-  model?: IModel;
+  model: IModel;
 };
 
-export interface IPackage extends IModelType<IPackageProps> {
+export interface IPackage extends IModelType<IPackageProps, IPackagePropsStored> {
   readonly modelType: 'package';
 }
 

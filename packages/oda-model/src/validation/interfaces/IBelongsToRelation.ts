@@ -1,8 +1,12 @@
 import { IEntityRef } from './IEntityRef';
-import { IRelation, IRelationProps } from './IRelation';
+import { IRelation, IRelationProps, IRelationPropsStore } from './IRelation';
 
 export type IBelongsToRelationProps  = IRelationProps &  {
   belongsTo: IEntityRef;
 };
 
-export interface IBelongsToRelation extends IRelation<IBelongsToRelationProps> {}
+export type IBelongsToRelationPropsStore  = IRelationPropsStore &  {
+  belongsTo: IEntityRef;
+};
+
+export interface IBelongsToRelation extends IRelation<IBelongsToRelationProps, IBelongsToRelationPropsStore> {}

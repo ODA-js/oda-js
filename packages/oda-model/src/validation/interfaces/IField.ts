@@ -32,6 +32,6 @@ export type IFieldProps = FieldMetaData & IModelTypeProps &{
   relation?: Relation;
 };
 
-export interface IField extends IModelType<IFieldProps> {
+export interface IField extends IModelType<IFieldProps, IFieldProps> {
   readonly modelType: 'field';
 }
