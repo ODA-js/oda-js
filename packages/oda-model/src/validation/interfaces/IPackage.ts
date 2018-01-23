@@ -14,6 +14,7 @@ export type IPackageProps = IModelTypeProps & {
   acl: number;
   abstract?: boolean;
   items: ModelItem[];
+  model: IModel;
 };
 
 export type IPackagePropsStored = IModelTypeProps & {
