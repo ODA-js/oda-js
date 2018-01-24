@@ -38,37 +38,3 @@ export interface IMutation extends IModelType<IMutationProps, IMutationPropsStor
   readonly modelType: 'mutation';
 }
 
-export class CheckMutationName implements Rule<IMutationContext> {
-  public name: string = 'mutation name is empty';
-  public description: string = 'name for mutations must be set';
-  public validate(context: IMutationContext): IValidationResult[] {
-    const result: IValidationResult[] = [];
-    if (!context.mutation.name) {
-      result.push({
-        message: this.description,
-        result: 'error',
-      });
-    }
-    return result;
-  }
-}
-
-export class EnsureMutationMetadata implements Rule<IMutationContext> {
-  public name: string = 'mutaion default acl';
-  public description: string = 'set default acl to mutation';
-  public validate(context: IMutationContext): IValidationResult[] {
-    const result: IValidationResult[] = [];
-    if (!context.mutation.acl) {
-      context.mutation.updateWith({
-        acl: {
-          execute: [],
-        },
-      });
-      result.push({
-        message: this.description,
-        result: 'fixable',
-      });
-    }
-    return result;
-  }
-}
