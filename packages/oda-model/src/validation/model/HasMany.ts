@@ -77,15 +77,3 @@ export class HasMany extends Persistent<IHasManyRelationProps, IHasManyRelationP
     this.init = new (Record<IHasManyRelationProps>(init))();
   }
 }
-
-// tslint:disable-next-line:variable-name
-export const DefaultRelation: IRelationPropsStore = {
-  modelType: 'relation',
-  name: null,
-  title: null,
-  description: null,
-  verb: null,
-  ref: null,
-  fields: null,
-  opposite: null,
-};

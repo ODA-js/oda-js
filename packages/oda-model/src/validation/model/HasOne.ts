@@ -77,15 +77,3 @@ export class HasOne extends Persistent<IHasOneRelationProps, IHasOneRelationProp
     this.init = new (Record<IHasOneRelationProps>(init))();
   }
 }
-
-// tslint:disable-next-line:variable-name
-export const DefaultRelation: IRelationPropsStore = {
-  modelType: 'relation',
-  name: null,
-  title: null,
-  description: null,
-  verb: null,
-  ref: null,
-  fields: null,
-  opposite: null,
-};

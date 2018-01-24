@@ -77,15 +77,3 @@ export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRel
     this.init = new (Record<IBelongsToRelationProps>(init))();
   }
 }
-
-// tslint:disable-next-line:variable-name
-export const DefaultRelation: IRelationPropsStore = {
-  modelType: 'relation',
-  name: null,
-  title: null,
-  description: null,
-  verb: null,
-  ref: null,
-  fields: null,
-  opposite: null,
-};
