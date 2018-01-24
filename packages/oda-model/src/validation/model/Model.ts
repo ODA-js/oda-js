@@ -22,7 +22,6 @@ export const ModelTransform = {
 export const ModelStorage = Record(DefaultModel);
 
 export class Model extends Persistent<IModelProps, IModelPropsStored> implements IModel {
-
   public get modelType(): 'model' {
     return 'model';
   }

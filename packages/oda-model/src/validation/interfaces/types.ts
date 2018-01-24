@@ -25,6 +25,7 @@ export type MetaModelType =
   | 'entity'
   | 'field'
   | 'ref'
+  | 'relation'
   | RelationType
   ;
 

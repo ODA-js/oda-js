@@ -2,10 +2,11 @@
 import { IField } from './IField';
 import { IEntityRef } from './IEntityRef';
 import { IModelType, IModelTypeProps } from './IModelType';
-import { RelationType } from './types';
+import { RelationType, MetaModelType } from './types';
 import { Map } from 'immutable';
 
 export type IRelationPropsStore = IModelTypeProps & {
+  modelType: MetaModelType;
   verb: RelationType;
   ref: IEntityRef;
   fields?: Map<string, IField>;
@@ -13,6 +14,7 @@ export type IRelationPropsStore = IModelTypeProps & {
 };
 
 export type IRelationProps = IModelTypeProps & {
+  modelType: MetaModelType;
   verb: RelationType;
   ref: IEntityRef;
   fields?: IField[];
