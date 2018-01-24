@@ -20,7 +20,7 @@ export const DefaultMutation: IMutationPropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const MutationTransform = {
+export const MutationTransform: { [ k in keyof IMutationPropsStored]?: any } = {
   args: transformMap<IFieldArgs>(),
   payload: transformMap<IFieldArgs>(),
   acl: {

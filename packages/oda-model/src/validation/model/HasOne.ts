@@ -22,7 +22,7 @@ export const DefaultHasOne: IHasOneRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform = {
+export const RelationTransform: { [ k in keyof IHasOneRelationPropsStore]?: any }  = {
   fields: transformMap<IField>(),
 };
 

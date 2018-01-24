@@ -20,7 +20,7 @@ export const DefaultPackage: IPackagePropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const PackageTransform = {
+export const PackageTransform: { [ k in keyof IPackagePropsStored]?: any } = {
   items: transformMap<ModelItem>(),
 };
 

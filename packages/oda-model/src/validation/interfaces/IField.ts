@@ -1,3 +1,5 @@
+import { Map } from 'immutable';
+
 import { IEntityRef } from './IEntityRef';
 import { IModelType, IModelTypeProps } from './IModelType';
 import { Relation } from './types';
@@ -18,7 +20,8 @@ export interface IFieldArgs {
   defaultValue?: string;
 }
 
-export type IFieldProps = FieldMetaData & IModelTypeProps &{
+export type IFieldProps = FieldMetaData & IModelTypeProps & {
+  modelType: 'field';
   entity?: string;
   type?: string;
   args: IFieldArgs[];
@@ -32,6 +35,21 @@ export type IFieldProps = FieldMetaData & IModelTypeProps &{
   relation?: Relation;
 };
 
-export interface IField extends IModelType<IFieldProps, IFieldProps> {
+export type IFieldPropsStore = FieldMetaData & IModelTypeProps & {
+  modelType: 'field';
+  entity?: string;
+  type?: string;
+  args: Map<string, IFieldArgs>;
+  derived?: boolean;
+  persistent?: boolean;
+  required?: boolean;
+  indexed?: boolean | string | string[];
+  identity?: boolean | string | string[];
+  idKey?: IEntityRef;
+  order?: number;
+  relation?: Relation;
+};
+
+export interface IField extends IModelType<IFieldProps, IFieldPropsStore> {
   readonly modelType: 'field';
 }

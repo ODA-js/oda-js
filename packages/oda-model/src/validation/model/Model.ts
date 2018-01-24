@@ -14,7 +14,7 @@ export const DefaultModel: IModelPropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const ModelTransform = {
+export const ModelTransform: { [ k in keyof IModelPropsStored]?: any } = {
   packages: transformMap<IPackage>(),
 };
 

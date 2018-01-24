@@ -29,7 +29,7 @@ export const DefaultField: IFieldPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const FieldTransform = {
+export const FieldTransform: { [ k in keyof IFieldPropsStore]?: any }  = {
   args: transformMap<IFieldArgs>(),
 };
 

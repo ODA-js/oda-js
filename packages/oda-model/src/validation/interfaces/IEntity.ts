@@ -1,6 +1,7 @@
 import { IModelType, IModelTypeProps } from './IModelType';
 import { IField } from './IField';
 import { IEntityContext } from './IEntityContext';
+import { Map, Set } from 'immutable';
 
 export type EntityACL = {
   read: string[];
@@ -27,26 +28,24 @@ export type EntityStorage = {
   }
 };
 
-export type EntityName = {
-  singular: string;
-  plural: string;
-};
-
 export type EntityMetaData = {
   acl: Partial<EntityACL>;
   storage: Partial<EntityStorage>;
-  name: Partial<EntityName>;
 };
 
 export type EntityPropsStore = Partial<EntityMetaData> & IModelTypeProps & {
+  modelType: 'entity';
+  singular: string;
   plural: string;
+  fields: Map<string, IField>;
   relations: Set<string>;
   required: Set<string>;
   indexed: Set<string>;
-  fields: Map<string, IField>;
 };
 
 export type EntityProps = Partial<EntityMetaData> & IModelTypeProps & {
+  modelType: 'entity';
+  singular: string;
   plural: string;
   fields: IField[];
 };

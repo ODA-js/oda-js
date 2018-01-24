@@ -22,7 +22,7 @@ export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform = {
+export const RelationTransform: {[k in keyof IBelongsToRelationPropsStore]?: any } = {
   fields: transformMap<IField>(),
 };
 

@@ -26,7 +26,7 @@ export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform = {
+export const RelationTransform: {[k in keyof IBelongsToManyRelationPropsStore]?: any } = {
   fields: transformMap<IField>(),
 };
 
