@@ -1,14 +1,15 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IRelation } from '../interfaces/IRelation';
+import { IRelation, IRelationProps, IRelationPropsStore } from '../interfaces/IRelation';
 import { IFieldContext } from '../interfaces/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
 import { RelationLevel } from '../errors';
+import { Relation } from '../interfaces/types';
 
-export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
+export class RelationVisitor implements IVisitor<IRelationProps, IRelationPropsStore, Relation, IFieldContext> {
   public validator: Validator;
   public context: IFieldContext; // has to be parent context
-  public visit(item: IRelation) {
+  public visit(item: Relation) {
     const context = new RelationContext(this.context, item);
     const result = [];
     if (context.isValid) {

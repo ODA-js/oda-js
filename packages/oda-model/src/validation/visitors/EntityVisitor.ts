@@ -1,11 +1,11 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IEntity } from '../interfaces/IEntity';
+import { IEntity, EntityProps, EntityPropsStore} from '../interfaces/IEntity';
 import { IPackageContext } from '../interfaces/IPackageContext';
 import { Validator } from '../validators/Validator';
 import { EntityContext } from '../contexts/EntityContext';
 import { EntityLevel } from '../errors';
 
-export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
+export class EntityVisitor implements IVisitor<EntityProps, EntityPropsStore, IEntity, IPackageContext> {
   public validator: Validator;
   public context: IPackageContext; // has to be parent context
   public visit(item: IEntity) {
@@ -44,4 +44,5 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
     this.validator = validator;
     this.context = pkg;
   }
+
 }
