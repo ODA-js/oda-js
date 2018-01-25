@@ -3,22 +3,25 @@ import deepMerge from './../lib/json/deepMerge';
 import get from './../lib/json/get';
 import set from './../lib/json/set';
 import {
-  MetadataInput,
+  MetadataInput, MetaModelStore,
 } from './interfaces';
 import { IValidate } from '../validation/interfaces/IValidate';
 import { MetaModelType } from '../validation/interfaces/types';
 import { IValidator } from '../validation/interfaces/IValidator';
 import { IValidationResult } from '../validation/interfaces/IValidationResult';
 
-export class Metadata implements IValidate {
-  public modelType: MetaModelType;
-  public metadata: { [key: string]: any };
+export class Metadata<MetaFormat extends Object> implements IValidate {
+  public get metadata(): MetaFormat {
+    return this._metadata || {} as MetaFormat;
+  }
+
+  protected _metadata: MetaFormat;
 
   public validate(validator: IValidator): IValidationResult[] {
     return validator.check(this);
   }
 
-  constructor(inp: { metadata?: { [key: string]: any } }) {
+  constructor(inp: { metadata?: MetaFormat}) {
     if (inp && inp.metadata) {
       this.setMetadata('*', inp.metadata);
     }
@@ -42,19 +45,19 @@ export class Metadata implements IValidate {
     }
     if (data !== undefined) {
       if (key === '*') {
-        this.metadata = data as any;
+        this._metadata = data as any;
       } else {
-        if (!this.metadata) {
-          this.metadata = {};
+        if (!this._metadata) {
+          this._metadata = {} as MetaFormat;
         }
-        set(this.metadata, key, data);
+        set(this._metadata, key, data);
       }
     }
   }
 
   public updateWith(obj: MetadataInput) {
     if (obj && obj.metadata) {
-      this.metadata = deepMerge(this.metadata || {}, obj.metadata);
+      this._metadata = deepMerge(this.metadata || {}, obj.metadata);
     }
   }
 

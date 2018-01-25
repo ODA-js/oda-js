@@ -17,7 +17,7 @@ import { IValidationResult } from '../validation/interfaces/IValidationResult';
 import { IEntityRef } from '../validation/interfaces/IEntityRef';
 import { IField } from '../validation/interfaces/IField';
 
-export class RelationBase extends Metadata implements IRelation {
+export class RelationBase extends Metadata {
 
   public using?: IEntityRef;
   public title: string;

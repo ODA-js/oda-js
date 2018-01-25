@@ -6,7 +6,7 @@ import { ModelBaseInput, ModelBaseStorage } from './interfaces';
 import { Metadata } from './metadata';
 import { ModelPackage } from './modelpackage';
 
-export class ModelBase extends Metadata {
+export class ModelBase<TProps extends Object, MData extends Object> extends Metadata<MData> {
   protected $obj: ModelBaseStorage;
 
   constructor(obj: ModelBaseInput) {

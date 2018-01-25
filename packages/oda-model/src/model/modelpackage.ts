@@ -8,15 +8,15 @@ import {
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
 import { IValidate } from '../validation/interfaces/IValidate';
-import { MetaModelType } from '../validation/interfaces/types';
-import { IPackage } from '../validation/interfaces/IPackage';
+import { MetaModelType, ModelItem } from '../validation/interfaces/types';
+import { IPackage, IPackageProps } from '../validation/interfaces/IPackage';
 import { IValidator } from '../validation/interfaces/IValidator';
 import { IValidationResult } from '../validation/interfaces/IValidationResult';
 
 // tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */
 export class ModelPackage implements IValidate, IPackage {
-  public modelType: MetaModelType = 'package';
+  public modelType: 'package';
   /** name of the package */
   public name: string;
   /** acl level for security sort issues */
@@ -35,7 +35,14 @@ export class ModelPackage implements IValidate, IPackage {
   public relations: Map<string, Map<string, Field>> = new Map();
   public mutations: Map<string, Mutation> = new Map();
 
+  public items: Map<string, ModelItem>;
+
+
   public metaModel: MetaModel;
+
+  public updateWith(obj: Partial<IPackageProps>) {
+    return null;
+  }
 
   public validate(validator: IValidator): IValidationResult[] {
     return validator.check(this);
