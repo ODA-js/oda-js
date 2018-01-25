@@ -21,4 +21,9 @@ export abstract class Persistent<TInputProps, TStoredProps> {
   public toJS() {
     return this.reverse(this.store.toJS());
   }
+  public clone() {
+    const t = this.constructor() as Persistent<TInputProps, TStoredProps>;
+    t.store = this.store;
+    t.init = this.init;
+  }
 }

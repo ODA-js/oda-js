@@ -19,6 +19,14 @@ export const DefaultHasMany: IHasManyRelationPropsStore = {
   fields: null,
   opposite: null,
   hasMany: null,
+  //storage
+  single: true,
+  stored: true,
+  embedded: true,
+// name
+  fullName: null,
+  normalName: null,
+  shortName: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -51,7 +59,24 @@ export class HasMany extends Persistent<IHasManyRelationProps, IHasManyRelationP
   public get opposite(): string {
     return this.store.get('opposite', null);
   }
-
+  public get embedded(): boolean {
+    return this.store.get('embedded', null);
+  }
+  public get single(): boolean {
+    return this.store.get('single', null);
+  }
+  public get stored(): boolean {
+    return this.store.get('stored', null);
+  }
+  public get fullName(): string {
+    return this.store.get('fullName', null);
+  }
+  public get normalName(): string {
+    return this.store.get('normalName', null);
+  }
+  public get shortName(): string {
+    return this.store.get('shortName', null);
+  }
   public get verb(): 'HasMany' {
     return 'HasMany';
   }
@@ -62,12 +87,26 @@ export class HasMany extends Persistent<IHasManyRelationProps, IHasManyRelationP
   protected transform(input: IHasManyRelationProps): IHasManyRelationPropsStore {
     return {
       ...input,
+      single: true,
+      stored: true,
+      embedded: true,
+      verb: 'HasMany',
       fields: RelationTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IHasManyRelationPropsStore): IHasManyRelationProps {
     return {
-      ...input,
+      name: input.name,
+      title: input.title,
+      description: input.description,
+      modelType: input.modelType,
+      fullName: input.fullName,
+      normalName: input.normalName,
+      shortName: input.shortName,
+      opposite: input.opposite,
+      ref: input.ref,
+      verb: input.verb,
+      hasMany: input.hasMany,
       fields: RelationTransform.fields.reverse(input.fields),
     };
   }

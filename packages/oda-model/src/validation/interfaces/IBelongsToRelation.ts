@@ -5,7 +5,8 @@ export type IBelongsToRelationProps  = IRelationProps &  {
   belongsTo: IEntityRef;
 };
 
-export type IBelongsToRelationPropsStore  = IRelationPropsStore &  {
+export type IBelongsToRelationPropsStore = IRelationPropsStore & {
+  verb: 'BelongsTo',
   belongsTo: IEntityRef;
 };
 

@@ -23,6 +23,14 @@ export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
   fields: null,
   opposite: null,
   belongsToMany: null,
+  //storage
+  single: true,
+  stored: true,
+  embedded: true,
+// name
+  fullName: null,
+  normalName: null,
+  shortName: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -56,7 +64,24 @@ export class BelongsToMany
   public get opposite(): string {
     return this.store.get('opposite', null);
   }
-
+  public get single(): boolean {
+    return this.store.get('single', null);
+  }
+  public get stored(): boolean {
+    return this.store.get('stored', null);
+  }
+  public get embedded(): boolean {
+    return this.store.get('embedded', null);
+  }
+  public get fullName(): string {
+    return this.store.get('fullName', null);
+  }
+  public get normalName(): string {
+    return this.store.get('normalName', null);
+  }
+  public get shortName(): string {
+    return this.store.get('shortName', null);
+  }
   public get verb(): 'BelongsToMany' {
     return 'BelongsToMany';
   }
@@ -67,12 +92,26 @@ export class BelongsToMany
   protected transform(input: IBelongsToManyRelationProps): IBelongsToManyRelationPropsStore {
     return {
       ...input,
+      single: true,
+      stored: true,
+      embedded: true,
+      verb: 'BelongsToMany',
       fields: RelationTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IBelongsToManyRelationPropsStore): IBelongsToManyRelationProps {
     return {
-      ...input,
+      name: input.name,
+      title: input.title,
+      description: input.description,
+      modelType: input.modelType,
+      fullName: input.fullName,
+      normalName: input.normalName,
+      shortName: input.shortName,
+      opposite: input.opposite,
+      ref: input.ref,
+      verb: input.verb,
+      belongsToMany: input.belongsToMany,
       fields: RelationTransform.fields.reverse(input.fields),
     };
   }

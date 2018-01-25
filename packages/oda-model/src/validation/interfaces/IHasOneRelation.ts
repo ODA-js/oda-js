@@ -7,6 +7,7 @@ export type IHasOneRelationProps = IRelationProps & {
 };
 
 export type IHasOneRelationPropsStore = IRelationPropsStore & {
+  verb: 'HasOne',
   hasOne: IEntityRef;
 };
 

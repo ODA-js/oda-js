@@ -7,6 +7,7 @@ export type IBelongsToManyRelationProps = IRelationProps & {
 };
 
 export type IBelongsToManyRelationPropsStore = IRelationPropsStore & {
+  verb: 'BelongsToMany',
   belongsToMany: IEntityRef;
   using?: IEntityRef;
 };
