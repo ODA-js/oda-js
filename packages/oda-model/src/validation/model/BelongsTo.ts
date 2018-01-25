@@ -4,7 +4,12 @@ import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import { IBelongsToRelationPropsStore, IBelongsToRelationProps, IBelongsToRelation } from '../interfaces/IBelongsToRelation';
+import {
+  IBelongsToRelationPropsStore,
+  IBelongsToRelationProps,
+  IBelongsToRelation,
+  IRelationTransform,
+} from '../interfaces/IBelongsToRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 
@@ -19,18 +24,18 @@ export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
   fields: null,
   opposite: null,
   belongsTo: null,
-//storage
+  //storage
   single: true,
   stored: true,
   embedded: true,
-// name
+  // name
   fullName: null,
   normalName: null,
   shortName: null,
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: {[k in keyof IBelongsToRelationPropsStore]?: any } = {
+export const RelationTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 
@@ -66,13 +71,13 @@ export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRel
     return this.store.get('belongsTo', null);
   }
   public get embedded(): boolean {
-    return this.store.get('embedded', null);
+    return this.store.get('embedded', true);
   }
   public get single(): boolean {
-    return this.store.get('single', null);
+    return this.store.get('single', true);
   }
   public get stored(): boolean {
-    return this.store.get('stored', null);
+    return this.store.get('stored', true);
   }
   public get fullName(): string {
     return this.store.get('fullName', null);

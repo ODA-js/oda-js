@@ -10,5 +10,4 @@ export type IModelTypeProps = {
 
 export type IModelType< T extends Partial<IModelTypeProps>, TS extends Partial<IModelTypeProps>> = IValidate & Readonly<TS> & {
   readonly modelType: MetaModelType;
-  updateWith(update: Partial<T>);
 };

@@ -5,6 +5,7 @@ import { Rule } from '../rule';
 import { IMutationContext } from './IMutationContext';
 import { IValidator } from './IValidator';
 import { Record, Map, Set } from 'immutable';
+import { IUpdatable } from '../model/Persistent';
 
 export interface IMutationACL {
   readonly execute: string[];
@@ -23,18 +24,23 @@ export interface IMutationMetaDataStore {
 }
 
 export type IMutationPropsStore = IMutationMetaDataStore & IModelTypeProps & {
-  modelType: 'mutation';
   args: Map<string, IFieldArgs>;
   payload: Map<string, IFieldArgs>;
 };
 
 export type IMutationProps = IMutationMetaData & IModelTypeProps & {
-  modelType: 'mutation';
   args: IFieldArgs[];
   payload: IFieldArgs[];
 };
 
-export interface IMutation extends IModelType<IMutationProps, IMutationPropsStore> {
+export type IMutationTransform = {
+  [k in keyof IMutationProps]?: {
+    transform: (input: IMutationProps[k]) => IMutationPropsStore[k];
+    reverse: (input: IMutationPropsStore[k]) => IMutationProps[k];
+  }
+};
+
+export interface IMutation extends IModelType<IMutationProps, IMutationPropsStore>, IUpdatable<IMutationProps> {
   readonly modelType: 'mutation';
 }
 

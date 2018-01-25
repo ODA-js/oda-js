@@ -3,7 +3,11 @@ import { Record } from 'immutable';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
 
-export abstract class Persistent<TInputProps, TStoredProps> {
+export interface IUpdatable<T> {
+  updateWith(obj: Partial<T>);
+}
+
+export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable<TInputProps> {
   protected store: Record<TStoredProps>;
   protected init: Record<TInputProps>;
   public validate(validator: IValidator): IValidationResult[] {

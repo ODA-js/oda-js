@@ -2,15 +2,16 @@ import { IModelType, IModelTypeProps } from './IModelType';
 import { IField } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
+import { IUpdatable } from '../model/Persistent';
 
-export type EntityACL = {
+export type IEntityACL = {
   read: string[];
   create: string[];
   update: string[];
   delete: string[];
 };
 
-export type EntityIndex = {
+export type IEntityIndex = {
   name: string;
   fields: {
     [field: string]: 1 | -1;
@@ -21,35 +22,43 @@ export type EntityIndex = {
   };
 };
 
-export type EntityStorage = {
+export type IEntityStorage = {
   adapter: 'mongoose' | 'sequelize';
   indexes: {
-    [indexName: string]: EntityIndex;
+    [indexName: string]: IEntityIndex;
   }
 };
 
-export type EntityMetaData = {
-  acl: Partial<EntityACL>;
-  storage: Partial<EntityStorage>;
+export type IEntityMetaData = {
+  acl: Partial<IEntityACL>;
+  storage: Partial<IEntityStorage>;
 };
 
-export type EntityPropsStore = Partial<EntityMetaData> & IModelTypeProps & {
+export type IEntityPropsStore = Partial<IEntityMetaData> & IModelTypeProps & {
   modelType: 'entity';
   singular: string;
   plural: string;
   fields: Map<string, IField>;
-  relations: Set<string>;
-  required: Set<string>;
-  indexed: Set<string>;
 };
 
-export type EntityProps = Partial<EntityMetaData> & IModelTypeProps & {
+export type IEntityProps = Partial<IEntityMetaData> & IModelTypeProps & {
   modelType: 'entity';
   singular: string;
   plural: string;
   fields: IField[];
 };
 
-export interface IEntity extends IModelType<EntityProps, EntityPropsStore> {
+export type IEntityTransform = {
+  [k in keyof IEntityProps ]?: {
+    transform: (input: IEntityProps[k]) => IEntityPropsStore[k];
+    reverse: (input: IEntityPropsStore[k]) => IEntityProps[k];
+  }
+};
+
+export interface IEntity extends IModelType<IEntityProps, IEntityPropsStore>,
+IUpdatable<IEntityProps> {
   readonly modelType: 'entity';
+  readonly relations: Set<string>;
+  readonly required: Set<string>;
+  readonly indexed: Set<string>;
 }

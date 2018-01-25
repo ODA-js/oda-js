@@ -1,6 +1,11 @@
 import { Map, Record } from 'immutable';
 
-import { IModel, IModelProps, IModelPropsStore } from '../interfaces/IModel';
+import {
+  IModel,
+  IModelProps,
+  IModelPropsStore,
+  IModelTransform,
+} from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
@@ -14,7 +19,7 @@ export const DefaultModel: IModelPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const ModelTransform: { [ k in keyof IModelPropsStore]?: any } = {
+export const ModelTransform: IModelTransform = {
   packages: transformMap<IPackage>(),
 };
 

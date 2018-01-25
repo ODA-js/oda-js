@@ -8,6 +8,7 @@ import {
   IBelongsToManyRelationPropsStore,
   IBelongsToManyRelationProps,
   IBelongsToManyRelation,
+  IRelationTransform,
 } from '../interfaces/IBelongsToManyRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
@@ -27,16 +28,16 @@ export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
   single: true,
   stored: true,
   embedded: true,
-// name
+  // name
   fullName: null,
   normalName: null,
   shortName: null,
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: {[k in keyof IBelongsToManyRelationPropsStore]?: any } = {
-  fields: transformMap<IField>(),
-};
+export const RelationTransform: IRelationTransform = {
+    fields: transformMap<IField>(),
+  };
 
 // tslint:disable-next-line:variable-name
 export const BelongsToManyStorage = Record(DefaultBelongsToMany);

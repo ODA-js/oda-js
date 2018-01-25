@@ -4,7 +4,12 @@ import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import { IHasOneRelationPropsStore, IHasOneRelationProps, IHasOneRelation } from '../interfaces/IHasOneRelation';
+import {
+  IHasOneRelationPropsStore,
+  IHasOneRelationProps,
+  IHasOneRelation,
+  IRelationTransform,
+} from '../interfaces/IHasOneRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 
@@ -30,7 +35,7 @@ export const DefaultHasOne: IHasOneRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: { [ k in keyof IHasOneRelationPropsStore]?: any }  = {
+export const RelationTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 

@@ -2,13 +2,18 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { IFieldArgs } from '../interfaces/IField';
-import { IMutation, IMutationACLStore, IMutationProps, IMutationPropsStore } from '../interfaces/IMutation';
+import {
+  IMutation,
+  IMutationACLStore,
+  IMutationProps,
+  IMutationPropsStore,
+  IMutationTransform,
+} from '../interfaces/IMutation';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationPropsStore = {
-  modelType: 'mutation',
   name: null,
   title: null,
   description: null,
@@ -20,7 +25,7 @@ export const DefaultMutation: IMutationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const MutationTransform: { [ k in keyof IMutationPropsStore]?: any } = {
+export const MutationTransform: IMutationTransform = {
   args: transformMap<IFieldArgs>(),
   payload: transformMap<IFieldArgs>(),
   acl: {

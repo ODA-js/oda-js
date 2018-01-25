@@ -1,14 +1,24 @@
 import { IEntityRef } from './IEntityRef';
 import { IRelationProps, IRelationPropsStore, IRelation } from './IRelation';
 import { IModelType } from './IModelType';
+import { IUpdatable } from '../model/Persistent';
 
-export type IHasManyRelationProps  = IRelationProps & {
+export type IHasManyRelationProps = IRelationProps & {
   hasMany: IEntityRef;
 };
 
-export type IHasManyRelationPropsStore  = IRelationPropsStore & {
-  verb: 'HasMany',
+export type IHasManyRelationPropsStore = IRelationPropsStore & {
   hasMany: IEntityRef;
 };
 
-export interface IHasManyRelation extends IRelation<IHasManyRelationProps, IHasManyRelationPropsStore> {}
+export type IRelationTransform = {
+  [k in keyof IHasManyRelationProps]?: {
+    transform: (input: IHasManyRelationProps[k]) => IHasManyRelationPropsStore[k];
+    reverse: (input: IHasManyRelationPropsStore[k]) => IHasManyRelationProps[k];
+  }
+};
+
+export interface IHasManyRelation extends IRelation<IHasManyRelationProps, IHasManyRelationPropsStore>
+  , IUpdatable<IHasManyRelationProps> {
+  readonly verb: 'HasMany';
+}

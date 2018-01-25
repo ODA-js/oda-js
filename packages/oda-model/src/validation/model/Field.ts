@@ -3,14 +3,19 @@ import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import {FieldACL, IFieldProps,  IFieldPropsStore,  IFieldArgs} from '../interfaces/IField';
+import {
+  IFieldACL,
+  IFieldProps,
+  IFieldPropsStore,
+  IFieldArgs,
+  IFieldTransform,
+} from '../interfaces/IField';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { Relation } from '../interfaces/types';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldPropsStore = {
-  modelType: 'field',
   name: null,
   title: null,
   description: null,
@@ -29,7 +34,7 @@ export const DefaultField: IFieldPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const FieldTransform: { [ k in keyof IFieldPropsStore]?: any }  = {
+export const FieldTransform: IFieldTransform = {
   args: transformMap<IFieldArgs>(),
 };
 
@@ -49,7 +54,7 @@ export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements 
   public get description(): string {
     return this.store.get('description', null);
   }
-  public get acl(): Partial<FieldACL> {
+  public get acl(): Partial<IFieldACL> {
     return this.store.get('acl', null);
   }
   public get args(): Map<string, IFieldArgs> {

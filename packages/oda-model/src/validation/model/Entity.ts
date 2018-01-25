@@ -3,12 +3,17 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import { EntityPropsStore, IEntity, EntityProps } from '../interfaces/IEntity';
+import {
+  IEntityPropsStore,
+  IEntity,
+  IEntityProps,
+  IEntityTransform,
+} from '../interfaces/IEntity';
 import { IField } from '../interfaces/IField';
 
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntity: EntityPropsStore = {
+export const DefaultEntity: IEntityPropsStore = {
   modelType: 'entity',
   name: null,
   title: null,
@@ -17,24 +22,18 @@ export const DefaultEntity: EntityPropsStore = {
   plural: null,
   singular: null,
   fields: Map<string, IField>(),
-  indexed: Set<string>(),
-  relations: Set<string>(),
-  required: Set<string>(),
   storage: null,
 };
 
 // tslint:disable-next-line:variable-name
-export const EntityTransform: {[k in keyof EntityPropsStore]?: any } = {
+export const EntityTransform: IEntityTransform = {
   fields: transformMap<IField>(),
-  relations: transformSet<string>(),
-  indexed: transformSet<string>(),
-  required: transformSet<string>(),
 };
 
 // tslint:disable-next-line:variable-name
 export const EntityStorage = Record(DefaultEntity);
 
-export class Model extends Persistent<EntityProps, EntityPropsStore> implements IEntity {
+export class Model extends Persistent<IEntityProps, IEntityPropsStore> implements IEntity {
   public get modelType(): 'entity' {
     return 'entity';
   }
@@ -69,16 +68,13 @@ export class Model extends Persistent<EntityProps, EntityPropsStore> implements 
     return this.store.get('indexed', null);
   }
 
-  protected transform(input: EntityProps): EntityPropsStore {
+  protected transform(input: IEntityProps): IEntityPropsStore {
     return {
       ...input,
       fields: EntityTransform.fields.transform(input.fields),
-      relations: Set<string>(),
-      indexed: Set<string>(),
-      required: Set<string>(),
     };
   }
-  protected reverse(input: EntityPropsStore): EntityProps {
+  protected reverse(input: IEntityPropsStore): IEntityProps {
     return {
       name: input.name,
       title: input.name,
@@ -91,9 +87,9 @@ export class Model extends Persistent<EntityProps, EntityPropsStore> implements 
       fields: EntityTransform.fields.reverse(input.fields),
     };
   }
-  constructor(init: EntityProps) {
+  constructor(init: IEntityProps) {
     super();
     this.store = new EntityStorage(this.transform(init));
-    this.init = new (Record<EntityProps>(init))();
+    this.init = new (Record<IEntityProps>(init))();
   }
 }

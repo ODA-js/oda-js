@@ -3,13 +3,17 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import { IPackagePropsStore, IPackageProps, IPackage } from '../interfaces/IPackage';
+import {
+  IPackagePropsStore,
+  IPackageProps,
+  IPackage,
+  IPackageTransform,
+} from '../interfaces/IPackage';
 import { ModelItem } from '../interfaces/types';
 import { IModelType } from '../interfaces/IModelType';
 
 // tslint:disable-next-line:variable-name
 export const DefaultPackage: IPackagePropsStore = {
-  modelType: 'package',
   name: null,
   title: null,
   description: null,
@@ -20,7 +24,7 @@ export const DefaultPackage: IPackagePropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const PackageTransform: { [ k in keyof IPackagePropsStore]?: any } = {
+export const PackageTransform: IPackageTransform = {
   items: transformMap<ModelItem>(),
 };
 

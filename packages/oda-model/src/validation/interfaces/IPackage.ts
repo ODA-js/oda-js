@@ -8,9 +8,9 @@ import { Rule } from '../rule';
 import { IPackageContext } from './IPackageContext';
 import { ModelItem } from './types';
 import { Map } from 'immutable';
+import { IUpdatable } from '../model/Persistent';
 
 export type IPackageProps = IModelTypeProps & {
-  modelType: 'package';
   acl: number;
   abstract?: boolean;
   items: ModelItem[];
@@ -18,14 +18,20 @@ export type IPackageProps = IModelTypeProps & {
 };
 
 export type IPackagePropsStore = IModelTypeProps & {
-  modelType: 'package';
   acl: number;
   abstract?: boolean;
   items: Map<string, ModelItem>;
   model: IModel;
 };
 
-export interface IPackage extends IModelType<IPackageProps, IPackagePropsStore> {
+export type IPackageTransform = {
+  [k in keyof IPackageProps]?: {
+    transform: (input: IPackageProps[k]) => IPackagePropsStore[k];
+    reverse: (input: IPackagePropsStore[k]) => IPackageProps[k];
+  }
+};
+
+export interface IPackage extends IModelType<IPackageProps, IPackagePropsStore>, IUpdatable<IPackageProps> {
   readonly modelType: 'package';
 }
 
