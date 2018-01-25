@@ -2,7 +2,8 @@ import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { IEntity } from '../../../interfaces/IEntity';
-import { isEntity } from '../../../helpers';
+import {IsBelongsToMany, isEntity} from '../../../helpers';
+import { IBelongsToManyRelation } from '../../../interfaces/IBelongsToManyRelation';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-ref-and-using-entities-not-found-remove';
@@ -11,12 +12,10 @@ export default class implements Rule<IRelationContext> {
     const result: IValidationResult[] = [];
     const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
     if (!isEntity(entity)) {
-      if (context.relation.using.entity) {
+      if (IsBelongsToMany(context.relation) && context.relation.using.entity) {
         const refEntity = context.package.items.get(context.relation.using.entity)as IEntity;
         if (!isEntity(refEntity)) {
-          const update = context.field.toJSON();
-          delete update.relation;
-          context.field.updateWith(update);
+          context.field.updateWith({relation: null});
           result.push({
             message: this.description,
             result: 'fixable',

@@ -1,18 +1,18 @@
+import {IsBelongsToMany} from '../../../helpers';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
+import { IBelongsToManyRelation } from '../../../interfaces/IBelongsToManyRelation';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-ref-backFielnd-is-not-identity-fix';
   public description = 'back field is not identity. fixed';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    if (context.relation.using.backField) {
+    if (IsBelongsToMany(context.relation) && context.relation.using.backField) {
       const bf = context.entity.fields.get(context.relation.using.backField);
       if (bf && !bf.identity) {
-        const update = bf.toJSON();
-        update.identity = true;
-        bf.updateWith(update);
+        bf.updateWith({identity: true});
         result.push({
           message: this.description,
           result: 'fixable',

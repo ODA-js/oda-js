@@ -8,9 +8,7 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!context.relation.ref.backField && !context.field.indexed) {
-      const update = context.field;
-      update.indexed = true;
-      (context.field).updateWith(update);
+      (context.field).updateWith({indexed: true});
       result.push({
         message: this.description,
         result: 'fixable',

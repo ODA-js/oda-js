@@ -2,7 +2,7 @@ import { IEntity } from '../../../interfaces/IEntity';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
-import { isEntity } from '../../../helpers';
+import { isEntity, IsBelongsToMany } from '../../../helpers';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-possible-opposite';
@@ -15,7 +15,7 @@ export default class implements Rule<IRelationContext> {
         let opposites = Array.from(entity.fields.values())
           .filter(f => f.relation && (
             (f.relation.ref.entity === context.entity.name && f.relation.ref.field === context.field.name) ||
-            (f.relation.using && context.relation.using
+            (IsBelongsToMany(f.relation) && f.relation.using && IsBelongsToMany(context.relation) && context.relation.using
               && f.relation.using.entity === context.relation.using.entity)),
         );
 

@@ -13,9 +13,7 @@ export default class implements Rule<IRelationContext> {
     if (isEntity(entity)) {
       let refField = entity.fields.get(context.relation.ref.field);
       if (refField && !refField.identity) {
-        const update = refField.toJSON();
-        update.identity = true;
-        refField.updateWith(update);
+        refField.updateWith({identity: true});
         result.push({
           message: this.description,
           result: 'fixable',

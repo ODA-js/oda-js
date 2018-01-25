@@ -8,10 +8,10 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!!context.field.identity || !!context.field.indexed) {
-      const update = context.field.toJSON();
-      delete update.identity;
-      delete update.indexed;
-      context.field.updateWith(update);
+      context.field.updateWith({
+        identity: null,
+        indexed: null,
+      });
       result.push({
         message: this.description,
         result: 'fixable',

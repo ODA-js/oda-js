@@ -2,14 +2,14 @@ import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { IEntity } from '../../../interfaces/IEntity';
-import { isEntity } from '../../../helpers';
+import { isEntity, IsBelongsToMany } from '../../../helpers';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-using-entity-not-found';
   public description = 'using entity not found';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    if (context.relation.using) {
+    if (IsBelongsToMany(context.relation) && context.relation.using) {
       const entity = context.package.items.get(context.relation.using.entity) as IEntity;
       if (!isEntity(entity)) {
         const sysEntity = context.model.packages.get('system')
