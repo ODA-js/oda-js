@@ -1,0 +1,43 @@
+import { IVisitor } from '../interfaces/IVisitor';
+import { IMutation, IMutationPropsStore, IMutationProps } from '../interfaces/IMutation';
+import { IEntityContext } from '../interfaces/IEntityContext';
+import { Validator } from '../validators/Validator';
+import { MutationContext } from '../contexts/MutationContext';
+import { MutationLevel } from '../errors';
+
+export class MutationVisitor implements IVisitor<IMutationProps, IMutationPropsStore, IMutation, IEntityContext> {
+  public validator: Validator;
+  public context: IEntityContext; // has to be parent context
+  public visit(item: IMutation) {
+    const context = new MutationContext(this.context, item);
+    const result = [];
+    if (context.isValid) {
+      let done = false;
+      while (!done) {
+        try {
+          const rules = this.validator.getRules('field');
+          rules.forEach(rule => result.push(...rule.validate(context)));
+          done = true;
+        } catch (err) {
+          if (!(err instanceof MutationLevel)) {
+            throw err;
+          }
+        }
+      }
+    } else {
+      result.push({
+        message: 'Validation context invalid',
+        result: 'error',
+      });
+    }
+    return result.map(r => ({
+      ...r,
+      mutation: context.mutation.name,
+    }));
+  }
+
+  constructor(validator: Validator, pkg: IEntityContext) {
+    this.validator = validator;
+    this.context = pkg;
+  }
+}

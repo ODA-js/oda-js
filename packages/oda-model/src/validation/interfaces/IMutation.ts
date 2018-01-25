@@ -10,7 +10,7 @@ export interface IMutationACL {
   readonly execute: string[];
 }
 
-export interface IMutationACLStored {
+export interface IMutationACLStore {
   readonly execute: Set<string>;
 }
 
@@ -18,11 +18,11 @@ export interface IMutationMetaData {
   readonly acl?: IMutationACL;
 }
 
-export interface IMutationMetaDataStored {
-  readonly acl?: IMutationACLStored;
+export interface IMutationMetaDataStore {
+  readonly acl?: IMutationACLStore;
 }
 
-export type IMutationPropsStored = IMutationMetaDataStored & IModelTypeProps & {
+export type IMutationPropsStore = IMutationMetaDataStore & IModelTypeProps & {
   modelType: 'mutation';
   args: Map<string, IFieldArgs>;
   payload: Map<string, IFieldArgs>;
@@ -34,7 +34,7 @@ export type IMutationProps = IMutationMetaData & IModelTypeProps & {
   payload: IFieldArgs[];
 };
 
-export interface IMutation extends IModelType<IMutationProps, IMutationPropsStored> {
+export interface IMutation extends IModelType<IMutationProps, IMutationPropsStore> {
   readonly modelType: 'mutation';
 }
 

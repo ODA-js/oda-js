@@ -1,12 +1,12 @@
 import { Map, Record } from 'immutable';
 
-import { IModel, IModelProps, IModelPropsStored } from '../interfaces/IModel';
+import { IModel, IModelProps, IModelPropsStore } from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
 
 // tslint:disable-next-line:variable-name
-export const DefaultModel: IModelPropsStored = {
+export const DefaultModel: IModelPropsStore = {
   name: null,
   title: null,
   description: null,
@@ -14,14 +14,14 @@ export const DefaultModel: IModelPropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const ModelTransform: { [ k in keyof IModelPropsStored]?: any } = {
+export const ModelTransform: { [ k in keyof IModelPropsStore]?: any } = {
   packages: transformMap<IPackage>(),
 };
 
 // tslint:disable-next-line:variable-name
 export const ModelStorage = Record(DefaultModel);
 
-export class Model extends Persistent<IModelProps, IModelPropsStored> implements IModel {
+export class Model extends Persistent<IModelProps, IModelPropsStore> implements IModel {
   public get modelType(): 'model' {
     return 'model';
   }
@@ -43,13 +43,13 @@ export class Model extends Persistent<IModelProps, IModelPropsStored> implements
 
   private _defaultPackage: IPackage;
 
-  protected transform(input: IModelProps): IModelPropsStored {
+  protected transform(input: IModelProps): IModelPropsStore {
     return {
       ...input,
       packages: ModelTransform.packages.transform(input.packages),
     };
   }
-  protected reverse(input: IModelPropsStored): IModelProps {
+  protected reverse(input: IModelPropsStore): IModelProps {
     return {
       ...input,
       packages: ModelTransform.packages.reverse(input.packages),

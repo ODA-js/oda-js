@@ -2,12 +2,12 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { IFieldArgs } from '../interfaces/IField';
-import { IMutation, IMutationACLStored, IMutationProps, IMutationPropsStored } from '../interfaces/IMutation';
+import { IMutation, IMutationACLStore, IMutationProps, IMutationPropsStore } from '../interfaces/IMutation';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 
 // tslint:disable-next-line:variable-name
-export const DefaultMutation: IMutationPropsStored = {
+export const DefaultMutation: IMutationPropsStore = {
   modelType: 'mutation',
   name: null,
   title: null,
@@ -20,7 +20,7 @@ export const DefaultMutation: IMutationPropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const MutationTransform: { [ k in keyof IMutationPropsStored]?: any } = {
+export const MutationTransform: { [ k in keyof IMutationPropsStore]?: any } = {
   args: transformMap<IFieldArgs>(),
   payload: transformMap<IFieldArgs>(),
   acl: {
@@ -31,14 +31,14 @@ export const MutationTransform: { [ k in keyof IMutationPropsStored]?: any } = {
 // tslint:disable-next-line:variable-name
 const MutationStorage = Record(DefaultMutation);
 
-export class Mutation extends Persistent<IMutationProps, IMutationPropsStored> implements IMutation {
+export class Mutation extends Persistent<IMutationProps, IMutationPropsStore> implements IMutation {
   public get modelType(): 'mutation' {
     return 'mutation';
   }
   public get name(): string {
     return this.store.get('name', null);
   }
-  public get acl(): IMutationACLStored {
+  public get acl(): IMutationACLStore {
     return this.store.get('acl', null);
   }
   public get description(): string {
@@ -54,7 +54,7 @@ export class Mutation extends Persistent<IMutationProps, IMutationPropsStored> i
     return this.store.get('payload', null);
   }
 
-  protected transform(input: IMutationProps): IMutationPropsStored {
+  protected transform(input: IMutationProps): IMutationPropsStore {
     return {
       ...input,
       args: MutationTransform.args.transform(input.payload),
@@ -65,7 +65,7 @@ export class Mutation extends Persistent<IMutationProps, IMutationPropsStored> i
     };
   }
 
-  protected reverse(input: IMutationPropsStored): IMutationProps {
+  protected reverse(input: IMutationPropsStore): IMutationProps {
     return {
       ...input,
       args: MutationTransform.args.reverse(input.payload),

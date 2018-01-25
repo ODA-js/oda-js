@@ -11,8 +11,9 @@ import { IModelContext } from './IModelContext';
 import { IPackage } from './IPackage';
 import { IPackageContext } from './IPackageContext';
 import { IRelationContext } from './IRelationContext';
+import { IMutation } from './IMutation';
 
-export type ModelItem = IModel | IPackage | IEntity | IField | Relation;
+export type ModelItem = IModel | IPackage | IEntity | IField | Relation | IMutation;
 
 export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToManyRelation;
 
@@ -32,4 +33,4 @@ export type MetaModelType =
 export type ValidationContext =
     IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
 
-export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation';
+export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation';

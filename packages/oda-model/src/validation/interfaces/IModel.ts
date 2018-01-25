@@ -6,10 +6,10 @@ export type IModelProps = IModelTypeProps & {
   packages: IPackage[];
 };
 
-export type IModelPropsStored = IModelTypeProps & {
+export type IModelPropsStore = IModelTypeProps & {
   packages: Map<string, IPackage>;
 };
 
-export interface IModel extends IModelType<IModelProps, IModelPropsStored> {
+export interface IModel extends IModelType<IModelProps, IModelPropsStore> {
   readonly defaultPackage: IPackage;
 }

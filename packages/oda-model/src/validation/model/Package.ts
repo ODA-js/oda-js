@@ -3,12 +3,12 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
-import { IPackagePropsStored, IPackageProps, IPackage } from '../interfaces/IPackage';
+import { IPackagePropsStore, IPackageProps, IPackage } from '../interfaces/IPackage';
 import { ModelItem } from '../interfaces/types';
 import { IModelType } from '../interfaces/IModelType';
 
 // tslint:disable-next-line:variable-name
-export const DefaultPackage: IPackagePropsStored = {
+export const DefaultPackage: IPackagePropsStore = {
   modelType: 'package',
   name: null,
   title: null,
@@ -20,14 +20,14 @@ export const DefaultPackage: IPackagePropsStored = {
 };
 
 // tslint:disable-next-line:variable-name
-export const PackageTransform: { [ k in keyof IPackagePropsStored]?: any } = {
+export const PackageTransform: { [ k in keyof IPackagePropsStore]?: any } = {
   items: transformMap<ModelItem>(),
 };
 
 // tslint:disable-next-line:variable-name
 const PackageStorage = Record(DefaultPackage);
 
-export class Package extends Persistent<IPackageProps, IPackagePropsStored> implements IPackage {
+export class Package extends Persistent<IPackageProps, IPackagePropsStore> implements IPackage {
   public get modelType(): 'package' {
     return 'package';
   }
@@ -53,14 +53,14 @@ export class Package extends Persistent<IPackageProps, IPackagePropsStored> impl
     return this.store.get('model', null);
   }
 
-  protected transform(input: IPackageProps): IPackagePropsStored {
+  protected transform(input: IPackageProps): IPackagePropsStore {
     return {
       ...input,
       items: PackageTransform.items.transform(input.items),
     };
   }
 
-  protected reverse(input: IPackagePropsStored): IPackageProps {
+  protected reverse(input: IPackagePropsStore): IPackageProps {
     return {
       ...input,
       items: PackageTransform.items.reverse(input.items),

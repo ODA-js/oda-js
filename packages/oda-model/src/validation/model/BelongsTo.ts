@@ -59,7 +59,6 @@ export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRel
   public get opposite(): string {
     return this.store.get('opposite', null);
   }
-
   public get verb(): 'BelongsTo' {
     return 'BelongsTo';
   }

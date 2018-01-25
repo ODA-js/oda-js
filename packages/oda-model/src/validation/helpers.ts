@@ -8,6 +8,7 @@ import { IBelongsToRelation } from './interfaces/IBelongsToRelation';
 import { IBelongsToManyRelation } from './interfaces/IBelongsToManyRelation';
 import { IHasOneRelation } from './interfaces/IHasOneRelation';
 import { IHasManyRelation } from './interfaces/IHasManyRelation';
+import {IMutation} from './interfaces/IMutation';
 
 export function isModel(item: ModelItem): item is IModel {
   return item.modelType === 'model';
@@ -19,6 +20,10 @@ export function isPackage(item: ModelItem): item is IPackage {
 
 export function isEntity(item: ModelItem): item is IEntity {
   return item.modelType === 'entity';
+}
+
+export function isMutation(item: ModelItem): item is IMutation {
+  return item.modelType === 'mutation';
 }
 
 export function isField(item: ModelItem): item is IField {

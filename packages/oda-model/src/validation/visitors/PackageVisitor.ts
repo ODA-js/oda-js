@@ -1,12 +1,12 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IPackage, IPackageProps, IPackagePropsStored } from '../interfaces/IPackage';
+import { IPackage, IPackageProps, IPackagePropsStore } from '../interfaces/IPackage';
 import { IModelContext } from '../interfaces/IModelContext';
 import { Validator } from '../validators/Validator';
 import { ModelContext } from '../contexts/ModelContext';
 import { PackageContext } from '../contexts/PackageContext';
 import { PackageLevel } from '../errors';
 
-export class PackageVisitor implements IVisitor<IPackageProps, IPackagePropsStored, IPackage, IModelContext> {
+export class PackageVisitor implements IVisitor<IPackageProps, IPackagePropsStore, IPackage, IModelContext> {
   public validator: Validator;
   public context: IModelContext; // has to be parent context
   public visit(item: IPackage) {

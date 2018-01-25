@@ -17,7 +17,7 @@ export type IPackageProps = IModelTypeProps & {
   model: IModel;
 };
 
-export type IPackagePropsStored = IModelTypeProps & {
+export type IPackagePropsStore = IModelTypeProps & {
   modelType: 'package';
   acl: number;
   abstract?: boolean;
@@ -25,7 +25,7 @@ export type IPackagePropsStored = IModelTypeProps & {
   model: IModel;
 };
 
-export interface IPackage extends IModelType<IPackageProps, IPackagePropsStored> {
+export interface IPackage extends IModelType<IPackageProps, IPackagePropsStore> {
   readonly modelType: 'package';
 }
 
