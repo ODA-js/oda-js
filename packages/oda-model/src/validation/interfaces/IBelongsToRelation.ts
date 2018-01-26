@@ -1,6 +1,8 @@
 import { IEntityRef } from './IEntityRef';
 import { IRelation, IRelationProps, IRelationPropsStore } from './IRelation';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
+import { IField } from './IField';
 
 export interface IBelongsToRelationProps extends IRelationProps {
   belongsTo: IEntityRef;
@@ -10,14 +12,11 @@ export interface IBelongsToRelationPropsStore extends IRelationPropsStore {
   belongsTo: IEntityRef;
 }
 
-export type IRelationTransform = {
-  [k in keyof IBelongsToRelationProps]?: {
-    transform: (input: IBelongsToRelationProps[k]) => IBelongsToRelationPropsStore[k];
-    reverse: (input: IBelongsToRelationPropsStore[k]) => IBelongsToRelationProps[k];
-  }
-};
+export interface IRelationTransform {
+  fields: ArrayToMap<IField>;
+}
 
-export interface IBelongsToRelation extends IRelation<IBelongsToRelationProps, IBelongsToRelationPropsStore>,
+export interface IBelongsToRelation extends IRelation,
   IUpdatable<IBelongsToRelationProps> {
   readonly verb: 'BelongsTo';
 }

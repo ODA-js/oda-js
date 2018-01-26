@@ -8,6 +8,7 @@ import {
   IMutationProps,
   IMutationPropsStore,
   IMutationTransform,
+  IMutationACLTransform,
 } from '../interfaces/IMutation';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
@@ -25,12 +26,15 @@ export const DefaultMutation: IMutationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
+export const MutationACLTransform: IMutationACLTransform = {
+  execute: transformSet<string>(),
+};
+
+// tslint:disable-next-line:variable-name
 export const MutationTransform: IMutationTransform = {
   args: transformMap<IFieldArgs>(),
   payload: transformMap<IFieldArgs>(),
-  acl: {
-    execute: transformSet<string>(),
-  },
+  acl: MutationACLTransform,
 };
 
 // tslint:disable-next-line:variable-name

@@ -9,6 +9,7 @@ import { IPackageContext } from './IPackageContext';
 import { ModelItem } from './types';
 import { Map } from 'immutable';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
 
 export interface IPackageProps extends IModelTypeProps {
   acl: number;
@@ -25,13 +26,10 @@ export interface IPackagePropsStore extends IModelTypeProps  {
 }
 
 export type IPackageTransform = {
-  [k in keyof IPackageProps]?: {
-    transform: (input: IPackageProps[k]) => IPackagePropsStore[k];
-    reverse: (input: IPackagePropsStore[k]) => IPackageProps[k];
-  }
+  items: ArrayToMap<ModelItem>,
 };
 
-export interface IPackage extends IModelType<IPackageProps, IPackagePropsStore>, IUpdatable<IPackageProps> {
+export interface IPackage extends IModelType, IUpdatable<IPackageProps> {
   readonly modelType: 'package';
 }
 

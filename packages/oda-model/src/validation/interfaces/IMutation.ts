@@ -1,11 +1,12 @@
 import { IModelType, IModelTypeProps } from './IModelType';
 import { IValidationResult } from './IValidationResult';
-import { IFieldArgs } from './IField';
+import { IFieldArgs, IField } from './IField';
 import { Rule } from '../rule';
 import { IMutationContext } from './IMutationContext';
 import { IValidator } from './IValidator';
 import { Record, Map, Set } from 'immutable';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap, ArrayToSet } from '../model/utils';
 
 export interface IMutationACL {
   readonly execute: string[];
@@ -23,24 +24,27 @@ export interface IMutationMetaDataStore {
   readonly acl?: IMutationACLStore;
 }
 
-export type IMutationPropsStore = IMutationMetaDataStore & IModelTypeProps & {
+export interface IMutationPropsStore extends IMutationMetaDataStore, IModelTypeProps {
   args: Map<string, IFieldArgs>;
   payload: Map<string, IFieldArgs>;
-};
+}
 
-export type IMutationProps = IMutationMetaData & IModelTypeProps & {
+export interface IMutationProps extends IMutationMetaData, IModelTypeProps {
   args: IFieldArgs[];
   payload: IFieldArgs[];
-};
+}
 
-export type IMutationTransform = {
-  [k in keyof IMutationProps]?: {
-    transform: (input: IMutationProps[k]) => IMutationPropsStore[k];
-    reverse: (input: IMutationPropsStore[k]) => IMutationProps[k];
-  }
-};
+export interface IMutationACLTransform {
+  execute: ArrayToSet<string>;
+}
 
-export interface IMutation extends IModelType<IMutationProps, IMutationPropsStore>, IUpdatable<IMutationProps> {
+export interface IMutationTransform {
+  args: ArrayToMap<IFieldArgs>;
+  payload: ArrayToMap<IFieldArgs>;
+  acl: IMutationACLTransform;
+}
+
+export interface IMutation extends IModelType, IUpdatable<IMutationProps> {
   readonly modelType: 'mutation';
 }
 

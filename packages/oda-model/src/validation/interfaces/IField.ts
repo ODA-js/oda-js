@@ -10,7 +10,7 @@ export interface IFieldACL {
   update?: string[];
 }
 
-export interface IFieldMetaData  {
+export interface IFieldMetaData {
   acl: IFieldACL;
 }
 
@@ -35,7 +35,7 @@ export interface IFieldProps extends IFieldMetaData, IModelTypeProps {
   relation?: Relation;
 }
 
-export interface IFieldPropsStore extends IFieldMetaData , IModelTypeProps  {
+export interface IFieldPropsStore extends IFieldMetaData, IModelTypeProps {
   entity?: string;
   type?: string;
   args: Map<string, IFieldArgs>;
@@ -56,8 +56,6 @@ export type IFieldTransform = {
   }
 };
 
-export interface IField
-  extends IModelType<IFieldProps, IFieldPropsStore>,
-  IUpdatable<IFieldProps> {
+export interface IField extends IModelType, IUpdatable<IFieldProps> {
   readonly modelType: 'field';
 }

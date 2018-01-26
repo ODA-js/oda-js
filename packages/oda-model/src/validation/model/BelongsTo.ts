@@ -1,3 +1,4 @@
+import {Relation} from './Relation';
 import { IRelationPropsStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
@@ -15,7 +16,6 @@ import { IField } from '../interfaces/IField';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
-  modelType: 'relation',
   verb: 'BelongsTo',
   name: null,
   title: null,
@@ -42,52 +42,14 @@ export const RelationTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const BelongsToStorage = Record(DefaultBelongsTo);
 
-export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRelationPropsStore> implements IBelongsToRelation {
-  public get modelType(): 'relation' {
-    return 'relation';
-  }
-  public get name(): string {
-    return this.store.get('name', null);
-  }
-  public get title(): string {
-    return this.store.get('title', null);
-  }
-  public get description(): string {
-    return this.store.get('description', null);
-  }
-  public get ref(): IEntityRef {
-    return this.store.get('ref', null);
-  }
-  public get fields(): Map<string, IField> {
-    return this.store.get('fields', null);
-  }
-  public get opposite(): string {
-    return this.store.get('opposite', null);
-  }
+export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelationPropsStore> implements IBelongsToRelation {
   public get verb(): 'BelongsTo' {
     return 'BelongsTo';
   }
   public get belongsTo(): IEntityRef {
     return this.store.get('belongsTo', null);
   }
-  public get embedded(): boolean {
-    return this.store.get('embedded', true);
-  }
-  public get single(): boolean {
-    return this.store.get('single', true);
-  }
-  public get stored(): boolean {
-    return this.store.get('stored', true);
-  }
-  public get fullName(): string {
-    return this.store.get('fullName', null);
-  }
-  public get normalName(): string {
-    return this.store.get('normalName', null);
-  }
-  public get shortName(): string {
-    return this.store.get('shortName', null);
-  }
+
   protected transform(input: IBelongsToRelationProps): IBelongsToRelationPropsStore {
     return {
       ...input,
@@ -103,7 +65,6 @@ export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRel
       name: input.name,
       title: input.title,
       description: input.description,
-      modelType: input.modelType,
       fullName: input.fullName,
       normalName: input.normalName,
       shortName: input.shortName,
@@ -112,6 +73,9 @@ export class BelongsTo extends Persistent<IBelongsToRelationProps, IBelongsToRel
       verb: input.verb,
       belongsTo: input.belongsTo,
       fields: RelationTransform.fields.reverse(input.fields),
+      single: true,
+      stored: true,
+      embedded: true,
     };
   }
   constructor(init: IBelongsToRelationProps) {

@@ -17,16 +17,14 @@ export interface IRelationName {
   shortName: string;
 }
 
-export interface IRelationPropsStore extends IRelationName , IRelationStorage , IModelTypeProps  {
-  modelType: MetaModelType;
+export interface IRelationPropsStore extends IRelationName, IRelationStorage, IModelTypeProps {
   ref: IEntityRef;
   fields?: Map<string, IField>;
   opposite?: string;
   verb: RelationType;
 }
 
-export interface IRelationProps extends IRelationName , IModelTypeProps  {
-  modelType: MetaModelType;
+export interface IRelationProps extends IRelationName, IRelationStorage, IModelTypeProps {
   verb: RelationType;
   ref: IEntityRef;
   fields?: IField[];
@@ -40,4 +38,6 @@ export type IRelationTransform = {
   }
 };
 
-export type IRelation<TProps extends IRelationProps, TPropsStore extends IRelationPropsStore> = IModelType<TProps, TPropsStore>;
+export interface IRelation extends IModelType {
+  readonly modelType: MetaModelType;
+}

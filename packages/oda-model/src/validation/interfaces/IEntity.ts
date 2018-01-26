@@ -3,15 +3,16 @@ import { IField } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
 
 export interface IEntityACL {
-  read: string[];
-  create: string[];
-  update: string[];
-  delete: string[];
+  read?: string[];
+  create?: string[];
+  update?: string[];
+  delete?: string[];
 }
 
-export type IEntityIndex = {
+export interface IEntityIndex {
   name: string;
   fields: {
     [field: string]: 1 | -1;
@@ -20,43 +21,40 @@ export type IEntityIndex = {
     sparse?: boolean;
     unique: boolean;
   };
-};
-
-export type IEntityStorage = {
-  adapter: 'mongoose' | 'sequelize';
-  indexes: {
-    [indexName: string]: IEntityIndex;
-  }
-};
-
-export interface IEntityMetaData {
-  acl: Partial<IEntityACL>;
-  storage: Partial<IEntityStorage>;
 }
 
-export type IEntityPropsStore = Partial<IEntityMetaData> & IModelTypeProps & {
+export interface IEntityStorage {
+  adapter?: 'mongoose' | 'sequelize';
+  indexes?: {
+    [indexName: string]: IEntityIndex;
+  };
+}
+
+export interface IEntityMetaData {
+  acl: IEntityACL;
+  storage: IEntityStorage;
+}
+
+export interface IEntityPropsStore extends Partial<IEntityMetaData>, IModelTypeProps {
   modelType: 'entity';
   singular: string;
   plural: string;
   fields: Map<string, IField>;
-};
+}
 
-export type IEntityProps = Partial<IEntityMetaData> & IModelTypeProps & {
+export interface IEntityProps extends Partial<IEntityMetaData>, IModelTypeProps {
   modelType: 'entity';
   singular: string;
   plural: string;
   fields: IField[];
-};
+}
 
-export type IEntityTransform = {
-  [k in keyof IEntityProps ]?: {
-    transform: (input: IEntityProps[k]) => IEntityPropsStore[k];
-    reverse: (input: IEntityPropsStore[k]) => IEntityProps[k];
-  }
-};
+export interface IEntityTransform {
+  fields: ArrayToMap<IField>;
+}
 
-export interface IEntity extends IModelType<IEntityProps, IEntityPropsStore>,
-IUpdatable<IEntityProps> {
+export interface IEntity extends IModelType,
+  IUpdatable<IEntityProps> {
   readonly modelType: 'entity';
   readonly relations: Set<string>;
   readonly required: Set<string>;

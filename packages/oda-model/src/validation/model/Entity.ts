@@ -8,6 +8,7 @@ import {
   IEntity,
   IEntityProps,
   IEntityTransform,
+  IEntityACL,
 } from '../interfaces/IEntity';
 import { IField } from '../interfaces/IField';
 

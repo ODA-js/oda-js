@@ -2,6 +2,8 @@ import { IEntityRef } from './IEntityRef';
 import { IRelationProps, IRelationPropsStore, IRelation } from './IRelation';
 import { IModelType } from './IModelType';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
+import { IField } from './IField';
 
 export interface IHasManyRelationProps extends IRelationProps  {
   hasMany: IEntityRef;
@@ -11,14 +13,11 @@ export interface IHasManyRelationPropsStore extends IRelationPropsStore  {
   hasMany: IEntityRef;
 }
 
-export type IRelationTransform = {
-  [k in keyof IHasManyRelationProps]?: {
-    transform: (input: IHasManyRelationProps[k]) => IHasManyRelationPropsStore[k];
-    reverse: (input: IHasManyRelationPropsStore[k]) => IHasManyRelationProps[k];
-  }
-};
+export interface IRelationTransform {
+  fields: ArrayToMap<IField>;
+}
 
-export interface IHasManyRelation extends IRelation<IHasManyRelationProps, IHasManyRelationPropsStore>
+export interface IHasManyRelation extends IRelation
   , IUpdatable<IHasManyRelationProps> {
   readonly verb: 'HasMany';
 }

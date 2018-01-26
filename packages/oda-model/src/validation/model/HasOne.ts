@@ -12,10 +12,10 @@ import {
 } from '../interfaces/IHasOneRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
+import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneRelationPropsStore = {
-  modelType: 'relation',
   name: null,
   title: null,
   description: null,
@@ -42,59 +42,19 @@ export const RelationTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const HasOneStorage = Record(DefaultHasOne);
 
-export class HasOne extends Persistent<IHasOneRelationProps, IHasOneRelationPropsStore> implements IHasOneRelation {
-  public get modelType(): 'relation' {
-    return 'relation';
-  }
-  public get name(): string {
-    return this.store.get('name', null);
-  }
-  public get title(): string {
-    return this.store.get('title', null);
-  }
-  public get description(): string {
-    return this.store.get('description', null);
-  }
-  public get ref(): IEntityRef {
-    return this.store.get('ref', null);
-  }
-  public get fields(): Map<string, IField> {
-    return this.store.get('fields', null);
-  }
-  public get opposite(): string {
-    return this.store.get('opposite', null);
-  }
-  public get embedded(): boolean {
-    return this.store.get('embedded', null);
-  }
-  public get single(): boolean {
-    return this.store.get('single', null);
-  }
-  public get stored(): boolean {
-    return this.store.get('stored', null);
-  }
-  public get fullName(): string {
-    return this.store.get('fullName', null);
-  }
-  public get normalName(): string {
-    return this.store.get('normalName', null);
-  }
-  public get shortName(): string {
-    return this.store.get('shortName', null);
-  }
+export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsStore> implements IHasOneRelation {
   public get verb(): 'HasOne' {
     return 'HasOne';
   }
   public get hasOne(): IEntityRef {
     return this.store.get('hasOne', null);
   }
-
   protected transform(input: IHasOneRelationProps): IHasOneRelationPropsStore {
     return {
       ...input,
       single: true,
-      stored: true,
-      embedded: true,
+      stored: false,
+      embedded: false,
       verb: 'HasOne',
       fields: RelationTransform.fields.transform(input.fields),
     };
@@ -104,7 +64,6 @@ export class HasOne extends Persistent<IHasOneRelationProps, IHasOneRelationProp
       name: input.name,
       title: input.title,
       description: input.description,
-      modelType: input.modelType,
       fullName: input.fullName,
       normalName: input.normalName,
       shortName: input.shortName,
@@ -113,6 +72,9 @@ export class HasOne extends Persistent<IHasOneRelationProps, IHasOneRelationProp
       verb: input.verb,
       hasOne: input.hasOne,
       fields: RelationTransform.fields.reverse(input.fields),
+      single: true,
+      stored: false,
+      embedded: false,
     };
   }
   constructor(init: IHasOneRelationProps) {

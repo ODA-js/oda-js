@@ -8,6 +8,6 @@ export interface IModelTypeProps {
   description?: string;
 }
 
-export type IModelType< T extends Partial<IModelTypeProps>, TS extends Partial<IModelTypeProps>> = IValidate & Readonly<TS> & {
+export interface IModelType extends IValidate, IModelTypeProps {
   readonly modelType: MetaModelType;
-};
+}

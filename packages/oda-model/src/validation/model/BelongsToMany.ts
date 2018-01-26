@@ -12,10 +12,11 @@ import {
 } from '../interfaces/IBelongsToManyRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
+import { RelationBase } from '../../model/index';
+import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
-  modelType: 'relation',
   name: null,
   title: null,
   description: null,
@@ -43,46 +44,7 @@ export const RelationTransform: IRelationTransform = {
 export const BelongsToManyStorage = Record(DefaultBelongsToMany);
 
 export class BelongsToMany
-  extends Persistent<IBelongsToManyRelationProps, IBelongsToManyRelationPropsStore> implements IBelongsToManyRelation {
-  public get modelType(): 'relation' {
-    return 'relation';
-  }
-  public get name(): string {
-    return this.store.get('name', null);
-  }
-  public get title(): string {
-    return this.store.get('title', null);
-  }
-  public get description(): string {
-    return this.store.get('description', null);
-  }
-  public get ref(): IEntityRef {
-    return this.store.get('ref', null);
-  }
-  public get fields(): Map<string, IField> {
-    return this.store.get('fields', null);
-  }
-  public get opposite(): string {
-    return this.store.get('opposite', null);
-  }
-  public get single(): boolean {
-    return this.store.get('single', null);
-  }
-  public get stored(): boolean {
-    return this.store.get('stored', null);
-  }
-  public get embedded(): boolean {
-    return this.store.get('embedded', null);
-  }
-  public get fullName(): string {
-    return this.store.get('fullName', null);
-  }
-  public get normalName(): string {
-    return this.store.get('normalName', null);
-  }
-  public get shortName(): string {
-    return this.store.get('shortName', null);
-  }
+  extends Relation<IBelongsToManyRelationProps, IBelongsToManyRelationPropsStore> implements IBelongsToManyRelation {
   public get verb(): 'BelongsToMany' {
     return 'BelongsToMany';
   }
@@ -93,9 +55,9 @@ export class BelongsToMany
   protected transform(input: IBelongsToManyRelationProps): IBelongsToManyRelationPropsStore {
     return {
       ...input,
-      single: true,
-      stored: true,
-      embedded: true,
+      single: false,
+      stored: false,
+      embedded: false,
       verb: 'BelongsToMany',
       fields: RelationTransform.fields.transform(input.fields),
     };
@@ -105,7 +67,6 @@ export class BelongsToMany
       name: input.name,
       title: input.title,
       description: input.description,
-      modelType: input.modelType,
       fullName: input.fullName,
       normalName: input.normalName,
       shortName: input.shortName,
@@ -114,6 +75,10 @@ export class BelongsToMany
       verb: input.verb,
       belongsToMany: input.belongsToMany,
       fields: RelationTransform.fields.reverse(input.fields),
+      single: false,
+      stored: false,
+      embedded: false,
+      using: input.using,
     };
   }
   constructor(init: IBelongsToManyRelationProps) {
