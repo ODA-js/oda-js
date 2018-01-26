@@ -1,7 +1,7 @@
 import { EntityReference } from './entityreference';
 import { Field } from './field';
 import { RelationBase } from './relationbase';
-import { Relation } from '../validation/interfaces/types';
+import { RelationUnion } from '../validation/interfaces/types';
 import { IField } from '../validation/interfaces/IField';
 
 export interface FieldInput extends FieldBaseInput {
@@ -24,7 +24,7 @@ export interface FieldStorage extends FieldBaseStorage {
   arguments?: [FieldArgs];
   type_: string;
   idKey: EntityReference;
-  relation: Relation;
+  relation: RelationUnion;
 }
 
 export interface BelongsToInput extends RelationBaseInput {

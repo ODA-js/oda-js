@@ -1,6 +1,5 @@
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
-
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
@@ -12,7 +11,17 @@ import {
 } from '../interfaces/IField';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
-import { Relation } from '../interfaces/types';
+import { RelationUnion, RelationPropsUnion } from '../interfaces/types';
+import { IBelongsToRelationProps, IsBelongsToProps } from '../interfaces/IBelongsToRelation';
+import { IBelongsToManyRelationProps, IsBelongsToManyProps } from '../interfaces/IBelongsToManyRelation';
+import { IHasOneRelationProps, IsHasOneProps } from '../interfaces/IHasOneRelation';
+import { IHasManyRelationProps, IsHasManyProps } from '../interfaces/IHasManyRelation';
+import { IRelationProps } from '../interfaces/IRelation';
+import { BelongsTo } from './BelongsTo';
+import { BelongsToMany } from './BelongsToMany';
+import { HasOne } from './HasOne';
+import { HasMany } from './HasMany';
+import { IsBelongsTo, IsBelongsToMany, IsHasOne, IsHasMany } from '../helpers';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldPropsStore = {
@@ -36,6 +45,36 @@ export const DefaultField: IFieldPropsStore = {
 // tslint:disable-next-line:variable-name
 export const FieldTransform: IFieldTransform = {
   args: transformMap<IFieldArgs>(),
+  relation: {
+    transform: (inp: RelationPropsUnion): RelationUnion => {
+      if (IsBelongsToProps(inp)) {
+        return new BelongsTo(inp);
+      }
+      if (IsBelongsToManyProps(inp)) {
+        return new BelongsToMany(inp);
+      }
+      if (IsHasOneProps(inp)) {
+        return new HasOne(inp);
+      }
+      if (IsHasManyProps(inp)) {
+        return new HasMany(inp);
+      }
+    },
+    reverse: (inp: RelationUnion): RelationPropsUnion => {
+      if (IsBelongsTo(inp)) {
+        return BelongsTo(inp);
+      }
+      if (IsBelongsToMany(inp)) {
+        return new BelongsToMany(inp);
+      }
+      if (IsHasOne(inp)) {
+        return new HasOne(inp);
+      }
+      if (IsHasMany(inp)) {
+        return new HasMany(inp);
+      }
+    },
+  },
 };
 
 // tslint:disable-next-line:variable-name
@@ -81,18 +120,34 @@ export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements 
   public get order(): number {
     return this.store.get('order', null);
   }
-  public get relation(): Relation {
+  public get relation(): RelationUnion {
     return this.store.get('relation', null);
   }
   protected transform(input: IFieldProps): IFieldPropsStore {
     return {
-      ...input,
+      name: input.name,
+      title: input.title,
+      description: input.description,
+      entity: input.entity,
+      type: input.type,
+      acl: input.acl,
       args: FieldTransform.args.transform(input.args),
     };
   }
   protected reverse(input: IFieldPropsStore): IFieldProps {
     return {
-      ...input,
+      name: input.name,
+      title: input.title,
+      description: input.description,
+      entity: input.entity,
+      type: input.type,
+      acl: input.acl,
+      derived: input.derived,
+      identity: input.identity,
+      indexed: input.indexed,
+      order: input.order,
+      persistent: input.persistent,
+      relation: FieldTransform.relation.reverse(input.relation),
       args: FieldTransform.args.reverse(input.args),
     };
   }

@@ -4,12 +4,12 @@ import { IFieldContext } from '../interfaces/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
 import { RelationLevel } from '../errors';
-import { Relation } from '../interfaces/types';
+import { RelationUnion } from '../interfaces/types';
 
-export class RelationVisitor implements IVisitor<IRelationProps, IRelationPropsStore, Relation, IFieldContext> {
+export class RelationVisitor implements IVisitor<IRelationProps, IRelationPropsStore, RelationUnion, IFieldContext> {
   public validator: Validator;
   public context: IFieldContext; // has to be parent context
-  public visit(item: Relation) {
+  public visit(item: RelationUnion) {
     const context = new RelationContext(this.context, item);
     const result = [];
     if (context.isValid) {

@@ -6,12 +6,12 @@ import { IField } from './IField';
 
 export interface IBelongsToManyRelationProps extends IRelationProps {
   belongsToMany: IEntityRef;
-  using?: IEntityRef;
+  using: IEntityRef;
 }
 
 export interface IBelongsToManyRelationPropsStore extends IRelationPropsStore {
   belongsToMany: IEntityRef;
-  using?: IEntityRef;
+  using: IEntityRef;
 }
 
 export interface IRelationTransform {
@@ -22,4 +22,8 @@ export interface IBelongsToManyRelation
   extends IRelation,
   IUpdatable<IBelongsToManyRelationProps> {
   verb: 'BelongsToMany';
+}
+
+export function IsBelongsToManyProps(item: IRelationProps): item is IBelongsToManyRelationProps {
+  return !!(<IBelongsToManyRelationProps>item).belongsToMany;
 }

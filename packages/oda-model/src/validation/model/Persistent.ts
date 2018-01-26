@@ -9,7 +9,7 @@ export interface IUpdatable<T> {
 
 export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable<TInputProps> {
   protected store: Record<TStoredProps>;
-  protected init: Record<TInputProps>;
+  protected init: TInputProps;
   public validate(validator: IValidator): IValidationResult[] {
     return validator.check(this);
   }

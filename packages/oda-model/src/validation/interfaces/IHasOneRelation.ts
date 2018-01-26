@@ -21,3 +21,7 @@ export interface IHasOneRelation extends IRelation,
   IUpdatable<IHasOneRelationProps> {
   verb: 'HasOne';
 }
+
+export function IsHasOneProps(item: IRelationProps): item is IHasOneRelationProps {
+  return !!(<IHasOneRelationProps>item).hasOne;
+}

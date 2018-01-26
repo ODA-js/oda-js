@@ -1,11 +1,11 @@
-import { IBelongsToManyRelation } from './IBelongsToManyRelation';
-import { IBelongsToRelation } from './IBelongsToRelation';
+import { IBelongsToManyRelation, IBelongsToManyRelationProps } from './IBelongsToManyRelation';
+import { IBelongsToRelation, IBelongsToRelationProps } from './IBelongsToRelation';
 import { IEntity } from './IEntity';
 import { IEntityContext } from './IEntityContext';
 import { IField } from './IField';
 import { IFieldContext } from './IFieldContext';
-import { IHasManyRelation } from './IHasManyRelation';
-import { IHasOneRelation } from './IHasOneRelation';
+import { IHasManyRelation, IHasManyRelationProps } from './IHasManyRelation';
+import { IHasOneRelation, IHasOneRelationProps } from './IHasOneRelation';
 import { IModel } from './IModel';
 import { IModelContext } from './IModelContext';
 import { IPackage } from './IPackage';
@@ -13,9 +13,11 @@ import { IPackageContext } from './IPackageContext';
 import { IRelationContext } from './IRelationContext';
 import { IMutation } from './IMutation';
 
-export type ModelItem = IModel | IPackage | IEntity | IField | Relation | IMutation;
+export type ModelItem = IModel | IPackage | IEntity | IField | RelationUnion | IMutation;
 
-export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToManyRelation;
+export type RelationUnion = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToManyRelation;
+
+export type RelationPropsUnion = IHasManyRelationProps | IHasOneRelationProps | IBelongsToRelationProps | IBelongsToManyRelationProps;
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -27,7 +29,6 @@ export type MetaModelType =
   | 'field'
   | 'ref'
   | 'relation'
-  | RelationType
   ;
 
 export type ValidationContext =

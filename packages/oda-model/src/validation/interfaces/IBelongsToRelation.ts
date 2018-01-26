@@ -20,3 +20,7 @@ export interface IBelongsToRelation extends IRelation,
   IUpdatable<IBelongsToRelationProps> {
   readonly verb: 'BelongsTo';
 }
+
+export function IsBelongsToProps(item: IRelationProps): item is IBelongsToRelationProps {
+  return !!(<IBelongsToRelationProps>item).belongsTo;
+}

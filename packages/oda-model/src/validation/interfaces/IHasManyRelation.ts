@@ -21,3 +21,4 @@ export interface IHasManyRelation extends IRelation
   , IUpdatable<IHasManyRelationProps> {
   readonly verb: 'HasMany';
 }
+

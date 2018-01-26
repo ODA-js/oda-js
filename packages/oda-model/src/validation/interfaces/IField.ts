@@ -2,8 +2,9 @@ import { Map } from 'immutable';
 
 import { IEntityRef } from './IEntityRef';
 import { IModelType, IModelTypeProps } from './IModelType';
-import { Relation } from './types';
+import { RelationUnion, RelationPropsUnion } from './types';
 import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
 
 export interface IFieldACL {
   read?: string[];
@@ -21,41 +22,39 @@ export interface IFieldArgs {
   defaultValue?: string;
 }
 
-export interface IFieldProps extends IFieldMetaData, IModelTypeProps {
+export interface IFieldStorage {
+  derived?: boolean;
+  persistent?: boolean;
+  required?: boolean;
+  indexed?: boolean | string | string[];
+  identity?: boolean | string | string[];
+}
+
+export interface IFieldProps extends IFieldStorage, IFieldMetaData, IModelTypeProps {
   entity?: string;
   type?: string;
   args: IFieldArgs[];
-  derived?: boolean;
-  persistent?: boolean;
-  required?: boolean;
-  indexed?: boolean | string | string[];
-  identity?: boolean | string | string[];
-  idKey?: IEntityRef;
   order?: number;
-  relation?: Relation;
+  relation?: RelationPropsUnion;
 }
 
-export interface IFieldPropsStore extends IFieldMetaData, IModelTypeProps {
+export interface IFieldPropsStore extends IFieldStorage, IFieldMetaData, IModelTypeProps {
   entity?: string;
   type?: string;
   args: Map<string, IFieldArgs>;
-  derived?: boolean;
-  persistent?: boolean;
-  required?: boolean;
-  indexed?: boolean | string | string[];
-  identity?: boolean | string | string[];
   idKey?: IEntityRef;
   order?: number;
-  relation?: Relation;
+  relation?: RelationUnion;
 }
 
 export type IFieldTransform = {
-  [k in keyof IFieldProps]?: {
-    transform: (input: IFieldProps[k]) => IFieldPropsStore[k];
-    reverse: (input: IFieldPropsStore[k]) => IFieldProps[k];
+  args: ArrayToMap<IFieldArgs>;
+  relation: {
+    transform: (inp: RelationPropsUnion) => RelationUnion,
+    reverse: (inp: RelationUnion) => RelationPropsUnion,
   }
 };
 
-export interface IField extends IModelType, IUpdatable<IFieldProps> {
+export interface IField extends IModelType, IFieldPropsStore, IUpdatable<IFieldProps> {
   readonly modelType: 'field';
 }

@@ -1,4 +1,4 @@
-import { ModelItem, Relation } from './interfaces/types';
+import { ModelItem, RelationUnion } from './interfaces/types';
 import { IModel } from './interfaces/IModel';
 import { IPackage } from './interfaces/IPackage';
 import { IEntity } from './interfaces/IEntity';
@@ -30,27 +30,24 @@ export function isField(item: ModelItem): item is IField {
   return item.modelType === 'field';
 }
 
-export function isRelation(item: ModelItem): item is Relation {
+export function isRelation(item: ModelItem): item is RelationUnion {
   return (
-    item.modelType === 'BelongsTo'
-    || item.modelType === 'BelongsToMany'
-    || item.modelType === 'HasOne'
-    || item.modelType === 'HasMany'
+    item.modelType === 'relation'
   );
 }
 
-export function IsBelongsTo(item: Relation): item is IBelongsToRelation {
-  return isRelation(item) && item.modelType === 'BelongsTo';
+export function IsBelongsTo(item: RelationUnion): item is IBelongsToRelation {
+  return isRelation(item) && item.verb === 'BelongsTo';
 }
 
-export function IsBelongsToMany(item: Relation): item is IBelongsToManyRelation {
-  return isRelation(item) && item.modelType === 'BelongsToMany';
+export function IsBelongsToMany(item: RelationUnion): item is IBelongsToManyRelation {
+  return isRelation(item) && item.verb === 'BelongsToMany';
 }
 
-export function IsHasOne(item: Relation): item is IHasOneRelation {
-  return isRelation(item) && item.modelType === 'HasOne';
+export function IsHasOne(item: RelationUnion): item is IHasOneRelation {
+  return isRelation(item) && item.verb === 'HasOne';
 }
 
-export function IsHasMany(item: Relation): item is IHasManyRelation {
-  return isRelation(item) && item.modelType === 'HasMany';
+export function IsHasMany(item: RelationUnion): item is IHasManyRelation {
+  return isRelation(item) && item.verb === 'HasMany';
 }
