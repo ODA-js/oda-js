@@ -4,12 +4,12 @@ import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
 import { IUpdatable } from '../model/Persistent';
 
-export type IEntityACL = {
+export interface IEntityACL {
   read: string[];
   create: string[];
   update: string[];
   delete: string[];
-};
+}
 
 export type IEntityIndex = {
   name: string;
@@ -29,10 +29,10 @@ export type IEntityStorage = {
   }
 };
 
-export type IEntityMetaData = {
+export interface IEntityMetaData {
   acl: Partial<IEntityACL>;
   storage: Partial<IEntityStorage>;
-};
+}
 
 export type IEntityPropsStore = Partial<IEntityMetaData> & IModelTypeProps & {
   modelType: 'entity';

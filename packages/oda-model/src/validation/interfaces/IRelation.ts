@@ -17,21 +17,21 @@ export interface IRelationName {
   shortName: string;
 }
 
-export type IRelationPropsStore = IRelationName & IRelationStorage & IModelTypeProps & {
+export interface IRelationPropsStore extends IRelationName , IRelationStorage , IModelTypeProps  {
   modelType: MetaModelType;
   ref: IEntityRef;
   fields?: Map<string, IField>;
   opposite?: string;
   verb: RelationType;
-};
+}
 
-export type IRelationProps = IRelationName & IModelTypeProps & {
+export interface IRelationProps extends IRelationName , IModelTypeProps  {
   modelType: MetaModelType;
   verb: RelationType;
   ref: IEntityRef;
   fields?: IField[];
   opposite?: string;
-};
+}
 
 export type IRelationTransform = {
   [k in keyof IRelationProps]?: {

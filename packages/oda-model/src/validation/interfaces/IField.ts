@@ -5,14 +5,14 @@ import { IModelType, IModelTypeProps } from './IModelType';
 import { Relation } from './types';
 import { IUpdatable } from '../model/Persistent';
 
-export type IFieldACL = {
-  read: string[];
-  update: string[];
-};
+export interface IFieldACL {
+  read?: string[];
+  update?: string[];
+}
 
-export type IFieldMetaData = {
-  acl: Partial<IFieldACL>;
-};
+export interface IFieldMetaData  {
+  acl: IFieldACL;
+}
 
 export interface IFieldArgs {
   name: string;
@@ -21,7 +21,7 @@ export interface IFieldArgs {
   defaultValue?: string;
 }
 
-export type IFieldProps = IFieldMetaData & IModelTypeProps & {
+export interface IFieldProps extends IFieldMetaData, IModelTypeProps {
   entity?: string;
   type?: string;
   args: IFieldArgs[];
@@ -33,9 +33,9 @@ export type IFieldProps = IFieldMetaData & IModelTypeProps & {
   idKey?: IEntityRef;
   order?: number;
   relation?: Relation;
-};
+}
 
-export type IFieldPropsStore = IFieldMetaData & IModelTypeProps & {
+export interface IFieldPropsStore extends IFieldMetaData , IModelTypeProps  {
   entity?: string;
   type?: string;
   args: Map<string, IFieldArgs>;
@@ -47,7 +47,7 @@ export type IFieldPropsStore = IFieldMetaData & IModelTypeProps & {
   idKey?: IEntityRef;
   order?: number;
   relation?: Relation;
-};
+}
 
 export type IFieldTransform = {
   [k in keyof IFieldProps]?: {

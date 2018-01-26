@@ -10,19 +10,19 @@ import { ModelItem } from './types';
 import { Map } from 'immutable';
 import { IUpdatable } from '../model/Persistent';
 
-export type IPackageProps = IModelTypeProps & {
+export interface IPackageProps extends IModelTypeProps {
   acl: number;
   abstract?: boolean;
   items: ModelItem[];
   model: IModel;
-};
+}
 
-export type IPackagePropsStore = IModelTypeProps & {
+export interface IPackagePropsStore extends IModelTypeProps  {
   acl: number;
   abstract?: boolean;
   items: Map<string, ModelItem>;
   model: IModel;
-};
+}
 
 export type IPackageTransform = {
   [k in keyof IPackageProps]?: {

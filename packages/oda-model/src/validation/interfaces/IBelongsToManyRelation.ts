@@ -2,15 +2,15 @@ import { IEntityRef } from './IEntityRef';
 import { IRelation, IRelationProps, IRelationPropsStore } from './IRelation';
 import { IUpdatable } from '../model/Persistent';
 
-export type IBelongsToManyRelationProps = IRelationProps & {
+export interface IBelongsToManyRelationProps extends IRelationProps  {
   belongsToMany: IEntityRef;
   using?: IEntityRef;
-};
+}
 
-export type IBelongsToManyRelationPropsStore = IRelationPropsStore & {
+export interface IBelongsToManyRelationPropsStore extends IRelationPropsStore {
   belongsToMany: IEntityRef;
   using?: IEntityRef;
-};
+}
 
 export type IRelationTransform = {
   [k in keyof IBelongsToManyRelationProps]?: {

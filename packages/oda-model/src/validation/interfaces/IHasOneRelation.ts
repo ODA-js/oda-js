@@ -3,13 +3,13 @@ import { IRelationProps, IRelationPropsStore, IRelation } from './IRelation';
 import { IModelType } from './IModelType';
 import { IUpdatable } from '../model/Persistent';
 
-export type IHasOneRelationProps = IRelationProps & {
+export interface IHasOneRelationProps extends IRelationProps {
   hasOne: IEntityRef;
-};
+}
 
-export type IHasOneRelationPropsStore = IRelationPropsStore & {
+export interface IHasOneRelationPropsStore extends IRelationPropsStore  {
   hasOne: IEntityRef;
-};
+}
 
 export type IRelationTransform = {
   [k in keyof IHasOneRelationProps]?: {
