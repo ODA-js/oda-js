@@ -35,7 +35,7 @@ export const DefaultHasOne: IHasOneRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: IRelationTransform = {
+export const HasOneTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 
@@ -56,7 +56,7 @@ export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsS
       stored: false,
       embedded: false,
       verb: 'HasOne',
-      fields: RelationTransform.fields.transform(input.fields),
+      fields: HasOneTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IHasOneRelationPropsStore): IHasOneRelationProps {
@@ -71,7 +71,7 @@ export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsS
       ref: input.ref,
       verb: input.verb,
       hasOne: input.hasOne,
-      fields: RelationTransform.fields.reverse(input.fields),
+      fields: HasOneTransform.fields.reverse(input.fields),
       single: true,
       stored: false,
       embedded: false,

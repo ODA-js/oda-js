@@ -40,6 +40,9 @@ export interface IEntityPropsStore extends Partial<IEntityMetaData>, IModelTypeP
   singular: string;
   plural: string;
   fields: Map<string, IField>;
+  relations: Set<string>;
+  required: Set<string>;
+  indexed: Set<string>;
 }
 
 export interface IEntityProps extends Partial<IEntityMetaData>, IModelTypeProps {
@@ -54,9 +57,6 @@ export interface IEntityTransform {
 }
 
 export interface IEntity extends IModelType,
-  IUpdatable<IEntityProps> {
+  IUpdatable<IEntityProps>, IEntityPropsStore {
   readonly modelType: 'entity';
-  readonly relations: Set<string>;
-  readonly required: Set<string>;
-  readonly indexed: Set<string>;
 }

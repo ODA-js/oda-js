@@ -17,7 +17,7 @@ export interface IRelationTransform {
 }
 
 export interface IBelongsToRelation extends IRelation,
-  IUpdatable<IBelongsToRelationProps> {
+  IUpdatable<IBelongsToRelationProps>, IBelongsToRelationPropsStore {
   readonly verb: 'BelongsTo';
 }
 

@@ -1,27 +1,22 @@
+import { Map } from 'immutable';
 import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
-import {
-  IFieldACL,
-  IFieldProps,
-  IFieldPropsStore,
-  IFieldArgs,
-  IFieldTransform,
-} from '../interfaces/IField';
+
+import { IsBelongsTo, IsBelongsToMany, IsHasMany, IsHasOne } from '../helpers';
+import { IsBelongsToManyProps, IBelongsToManyRelationProps, IBelongsToManyRelationPropsStore } from '../interfaces/IBelongsToManyRelation';
+import { IBelongsToRelationProps, IsBelongsToProps, IBelongsToRelationPropsStore } from '../interfaces/IBelongsToRelation';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
-import { RelationUnion, RelationPropsUnion } from '../interfaces/types';
-import { IBelongsToRelationProps, IsBelongsToProps } from '../interfaces/IBelongsToRelation';
-import { IBelongsToManyRelationProps, IsBelongsToManyProps } from '../interfaces/IBelongsToManyRelation';
-import { IHasOneRelationProps, IsHasOneProps } from '../interfaces/IHasOneRelation';
-import { IHasManyRelationProps, IsHasManyProps } from '../interfaces/IHasManyRelation';
-import { IRelationProps } from '../interfaces/IRelation';
-import { BelongsTo } from './BelongsTo';
-import { BelongsToMany } from './BelongsToMany';
-import { HasOne } from './HasOne';
-import { HasMany } from './HasMany';
-import { IsBelongsTo, IsBelongsToMany, IsHasOne, IsHasMany } from '../helpers';
+import { IFieldACL, IFieldArgs, IFieldProps, IFieldPropsStore, IFieldTransform } from '../interfaces/IField';
+import { IsHasOneProps, IHasOneRelationProps } from '../interfaces/IHasOneRelation';
+import {RelationPropsUnion,  RelationUnion} from '../interfaces/types';
+import { BelongsTo, BelongsToTransform } from './BelongsTo';
+import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
+import { HasMany, HasManyTransform } from './HasMany';
+import { HasOne, HasOneTransform } from './HasOne';
+import { IUpdatable, Persistent } from './Persistent';
+import { transformMap } from './utils';
+import { IsHasManyProps, IHasManyRelationProps } from '../interfaces/IHasManyRelation';
+import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldPropsStore = {
@@ -62,16 +57,28 @@ export const FieldTransform: IFieldTransform = {
     },
     reverse: (inp: RelationUnion): RelationPropsUnion => {
       if (IsBelongsTo(inp)) {
-        return BelongsTo(inp);
+        return {
+          ...inp,
+          fields: BelongsToTransform.fields.reverse(inp.fields),
+        } as IBelongsToRelationProps;
       }
       if (IsBelongsToMany(inp)) {
-        return new BelongsToMany(inp);
+        return {
+          ...inp,
+          fields: BelongsToManyTransform.fields.reverse(inp.fields),
+        } as IBelongsToManyRelationProps;
       }
       if (IsHasOne(inp)) {
-        return new HasOne(inp);
+        return {
+          ...inp,
+          fields: HasOneTransform.fields.reverse(inp.fields),
+        } as IHasOneRelationProps;
       }
       if (IsHasMany(inp)) {
-        return new HasMany(inp);
+        return {
+          ...inp,
+          fields: HasManyTransform.fields.reverse(inp.fields),
+        } as IHasManyRelationProps;
       }
     },
   },

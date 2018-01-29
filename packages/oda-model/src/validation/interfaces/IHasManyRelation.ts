@@ -18,7 +18,10 @@ export interface IRelationTransform {
 }
 
 export interface IHasManyRelation extends IRelation
-  , IUpdatable<IHasManyRelationProps> {
+  , IUpdatable<IHasManyRelationProps>, IHasManyRelationPropsStore {
   readonly verb: 'HasMany';
 }
 
+export function IsHasManyProps(item: IRelationProps): item is IHasManyRelationProps {
+  return !!(<IHasManyRelationProps>item).hasMany;
+}

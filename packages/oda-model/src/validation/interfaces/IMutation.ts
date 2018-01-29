@@ -44,7 +44,7 @@ export interface IMutationTransform {
   acl: IMutationACLTransform;
 }
 
-export interface IMutation extends IModelType, IUpdatable<IMutationProps> {
+export interface IMutation extends IModelType, IUpdatable<IMutationProps>, IMutationPropsStore {
   readonly modelType: 'mutation';
 }
 

@@ -29,7 +29,7 @@ export type IPackageTransform = {
   items: ArrayToMap<ModelItem>,
 };
 
-export interface IPackage extends IModelType, IUpdatable<IPackageProps> {
+export interface IPackage extends IModelType, IUpdatable<IPackageProps>, IPackagePropsStore {
   readonly modelType: 'package';
 }
 

@@ -1,5 +1,5 @@
 import { IModel } from '../interfaces/IModel';
-import { Record } from 'immutable';
+import { Record, Seq } from 'immutable';
 import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
@@ -24,6 +24,9 @@ export const DefaultEntity: IEntityPropsStore = {
   singular: null,
   fields: Map<string, IField>(),
   storage: null,
+  indexed: Set<string>(),
+  relations: Set<string>(),
+  required: Set<string>(),
 };
 
 // tslint:disable-next-line:variable-name
@@ -71,8 +74,18 @@ export class Model extends Persistent<IEntityProps, IEntityPropsStore> implement
 
   protected transform(input: IEntityProps): IEntityPropsStore {
     return {
-      ...input,
+      name: input.name,
+      title: input.name,
+      description: input.name,
+      plural: input.plural,
+      singular: input.singular,
+      modelType: 'entity',
+      acl: input.acl,
+      storage: input.storage,
       fields: EntityTransform.fields.transform(input.fields),
+      indexed: Set<string>(),
+      relations: Set<string>(),
+      required: Set<string>(),
     };
   }
   protected reverse(input: IEntityPropsStore): IEntityProps {

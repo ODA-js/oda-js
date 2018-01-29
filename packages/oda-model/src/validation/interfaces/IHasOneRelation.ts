@@ -18,8 +18,8 @@ export interface IRelationTransform {
 }
 
 export interface IHasOneRelation extends IRelation,
-  IUpdatable<IHasOneRelationProps> {
-  verb: 'HasOne';
+  IUpdatable<IHasOneRelationProps>, IHasOneRelationPropsStore {
+  readonly verb: 'HasOne';
 }
 
 export function IsHasOneProps(item: IRelationProps): item is IHasOneRelationProps {

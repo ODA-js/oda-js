@@ -12,6 +12,7 @@ import { IPackage } from './IPackage';
 import { IPackageContext } from './IPackageContext';
 import { IRelationContext } from './IRelationContext';
 import { IMutation } from './IMutation';
+import { Relation } from '../model/Relation';
 
 export type ModelItem = IModel | IPackage | IEntity | IField | RelationUnion | IMutation;
 
@@ -30,6 +31,8 @@ export type MetaModelType =
   | 'ref'
   | 'relation'
   ;
+
+export type ValdatedTypes = MetaModelType | RelationType;
 
 export type ValidationContext =
     IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;

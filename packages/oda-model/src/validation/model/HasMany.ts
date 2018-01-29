@@ -35,7 +35,7 @@ export const DefaultHasMany: IHasManyRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: IRelationTransform = {
+export const HasManyTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 
@@ -56,7 +56,7 @@ export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPro
       stored: false,
       embedded: false,
       verb: 'HasMany',
-      fields: RelationTransform.fields.transform(input.fields),
+      fields: HasManyTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IHasManyRelationPropsStore): IHasManyRelationProps {
@@ -71,7 +71,7 @@ export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPro
       ref: input.ref,
       verb: input.verb,
       hasMany: input.hasMany,
-      fields: RelationTransform.fields.reverse(input.fields),
+      fields: HasManyTransform.fields.reverse(input.fields),
       single: false,
       stored: false,
       embedded: false,

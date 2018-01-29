@@ -36,7 +36,7 @@ export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: IRelationTransform = {
+export const BelongsToManyTransform: IRelationTransform = {
     fields: transformMap<IField>(),
   };
 
@@ -51,6 +51,9 @@ export class BelongsToMany
   public get belongsToMany(): IEntityRef {
     return this.store.get('belongsToMany', null);
   }
+  public get using(): IEntityRef {
+    return this.store.get('using', null);
+  }
 
   protected transform(input: IBelongsToManyRelationProps): IBelongsToManyRelationPropsStore {
     return {
@@ -59,7 +62,7 @@ export class BelongsToMany
       stored: false,
       embedded: false,
       verb: 'BelongsToMany',
-      fields: RelationTransform.fields.transform(input.fields),
+      fields: BelongsToManyTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IBelongsToManyRelationPropsStore): IBelongsToManyRelationProps {
@@ -74,7 +77,7 @@ export class BelongsToMany
       ref: input.ref,
       verb: input.verb,
       belongsToMany: input.belongsToMany,
-      fields: RelationTransform.fields.reverse(input.fields),
+      fields: BelongsToManyTransform.fields.reverse(input.fields),
       single: false,
       stored: false,
       embedded: false,

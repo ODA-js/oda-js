@@ -55,6 +55,6 @@ export type IFieldTransform = {
   }
 };
 
-export interface IField extends IModelType, IFieldPropsStore, IUpdatable<IFieldProps> {
+export interface IField extends IModelType, IUpdatable<IFieldProps>, IFieldPropsStore {
   readonly modelType: 'field';
 }

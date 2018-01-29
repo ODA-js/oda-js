@@ -38,6 +38,6 @@ export type IRelationTransform = {
   }
 };
 
-export interface IRelation extends IModelType {
+export interface IRelation extends IModelType, IRelationPropsStore {
   readonly modelType: MetaModelType;
 }

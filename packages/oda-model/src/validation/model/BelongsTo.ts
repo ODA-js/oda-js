@@ -35,7 +35,7 @@ export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const RelationTransform: IRelationTransform = {
+export const BelongsToTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 
@@ -57,7 +57,7 @@ export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelat
       stored: true,
       embedded: true,
       verb: 'BelongsTo',
-      fields: RelationTransform.fields.transform(input.fields),
+      fields: BelongsToTransform.fields.transform(input.fields),
     };
   }
   protected reverse(input: IBelongsToRelationPropsStore): IBelongsToRelationProps {
@@ -72,7 +72,7 @@ export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelat
       ref: input.ref,
       verb: input.verb,
       belongsTo: input.belongsTo,
-      fields: RelationTransform.fields.reverse(input.fields),
+      fields: BelongsToTransform.fields.reverse(input.fields),
       single: true,
       stored: true,
       embedded: true,

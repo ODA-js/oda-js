@@ -4,7 +4,7 @@ import { Rule } from '../../../rule';
 import { isEntity, IsBelongsToMany } from '../../../helpers';
 import { IEntity } from '../../../interfaces/IEntity';
 import { HasMany } from '../../../model/HasMany';
-import { RelationTransform } from '../../../model/BelongsToMany';
+import { BelongsToManyTransform } from '../../../model/BelongsToMany';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-ref-entity-not-found-relink';
@@ -29,7 +29,7 @@ export default class implements Rule<IRelationContext> {
               hasMany: replaceRef.using,
               opposite: context.relation.opposite,
               verb: 'HasMany',
-              fields: RelationTransform.fields.transform(context.relation.fields),
+              fields: BelongsToManyTransform.fields.transform(context.relation.fields),
             }),
           });
           result.push({

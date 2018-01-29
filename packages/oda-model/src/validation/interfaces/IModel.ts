@@ -19,7 +19,7 @@ export type IModelTransform = {
 };
 
 export interface IModel extends IModelType,
-  IUpdatable<IModelProps> {
+  IUpdatable<IModelProps>, IModelPropsStore {
   readonly defaultPackage: IPackage;
   readonly modelType: 'model';
 }

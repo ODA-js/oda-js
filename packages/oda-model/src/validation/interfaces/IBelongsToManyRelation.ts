@@ -20,8 +20,8 @@ export interface IRelationTransform {
 
 export interface IBelongsToManyRelation
   extends IRelation,
-  IUpdatable<IBelongsToManyRelationProps> {
-  verb: 'BelongsToMany';
+  IUpdatable<IBelongsToManyRelationProps>, IBelongsToManyRelationPropsStore {
+  readonly verb: 'BelongsToMany';
 }
 
 export function IsBelongsToManyProps(item: IRelationProps): item is IBelongsToManyRelationProps {
