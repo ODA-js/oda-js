@@ -1,0 +1,27 @@
+@startuml model
+
+interface IPackage
+interface IPackagedItems
+
+interface IEntity extends IPackagedItems
+interface IEnum extends IPackagedItems
+interface IEnumItem
+interface IField
+interface IModel
+interface IMutation extends IPackagedItems
+
+together {
+  interface IRelation
+  interface IBelongsToMany extends IRelation
+  interface IBelongsTo extends IRelation
+  interface IHasMany extends IRelation
+  interface IHasOne extends IRelation
+}
+
+IField "1" *--  IRelation : relation
+IPackage "1" *-- "*" IPackagedItems : items
+IEntity "1" *-- "*" IField: fields
+IModel "1" *-- "*" IPackage : packages
+IEnum "1" *-- "*" IEnumItem : values
+
+@enduml
