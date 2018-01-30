@@ -14,31 +14,6 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { RelationType } from '../interfaces/types';
 
-// tslint:disable-next-line:variable-name
-export const DefaultBelongsTo: IBelongsToStore = {
-  verb: null,
-  name: null,
-  title: null,
-  description: null,
-  ref: null,
-  fields: null,
-  opposite: null,
-  belongsTo: null,
-  //storage
-  single: true,
-  stored: true,
-  embedded: true,
-  // name
-  fullName: null,
-  normalName: null,
-  shortName: null,
-};
-
-// tslint:disable-next-line:variable-name
-export const RelationTransform: IRelationTransform = {
-  fields: transformMap<IField>(),
-};
-
 export abstract class Relation<P extends IRelationInit, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
   public get modelType(): 'relation' {
     return 'relation';
@@ -53,7 +28,7 @@ export abstract class Relation<P extends IRelationInit, S extends IRelationStore
     return this.store.get('description', null);
   }
   public get ref(): IEntityRef {
-    return this.store.get('ref', null);
+    throw new Error('not implemented');
   }
   public get fields(): Map<string, IField> {
     return this.store.get('fields', null);
@@ -62,7 +37,7 @@ export abstract class Relation<P extends IRelationInit, S extends IRelationStore
     return this.store.get('opposite', null);
   }
   public get verb(): RelationType {
-    return this.store.get('verb', null);
+    throw new Error('not implemented');
   }
   public get embedded(): boolean {
     return this.store.get('embedded', true);

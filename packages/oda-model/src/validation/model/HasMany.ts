@@ -20,7 +20,6 @@ export const DefaultHasMany: IHasManyStore = {
   name: null,
   title: null,
   description: null,
-  verb: null,
   fields: null,
   opposite: null,
   hasMany: null,
@@ -50,18 +49,26 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
   public get verb(): 'HasMany' {
     return 'HasMany';
   }
+  public get ref(): IEntityRef {
+    return this.store.get('hasMany', null);
+  }
   public get hasMany(): IEntityRef {
     return this.store.get('hasMany', null);
   }
   protected transform(input: IHasManyInit): IHasManyStore {
     return {
-      ...input,
       single: false,
       stored: false,
       embedded: false,
-      verb: 'HasMany',
       hasMany: HasManyTransform.hasMany.transform(input.hasMany),
       fields: HasManyTransform.fields.transform(input.fields),
+      description: input.description,
+      fullName: input.fullName,
+      name: input.name,
+      normalName: input.normalName,
+      opposite: input.opposite,
+      shortName: input.shortName,
+      title: input.title,
     };
   }
   protected reverse(input: IHasManyStore): IHasManyInit {
@@ -73,7 +80,6 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      verb: input.verb,
       hasMany: input.hasMany,
       fields: HasManyTransform.fields.reverse(input.fields),
       single: false,

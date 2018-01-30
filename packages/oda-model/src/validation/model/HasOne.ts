@@ -20,7 +20,6 @@ export const DefaultHasOne: IHasOneStore = {
   name: null,
   title: null,
   description: null,
-  verb: null,
   fields: null,
   opposite: null,
   hasOne: null,
@@ -50,16 +49,24 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
   public get verb(): 'HasOne' {
     return 'HasOne';
   }
+  public get ref(): IEntityRef {
+    return this.store.get('hasOne', null);
+  }
   public get hasOne(): IEntityRef {
     return this.store.get('hasOne', null);
   }
   protected transform(input: IHasOneInit): IHasOneStore {
     return {
-      ...input,
+      name: input.name,
+      title: input.title,
+      description: input.description,
+      fullName: input.fullName,
+      normalName: input.normalName,
+      shortName: input.shortName,
+      opposite: input.opposite,
       single: true,
       stored: false,
       embedded: false,
-      verb: 'HasOne',
       hasOne: HasOneTransform.hasOne.transform(input.hasOne),
       fields: HasOneTransform.fields.transform(input.fields),
     };
@@ -73,7 +80,6 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      verb: input.verb,
       hasOne: input.hasOne,
       fields: HasOneTransform.fields.reverse(input.fields),
       single: true,

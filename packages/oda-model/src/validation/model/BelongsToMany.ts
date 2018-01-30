@@ -21,7 +21,6 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
   name: null,
   title: null,
   description: null,
-  verb: null,
   fields: null,
   opposite: null,
   belongsToMany: null,
@@ -57,6 +56,9 @@ export class BelongsToMany
   public get verb(): 'BelongsToMany' {
     return 'BelongsToMany';
   }
+  public get ref(): IEntityRef {
+    return this.store.get('belongsToMany', null);
+  }
   public get belongsToMany(): IEntityRef {
     return this.store.get('belongsToMany', null);
   }
@@ -66,14 +68,19 @@ export class BelongsToMany
 
   protected transform(input: IBelongsToManyInit): IBelongsToManyStore {
     return {
-      ...input,
       single: false,
       stored: false,
       embedded: false,
-      verb: 'BelongsToMany',
       belongsToMany: BelongsToManyTransform.belongsToMany.transform(input.belongsToMany),
       using: BelongsToManyTransform.using.transform(input.using),
       fields: BelongsToManyTransform.fields.transform(input.fields),
+      description: input.description,
+      fullName: input.fullName,
+      name: input.name,
+      normalName: input.normalName,
+      opposite: input.opposite,
+      shortName: input.shortName,
+      title: input.title,
     };
   }
   protected reverse(input: IBelongsToManyStore): IBelongsToManyInit {
@@ -85,7 +92,6 @@ export class BelongsToMany
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      verb: input.verb,
       belongsToMany: BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany),
       fields: BelongsToManyTransform.fields.reverse(input.fields),
       single: false,

@@ -17,7 +17,6 @@ import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToStore = {
-  verb: 'BelongsTo',
   name: null,
   title: null,
   description: null,
@@ -50,19 +49,27 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
   public get verb(): 'BelongsTo' {
     return 'BelongsTo';
   }
+  public get ref(): IEntityRef {
+    return this.store.get('belongsTo', null);
+  }
   public get belongsTo(): IEntityRef {
     return this.store.get('belongsTo', null);
   }
 
   protected transform(input: IBelongsToInit): IBelongsToStore {
     return input && {
-      ...input,
       belongsTo: BelongsToTransform.belongsTo.transform(input.belongsTo),
       single: true,
       stored: true,
       embedded: true,
-      verb: 'BelongsTo',
       fields: input.fields && BelongsToTransform.fields.transform(input.fields),
+      description: input.description,
+      fullName: input.fullName,
+      name: input.name,
+      normalName: input.normalName,
+      opposite: input.opposite,
+      shortName: input.shortName,
+      title: input.title,
     };
   }
   protected reverse(input: IBelongsToStore): IBelongsToInit {
@@ -74,7 +81,6 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      verb: input.verb,
       belongsTo: input.belongsTo,
       fields: input.fields && BelongsToTransform.fields.reverse(input.fields),
       single: true,

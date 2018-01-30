@@ -37,7 +37,6 @@ export interface IEntityMetaData {
 }
 
 export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem, IPackagedItemStore {
-  modelType: 'entity';
   singular: string;
   plural: string;
   fields: Map<string, IField>;
@@ -47,7 +46,6 @@ export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem, IPac
 }
 
 export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPackagedItemInit {
-  modelType: 'entity';
   singular: string;
   plural: string;
   fields: IField[];

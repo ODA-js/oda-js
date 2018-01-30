@@ -16,7 +16,6 @@ import { IPackage } from '../interfaces/IPackage';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {
-  modelType: 'entity',
   package: null,
   name: null,
   title: null,
@@ -84,7 +83,6 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
       description: input.name,
       plural: input.plural,
       singular: input.singular,
-      modelType: 'entity',
       acl: input.acl,
       storage: input.storage,
       fields: EntityTransform.fields.transform(input.fields),
@@ -101,7 +99,6 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
       description: input.name,
       plural: input.plural,
       singular: input.singular,
-      modelType: 'entity',
       acl: input.acl,
       storage: input.storage,
       fields: EntityTransform.fields.reverse(input.fields),
