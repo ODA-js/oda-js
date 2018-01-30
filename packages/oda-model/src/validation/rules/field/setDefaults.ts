@@ -3,10 +3,10 @@ import { IValidationResult } from '../../interfaces/IValidationResult';
 import { EntityRef } from './../../model/EntityRef';
 import { Rule } from '../../rule';
 import { HasMany } from '../../model/HasMany';
-import { IBelongsToRelationProps} from '../../interfaces/IBelongsToRelation';
-import { IBelongsToManyRelationProps } from '../../interfaces/IBelongsToManyRelation';
-import { IHasOneRelationProps } from '../../interfaces/IHasOneRelation';
-import { IHasManyRelationProps } from '../../interfaces/IHasManyRelation';
+import { IBelongsToInit} from '../../interfaces/IBelongsTo';
+import { IBelongsToManyInit } from '../../interfaces/IBelongsToMany';
+import { IHasOneInit } from '../../interfaces/IHasOne';
+import { IHasManyInit } from '../../interfaces/IHasMany';
 
 export default class implements Rule<IFieldContext> {
   public name = 'setDefaults';

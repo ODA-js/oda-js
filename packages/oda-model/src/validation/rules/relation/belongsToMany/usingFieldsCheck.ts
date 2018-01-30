@@ -3,7 +3,7 @@ import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { IEntity } from '../../../interfaces/IEntity';
 import { isEntity, IsBelongsToMany } from '../../../helpers';
-import { IBelongsToManyRelation } from '../../../interfaces/IBelongsToManyRelation';
+import { IBelongsToMany } from '../../../interfaces/IBelongsToMany';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-using-fields-check';

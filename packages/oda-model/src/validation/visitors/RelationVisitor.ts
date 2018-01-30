@@ -1,12 +1,12 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IRelation, IRelationProps, IRelationPropsStore } from '../interfaces/IRelation';
+import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelation';
 import { IFieldContext } from '../interfaces/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
 import { RelationLevel } from '../errors';
 import { RelationUnion } from '../interfaces/types';
 
-export class RelationVisitor implements IVisitor<IRelationProps, IRelationPropsStore, RelationUnion, IFieldContext> {
+export class RelationVisitor implements IVisitor<RelationUnion, IFieldContext> {
   public validator: Validator;
   public context: IFieldContext; // has to be parent context
   public visit(item: RelationUnion) {

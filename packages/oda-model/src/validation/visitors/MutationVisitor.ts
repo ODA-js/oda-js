@@ -1,11 +1,11 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IMutation, IMutationPropsStore, IMutationProps } from '../interfaces/IMutation';
+import { IMutation, IMutationStore, IMutationInit } from '../interfaces/IMutation';
 import { IEntityContext } from '../interfaces/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { MutationContext } from '../contexts/MutationContext';
 import { MutationLevel } from '../errors';
 
-export class MutationVisitor implements IVisitor<IMutationProps, IMutationPropsStore, IMutation, IEntityContext> {
+export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
   public validator: Validator;
   public context: IEntityContext; // has to be parent context
   public visit(item: IMutation) {

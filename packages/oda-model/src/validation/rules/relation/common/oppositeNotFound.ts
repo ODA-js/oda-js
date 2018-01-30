@@ -4,7 +4,7 @@ import { Rule } from '../../../rule';
 import { isEntity } from '../../../helpers';
 import { IEntity } from '../../../interfaces/IEntity';
 import { IUpdatable } from '../../../model/Persistent';
-import { IRelationProps } from '../../../interfaces/IRelation';
+import { IRelationInit } from '../../../interfaces/IRelation';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-opposite-not-found';
@@ -14,7 +14,7 @@ export default class implements Rule<IRelationContext> {
     if (context.relation.opposite) {
       const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
       if (isEntity(entity) && !entity.fields.has(context.relation.opposite)) {
-        (context.relation as IUpdatable<IRelationProps>).updateWith({ opposite: null});
+        (context.relation as IUpdatable).updateWith({ opposite: null});
         result.push({
           message: this.description,
           result: 'fixable',

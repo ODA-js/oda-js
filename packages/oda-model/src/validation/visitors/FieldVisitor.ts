@@ -1,11 +1,11 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IField, IFieldPropsStore, IFieldProps } from '../interfaces/IField';
+import { IField, IFieldStore, IFieldInit } from '../interfaces/IField';
 import { IEntityContext } from '../interfaces/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { FieldContext } from '../contexts/FieldContext';
 import { FieldLevel } from '../errors';
 
-export class FieldVisitor implements IVisitor<IFieldProps, IFieldPropsStore, IField, IEntityContext> {
+export class FieldVisitor implements IVisitor<IField, IEntityContext> {
   public validator: Validator;
   public context: IEntityContext; // has to be parent context
   public visit(item: IField) {

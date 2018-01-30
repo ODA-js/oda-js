@@ -2,7 +2,7 @@ import {IsBelongsToMany} from '../../../helpers';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
-import { IBelongsToManyRelation } from '../../../interfaces/IBelongsToManyRelation';
+import { IBelongsToMany } from '../../../interfaces/IBelongsToMany';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-ref-backFielnd-is-not-identity-fix';
