@@ -12,10 +12,12 @@ import {
 } from '../interfaces/IMutation';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
+import { IPackage } from '../interfaces/IPackage';
 
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationStore = {
   name: null,
+  package: null,
   title: null,
   description: null,
   args: null,
@@ -44,6 +46,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   public get modelType(): 'mutation' {
     return 'mutation';
   }
+  public get package(): IPackage {
+    return this.store.get('package', null);
+  }
   public get name(): string {
     return this.store.get('name', null);
   }
@@ -66,6 +71,7 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   protected transform(input: IMutationInit): IMutationStore {
     return input && {
       ...input,
+      package: null,
       args: input.args && MutationTransform.args.transform(input.args),
       payload: input.payload && MutationTransform.args.transform(input.payload),
       acl: input.acl && {

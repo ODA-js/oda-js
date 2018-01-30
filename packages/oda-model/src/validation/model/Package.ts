@@ -1,16 +1,12 @@
-import { IModel } from '../interfaces/IModel';
 import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
-import {
-  IPackageStore,
-  IPackageInit,
-  IPackage,
-  IPackageTransform,
-} from '../interfaces/IPackage';
-import { ModelItem } from '../interfaces/types';
+import { Map } from 'immutable';
+
+import { IModel } from '../interfaces/IModel';
 import { IModelType } from '../interfaces/IModelType';
+import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
+import { Persistent } from './Persistent';
+import { transformMap } from './utils';
+import {IPackagedItem } from '../interfaces/IPackagedItem';
 
 // tslint:disable-next-line:variable-name
 export const DefaultPackage: IPackageStore = {
@@ -25,7 +21,7 @@ export const DefaultPackage: IPackageStore = {
 
 // tslint:disable-next-line:variable-name
 export const PackageTransform: IPackageTransform = {
-  items: transformMap<IModelType>(),
+  items: transformMap<IPackagedItem>(),
 };
 
 // tslint:disable-next-line:variable-name
@@ -50,7 +46,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
   public get acl(): number {
     return this.store.get('acl', null);
   }
-  public get items(): Map<string, IModelType> {
+  public get items(): Map<string, IPackagedItem> {
     return this.store.get('items', null);
   }
   public get model(): IModel {

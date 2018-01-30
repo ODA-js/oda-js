@@ -13,6 +13,7 @@ import {
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { Relation } from './Relation';
+import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {
@@ -35,6 +36,10 @@ export const DefaultHasOne: IHasOneStore = {
 
 // tslint:disable-next-line:variable-name
 export const HasOneTransform: IRelationTransform = {
+  hasOne: {
+    transform: (inp) => new EntityRef(inp),
+    reverse: (inp) => inp.toString(),
+  },
   fields: transformMap<IField>(),
 };
 
@@ -55,6 +60,7 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       stored: false,
       embedded: false,
       verb: 'HasOne',
+      hasOne: HasOneTransform.hasOne.transform(input.hasOne),
       fields: HasOneTransform.fields.transform(input.fields),
     };
   }

@@ -14,6 +14,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { RelationBase } from '../../model/index';
 import { Relation } from './Relation';
+import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: IBelongsToManyStore = {
@@ -24,6 +25,7 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
   fields: null,
   opposite: null,
   belongsToMany: null,
+  using: null,
   //storage
   single: true,
   stored: true,
@@ -36,8 +38,16 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
 
 // tslint:disable-next-line:variable-name
 export const BelongsToManyTransform: IRelationTransform = {
-    fields: transformMap<IField>(),
-  };
+  belongsToMany: {
+    transform: (inp) => new EntityRef(inp),
+    reverse: (inp) => inp.toString(),
+  },
+  using: {
+    transform: (inp) => new EntityRef(inp),
+    reverse: (inp) => inp.toString(),
+  },
+  fields: transformMap<IField>(),
+};
 
 // tslint:disable-next-line:variable-name
 export const BelongsToManyStorage = Record(DefaultBelongsToMany);
@@ -61,6 +71,8 @@ export class BelongsToMany
       stored: false,
       embedded: false,
       verb: 'BelongsToMany',
+      belongsToMany: BelongsToManyTransform.belongsToMany.transform(input.belongsToMany),
+      using: BelongsToManyTransform.using.transform(input.using),
       fields: BelongsToManyTransform.fields.transform(input.fields),
     };
   }
@@ -74,7 +86,7 @@ export class BelongsToMany
       shortName: input.shortName,
       opposite: input.opposite,
       verb: input.verb,
-      belongsToMany: input.belongsToMany,
+      belongsToMany: BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany),
       fields: BelongsToManyTransform.fields.reverse(input.fields),
       single: false,
       stored: false,

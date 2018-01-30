@@ -1,15 +1,17 @@
 import { Map } from 'immutable';
 
 import { ArrayToMap } from '../model/utils';
-import {INamedItem, IModelType} from './IModelType';
-import { IPackagedItem } from './IPackagedItem';
+import { INamedItem, IModelType } from './IModelType';
+import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
+import { IPackage } from './IPackage';
 
 
-export interface IEnumInit extends INamedItem {
+export interface IEnumInit extends INamedItem, IPackagedItemInit {
   values: IEnumItem[];
+  package?: IPackage;
 }
 
-export interface IEnumStore extends INamedItem {
+export interface IEnumStore extends INamedItem, IPackagedItemStore {
   values: Map<string, IEnumItem>;
 }
 

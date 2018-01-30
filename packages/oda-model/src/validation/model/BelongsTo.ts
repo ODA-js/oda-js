@@ -13,6 +13,7 @@ import {
 } from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
+import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToStore = {
@@ -35,6 +36,10 @@ export const DefaultBelongsTo: IBelongsToStore = {
 
 // tslint:disable-next-line:variable-name
 export const BelongsToTransform: IRelationTransform = {
+  belongsTo: {
+    transform: (inp) => new EntityRef(inp),
+    reverse: (inp) => inp.toString(),
+  },
   fields: transformMap<IField>(),
 };
 
@@ -52,6 +57,7 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
   protected transform(input: IBelongsToInit): IBelongsToStore {
     return input && {
       ...input,
+      belongsTo: BelongsToTransform.belongsTo.transform(input.belongsTo),
       single: true,
       stored: true,
       embedded: true,

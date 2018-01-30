@@ -11,11 +11,13 @@ import {
   IEntityACL,
 } from '../interfaces/IEntity';
 import { IField } from '../interfaces/IField';
+import { IPackage } from '../interfaces/IPackage';
 
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {
   modelType: 'entity',
+  package: null,
   name: null,
   title: null,
   description: null,
@@ -37,7 +39,10 @@ export const EntityTransform: IEntityTransform = {
 // tslint:disable-next-line:variable-name
 export const EntityStorage = Record(DefaultEntity);
 
-export class Model extends Persistent<IEntityInit, IEntityStore> implements IEntity {
+export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEntity {
+  public get package(): IPackage {
+    return this.store.get('package', null);
+  }
   public get modelType(): 'entity' {
     return 'entity';
   }
@@ -83,6 +88,7 @@ export class Model extends Persistent<IEntityInit, IEntityStore> implements IEnt
       acl: input.acl,
       storage: input.storage,
       fields: EntityTransform.fields.transform(input.fields),
+      package: input.package,
       indexed: Set<string>(),
       relations: Set<string>(),
       required: Set<string>(),

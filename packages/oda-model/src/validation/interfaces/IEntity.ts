@@ -3,7 +3,8 @@ import { IField } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
 import { ArrayToMap } from '../model/utils';
-import { IPackagedItem } from './IPackagedItem';
+import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
+import { IPackage } from './IPackage';
 
 export interface IEntityACL {
   read?: string[];
@@ -35,7 +36,7 @@ export interface IEntityMetaData {
   storage: IEntityStorage;
 }
 
-export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem {
+export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem, IPackagedItemStore {
   modelType: 'entity';
   singular: string;
   plural: string;
@@ -45,11 +46,12 @@ export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem {
   indexed: Set<string>;
 }
 
-export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem {
+export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPackagedItemInit {
   modelType: 'entity';
   singular: string;
   plural: string;
   fields: IField[];
+  package?: IPackage;
 }
 
 export interface IEntityTransform {

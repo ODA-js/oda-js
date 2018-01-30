@@ -15,6 +15,7 @@ export interface IBelongsToManyStore extends IRelationStore {
 
 export interface IRelationTransform {
   belongsToMany: MapType<string | IEntityRef, IEntityRef>;
+  using: MapType<string | IEntityRef, IEntityRef>;
   fields: ArrayToMap<IField>;
 }
 
