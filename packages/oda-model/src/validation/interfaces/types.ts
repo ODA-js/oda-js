@@ -14,12 +14,6 @@ import { IRelationContext } from './IRelationContext';
 import { IMutation } from './IMutation';
 import { Relation } from '../model/Relation';
 
-export type ModelItem = IModel | IPackage | IEntity | IField | RelationUnion | IMutation;
-
-export type RelationUnion = IHasMany | IHasOne | IBelongsTo | IBelongsToMany;
-
-export type RelationPropsUnion = IHasManyInit | IHasOneInit | IBelongsToInit | IBelongsToManyInit;
-
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
 export type MetaModelType =

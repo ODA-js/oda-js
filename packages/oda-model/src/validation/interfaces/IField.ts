@@ -2,7 +2,6 @@ import { Map } from 'immutable';
 
 import { IEntityRef } from './IEntityRef';
 import { IModelType, INamedItem } from './IModelType';
-import { RelationUnion, RelationPropsUnion } from './types';
 import { ArrayToMap } from '../model/utils';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 
@@ -50,8 +49,8 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
 export interface IFieldTransform {
   args: ArrayToMap<IFieldArgs>;
   relation: {
-    transform: (inp: RelationPropsUnion) => RelationUnion,
-    reverse: (inp: RelationUnion) => RelationPropsUnion,
+    transform: (inp: IRelationInit) => IRelation,
+    reverse: (inp: IRelation) => IRelationInit,
   };
 }
 
@@ -62,5 +61,5 @@ export interface IField extends IModelType {
   readonly args: Map<string, IFieldArgs>;
   readonly idKey?: IEntityRef;
   readonly order?: number;
-  readonly relation?: RelationUnion;
+  readonly relation?: IRelation;
 }

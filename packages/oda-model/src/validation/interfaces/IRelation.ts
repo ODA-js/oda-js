@@ -32,6 +32,12 @@ export interface IRelationInit extends IRelationName, IRelationStorage, INamedIt
 }
 
 export interface IRelation extends IModelType {
+  readonly single: boolean;
+  readonly stored: boolean;
+  readonly embedded: boolean;
+  readonly fullName: string;
+  readonly normalName: string;
+  readonly shortName: string;
   readonly modelType: MetaModelType;
   readonly verb: RelationType;
   readonly ref: IEntityRef;

@@ -9,13 +9,13 @@ import { IField } from '../interfaces/IField';
 import { IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
 import { IHasManyInit, IsHasManyProps } from '../interfaces/IHasMany';
 import { IHasOneInit, IsHasOneProps } from '../interfaces/IHasOne';
-import { RelationPropsUnion, RelationUnion } from '../interfaces/types';
 import { BelongsTo, BelongsToTransform } from './BelongsTo';
 import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
 import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
+import { IRelationInit, IRelationStore, IRelation } from '../interfaces/IRelation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -40,7 +40,7 @@ export const DefaultField: IFieldStore = {
 export const FieldTransform: IFieldTransform = {
   args: transformMap<IFieldArgs>(),
   relation: {
-    transform: (inp: RelationPropsUnion): RelationUnion => {
+    transform: (inp: IRelationInit): IRelation => {
       if (IsBelongsToProps(inp)) {
         return new BelongsTo(inp);
       }
@@ -54,10 +54,11 @@ export const FieldTransform: IFieldTransform = {
         return new HasMany(inp);
       }
     },
-    reverse: (inp: RelationUnion): RelationPropsUnion => {
+    reverse: (inp: IRelation): IRelationInit => {
       if (IsBelongsTo(inp)) {
         return {
           ...inp,
+          belongsTo: BelongsToTransform.belongsTo.reverse(inp.belongsTo),
           fields: BelongsToTransform.fields.reverse(inp.fields),
         } as IBelongsToInit;
       }
@@ -126,7 +127,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get order(): number {
     return this.store.get('order', null);
   }
-  public get relation(): RelationUnion {
+  public get relation(): IRelation {
     return this.store.get('relation', null);
   }
   protected transform(input: IFieldInit): IFieldStore {
