@@ -102,6 +102,7 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
       acl: input.acl,
       storage: input.storage,
       fields: EntityTransform.fields.reverse(input.fields),
+      package: input.package,
     };
   }
   constructor(init: IEntityInit) {

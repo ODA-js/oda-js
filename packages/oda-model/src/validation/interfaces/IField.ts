@@ -4,6 +4,7 @@ import { IEntityRef } from './IEntityRef';
 import { IModelType, INamedItem } from './IModelType';
 import { ArrayToMap } from '../model/utils';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
+import { IEntity } from './IEntity';
 
 export interface IFieldACL {
   read?: string[];
@@ -30,7 +31,7 @@ export interface IFieldStorage {
 }
 
 export interface IFieldInit extends IFieldStorage, IFieldMetaData, INamedItem {
-  entity?: string;
+  entity?: IEntity;
   type?: string;
   args: IFieldArgs[];
   order?: number;
@@ -38,7 +39,7 @@ export interface IFieldInit extends IFieldStorage, IFieldMetaData, INamedItem {
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
-  entity?: string;
+  entity?: IEntity;
   type?: string;
   args: Map<string, IFieldArgs>;
   idKey?: IEntityRef;

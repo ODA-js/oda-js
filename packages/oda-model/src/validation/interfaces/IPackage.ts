@@ -12,6 +12,7 @@ export interface IPackageInit extends INamedItem {
   acl: number;
   abstract?: boolean;
   items: IPackagedItem[];
+  model?: IModel;
 }
 
 export interface IPackageStore extends INamedItem {

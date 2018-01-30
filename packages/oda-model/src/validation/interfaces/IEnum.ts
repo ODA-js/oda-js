@@ -16,8 +16,10 @@ export interface IEnumStore extends INamedItem, IPackagedItemStore {
 }
 
 export interface IEnumItem extends IModelType {
+  enum?: IEnum;
   value?: string;
   type?: string;
+  package?: IPackage;
 }
 
 export interface IEnumTransform {
