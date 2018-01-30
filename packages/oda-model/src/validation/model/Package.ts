@@ -4,8 +4,8 @@ import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IPackagePropsStore,
-  IPackageProps,
+  IPackageStore,
+  IPackageInit,
   IPackage,
   IPackageTransform,
 } from '../interfaces/IPackage';
@@ -13,7 +13,7 @@ import { ModelItem } from '../interfaces/types';
 import { IModelType } from '../interfaces/IModelType';
 
 // tslint:disable-next-line:variable-name
-export const DefaultPackage: IPackagePropsStore = {
+export const DefaultPackage: IPackageStore = {
   name: null,
   title: null,
   description: null,
@@ -25,13 +25,13 @@ export const DefaultPackage: IPackagePropsStore = {
 
 // tslint:disable-next-line:variable-name
 export const PackageTransform: IPackageTransform = {
-  items: transformMap<ModelItem>(),
+  items: transformMap<IModelType>(),
 };
 
 // tslint:disable-next-line:variable-name
 const PackageStorage = Record(DefaultPackage);
 
-export class Package extends Persistent<IPackageProps, IPackagePropsStore> implements IPackage {
+export class Package extends Persistent<IPackageInit, IPackageStore> implements IPackage {
   public get modelType(): 'package' {
     return 'package';
   }
@@ -50,30 +50,30 @@ export class Package extends Persistent<IPackageProps, IPackagePropsStore> imple
   public get acl(): number {
     return this.store.get('acl', null);
   }
-  public get items(): Map<string, ModelItem> {
+  public get items(): Map<string, IModelType> {
     return this.store.get('items', null);
   }
   public get model(): IModel {
     return this.store.get('model', null);
   }
 
-  protected transform(input: IPackageProps): IPackagePropsStore {
+  protected transform(input: IPackageInit): IPackageStore {
     return {
       ...input,
       items: PackageTransform.items.transform(input.items),
     };
   }
 
-  protected reverse(input: IPackagePropsStore): IPackageProps {
+  protected reverse(input: IPackageStore): IPackageInit {
     return {
       ...input,
       items: PackageTransform.items.reverse(input.items),
     };
   }
 
-  constructor(init: IPackageProps) {
+  constructor(init: IPackageInit) {
     super();
     this.store = new PackageStorage(this.transform(init));
-    this.init = new (Record<IPackageProps>(init))();
+    this.init = new (Record<IPackageInit>(init))();
   }
 }

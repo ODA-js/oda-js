@@ -5,8 +5,8 @@ import { IFieldArgs } from '../interfaces/IField';
 import {
   IMutation,
   IMutationACLStore,
-  IMutationProps,
-  IMutationPropsStore,
+  IMutationInit,
+  IMutationStore,
   IMutationTransform,
   IMutationACLTransform,
 } from '../interfaces/IMutation';
@@ -14,7 +14,7 @@ import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 
 // tslint:disable-next-line:variable-name
-export const DefaultMutation: IMutationPropsStore = {
+export const DefaultMutation: IMutationStore = {
   name: null,
   title: null,
   description: null,
@@ -40,7 +40,7 @@ export const MutationTransform: IMutationTransform = {
 // tslint:disable-next-line:variable-name
 const MutationStorage = Record(DefaultMutation);
 
-export class Mutation extends Persistent<IMutationProps, IMutationPropsStore> implements IMutation {
+export class Mutation extends Persistent<IMutationInit, IMutationStore> implements IMutation {
   public get modelType(): 'mutation' {
     return 'mutation';
   }
@@ -63,31 +63,31 @@ export class Mutation extends Persistent<IMutationProps, IMutationPropsStore> im
     return this.store.get('payload', null);
   }
 
-  protected transform(input: IMutationProps): IMutationPropsStore {
-    return {
+  protected transform(input: IMutationInit): IMutationStore {
+    return input && {
       ...input,
-      args: MutationTransform.args.transform(input.payload),
-      payload: MutationTransform.args.transform(input.payload),
-      acl: {
-        execute: MutationTransform.acl.execute.transform(input.acl.execute),
+      args: input.args && MutationTransform.args.transform(input.args),
+      payload: input.payload && MutationTransform.args.transform(input.payload),
+      acl: input.acl && {
+        execute: input.acl.execute && MutationTransform.acl.execute.transform(input.acl.execute),
       },
     };
   }
 
-  protected reverse(input: IMutationPropsStore): IMutationProps {
-    return {
+  protected reverse(input: IMutationStore): IMutationInit {
+    return input && {
       ...input,
-      args: MutationTransform.args.reverse(input.payload),
-      payload: MutationTransform.args.reverse(input.payload),
-      acl: {
-        execute: MutationTransform.acl.execute.reverse(input.acl.execute),
+      args: input.args && MutationTransform.args.reverse(input.args),
+      payload: input.payload && MutationTransform.args.reverse(input.payload),
+      acl: input.acl && {
+        execute: input.acl.execute && MutationTransform.acl.execute.reverse(input.acl.execute),
       },
     };
   }
 
-  constructor(init: IMutationProps) {
+  constructor(init: IMutationInit) {
     super();
     this.store = new MutationStorage(this.transform(init));
-    this.init = new (Record<IMutationProps>(init))();
+    this.init = new (Record<IMutationInit>(init))();
   }
 }

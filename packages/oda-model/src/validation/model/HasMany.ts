@@ -1,26 +1,25 @@
-import { IRelationPropsStore } from '../interfaces/IRelation';
+import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IHasManyRelationPropsStore,
-  IHasManyRelationProps,
-  IHasManyRelation,
+  IHasManyStore,
+  IHasManyInit,
+  IHasMany,
   IRelationTransform,
-} from '../interfaces/IHasManyRelation';
+} from '../interfaces/IHasMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
-export const DefaultHasMany: IHasManyRelationPropsStore = {
+export const DefaultHasMany: IHasManyStore = {
   name: null,
   title: null,
   description: null,
   verb: null,
-  ref: null,
   fields: null,
   opposite: null,
   hasMany: null,
@@ -42,14 +41,14 @@ export const HasManyTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const HasManyStorage = Record(DefaultHasMany);
 
-export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPropsStore> implements IHasManyRelation {
+export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IHasMany {
   public get verb(): 'HasMany' {
     return 'HasMany';
   }
   public get hasMany(): IEntityRef {
     return this.store.get('hasMany', null);
   }
-  protected transform(input: IHasManyRelationProps): IHasManyRelationPropsStore {
+  protected transform(input: IHasManyInit): IHasManyStore {
     return {
       ...input,
       single: false,
@@ -59,7 +58,7 @@ export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPro
       fields: HasManyTransform.fields.transform(input.fields),
     };
   }
-  protected reverse(input: IHasManyRelationPropsStore): IHasManyRelationProps {
+  protected reverse(input: IHasManyStore): IHasManyInit {
     return {
       name: input.name,
       title: input.title,
@@ -68,7 +67,6 @@ export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPro
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      ref: input.ref,
       verb: input.verb,
       hasMany: input.hasMany,
       fields: HasManyTransform.fields.reverse(input.fields),
@@ -77,9 +75,9 @@ export class HasMany extends Relation<IHasManyRelationProps, IHasManyRelationPro
       embedded: false,
     };
   }
-  constructor(init: IHasManyRelationProps) {
+  constructor(init: IHasManyInit) {
     super();
     this.store = new HasManyStorage(this.transform(init));
-    this.init = new (Record<IHasManyRelationProps>(init))();
+    this.init = new (Record<IHasManyInit>(init))();
   }
 }

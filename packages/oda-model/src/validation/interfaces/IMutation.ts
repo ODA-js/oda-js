@@ -1,12 +1,12 @@
-import { IModelType, IModelTypeProps } from './IModelType';
+import { IModelType, INamedItem } from './IModelType';
 import { IValidationResult } from './IValidationResult';
 import { IFieldArgs, IField } from './IField';
 import { Rule } from '../rule';
 import { IMutationContext } from './IMutationContext';
 import { IValidator } from './IValidator';
 import { Record, Map, Set } from 'immutable';
-import { IUpdatable } from '../model/Persistent';
 import { ArrayToMap, ArrayToSet } from '../model/utils';
+import { IPackagedItem } from './IPackagedItem';
 
 export interface IMutationACL {
   readonly execute: string[];
@@ -24,12 +24,12 @@ export interface IMutationMetaDataStore {
   readonly acl?: IMutationACLStore;
 }
 
-export interface IMutationPropsStore extends IMutationMetaDataStore, IModelTypeProps {
+export interface IMutationStore extends IMutationMetaDataStore, INamedItem {
   args: Map<string, IFieldArgs>;
   payload: Map<string, IFieldArgs>;
 }
 
-export interface IMutationProps extends IMutationMetaData, IModelTypeProps {
+export interface IMutationInit extends IMutationMetaData, INamedItem {
   args: IFieldArgs[];
   payload: IFieldArgs[];
 }
@@ -44,7 +44,9 @@ export interface IMutationTransform {
   acl: IMutationACLTransform;
 }
 
-export interface IMutation extends IModelType, IUpdatable<IMutationProps>, IMutationPropsStore {
+export interface IMutation extends IModelType, IPackagedItem {
   readonly modelType: 'mutation';
+  readonly args: Map<string, IFieldArgs>;
+  readonly payload: Map<string, IFieldArgs>;
 }
 

@@ -1,9 +1,9 @@
-import { IModelType, IModelTypeProps } from './IModelType';
+import { IModelType, INamedItem } from './IModelType';
 import { IField } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
-import { IUpdatable } from '../model/Persistent';
 import { ArrayToMap } from '../model/utils';
+import { IPackagedItem } from './IPackagedItem';
 
 export interface IEntityACL {
   read?: string[];
@@ -35,7 +35,7 @@ export interface IEntityMetaData {
   storage: IEntityStorage;
 }
 
-export interface IEntityPropsStore extends Partial<IEntityMetaData>, IModelTypeProps {
+export interface IEntityStore extends Partial<IEntityMetaData>, INamedItem {
   modelType: 'entity';
   singular: string;
   plural: string;
@@ -45,7 +45,7 @@ export interface IEntityPropsStore extends Partial<IEntityMetaData>, IModelTypeP
   indexed: Set<string>;
 }
 
-export interface IEntityProps extends Partial<IEntityMetaData>, IModelTypeProps {
+export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem {
   modelType: 'entity';
   singular: string;
   plural: string;
@@ -56,7 +56,12 @@ export interface IEntityTransform {
   fields: ArrayToMap<IField>;
 }
 
-export interface IEntity extends IModelType,
-  IUpdatable<IEntityProps>, IEntityPropsStore {
+export interface IEntity extends IModelType, IPackagedItem {
   readonly modelType: 'entity';
+  readonly singular: string;
+  readonly plural: string;
+  readonly fields: Map<string, IField>;
+  readonly relations: Set<string>;
+  readonly required: Set<string>;
+  readonly indexed: Set<string>;
 }

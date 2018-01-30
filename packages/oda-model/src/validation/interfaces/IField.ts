@@ -1,9 +1,8 @@
 import { Map } from 'immutable';
 
 import { IEntityRef } from './IEntityRef';
-import { IModelType, IModelTypeProps } from './IModelType';
+import { IModelType, INamedItem } from './IModelType';
 import { RelationUnion, RelationPropsUnion } from './types';
-import { IUpdatable } from '../model/Persistent';
 import { ArrayToMap } from '../model/utils';
 
 export interface IFieldACL {
@@ -30,7 +29,7 @@ export interface IFieldStorage {
   identity?: boolean | string | string[];
 }
 
-export interface IFieldProps extends IFieldStorage, IFieldMetaData, IModelTypeProps {
+export interface IFieldInit extends IFieldStorage, IFieldMetaData, INamedItem {
   entity?: string;
   type?: string;
   args: IFieldArgs[];
@@ -38,7 +37,7 @@ export interface IFieldProps extends IFieldStorage, IFieldMetaData, IModelTypePr
   relation?: RelationPropsUnion;
 }
 
-export interface IFieldPropsStore extends IFieldStorage, IFieldMetaData, IModelTypeProps {
+export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
   entity?: string;
   type?: string;
   args: Map<string, IFieldArgs>;
@@ -47,14 +46,20 @@ export interface IFieldPropsStore extends IFieldStorage, IFieldMetaData, IModelT
   relation?: RelationUnion;
 }
 
-export type IFieldTransform = {
+export interface IFieldTransform {
   args: ArrayToMap<IFieldArgs>;
   relation: {
     transform: (inp: RelationPropsUnion) => RelationUnion,
     reverse: (inp: RelationUnion) => RelationPropsUnion,
-  }
-};
+  };
+}
 
-export interface IField extends IModelType, IUpdatable<IFieldProps>, IFieldPropsStore {
+export interface IField extends IModelType {
   readonly modelType: 'field';
+  readonly entity?: string;
+  readonly type?: string;
+  readonly args: Map<string, IFieldArgs>;
+  readonly idKey?: IEntityRef;
+  readonly order?: number;
+  readonly relation?: RelationUnion;
 }

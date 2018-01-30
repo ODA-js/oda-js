@@ -1,5 +1,5 @@
 export interface IEntityRef {
-  backField: string;
+  backField?: string;
   entity: string;
-  field: string;
+  field?: string;
 }

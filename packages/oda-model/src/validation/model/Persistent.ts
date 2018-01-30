@@ -1,13 +1,9 @@
 import { Record } from 'immutable';
-
+import { IUpdatable } from '../interfaces/IUpdatable';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
 
-export interface IUpdatable<T> {
-  updateWith(obj: Partial<T>);
-}
-
-export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable<TInputProps> {
+export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable {
   protected store: Record<TStoredProps>;
   protected init: TInputProps;
   public validate(validator: IValidator): IValidationResult[] {
@@ -19,7 +15,7 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
   protected reverse(input: Partial<TStoredProps>): Partial<TInputProps> {
     throw new Error('not implemented');
   }
-  public updateWith(obj: Partial<TInputProps>) {
+  public updateWith<T extends TInputProps>(obj: Partial<T> ) {
     this.store = this.store.mergeDeep(this.transform(obj));
   }
   public toJS() {

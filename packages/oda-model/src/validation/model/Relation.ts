@@ -1,21 +1,21 @@
-import {IRelation, IRelationPropsStore, IRelationProps} from '../interfaces/IRelation';
+import {IRelation, IRelationStore, IRelationInit} from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IBelongsToRelationPropsStore,
-  IBelongsToRelationProps,
-  IBelongsToRelation,
+  IBelongsToStore,
+  IBelongsToInit,
+  IBelongsTo,
   IRelationTransform,
-} from '../interfaces/IBelongsToRelation';
+} from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { RelationType } from '../interfaces/types';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
+export const DefaultBelongsTo: IBelongsToStore = {
   verb: null,
   name: null,
   title: null,
@@ -39,7 +39,7 @@ export const RelationTransform: IRelationTransform = {
   fields: transformMap<IField>(),
 };
 
-export abstract class Relation<P extends IRelationProps, S extends IRelationPropsStore> extends Persistent<P, S> implements IRelation {
+export abstract class Relation<P extends IRelationInit, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
   public get modelType(): 'relation' {
     return 'relation';
   }

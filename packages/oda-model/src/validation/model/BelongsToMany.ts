@@ -1,27 +1,26 @@
-import { IRelationPropsStore } from '../interfaces/IRelation';
+import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IBelongsToManyRelationPropsStore,
-  IBelongsToManyRelationProps,
-  IBelongsToManyRelation,
+  IBelongsToManyStore,
+  IBelongsToManyInit,
+  IBelongsToMany,
   IRelationTransform,
-} from '../interfaces/IBelongsToManyRelation';
+} from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { RelationBase } from '../../model/index';
 import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsToMany: IBelongsToManyRelationPropsStore = {
+export const DefaultBelongsToMany: IBelongsToManyStore = {
   name: null,
   title: null,
   description: null,
   verb: null,
-  ref: null,
   fields: null,
   opposite: null,
   belongsToMany: null,
@@ -44,7 +43,7 @@ export const BelongsToManyTransform: IRelationTransform = {
 export const BelongsToManyStorage = Record(DefaultBelongsToMany);
 
 export class BelongsToMany
-  extends Relation<IBelongsToManyRelationProps, IBelongsToManyRelationPropsStore> implements IBelongsToManyRelation {
+  extends Relation<IBelongsToManyInit, IBelongsToManyStore> implements IBelongsToMany {
   public get verb(): 'BelongsToMany' {
     return 'BelongsToMany';
   }
@@ -55,7 +54,7 @@ export class BelongsToMany
     return this.store.get('using', null);
   }
 
-  protected transform(input: IBelongsToManyRelationProps): IBelongsToManyRelationPropsStore {
+  protected transform(input: IBelongsToManyInit): IBelongsToManyStore {
     return {
       ...input,
       single: false,
@@ -65,7 +64,7 @@ export class BelongsToMany
       fields: BelongsToManyTransform.fields.transform(input.fields),
     };
   }
-  protected reverse(input: IBelongsToManyRelationPropsStore): IBelongsToManyRelationProps {
+  protected reverse(input: IBelongsToManyStore): IBelongsToManyInit {
     return {
       name: input.name,
       title: input.title,
@@ -74,7 +73,6 @@ export class BelongsToMany
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      ref: input.ref,
       verb: input.verb,
       belongsToMany: input.belongsToMany,
       fields: BelongsToManyTransform.fields.reverse(input.fields),
@@ -84,9 +82,9 @@ export class BelongsToMany
       using: input.using,
     };
   }
-  constructor(init: IBelongsToManyRelationProps) {
+  constructor(init: IBelongsToManyInit) {
     super();
     this.store = new BelongsToManyStorage(this.transform(init));
-    this.init = new (Record<IBelongsToManyRelationProps>(init))();
+    this.init = new (Record<IBelongsToManyInit>(init))();
   }
 }

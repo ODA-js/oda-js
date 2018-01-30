@@ -4,9 +4,9 @@ import { Map, Set } from 'immutable';
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IEntityPropsStore,
+  IEntityStore,
   IEntity,
-  IEntityProps,
+  IEntityInit,
   IEntityTransform,
   IEntityACL,
 } from '../interfaces/IEntity';
@@ -14,7 +14,7 @@ import { IField } from '../interfaces/IField';
 
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntity: IEntityPropsStore = {
+export const DefaultEntity: IEntityStore = {
   modelType: 'entity',
   name: null,
   title: null,
@@ -37,7 +37,7 @@ export const EntityTransform: IEntityTransform = {
 // tslint:disable-next-line:variable-name
 export const EntityStorage = Record(DefaultEntity);
 
-export class Model extends Persistent<IEntityProps, IEntityPropsStore> implements IEntity {
+export class Model extends Persistent<IEntityInit, IEntityStore> implements IEntity {
   public get modelType(): 'entity' {
     return 'entity';
   }
@@ -72,7 +72,7 @@ export class Model extends Persistent<IEntityProps, IEntityPropsStore> implement
     return this.store.get('indexed', null);
   }
 
-  protected transform(input: IEntityProps): IEntityPropsStore {
+  protected transform(input: IEntityInit): IEntityStore {
     return {
       name: input.name,
       title: input.name,
@@ -88,7 +88,7 @@ export class Model extends Persistent<IEntityProps, IEntityPropsStore> implement
       required: Set<string>(),
     };
   }
-  protected reverse(input: IEntityPropsStore): IEntityProps {
+  protected reverse(input: IEntityStore): IEntityInit {
     return {
       name: input.name,
       title: input.name,
@@ -101,9 +101,9 @@ export class Model extends Persistent<IEntityProps, IEntityPropsStore> implement
       fields: EntityTransform.fields.reverse(input.fields),
     };
   }
-  constructor(init: IEntityProps) {
+  constructor(init: IEntityInit) {
     super();
     this.store = new EntityStorage(this.transform(init));
-    this.init = new (Record<IEntityProps>(init))();
+    this.init = new (Record<IEntityInit>(init))();
   }
 }

@@ -1,36 +1,36 @@
-import { IValidationResult } from './IValidationResult';
-import { IModelType, IModelTypeProps } from './IModelType';
-import { IMutation } from './IMutation';
-import { IEntity } from './IEntity';
-import { IField } from './IField';
-import { IModel } from './IModel';
-import { Rule } from '../rule';
-import { IPackageContext } from './IPackageContext';
-import { ModelItem } from './types';
 import { Map } from 'immutable';
-import { IUpdatable } from '../model/Persistent';
+
 import { ArrayToMap } from '../model/utils';
+import { Rule } from '../rule';
+import { IModel } from './IModel';
+import { IModelType, INamedItem } from './IModelType';
+import { IPackageContext } from './IPackageContext';
+import { IPackagedItem } from './IPackagedItem';
+import { IValidationResult } from './IValidationResult';
 
-export interface IPackageProps extends IModelTypeProps {
+export interface IPackageInit extends INamedItem {
   acl: number;
   abstract?: boolean;
-  items: ModelItem[];
+  items: IPackagedItem[];
+}
+
+export interface IPackageStore extends INamedItem {
+  acl: number;
+  abstract?: boolean;
+  items: Map<string, IPackagedItem>;
   model: IModel;
 }
 
-export interface IPackagePropsStore extends IModelTypeProps  {
-  acl: number;
-  abstract?: boolean;
-  items: Map<string, ModelItem>;
-  model: IModel;
+export interface IPackageTransform {
+  items: ArrayToMap<IPackagedItem>;
 }
 
-export type IPackageTransform = {
-  items: ArrayToMap<ModelItem>,
-};
-
-export interface IPackage extends IModelType, IUpdatable<IPackageProps>, IPackagePropsStore {
+export interface IPackage extends IModelType {
   readonly modelType: 'package';
+  readonly acl: number;
+  readonly abstract?: boolean;
+  readonly items: Map<string, IPackagedItem>;
+  readonly model: IModel;
 }
 
 export class CheckMutationName implements Rule<IPackageContext> {

@@ -2,8 +2,8 @@ import { Map, Record } from 'immutable';
 
 import {
   IModel,
-  IModelProps,
-  IModelPropsStore,
+  IModelInit,
+  IModelStore,
   IModelTransform,
 } from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
@@ -11,7 +11,7 @@ import { Persistent } from './Persistent';
 import { transformMap } from './utils';
 
 // tslint:disable-next-line:variable-name
-export const DefaultModel: IModelPropsStore = {
+export const DefaultModel: IModelStore = {
   name: null,
   title: null,
   description: null,
@@ -26,7 +26,7 @@ export const ModelTransform: IModelTransform = {
 // tslint:disable-next-line:variable-name
 export const ModelStorage = Record(DefaultModel);
 
-export class Model extends Persistent<IModelProps, IModelPropsStore> implements IModel {
+export class Model extends Persistent<IModelInit, IModelStore> implements IModel {
   public get modelType(): 'model' {
     return 'model';
   }
@@ -48,21 +48,21 @@ export class Model extends Persistent<IModelProps, IModelPropsStore> implements 
 
   private _defaultPackage: IPackage;
 
-  protected transform(input: IModelProps): IModelPropsStore {
+  protected transform(input: IModelInit): IModelStore {
     return {
       ...input,
       packages: ModelTransform.packages.transform(input.packages),
     };
   }
-  protected reverse(input: IModelPropsStore): IModelProps {
+  protected reverse(input: IModelStore): IModelInit {
     return {
       ...input,
       packages: ModelTransform.packages.reverse(input.packages),
     };
   }
-  constructor(init: IModelProps) {
+  constructor(init: IModelInit) {
     super();
     this.store = new ModelStorage(this.transform(init));
-    this.init = new (Record<IModelProps>(init))();
+    this.init = new (Record<IModelInit>(init))();
   }
 }

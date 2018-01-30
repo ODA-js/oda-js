@@ -1,10 +1,12 @@
-
-import { IField } from './IField';
-import { IEntityRef } from './IEntityRef';
-import { IModelType, IModelTypeProps } from './IModelType';
-import { RelationType, MetaModelType } from './types';
 import { Map } from 'immutable';
 
+import { IEntityRef } from './IEntityRef';
+import { IField } from './IField';
+import { IModelType, INamedItem } from './IModelType';
+import { MetaModelType, RelationType } from './types';
+
+
+// metadata attributes
 export interface IRelationStorage {
   single: boolean;
   stored: boolean;
@@ -16,28 +18,23 @@ export interface IRelationName {
   normalName: string;
   shortName: string;
 }
-
-export interface IRelationPropsStore extends IRelationName, IRelationStorage, IModelTypeProps {
-  ref: IEntityRef;
+// props
+export interface IRelationStore extends IRelationName, IRelationStorage, INamedItem {
+  verb: RelationType;
+  opposite?: string;
   fields?: Map<string, IField>;
-  opposite?: string;
-  verb: RelationType;
 }
 
-export interface IRelationProps extends IRelationName, IRelationStorage, IModelTypeProps {
+export interface IRelationInit extends IRelationName, IRelationStorage, INamedItem {
   verb: RelationType;
-  ref: IEntityRef;
+  opposite?: string;
   fields?: IField[];
-  opposite?: string;
 }
 
-export type IRelationTransform = {
-  [k in keyof IRelationProps]?: {
-    transform: (input: IRelationProps[k]) => IRelationPropsStore[k];
-    reverse: (input: IRelationPropsStore[k]) => IRelationProps[k];
-  }
-};
-
-export interface IRelation extends IModelType, IRelationPropsStore {
+export interface IRelation extends IModelType {
   readonly modelType: MetaModelType;
+  readonly verb: RelationType;
+  readonly ref: IEntityRef;
+  readonly opposite?: string;
+  readonly fields?: Map<string, IField>;
 }

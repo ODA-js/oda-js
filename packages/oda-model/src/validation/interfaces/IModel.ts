@@ -1,25 +1,21 @@
 import { IPackage } from './IPackage';
-import { IModelType, IModelTypeProps } from './IModelType';
+import { IModelType, INamedItem } from './IModelType';
 import { Map } from 'immutable';
-import { IUpdatable } from '../model/Persistent';
+import { ArrayToMap } from '../model/utils';
 
-export type IModelProps = IModelTypeProps & {
+export interface IModelInit extends INamedItem  {
   packages: IPackage[];
-};
+}
 
-export type IModelPropsStore = IModelTypeProps & {
+export interface IModelStore extends INamedItem {
   packages: Map<string, IPackage>;
-};
+}
 
-export type IModelTransform = {
-  [k in keyof IModelProps]?: {
-    transform: (input: IModelProps[k]) => IModelPropsStore[k];
-    reverse: (input: IModelPropsStore[k]) => IModelProps[k];
-  }
-};
+export interface IModelTransform {
+  packages: ArrayToMap<IPackage>;
+}
 
-export interface IModel extends IModelType,
-  IUpdatable<IModelProps>, IModelPropsStore {
+export interface IModel extends IModelType {
   readonly defaultPackage: IPackage;
   readonly modelType: 'model';
 }

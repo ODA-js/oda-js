@@ -1,26 +1,25 @@
 import {Relation} from './Relation';
-import { IRelationPropsStore } from '../interfaces/IRelation';
+import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IBelongsToRelationPropsStore,
-  IBelongsToRelationProps,
-  IBelongsToRelation,
+  IBelongsToStore,
+  IBelongsToInit,
+  IBelongsTo,
   IRelationTransform,
-} from '../interfaces/IBelongsToRelation';
+} from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsTo: IBelongsToRelationPropsStore = {
+export const DefaultBelongsTo: IBelongsToStore = {
   verb: 'BelongsTo',
   name: null,
   title: null,
   description: null,
-  ref: null,
   fields: null,
   opposite: null,
   belongsTo: null,
@@ -42,7 +41,7 @@ export const BelongsToTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const BelongsToStorage = Record(DefaultBelongsTo);
 
-export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelationPropsStore> implements IBelongsToRelation {
+export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> implements IBelongsTo {
   public get verb(): 'BelongsTo' {
     return 'BelongsTo';
   }
@@ -50,18 +49,18 @@ export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelat
     return this.store.get('belongsTo', null);
   }
 
-  protected transform(input: IBelongsToRelationProps): IBelongsToRelationPropsStore {
-    return {
+  protected transform(input: IBelongsToInit): IBelongsToStore {
+    return input && {
       ...input,
       single: true,
       stored: true,
       embedded: true,
       verb: 'BelongsTo',
-      fields: BelongsToTransform.fields.transform(input.fields),
+      fields: input.fields && BelongsToTransform.fields.transform(input.fields),
     };
   }
-  protected reverse(input: IBelongsToRelationPropsStore): IBelongsToRelationProps {
-    return {
+  protected reverse(input: IBelongsToStore): IBelongsToInit {
+    return input && {
       name: input.name,
       title: input.title,
       description: input.description,
@@ -69,18 +68,17 @@ export class BelongsTo extends Relation<IBelongsToRelationProps, IBelongsToRelat
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      ref: input.ref,
       verb: input.verb,
       belongsTo: input.belongsTo,
-      fields: BelongsToTransform.fields.reverse(input.fields),
+      fields: input.fields && BelongsToTransform.fields.reverse(input.fields),
       single: true,
       stored: true,
       embedded: true,
     };
   }
-  constructor(init: IBelongsToRelationProps) {
+  constructor(init: IBelongsToInit) {
     super();
     this.store = new BelongsToStorage(this.transform(init));
-    this.init = new (Record<IBelongsToRelationProps>(init))();
+    this.init = new (Record<IBelongsToInit>(init))();
   }
 }

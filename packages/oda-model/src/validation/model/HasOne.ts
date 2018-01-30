@@ -1,26 +1,25 @@
-import { IRelationPropsStore } from '../interfaces/IRelation';
+import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
 import { transformMap, transformSet } from './utils';
 import {
-  IHasOneRelationPropsStore,
-  IHasOneRelationProps,
-  IHasOneRelation,
+  IHasOneStore,
+  IHasOneInit,
+  IHasOne,
   IRelationTransform,
-} from '../interfaces/IHasOneRelation';
+} from '../interfaces/IHasOne';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
-export const DefaultHasOne: IHasOneRelationPropsStore = {
+export const DefaultHasOne: IHasOneStore = {
   name: null,
   title: null,
   description: null,
   verb: null,
-  ref: null,
   fields: null,
   opposite: null,
   hasOne: null,
@@ -42,14 +41,14 @@ export const HasOneTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const HasOneStorage = Record(DefaultHasOne);
 
-export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsStore> implements IHasOneRelation {
+export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasOne {
   public get verb(): 'HasOne' {
     return 'HasOne';
   }
   public get hasOne(): IEntityRef {
     return this.store.get('hasOne', null);
   }
-  protected transform(input: IHasOneRelationProps): IHasOneRelationPropsStore {
+  protected transform(input: IHasOneInit): IHasOneStore {
     return {
       ...input,
       single: true,
@@ -59,7 +58,7 @@ export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsS
       fields: HasOneTransform.fields.transform(input.fields),
     };
   }
-  protected reverse(input: IHasOneRelationPropsStore): IHasOneRelationProps {
+  protected reverse(input: IHasOneStore): IHasOneInit {
     return {
       name: input.name,
       title: input.title,
@@ -68,7 +67,6 @@ export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsS
       normalName: input.normalName,
       shortName: input.shortName,
       opposite: input.opposite,
-      ref: input.ref,
       verb: input.verb,
       hasOne: input.hasOne,
       fields: HasOneTransform.fields.reverse(input.fields),
@@ -77,9 +75,9 @@ export class HasOne extends Relation<IHasOneRelationProps, IHasOneRelationPropsS
       embedded: false,
     };
   }
-  constructor(init: IHasOneRelationProps) {
+  constructor(init: IHasOneInit) {
     super();
     this.store = new HasOneStorage(this.transform(init));
-    this.init = new (Record<IHasOneRelationProps>(init))();
+    this.init = new (Record<IHasOneInit>(init))();
   }
 }

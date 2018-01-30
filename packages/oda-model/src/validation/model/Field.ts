@@ -1,25 +1,24 @@
-import { Map } from 'immutable';
 import { Record } from 'immutable';
+import { Map } from 'immutable';
 
 import { IsBelongsTo, IsBelongsToMany, IsHasMany, IsHasOne } from '../helpers';
-import { IsBelongsToManyProps, IBelongsToManyRelationProps, IBelongsToManyRelationPropsStore } from '../interfaces/IBelongsToManyRelation';
-import { IBelongsToRelationProps, IsBelongsToProps, IBelongsToRelationPropsStore } from '../interfaces/IBelongsToRelation';
+import { IBelongsToManyInit, IsBelongsToManyProps } from '../interfaces/IBelongsToMany';
+import { IBelongsToInit, IsBelongsToProps } from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
-import { IFieldACL, IFieldArgs, IFieldProps, IFieldPropsStore, IFieldTransform } from '../interfaces/IField';
-import { IsHasOneProps, IHasOneRelationProps } from '../interfaces/IHasOneRelation';
-import {RelationPropsUnion,  RelationUnion} from '../interfaces/types';
+import { IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
+import { IHasManyInit, IsHasManyProps } from '../interfaces/IHasMany';
+import { IHasOneInit, IsHasOneProps } from '../interfaces/IHasOne';
+import { RelationPropsUnion, RelationUnion } from '../interfaces/types';
 import { BelongsTo, BelongsToTransform } from './BelongsTo';
 import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
 import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
-import { IUpdatable, Persistent } from './Persistent';
+import { Persistent } from './Persistent';
 import { transformMap } from './utils';
-import { IsHasManyProps, IHasManyRelationProps } from '../interfaces/IHasManyRelation';
-import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
-export const DefaultField: IFieldPropsStore = {
+export const DefaultField: IFieldStore = {
   name: null,
   title: null,
   description: null,
@@ -60,25 +59,25 @@ export const FieldTransform: IFieldTransform = {
         return {
           ...inp,
           fields: BelongsToTransform.fields.reverse(inp.fields),
-        } as IBelongsToRelationProps;
+        } as IBelongsToInit;
       }
       if (IsBelongsToMany(inp)) {
         return {
           ...inp,
           fields: BelongsToManyTransform.fields.reverse(inp.fields),
-        } as IBelongsToManyRelationProps;
+        } as IBelongsToManyInit;
       }
       if (IsHasOne(inp)) {
         return {
           ...inp,
           fields: HasOneTransform.fields.reverse(inp.fields),
-        } as IHasOneRelationProps;
+        } as IHasOneInit;
       }
       if (IsHasMany(inp)) {
         return {
           ...inp,
           fields: HasManyTransform.fields.reverse(inp.fields),
-        } as IHasManyRelationProps;
+        } as IHasManyInit;
       }
     },
   },
@@ -87,7 +86,7 @@ export const FieldTransform: IFieldTransform = {
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements IField {
+export class Field extends Persistent<IFieldInit, IFieldStore> implements IField {
   public get modelType(): 'field' {
     return 'field';
   }
@@ -130,7 +129,7 @@ export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements 
   public get relation(): RelationUnion {
     return this.store.get('relation', null);
   }
-  protected transform(input: IFieldProps): IFieldPropsStore {
+  protected transform(input: IFieldInit): IFieldStore {
     return {
       name: input.name,
       title: input.title,
@@ -141,7 +140,7 @@ export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements 
       args: FieldTransform.args.transform(input.args),
     };
   }
-  protected reverse(input: IFieldPropsStore): IFieldProps {
+  protected reverse(input: IFieldStore): IFieldInit {
     return {
       name: input.name,
       title: input.title,
@@ -158,9 +157,9 @@ export class Field extends Persistent<IFieldProps, IFieldPropsStore> implements 
       args: FieldTransform.args.reverse(input.args),
     };
   }
-  constructor(init: IFieldProps) {
+  constructor(init: IFieldInit) {
     super();
     this.store = new FieldStorage(this.transform(init));
-    this.init = new (Record<IFieldProps>(init))();
+    this.init = new (Record<IFieldInit>(init))();
   }
 }

@@ -1,5 +1,10 @@
 import { Map, Set } from 'immutable';
 
+export type MapType<T, S> = {
+  transform: (input: S[]) => Map<string, S>;
+  reverse: (input: Map<string, S>) => S[];
+};
+
 export type ArrayToMap<S extends object> = {
   transform: (input: S[]) => Map<string, S>;
   reverse: (input: Map<string, S>) => S[];
