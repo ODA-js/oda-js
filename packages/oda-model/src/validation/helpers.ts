@@ -4,10 +4,10 @@ import { IPackage } from './interfaces/IPackage';
 import { IEntity } from './interfaces/IEntity';
 import { IField } from './interfaces/IField';
 import { IRelation } from './interfaces/IRelation';
-import { IBelongsToRelation } from './interfaces/IBelongsToRelation';
-import { IBelongsToManyRelation } from './interfaces/IBelongsToManyRelation';
-import { IHasOneRelation } from './interfaces/IHasOneRelation';
-import { IHasManyRelation } from './interfaces/IHasManyRelation';
+import { IBelongsTo } from './interfaces/IBelongsTo';
+import { IBelongsToMany } from './interfaces/IBelongsToMany';
+import { IHasOne } from './interfaces/IHasOne';
+import { IHasMany } from './interfaces/IHasMany';
 import {IMutation} from './interfaces/IMutation';
 
 export function isModel(item: ModelItem): item is IModel {
@@ -36,18 +36,18 @@ export function isRelation(item: ModelItem): item is RelationUnion {
   );
 }
 
-export function IsBelongsTo(item: RelationUnion): item is IBelongsToRelation {
+export function IsBelongsTo(item: RelationUnion): item is IBelongsTo {
   return isRelation(item) && item.verb === 'BelongsTo';
 }
 
-export function IsBelongsToMany(item: RelationUnion): item is IBelongsToManyRelation {
+export function IsBelongsToMany(item: RelationUnion): item is IBelongsToMany {
   return isRelation(item) && item.verb === 'BelongsToMany';
 }
 
-export function IsHasOne(item: RelationUnion): item is IHasOneRelation {
+export function IsHasOne(item: RelationUnion): item is IHasOne {
   return isRelation(item) && item.verb === 'HasOne';
 }
 
-export function IsHasMany(item: RelationUnion): item is IHasManyRelation {
+export function IsHasMany(item: RelationUnion): item is IHasMany {
   return isRelation(item) && item.verb === 'HasMany';
 }
