@@ -69,26 +69,64 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   }
 
   protected transform(input: IMutationInit): IMutationStore {
-    return input && {
-      ...input,
-      package: null,
-      args: input.args && MutationTransform.args.transform(input.args),
-      payload: input.payload && MutationTransform.args.transform(input.payload),
-      acl: input.acl && {
-        execute: input.acl.execute && MutationTransform.acl.execute.transform(input.acl.execute),
-      },
-    };
-  }
+    const result: IMutationStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'args') {
+            result.args = MutationTransform.args.transform(input.args);
+          } else if (f === 'payload') {
+            result.payload = MutationTransform.payload.transform(input.payload);
+          } else if (f === 'acl') {
+            for (let facl in input.acl) {
+              if (input.acl.hasOwnProperty(facl)) {
+                result.acl = {} as any;
+                if (facl === 'execute') {
+                  result.acl.execute = MutationTransform.acl.execute.transform(input.acl.execute);
+                } else {
+                  result[facl] = input[f];
+                }
+              }
+            }
+            result.payload = MutationTransform.payload.transform(input.payload);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
+   }
 
   protected reverse(input: IMutationStore): IMutationInit {
-    return input && {
-      ...input,
-      args: input.args && MutationTransform.args.reverse(input.args),
-      payload: input.payload && MutationTransform.args.reverse(input.payload),
-      acl: input.acl && {
-        execute: input.acl.execute && MutationTransform.acl.execute.reverse(input.acl.execute),
-      },
-    };
+
+    const result: IMutationInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'args') {
+            result.args = MutationTransform.args.reverse(input.args);
+          } else if (f === 'payload') {
+            result.payload = MutationTransform.payload.reverse(input.payload);
+          } else if (f === 'acl') {
+            for (let facl in input.acl) {
+              if (input.acl.hasOwnProperty(facl)) {
+                result.acl = {} as any;
+                if (facl === 'execute') {
+                  result.acl.execute = MutationTransform.acl.execute.reverse(input.acl.execute);
+                } else {
+                  result[facl] = input[f];
+                }
+              }
+            }
+            result.payload = MutationTransform.payload.reverse(input.payload);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
 
   constructor(init: IMutationInit) {

@@ -131,32 +131,38 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     return this.store.get('relation', null);
   }
   protected transform(input: IFieldInit): IFieldStore {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      entity: input.entity,
-      type: input.type,
-      acl: input.acl,
-      args: FieldTransform.args.transform(input.args),
-    };
+    const result: IFieldStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'args') {
+            result.args = FieldTransform.args.transform(input.args);
+          } else if (f === 'relation') {
+            result.relation = FieldTransform.relation.transform(input.relation);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   protected reverse(input: IFieldStore): IFieldInit {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      entity: input.entity,
-      type: input.type,
-      acl: input.acl,
-      derived: input.derived,
-      identity: input.identity,
-      indexed: input.indexed,
-      order: input.order,
-      persistent: input.persistent,
-      relation: FieldTransform.relation.reverse(input.relation),
-      args: FieldTransform.args.reverse(input.args),
-    };
+    const result: IFieldInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'args') {
+            result.args = FieldTransform.args.reverse(input.args);
+          } else if (f === 'relation') {
+            result.relation = FieldTransform.relation.reverse(input.relation);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   constructor(init: IFieldInit) {
     super();

@@ -22,7 +22,6 @@ export function transformMap<S extends { name: string }>(): ArrayToMap<S> {
   };
 }
 
-
 export function transformSet<S>(): ArrayToSet<S> {
   return {
     transform: (input: S[]) => Set<S>(input),

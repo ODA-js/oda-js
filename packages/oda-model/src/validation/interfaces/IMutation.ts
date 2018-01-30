@@ -10,19 +10,19 @@ import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackage
 import { IPackage } from './IPackage';
 
 export interface IMutationACL {
-  readonly execute: string[];
+  execute: string[];
 }
 
 export interface IMutationACLStore {
-  readonly execute: Set<string>;
+  execute: Set<string>;
 }
 
 export interface IMutationMetaData {
-  readonly acl?: IMutationACL;
+  acl?: IMutationACL;
 }
 
 export interface IMutationMetaDataStore {
-  readonly acl?: IMutationACLStore;
+  acl?: IMutationACLStore;
 }
 
 export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPackagedItemStore {

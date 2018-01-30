@@ -56,36 +56,39 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     return this.store.get('hasMany', null);
   }
   protected transform(input: IHasManyInit): IHasManyStore {
-    return {
-      single: false,
-      stored: false,
-      embedded: false,
-      hasMany: HasManyTransform.hasMany.transform(input.hasMany),
-      fields: HasManyTransform.fields.transform(input.fields),
-      description: input.description,
-      fullName: input.fullName,
-      name: input.name,
-      normalName: input.normalName,
-      opposite: input.opposite,
-      shortName: input.shortName,
-      title: input.title,
-    };
+    const result: IHasManyStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.hasMany = HasManyTransform.hasMany.transform(input.hasMany);
+          } else if (f === 'fields') {
+            result.fields = HasManyTransform.fields.transform(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
+
   protected reverse(input: IHasManyStore): IHasManyInit {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      fullName: input.fullName,
-      normalName: input.normalName,
-      shortName: input.shortName,
-      opposite: input.opposite,
-      hasMany: input.hasMany,
-      fields: HasManyTransform.fields.reverse(input.fields),
-      single: false,
-      stored: false,
-      embedded: false,
-    };
+    const result: IHasManyInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.hasMany = HasManyTransform.hasMany.reverse(input.hasMany);
+          } else if (f === 'fields') {
+            result.fields = HasManyTransform.fields.reverse(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   constructor(init: IHasManyInit) {
     super();

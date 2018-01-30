@@ -54,17 +54,35 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
   }
 
   protected transform(input: IPackageInit): IPackageStore {
-    return {
-      ...input,
-      items: PackageTransform.items.transform(input.items),
-    };
+    const result: IPackageStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'items') {
+            result.items = PackageTransform.items.transform(input.items);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
 
   protected reverse(input: IPackageStore): IPackageInit {
-    return {
-      ...input,
-      items: PackageTransform.items.reverse(input.items),
-    };
+    const result: IPackageInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'items') {
+            result.items = PackageTransform.items.reverse(input.items);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
 
   constructor(init: IPackageInit) {

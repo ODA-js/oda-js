@@ -67,39 +67,45 @@ export class BelongsToMany
   }
 
   protected transform(input: IBelongsToManyInit): IBelongsToManyStore {
-    return {
-      single: false,
-      stored: false,
-      embedded: false,
-      belongsToMany: BelongsToManyTransform.belongsToMany.transform(input.belongsToMany),
-      using: BelongsToManyTransform.using.transform(input.using),
-      fields: BelongsToManyTransform.fields.transform(input.fields),
-      description: input.description,
-      fullName: input.fullName,
-      name: input.name,
-      normalName: input.normalName,
-      opposite: input.opposite,
-      shortName: input.shortName,
-      title: input.title,
-    };
+    const result: IBelongsToManyStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(input.belongsToMany);
+          } else if (f === 'using') {
+            result.using = BelongsToManyTransform.using.transform(input.using);
+          } else if (f === 'fields') {
+            result.fields = BelongsToManyTransform.fields.transform(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
+
   protected reverse(input: IBelongsToManyStore): IBelongsToManyInit {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      fullName: input.fullName,
-      normalName: input.normalName,
-      shortName: input.shortName,
-      opposite: input.opposite,
-      belongsToMany: BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany),
-      fields: BelongsToManyTransform.fields.reverse(input.fields),
-      single: false,
-      stored: false,
-      embedded: false,
-      using: input.using,
-    };
+    const result: IBelongsToManyInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
+          } else if (f === 'using') {
+            result.using = BelongsToManyTransform.using.reverse(input.using);
+          } else if (f === 'fields') {
+            result.fields = BelongsToManyTransform.fields.reverse(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
+
   constructor(init: IBelongsToManyInit) {
     super();
     this.store = new BelongsToManyStorage(this.transform(init));

@@ -1,29 +1,32 @@
-import clean from '../lib/json/clean';
-import { Map, Record} from 'immutable';
+import { Record, Set} from 'immutable';
+import { IMutation } from '../validation/interfaces/IMutation';
+import { Mutation } from '../validation/model/Mutation';
 
-export class Persist<Out, StorageModel> {
-  public $obj: Map<any, StorageModel>;
-  public toObject() {
-    return clean({
+const mutation: IMutation = new Mutation({
+  name: 'loginUser',
+  description: 'make user login',
+  args: [
+    {
+      name: 'userName',
+      required: true,
+    },
+    {
+      name: 'password',
+      required: true,
+    },
+  ],
+  payload: [
+    {
+      name: 'token',
+    },
+  ],
+});
+debugger;
+mutation.updateWith({ acl: { execute: ['admin'] } });
+mutation.updateWith({ acl: { execute: ['public'] } });
+mutation.updateWith({ acl: { execute: ['public', 'admin', 12, 1, 2, 2] } });
+mutation.updateWith({ acl: { execute: [ 'admin'] } });
+mutation.updateWith({ acl: { execute: ['public', 'admin', 1, 1, 2] } });
 
-    });
-  }
-  public toJSON() {
-    return clean({
-
-    });
-  }
-}
-
-interface IEntity {
-  name: string;
-  title?: string;
-  description?: string;
-}
-
-const entity =  Record<IEntity>({name: ''});
-const person = new entity();
-const v = person.description;
-const p = person.set('name', 'new Name');
-console.log(person, p);
-
+// tslint:disable-next-line:no-console
+console.log(mutation.acl);

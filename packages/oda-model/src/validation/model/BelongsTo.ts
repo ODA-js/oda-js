@@ -1,4 +1,4 @@
-import {Relation} from './Relation';
+import { Relation } from './Relation';
 import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
@@ -14,6 +14,7 @@ import {
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
+import { inherits } from 'util';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToStore = {
@@ -57,37 +58,41 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
   }
 
   protected transform(input: IBelongsToInit): IBelongsToStore {
-    return input && {
-      belongsTo: BelongsToTransform.belongsTo.transform(input.belongsTo),
-      single: true,
-      stored: true,
-      embedded: true,
-      fields: input.fields && BelongsToTransform.fields.transform(input.fields),
-      description: input.description,
-      fullName: input.fullName,
-      name: input.name,
-      normalName: input.normalName,
-      opposite: input.opposite,
-      shortName: input.shortName,
-      title: input.title,
-    };
+    const result: IBelongsToStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.belongsTo = BelongsToTransform.belongsTo.transform(input.belongsTo);
+          } else if (f === 'fields') {
+            result.fields = BelongsToTransform.fields.transform(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
+
   protected reverse(input: IBelongsToStore): IBelongsToInit {
-    return input && {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      fullName: input.fullName,
-      normalName: input.normalName,
-      shortName: input.shortName,
-      opposite: input.opposite,
-      belongsTo: input.belongsTo,
-      fields: input.fields && BelongsToTransform.fields.reverse(input.fields),
-      single: true,
-      stored: true,
-      embedded: true,
-    };
+    const result: IBelongsToInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.belongsTo = BelongsToTransform.belongsTo.reverse(input.belongsTo);
+          } else if (f === 'fields') {
+            result.fields = BelongsToTransform.fields.reverse(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
+
   constructor(init: IBelongsToInit) {
     super();
     this.store = new BelongsToStorage(this.transform(init));

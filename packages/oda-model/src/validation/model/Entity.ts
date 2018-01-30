@@ -77,33 +77,34 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
   }
 
   protected transform(input: IEntityInit): IEntityStore {
-    return {
-      name: input.name,
-      title: input.name,
-      description: input.name,
-      plural: input.plural,
-      singular: input.singular,
-      acl: input.acl,
-      storage: input.storage,
-      fields: EntityTransform.fields.transform(input.fields),
-      package: input.package,
-      indexed: Set<string>(),
-      relations: Set<string>(),
-      required: Set<string>(),
-    };
+    const result: IEntityStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'fields') {
+            result.fields = EntityTransform.fields.transform(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   protected reverse(input: IEntityStore): IEntityInit {
-    return {
-      name: input.name,
-      title: input.name,
-      description: input.name,
-      plural: input.plural,
-      singular: input.singular,
-      acl: input.acl,
-      storage: input.storage,
-      fields: EntityTransform.fields.reverse(input.fields),
-      package: input.package,
-    };
+    const result: IEntityInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'fields') {
+            result.fields = EntityTransform.fields.reverse(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   constructor(init: IEntityInit) {
     super();

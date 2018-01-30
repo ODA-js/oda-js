@@ -49,16 +49,34 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
   private _defaultPackage: IPackage;
 
   protected transform(input: IModelInit): IModelStore {
-    return {
-      ...input,
-      packages: ModelTransform.packages.transform(input.packages),
-    };
+    const result: IModelStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'packages') {
+            result.packages = ModelTransform.packages.transform(input.packages);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   protected reverse(input: IModelStore): IModelInit {
-    return {
-      ...input,
-      packages: ModelTransform.packages.reverse(input.packages),
-    };
+    const result: IModelInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'packages') {
+            result.packages = ModelTransform.packages.reverse(input.packages);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   constructor(init: IModelInit) {
     super();

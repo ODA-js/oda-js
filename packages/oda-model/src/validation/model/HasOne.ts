@@ -56,36 +56,38 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     return this.store.get('hasOne', null);
   }
   protected transform(input: IHasOneInit): IHasOneStore {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      fullName: input.fullName,
-      normalName: input.normalName,
-      shortName: input.shortName,
-      opposite: input.opposite,
-      single: true,
-      stored: false,
-      embedded: false,
-      hasOne: HasOneTransform.hasOne.transform(input.hasOne),
-      fields: HasOneTransform.fields.transform(input.fields),
-    };
+    const result: IHasOneStore = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.hasOne = HasOneTransform.hasOne.transform(input.hasOne);
+          } else if (f === 'fields') {
+            result.fields = HasOneTransform.fields.transform(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   protected reverse(input: IHasOneStore): IHasOneInit {
-    return {
-      name: input.name,
-      title: input.title,
-      description: input.description,
-      fullName: input.fullName,
-      normalName: input.normalName,
-      shortName: input.shortName,
-      opposite: input.opposite,
-      hasOne: input.hasOne,
-      fields: HasOneTransform.fields.reverse(input.fields),
-      single: true,
-      stored: false,
-      embedded: false,
-    };
+    const result: IHasOneInit = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          if (f === 'belongsTo') {
+            result.hasOne = HasOneTransform.hasOne.reverse(input.hasOne);
+          } else if (f === 'fields') {
+            result.fields = HasOneTransform.fields.reverse(input.fields);
+          } else {
+            result[f] = input[f];
+          }
+        }
+      }
+    }
+    return result;
   }
   constructor(init: IHasOneInit) {
     super();

@@ -33,18 +33,27 @@ export class EntityRef extends Persistent<IEntityRef, IEntityRef>
   }
 
   protected transform(input: IEntityRef): IEntityRef {
-    return {
-      backField: this.backField,
-      entity: this.entity,
-      field: this.field,
-    };
+    const result: IEntityRef = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          result[f] = input[f];
+        }
+      }
+    }
+    return result;
   }
+
   protected reverse(input: IEntityRef): IEntityRef {
-    return {
-      backField: this.backField,
-      entity: this.entity,
-      field: this.field,
-    };
+    const result: IEntityRef = {} as any;
+    if (input) {
+      for (let f in input) {
+        if (input.hasOwnProperty(f)) {
+          result[f] = input[f];
+        }
+      }
+    }
+    return result;
   }
 
   constructor(init: string | IEntityRef) {
