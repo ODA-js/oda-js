@@ -21,6 +21,3 @@ export interface IBelongsTo extends IRelation {
   readonly belongsTo: IEntityRef;
 }
 
-export function IsBelongsToProps(item: IRelationInit): item is IBelongsToInit {
-  return !!(<IBelongsToInit>item).belongsTo;
-}

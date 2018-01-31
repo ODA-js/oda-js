@@ -8,7 +8,6 @@ import { IPackage } from './IPackage';
 
 export interface IEnumInit extends INamedItem, IPackagedItemInit {
   values: IEnumItem[];
-  package?: IPackage;
 }
 
 export interface IEnumStore extends INamedItem, IPackagedItemStore {
@@ -19,7 +18,6 @@ export interface IEnumItem extends IModelType {
   enum?: IEnum;
   value?: string;
   type?: string;
-  package?: IPackage;
 }
 
 export interface IEnumTransform {

@@ -20,7 +20,3 @@ export interface IHasOne extends IRelation {
   readonly verb: 'HasOne';
   readonly hasOne: IEntityRef;
 }
-
-export function IsHasOneProps(item: IRelationInit): item is IHasOneInit {
-  return !!(<IHasOneInit>item).hasOne;
-}

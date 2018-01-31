@@ -21,6 +21,3 @@ export interface IHasMany extends IRelation {
   readonly hasMany: IEntityRef;
 }
 
-export function IsHasManyProps(item: IRelationInit): item is IHasManyInit {
-  return !!(<IHasManyInit>item).hasMany;
-}
