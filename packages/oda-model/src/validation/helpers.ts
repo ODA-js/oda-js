@@ -1,14 +1,31 @@
-import { IBelongsTo } from './interfaces/IBelongsTo';
-import { IBelongsToMany } from './interfaces/IBelongsToMany';
+import { IBelongsTo, IBelongsToInit } from './interfaces/IBelongsTo';
+import { IBelongsToMany, IBelongsToManyInit } from './interfaces/IBelongsToMany';
 import { IEntity } from './interfaces/IEntity';
 import { IField } from './interfaces/IField';
-import { IHasMany } from './interfaces/IHasMany';
-import { IHasOne } from './interfaces/IHasOne';
+import { IHasMany, IHasManyInit } from './interfaces/IHasMany';
+import { IHasOne, IHasOneInit } from './interfaces/IHasOne';
 import { IModel } from './interfaces/IModel';
 import { IMutation } from './interfaces/IMutation';
 import { IPackage } from './interfaces/IPackage';
-import { IRelation } from './interfaces/IRelation';
+import { IRelation, IRelationInit } from './interfaces/IRelation';
 import { IModelType } from './interfaces/IModelType';
+import { IEnum } from './interfaces/IEnum';
+
+export function IsBelongsToProps(item: IRelationInit): item is IBelongsToInit {
+  return !!(<IBelongsToInit>item).belongsTo;
+}
+
+export function IsBelongsToManyProps(item: IRelationInit): item is IBelongsToManyInit {
+  return !!(<IBelongsToManyInit>item).belongsToMany;
+}
+
+export function IsHasManyProps(item: IRelationInit): item is IHasManyInit {
+  return !!(<IHasManyInit>item).hasMany;
+}
+
+export function IsHasOneProps(item: IRelationInit): item is IHasOneInit {
+  return !!(<IHasOneInit>item).hasOne;
+}
 
 export function isModel(item: IModelType): item is IModel {
   return item.modelType === 'model';
@@ -28,6 +45,10 @@ export function isMutation(item: IModelType): item is IMutation {
 
 export function isField(item: IModelType): item is IField {
   return item.modelType === 'field';
+}
+
+export function isEnum(item: IModelType): item is IEnum {
+  return item.modelType === 'enum';
 }
 
 export function isRelation(item: IModelType): item is IRelation {
