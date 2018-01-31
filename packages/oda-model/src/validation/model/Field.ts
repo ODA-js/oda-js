@@ -1,21 +1,30 @@
-import { Record } from 'immutable';
 import { Map } from 'immutable';
+import { Record } from 'immutable';
 
-import { IsBelongsTo, IsBelongsToMany, IsHasMany, IsHasOne } from '../helpers';
-import { IBelongsToManyInit, IsBelongsToManyProps } from '../interfaces/IBelongsToMany';
-import { IBelongsToInit, IsBelongsToProps } from '../interfaces/IBelongsTo';
+import {
+  IsBelongsTo,
+  IsBelongsToMany,
+  IsBelongsToManyProps,
+  IsBelongsToProps,
+  IsHasMany,
+  IsHasManyProps,
+  IsHasOne,
+  IsHasOneProps,
+} from '../helpers';
+import { IBelongsToInit } from '../interfaces/IBelongsTo';
+import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
-import { IHasManyInit, IsHasManyProps } from '../interfaces/IHasMany';
-import { IHasOneInit, IsHasOneProps } from '../interfaces/IHasOne';
+import { IHasManyInit } from '../interfaces/IHasMany';
+import { IHasOneInit } from '../interfaces/IHasOne';
+import { IRelation, IRelationInit } from '../interfaces/IRelation';
 import { BelongsTo, BelongsToTransform } from './BelongsTo';
 import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
 import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
-import { IRelationInit, IRelationStore, IRelation } from '../interfaces/IRelation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {

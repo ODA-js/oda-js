@@ -88,7 +88,6 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
                 }
               }
             }
-            result.payload = MutationTransform.payload.transform(input.payload);
           } else {
             result[f] = input[f];
           }
