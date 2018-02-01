@@ -56,7 +56,7 @@ export class EntityRef extends Persistent<IEntityRef, IEntityRef>
     return result;
   }
 
-  constructor(init: string | IEntityRef) {
+  constructor(init: string | Partial<IEntityRef> = {}) {
     super();
     if (typeof init === 'string') {
       let res = init.match(REF_PATTERN);

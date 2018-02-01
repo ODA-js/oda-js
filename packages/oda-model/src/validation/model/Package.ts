@@ -85,7 +85,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
     return result;
   }
 
-  constructor(init: Partial<IPackageInit>) {
+  constructor(init: Partial<IPackageInit> = {}) {
     super();
     this.store = new PackageStorage(this.transform(init));
     this.init = new (Record<Partial<IPackageInit>>(init))();

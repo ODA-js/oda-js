@@ -69,7 +69,8 @@ export class Enum extends Persistent<IEnumInit, IEnumStore> implements IEnum {
     }
     return result;
   }
-  constructor(init: Partial<IEnumInit>) {
+
+  constructor(init: Partial<IEnumInit> = {}) {
     super();
     this.store = new EnumStorage(this.transform(init));
     this.init = new (Record<Partial<IEnumInit>>(init))();

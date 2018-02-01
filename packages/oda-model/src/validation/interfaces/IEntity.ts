@@ -1,5 +1,5 @@
 import { IModelType, INamedItem } from './IModelType';
-import { IField } from './IField';
+import { IField, IFieldInit } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
 import { ArrayToMap } from '../model/utils';
@@ -46,9 +46,11 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
 }
 
 export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
-  singular: string;
-  plural: string;
-  fields: IField[];
+  singular?: string;
+  plural?: string;
+  fields: {
+    [name: string]: Partial<IFieldInit>,
+  } | Partial<IFieldInit>[];
   package?: IPackage;
 }
 

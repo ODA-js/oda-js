@@ -89,7 +89,7 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     }
     return result;
   }
-  constructor(init: Partial<IHasOneInit>) {
+  constructor(init: Partial<IHasOneInit> = {}) {
     super();
     this.store = new HasOneStorage(this.transform(init));
     this.init = new (Record<Partial<IHasOneInit>>(init))();

@@ -90,7 +90,7 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     }
     return result;
   }
-  constructor(init: Partial<IHasManyInit>) {
+  constructor(init: Partial<IHasManyInit> = {}) {
     super();
     this.store = new HasManyStorage(this.transform(init));
     this.init = new (Record<Partial<IHasManyInit>>(init))();

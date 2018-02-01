@@ -163,8 +163,8 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     }
     return result;
   }
-  protected reverse(input: IFieldStore): IFieldInit {
-    const result: IFieldInit = {} as any;
+  protected reverse(input: IFieldStore): Partial<IFieldInit> {
+    const result: Partial<IFieldInit> = {};
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
@@ -180,7 +180,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     }
     return result;
   }
-  constructor(init: Partial<IFieldInit>) {
+  constructor(init: Partial<IFieldInit>  = {}) {
     super();
     this.store = new FieldStorage(this.transform(init));
     this.init = new (Record<Partial<IFieldInit>>(init))();

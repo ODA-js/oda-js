@@ -128,7 +128,7 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return result;
   }
 
-  constructor(init: Partial<IMutationInit>) {
+  constructor(init: Partial<IMutationInit> = {}) {
     super();
     this.store = new MutationStorage(this.transform(init));
     this.init = new (Record<Partial<IMutationInit>>(init))();

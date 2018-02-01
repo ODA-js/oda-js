@@ -57,8 +57,8 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return this.store.get('belongsTo', null);
   }
 
-  protected transform(input: Partial<IBelongsToInit>): IBelongsToStore {
-    const result: IBelongsToStore = {} as any;
+  protected transform(input: Partial<IBelongsToInit>): Partial<IBelongsToStore> {
+    const result: Partial<IBelongsToStore> = {};
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
@@ -75,8 +75,8 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return result;
   }
 
-  protected reverse(input: IBelongsToStore): IBelongsToInit {
-    const result: IBelongsToInit = {} as any;
+  protected reverse(input: Partial<IBelongsToStore>): Partial<IBelongsToInit> {
+    const result: Partial<IBelongsToInit> = {};
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
@@ -93,7 +93,7 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return result;
   }
 
-  constructor(init: Partial<IBelongsToInit>) {
+  constructor(init: Partial<IBelongsToInit> = {}) {
     super();
     this.store = new BelongsToStorage(this.transform(init));
     this.init = new (Record<Partial<IBelongsToInit>>(init))();

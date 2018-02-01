@@ -76,8 +76,8 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
     return this.store.get('indexed', null);
   }
 
-  protected transform(input: Partial<IEntityInit>): IEntityStore {
-    const result: IEntityStore = {} as any;
+  protected transform(input: Partial<IEntityInit>): Partial<IEntityStore> {
+    const result: Partial<IEntityStore> = {};
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
@@ -106,7 +106,7 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
     }
     return result;
   }
-  constructor(init: Partial<IEntityInit>) {
+  constructor(init: Partial<IEntityInit> = {}) {
     super();
     this.store = new EntityStorage(this.transform(init));
     this.init = new (Record<Partial<IEntityInit>>(init))();

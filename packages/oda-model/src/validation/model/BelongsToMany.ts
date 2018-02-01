@@ -57,7 +57,7 @@ export class BelongsToMany
     return this.store.get('using', null);
   }
 
-  protected transform(input: Partial<IBelongsToManyInit>): IBelongsToManyStore {
+  protected transform(input: Partial<IBelongsToManyInit>): Partial<IBelongsToManyStore> {
     const result: IBelongsToManyStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -77,7 +77,7 @@ export class BelongsToMany
     return result;
   }
 
-  protected reverse(input: IBelongsToManyStore): IBelongsToManyInit {
+  protected reverse(input: Partial<IBelongsToManyStore>): Partial<IBelongsToManyInit> {
     const result: IBelongsToManyInit = {} as any;
     if (input) {
       for (let f in input) {
@@ -97,7 +97,7 @@ export class BelongsToMany
     return result;
   }
 
-  constructor(init: Partial<IBelongsToManyInit>) {
+  constructor(init: Partial<IBelongsToManyInit> = {}) {
     super();
     this.store = new BelongsToManyStorage(this.transform(init));
     this.init = new (Record<Partial<IBelongsToManyInit>>(init))();

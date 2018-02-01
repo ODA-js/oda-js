@@ -5,6 +5,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { ArrayToMap } from '../model/utils';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 import { IEntity } from './IEntity';
+import { RelationInit } from './types';
 
 export interface IFieldACL {
   read: string[];
@@ -35,7 +36,7 @@ export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaDa
   type?: string;
   args?: IFieldArgs[];
   order?: number;
-  relation?: Partial<IRelationInit>;
+  relation?: Partial<RelationInit>;
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {

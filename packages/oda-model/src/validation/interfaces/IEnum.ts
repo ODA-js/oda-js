@@ -5,13 +5,22 @@ import { INamedItem, IModelType } from './IModelType';
 import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
 import { IPackage } from './IPackage';
 
+export type EnumInitItem = IEnumItemInit | string;
 
-export interface IEnumInit extends INamedItem, IPackagedItemInit {
-  values: IEnumItem[];
+export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
+  values: EnumInitItem[] | {
+    [name: string]: EnumInitItem;
+  };
 }
 
 export interface IEnumStore extends INamedItem, IPackagedItemStore {
   values: Map<string, IEnumItem>;
+}
+
+export interface IEnumItemInit extends Partial<INamedItem> {
+  enum?: IEnum;
+  value?: string;
+  type?: string;
 }
 
 export interface IEnumItem extends IModelType {

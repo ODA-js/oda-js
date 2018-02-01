@@ -78,7 +78,7 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     }
     return result;
   }
-  constructor(init: Partial<IModelInit>) {
+  constructor(init: Partial<IModelInit> = {}) {
     super();
     this.store = new ModelStorage(this.transform(init));
     this.init = new (Record<Partial<IModelInit>>(init))();

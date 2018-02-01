@@ -33,3 +33,5 @@ export type ValidationContext =
   IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
 
 export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation' | 'enum';
+
+export type RelationInit = IHasManyInit | IHasOneInit | IBelongsToInit | IBelongsToManyInit;
