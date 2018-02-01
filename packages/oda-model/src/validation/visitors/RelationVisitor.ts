@@ -3,7 +3,6 @@ import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelatio
 import { IFieldContext } from '../interfaces/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
-import { RelationLevel } from '../errors';
 
 export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
   public validator: Validator;
@@ -42,7 +41,7 @@ export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
           }
           done = true;
         } catch (err) {
-          if (!(err instanceof RelationLevel)) {
+          if (err.message !== 'relation') {
             throw err;
           }
         }

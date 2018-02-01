@@ -3,7 +3,6 @@ import { IEntity, IEntityInit, IEntityStore} from '../interfaces/IEntity';
 import { IPackageContext } from '../interfaces/IPackageContext';
 import { Validator } from '../validators/Validator';
 import { EntityContext } from '../contexts/EntityContext';
-import { EntityLevel } from '../errors';
 
 export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
   public validator: Validator;
@@ -22,7 +21,7 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
           });
           done = true;
         } catch (err) {
-          if (!(err instanceof EntityLevel)) {
+          if (err.message !== 'entity') {
             throw err;
           }
         }

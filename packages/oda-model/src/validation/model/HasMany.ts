@@ -16,7 +16,7 @@ import { Relation } from './Relation';
 import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
-export const DefaultHasMany: IHasManyStore = {
+export const DefaultHasMany: Partial<IHasManyStore> = {
   name: null,
   title: null,
   description: null,
@@ -55,7 +55,7 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
   public get hasMany(): IEntityRef {
     return this.store.get('hasMany', null);
   }
-  protected transform(input: IHasManyInit): IHasManyStore {
+  protected transform(input: Partial<IHasManyInit>): IHasManyStore {
     const result: IHasManyStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -90,9 +90,9 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     }
     return result;
   }
-  constructor(init: IHasManyInit) {
+  constructor(init: Partial<IHasManyInit>) {
     super();
     this.store = new HasManyStorage(this.transform(init));
-    this.init = new (Record<IHasManyInit>(init))();
+    this.init = new (Record<Partial<IHasManyInit>>(init))();
   }
 }

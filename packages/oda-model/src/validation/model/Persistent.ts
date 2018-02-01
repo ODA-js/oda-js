@@ -4,8 +4,8 @@ import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
 
 export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable {
-  protected store: Record<TStoredProps>;
-  protected init: TInputProps;
+  protected store: Record<Partial<TStoredProps>>;
+  protected init: Partial<TInputProps>;
   public validate(validator: IValidator): IValidationResult[] {
     return validator.check(this);
   }

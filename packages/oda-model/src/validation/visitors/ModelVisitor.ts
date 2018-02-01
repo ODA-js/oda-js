@@ -3,7 +3,6 @@ import { Validator } from '../validators/Validator';
 import { IModel } from '../interfaces/IModel';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { ModelContext } from '../contexts/ModelContext';
-import { RestartLevelError } from '../errors';
 
 export class ModelVisitor {
   public validator: Validator;
@@ -21,7 +20,7 @@ export class ModelVisitor {
           });
           done = true;
         } catch (err) {
-          if (!(err instanceof RestartLevelError)) {
+          if (err.message !== 'model') {
             throw err;
           }
         }

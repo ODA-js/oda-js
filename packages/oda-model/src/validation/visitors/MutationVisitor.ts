@@ -3,7 +3,6 @@ import { IMutation, IMutationStore, IMutationInit } from '../interfaces/IMutatio
 import { IEntityContext } from '../interfaces/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { MutationContext } from '../contexts/MutationContext';
-import { MutationLevel } from '../errors';
 
 export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
   public validator: Validator;
@@ -19,7 +18,7 @@ export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
           rules.forEach(rule => result.push(...rule.validate(context)));
           done = true;
         } catch (err) {
-          if (!(err instanceof MutationLevel)) {
+          if (err.message !== 'mutation' ) {
             throw err;
           }
         }

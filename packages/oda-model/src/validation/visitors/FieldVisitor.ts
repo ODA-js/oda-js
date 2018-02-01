@@ -3,7 +3,6 @@ import { IField, IFieldStore, IFieldInit } from '../interfaces/IField';
 import { IEntityContext } from '../interfaces/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { FieldContext } from '../contexts/FieldContext';
-import { FieldLevel } from '../errors';
 
 export class FieldVisitor implements IVisitor<IField, IEntityContext> {
   public validator: Validator;
@@ -22,7 +21,7 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
           }
           done = true;
         } catch (err) {
-          if (!(err instanceof FieldLevel)) {
+          if (err.message !== 'field') {
             throw err;
           }
         }

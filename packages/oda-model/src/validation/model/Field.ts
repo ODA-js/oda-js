@@ -25,6 +25,7 @@ import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
+import { IEntity } from '../interfaces/IEntity';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -100,6 +101,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get modelType(): 'field' {
     return 'field';
   }
+  public get entity(): IEntity {
+    return this.store.get('entity', null);
+  }
   public get name(): string {
     return this.store.get('name', null);
   }
@@ -108,6 +112,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   }
   public get description(): string {
     return this.store.get('description', null);
+  }
+  public get type(): string {
+    return this.store.get('type', null);
   }
   public get acl(): Partial<IFieldACL> {
     return this.store.get('acl', null);

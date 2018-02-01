@@ -4,7 +4,6 @@ import { IModelContext } from '../interfaces/IModelContext';
 import { Validator } from '../validators/Validator';
 import { ModelContext } from '../contexts/ModelContext';
 import { PackageContext } from '../contexts/PackageContext';
-import { PackageLevel } from '../errors';
 
 export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
   public validator: Validator;
@@ -26,7 +25,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
           });
           done = true;
         } catch (err) {
-          if (!(err instanceof PackageLevel)) {
+          if (err.message !== 'package') {
             throw err;
           }
         }

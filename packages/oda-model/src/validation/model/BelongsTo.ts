@@ -17,7 +17,7 @@ import { EntityRef } from './EntityRef';
 import { inherits } from 'util';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsTo: IBelongsToStore = {
+export const DefaultBelongsTo: Partial<IBelongsToStore> = {
   name: null,
   title: null,
   description: null,
