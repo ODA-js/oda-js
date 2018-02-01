@@ -16,7 +16,7 @@ import { Relation } from './Relation';
 import { EntityRef } from './EntityRef';
 
 // tslint:disable-next-line:variable-name
-export const DefaultHasOne: IHasOneStore = {
+export const DefaultHasOne: Partial<IHasOneStore> = {
   name: null,
   title: null,
   description: null,
@@ -55,7 +55,7 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
   public get hasOne(): IEntityRef {
     return this.store.get('hasOne', null);
   }
-  protected transform(input: IHasOneInit): IHasOneStore {
+  protected transform(input: Partial<IHasOneInit>): IHasOneStore {
     const result: IHasOneStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -89,9 +89,9 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     }
     return result;
   }
-  constructor(init: IHasOneInit) {
+  constructor(init: Partial<IHasOneInit>) {
     super();
     this.store = new HasOneStorage(this.transform(init));
-    this.init = new (Record<IHasOneInit>(init))();
+    this.init = new (Record<Partial<IHasOneInit>>(init))();
   }
 }

@@ -35,7 +35,7 @@ export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaDa
   type?: string;
   args?: IFieldArgs[];
   order?: number;
-  relation?: IRelationInit;
+  relation?: Partial<IRelationInit>;
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
@@ -50,8 +50,8 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
 export interface IFieldTransform {
   args: ArrayToMap<IFieldArgs>;
   relation: {
-    transform: (inp: IRelationInit) => IRelation,
-    reverse: (inp: IRelation) => IRelationInit,
+    transform: (inp: Partial<IRelationInit>) => IRelation,
+    reverse: (inp: IRelation) => Partial<IRelationInit>,
   };
 }
 

@@ -7,7 +7,7 @@ import { Persistent } from './Persistent';
 import { IFieldStore } from '../interfaces/IField';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEnum: IEnumStore = {
+export const DefaultEnum: Partial<IEnumStore> = {
   name: null,
   title: null,
   description: null,
@@ -39,7 +39,7 @@ export class Enum extends Persistent<IEnumInit, IEnumStore> implements IEnum {
   public get values(): Map<string, IEnumItem> {
     return this.store.get('values', null);
   }
-  protected transform(input: IEnumInit): IEnumStore {
+  protected transform(input: Partial<IEnumInit>): IEnumStore {
     const result: IEnumStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -69,9 +69,9 @@ export class Enum extends Persistent<IEnumInit, IEnumStore> implements IEnum {
     }
     return result;
   }
-  constructor(init: IEnumInit) {
+  constructor(init: Partial<IEnumInit>) {
     super();
     this.store = new EnumStorage(this.transform(init));
-    this.init = new (Record<IEnumInit>(init))();
+    this.init = new (Record<Partial<IEnumInit>>(init))();
   }
 }

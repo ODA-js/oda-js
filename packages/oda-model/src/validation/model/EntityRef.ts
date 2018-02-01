@@ -7,7 +7,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntityRef: IEntityRef = {
+export const DefaultEntityRef: Partial<IEntityRef> = {
   backField: '',
   entity: '',
   field: '',
@@ -32,7 +32,7 @@ export class EntityRef extends Persistent<IEntityRef, IEntityRef>
     return `${this.backField ? (this.backField + '@') : ''}${this.entity}#${this.field || DEFAULT_ID_FIELDNAME}`;
   }
 
-  protected transform(input: IEntityRef): IEntityRef {
+  protected transform(input: Partial<IEntityRef>): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
       for (let f in input) {

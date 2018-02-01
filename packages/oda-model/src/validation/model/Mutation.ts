@@ -68,7 +68,7 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return this.store.get('payload', null);
   }
 
-  protected transform(input: IMutationInit): IMutationStore {
+  protected transform(input: Partial<IMutationInit>): IMutationStore {
     const result: IMutationStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -128,9 +128,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return result;
   }
 
-  constructor(init: IMutationInit) {
+  constructor(init: Partial<IMutationInit>) {
     super();
     this.store = new MutationStorage(this.transform(init));
-    this.init = new (Record<IMutationInit>(init))();
+    this.init = new (Record<Partial<IMutationInit>>(init))();
   }
 }

@@ -28,7 +28,7 @@ import { transformMap } from './utils';
 import { IEntity } from '../interfaces/IEntity';
 
 // tslint:disable-next-line:variable-name
-export const DefaultField: IFieldStore = {
+export const DefaultField: Partial<IFieldStore> = {
   name: null,
   title: null,
   description: null,
@@ -47,10 +47,10 @@ export const DefaultField: IFieldStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const FieldTransform: IFieldTransform = {
+export const FieldTransform: Partial<IFieldTransform> = {
   args: transformMap<IFieldArgs>(),
   relation: {
-    transform: (inp: IRelationInit): IRelation => {
+    transform: (inp: Partial<IRelationInit>): IRelation => {
       if (IsBelongsToProps(inp)) {
         return new BelongsTo(inp);
       }
@@ -64,7 +64,7 @@ export const FieldTransform: IFieldTransform = {
         return new HasMany(inp);
       }
     },
-    reverse: (inp: IRelation): IRelationInit => {
+    reverse: (inp: IRelation): Partial<IRelationInit> => {
       if (IsBelongsTo(inp)) {
         return {
           ...inp,
@@ -146,7 +146,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get relation(): IRelation {
     return this.store.get('relation', null);
   }
-  protected transform(input: IFieldInit): IFieldStore {
+  protected transform(input: Partial<IFieldInit>): IFieldStore {
     const result: IFieldStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -180,9 +180,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     }
     return result;
   }
-  constructor(init: IFieldInit) {
+  constructor(init: Partial<IFieldInit>) {
     super();
     this.store = new FieldStorage(this.transform(init));
-    this.init = new (Record<IFieldInit>(init))();
+    this.init = new (Record<Partial<IFieldInit>>(init))();
   }
 }

@@ -17,19 +17,19 @@ import { IFieldContext } from './interfaces/IFieldContext';
 import { IRelationContext } from './interfaces/IRelationContext';
 import { IEnumContext } from './interfaces/EnumContext';
 
-export function IsBelongsToProps(item: IRelationInit): item is IBelongsToInit {
+export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
 }
 
-export function IsBelongsToManyProps(item: IRelationInit): item is IBelongsToManyInit {
+export function IsBelongsToManyProps(item: Partial<IRelationInit>): item is IBelongsToManyInit {
   return !!(<IBelongsToManyInit>item).belongsToMany;
 }
 
-export function IsHasManyProps(item: IRelationInit): item is IHasManyInit {
+export function IsHasManyProps(item: Partial<IRelationInit>): item is IHasManyInit {
   return !!(<IHasManyInit>item).hasMany;
 }
 
-export function IsHasOneProps(item: IRelationInit): item is IHasOneInit {
+export function IsHasOneProps(item: Partial<IRelationInit>): item is IHasOneInit {
   return !!(<IHasOneInit>item).hasOne;
 }
 

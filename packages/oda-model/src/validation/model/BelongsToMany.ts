@@ -1,23 +1,14 @@
-import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
 
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
-import {
-  IBelongsToManyStore,
-  IBelongsToManyInit,
-  IBelongsToMany,
-  IRelationTransform,
-} from '../interfaces/IBelongsToMany';
+import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTransform } from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
-import { RelationBase } from '../../model/index';
-import { Relation } from './Relation';
 import { EntityRef } from './EntityRef';
+import { Relation } from './Relation';
+import { transformMap } from './utils';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsToMany: IBelongsToManyStore = {
+export const DefaultBelongsToMany: Partial<IBelongsToManyStore> = {
   name: null,
   title: null,
   description: null,
@@ -66,7 +57,7 @@ export class BelongsToMany
     return this.store.get('using', null);
   }
 
-  protected transform(input: IBelongsToManyInit): IBelongsToManyStore {
+  protected transform(input: Partial<IBelongsToManyInit>): IBelongsToManyStore {
     const result: IBelongsToManyStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -106,9 +97,9 @@ export class BelongsToMany
     return result;
   }
 
-  constructor(init: IBelongsToManyInit) {
+  constructor(init: Partial<IBelongsToManyInit>) {
     super();
     this.store = new BelongsToManyStorage(this.transform(init));
-    this.init = new (Record<IBelongsToManyInit>(init))();
+    this.init = new (Record<Partial<IBelongsToManyInit>>(init))();
   }
 }

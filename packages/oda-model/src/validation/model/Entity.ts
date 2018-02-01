@@ -15,7 +15,7 @@ import { IPackage } from '../interfaces/IPackage';
 
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntity: IEntityStore = {
+export const DefaultEntity: Partial<IEntityStore> = {
   package: null,
   name: null,
   title: null,
@@ -76,7 +76,7 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
     return this.store.get('indexed', null);
   }
 
-  protected transform(input: IEntityInit): IEntityStore {
+  protected transform(input: Partial<IEntityInit>): IEntityStore {
     const result: IEntityStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -106,9 +106,9 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
     }
     return result;
   }
-  constructor(init: IEntityInit) {
+  constructor(init: Partial<IEntityInit>) {
     super();
     this.store = new EntityStorage(this.transform(init));
-    this.init = new (Record<IEntityInit>(init))();
+    this.init = new (Record<Partial<IEntityInit>>(init))();
   }
 }

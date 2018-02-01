@@ -48,7 +48,7 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
 
   private _defaultPackage: IPackage;
 
-  protected transform(input: IModelInit): IModelStore {
+  protected transform(input: Partial<IModelInit>): IModelStore {
     const result: IModelStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -78,9 +78,9 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     }
     return result;
   }
-  constructor(init: IModelInit) {
+  constructor(init: Partial<IModelInit>) {
     super();
     this.store = new ModelStorage(this.transform(init));
-    this.init = new (Record<IModelInit>(init))();
+    this.init = new (Record<Partial<IModelInit>>(init))();
   }
 }

@@ -9,7 +9,7 @@ import { transformMap } from './utils';
 import {IPackagedItem } from '../interfaces/IPackagedItem';
 
 // tslint:disable-next-line:variable-name
-export const DefaultPackage: IPackageStore = {
+export const DefaultPackage: Partial<IPackageStore> = {
   name: null,
   title: null,
   description: null,
@@ -53,7 +53,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
     return this.store.get('model', null);
   }
 
-  protected transform(input: IPackageInit): IPackageStore {
+  protected transform(input: Partial<IPackageInit>): IPackageStore {
     const result: IPackageStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -85,9 +85,9 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
     return result;
   }
 
-  constructor(init: IPackageInit) {
+  constructor(init: Partial<IPackageInit>) {
     super();
     this.store = new PackageStorage(this.transform(init));
-    this.init = new (Record<IPackageInit>(init))();
+    this.init = new (Record<Partial<IPackageInit>>(init))();
   }
 }

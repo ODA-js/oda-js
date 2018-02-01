@@ -14,7 +14,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
 import { RelationType } from '../interfaces/types';
 
-export abstract class Relation<P extends IRelationInit, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
+export abstract class Relation<P extends Partial<IRelationInit>, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
   public get modelType(): 'relation' {
     return 'relation';
   }
