@@ -33,6 +33,11 @@ import { Field } from './model/Field';
 import { HasMany } from './model/HasMany';
 import { Model } from './model/Model';
 import { Package } from './model/Package';
+import { IRelationContext } from './interfaces/IRelationContext';
+import { IFieldContext } from './interfaces/IFieldContext';
+import { IModelContext } from './interfaces/IModelContext';
+import { IEntityContext } from './interfaces/IEntityContext';
+import { IPackageContext } from './interfaces/IPackageContext';
 
 describe('RelationProps helpers', () => {
   it('belongsToProps is detected', () => {
@@ -89,7 +94,7 @@ describe('Relation helpers', () => {
 });
 
 describe('Context helpers', () => {
-  const contexts: {
+  const models: {
     relation: IRelation,
     field: IField,
     model: IModel,
@@ -97,36 +102,49 @@ describe('Context helpers', () => {
     packages: IPackage,
   } = {} as any;
 
+  const contexts: {
+    relation: IRelationContext,
+    field: IFieldContext,
+    model: IModelContext,
+    entity: IEntityContext,
+    packages: IPackageContext,
+  } = {} as any;
+
   beforeAll(() => {
-    contexts.relation = new HasMany({
+    models.relation = new HasMany({
       hasMany: 'i@m#id',
     });
-    contexts.field = new Field({
+
+    models.field = new Field({
       name: 'item',
     });
-    contexts.entity = new Entity({
+
+    models.entity = new Entity({
       name: 'ToDo',
-      fields: [contexts.field],
+      fields: [models.field],
     });
-    contexts.packages = new Package({
+
+    models.packages = new Package({
       name: 'system',
       acl: 10000,
       items: [],
     });
-    contexts.model = new Model({
+
+    models.model = new Model({
       name: 'TodoItems',
-      packages: [contexts.packages],
+      packages: [models.packages],
     });
+
+    contexts.model = new ModelContext(models.model);
+    contexts.packages = new PackageContext(contexts.model, models.packages);
+    contexts.entity = new EntityContext(contexts.packages, models.entity);
+    contexts.field = new FieldContext(contexts.entity, models.field);
   });
 
   it('Init Context', () => {
-    const model = new ModelContext(contexts.model);
-    expect(isIModelContext(model)).toBeTruthy();
-    const pkg = new PackageContext(model, contexts.packages);
-    expect(isIPackageContext(pkg)).toBeTruthy();
-    const entity = new EntityContext(pkg, contexts.entity);
-    expect(isIEntityContext(entity)).toBeTruthy();
-    const field = new FieldContext(entity, contexts.field);
-    expect(isIFieldContext(field)).toBeTruthy();
+    expect(isIModelContext(contexts.model)).toBeTruthy();
+    expect(isIPackageContext(contexts.packages)).toBeTruthy();
+    expect(isIEntityContext(contexts.entity)).toBeTruthy();
+    expect(isIFieldContext(contexts.field)).toBeTruthy();
   });
 });
