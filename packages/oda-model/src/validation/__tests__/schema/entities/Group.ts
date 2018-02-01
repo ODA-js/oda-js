@@ -1,6 +1,6 @@
-import { IEntityInit } from '../../../interfaces/IEntity';
+import { IEntityInput } from '../../../interfaces/IEntity';
 
-const entity: IEntityInit = {
+const entity: IEntityInput = {
   name: 'Group',
   description: 'Group of users that can share common ToDos',
   fields: {
