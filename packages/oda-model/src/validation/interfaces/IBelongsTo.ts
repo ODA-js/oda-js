@@ -3,8 +3,12 @@ import { IEntityRef } from './IEntityRef';
 import { IField } from './IField';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 
-export interface IBelongsToInit extends Partial<IRelationInit> {
+export interface IBelongsToInput extends Partial<IRelationInit> {
   belongsTo: string | IEntityRef;
+}
+
+export interface IBelongsToInit extends Partial<IRelationInit> {
+  belongsTo: IEntityRef;
 }
 
 export interface IBelongsToStore extends IRelationStore {

@@ -3,7 +3,7 @@ import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
 
 import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
+import { transformMap, transformSet, convertMap } from './utils';
 import {
   IHasManyStore,
   IHasManyInit,
@@ -27,7 +27,7 @@ export const DefaultHasMany: Partial<IHasManyStore> = {
   single: true,
   stored: true,
   embedded: true,
-// name
+  // name
   fullName: null,
   normalName: null,
   shortName: null,
@@ -39,7 +39,12 @@ export const HasManyTransform: IRelationTransform = {
     transform: (inp) => new EntityRef(inp),
     reverse: (inp) => inp.toString(),
   },
-  fields: transformMap<IField>(),
+  fields: convertMap<IField, Partial<IField>>((inp: IField) => {
+    return inp;
+  },
+    (inp: Partial<IField>) => {
+    return inp as IField;
+}  ),
 };
 
 // tslint:disable-next-line:variable-name

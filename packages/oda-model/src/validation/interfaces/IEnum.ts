@@ -7,10 +7,14 @@ import { IPackage } from './IPackage';
 
 export type EnumInitItem = IEnumItemInit | string;
 
-export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEnumInput extends Partial<INamedItem>, Partial<IPackagedItemInit> {
   values: EnumInitItem[] | {
     [name: string]: EnumInitItem;
   };
+}
+
+export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
+  values: IEnumItemInit[];
 }
 
 export interface IEnumStore extends INamedItem, IPackagedItemStore {

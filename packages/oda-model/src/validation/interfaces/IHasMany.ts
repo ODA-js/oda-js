@@ -1,6 +1,6 @@
-import { ArrayToMap, MapType } from '../model/utils';
+import { ArrayToMap, MapType, ConvertToMap } from '../model/utils';
 import { IEntityRef } from './IEntityRef';
-import { IField } from './IField';
+import { IField, IFieldArgs } from './IField';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 
 export interface IHasManyInit extends Partial<IRelationInit> {
@@ -13,7 +13,7 @@ export interface IHasManyStore extends IRelationStore {
 
 export interface IRelationTransform {
   hasMany: MapType<string | IEntityRef, IEntityRef>;
-  fields: ArrayToMap<IField>;
+  fields: ConvertToMap<IField, Partial<IField>>;
 }
 
 export interface IHasMany extends IRelation {

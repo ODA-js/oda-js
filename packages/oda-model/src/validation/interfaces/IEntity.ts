@@ -2,7 +2,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IField, IFieldInit } from './IField';
 import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
-import { ArrayToMap } from '../model/utils';
+import { ArrayToMap, ConvertToMap } from '../model/utils';
 import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
 import { IPackage } from './IPackage';
 
@@ -45,7 +45,7 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
   indexed: Set<string>;
 }
 
-export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEntityInput extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
   singular?: string;
   plural?: string;
   fields: {
@@ -54,8 +54,15 @@ export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedIte
   package?: IPackage;
 }
 
+export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
+  singular?: string;
+  plural?: string;
+  fields: Partial<IFieldInit>[];
+  package?: IPackage;
+}
+
 export interface IEntityTransform {
-  fields: ArrayToMap<IField>;
+  fields: ConvertToMap<IFieldInit, IField>;
 }
 
 export interface IEntity extends IModelType, IPackagedItem {
