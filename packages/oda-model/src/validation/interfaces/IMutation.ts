@@ -13,12 +13,12 @@ export interface IMutationACL {
   execute: string[];
 }
 
-export interface IMutationACLStore {
-  execute: Set<string>;
-}
-
 export interface IMutationMetaData {
   acl?: IMutationACL;
+}
+
+export interface IMutationACLStore {
+  execute: Set<string>;
 }
 
 export interface IMutationMetaDataStore {
@@ -30,7 +30,7 @@ export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPac
   payload: Map<string, IFieldArgs>;
 }
 
-export interface IMutationInit extends IMutationMetaData, INamedItem, IPackagedItemInit {
+export interface IMutationInit extends Partial<IMutationMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
   args: IFieldArgs[];
   payload: IFieldArgs[];
   package?: IPackage;

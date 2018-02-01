@@ -8,7 +8,7 @@ import { IPackageContext } from './IPackageContext';
 import { IPackagedItem } from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
 
-export interface IPackageInit extends INamedItem {
+export interface IPackageInit extends Partial<INamedItem> {
   acl: number;
   abstract?: boolean;
   items: IPackagedItem[];

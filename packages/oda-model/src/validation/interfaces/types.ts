@@ -30,6 +30,6 @@ export type MetaModelType =
 export type ValdatedTypes = MetaModelType | RelationType;
 
 export type ValidationContext =
-    IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
+  IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
 
-export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation';
+export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation' | 'enum';

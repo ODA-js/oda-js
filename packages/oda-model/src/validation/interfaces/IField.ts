@@ -7,8 +7,8 @@ import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 import { IEntity } from './IEntity';
 
 export interface IFieldACL {
-  read?: string[];
-  update?: string[];
+  read: string[];
+  update: string[];
 }
 
 export interface IFieldMetaData {
@@ -23,27 +23,27 @@ export interface IFieldArgs {
 }
 
 export interface IFieldStorage {
-  derived?: boolean;
-  persistent?: boolean;
-  required?: boolean;
-  indexed?: boolean | string | string[];
-  identity?: boolean | string | string[];
+  derived: boolean;
+  persistent: boolean;
+  required: boolean;
+  indexed: boolean | string | string[];
+  identity: boolean | string | string[];
 }
 
-export interface IFieldInit extends IFieldStorage, IFieldMetaData, INamedItem {
+export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, Partial<INamedItem> {
   entity?: IEntity;
   type?: string;
-  args: IFieldArgs[];
+  args?: IFieldArgs[];
   order?: number;
   relation?: IRelationInit;
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
-  entity?: IEntity;
-  type?: string;
-  args: Map<string, IFieldArgs>;
+  entity: IEntity;
+  type: string;
+  args?: Map<string, IFieldArgs>;
   idKey?: IEntityRef;
-  order?: number;
+  order: number;
   relation?: IRelation;
 }
 
@@ -57,10 +57,10 @@ export interface IFieldTransform {
 
 export interface IField extends IModelType {
   readonly modelType: 'field';
-  readonly entity?: string;
-  readonly type?: string;
-  readonly args: Map<string, IFieldArgs>;
+  readonly entity: IEntity;
+  readonly type: string;
+  readonly args?: Map<string, IFieldArgs>;
   readonly idKey?: IEntityRef;
-  readonly order?: number;
-  readonly relation?: IRelation;
+  readonly order: number;
+  readonly relation: IRelation;
 }

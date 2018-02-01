@@ -3,7 +3,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { Map } from 'immutable';
 import { ArrayToMap } from '../model/utils';
 
-export interface IModelInit extends INamedItem  {
+export interface IModelInit extends Partial<INamedItem>  {
   packages: IPackage[];
 }
 

@@ -20,13 +20,13 @@ export interface IRelationName {
 }
 // props
 export interface IRelationStore extends IRelationName, IRelationStorage, INamedItem {
-  opposite?: string;
-  fields?: Map<string, IField>;
+  opposite: string;
+  fields: Map<string, IField>;
 }
 
-export interface IRelationInit extends IRelationName, IRelationStorage, INamedItem {
-  opposite?: string;
-  fields?: IField[];
+export interface IRelationInit extends Partial<IRelationName>, Partial<IRelationStorage>, Partial<INamedItem> {
+  opposite: string;
+  fields: IField[];
 }
 
 export interface IRelation extends IModelType {
