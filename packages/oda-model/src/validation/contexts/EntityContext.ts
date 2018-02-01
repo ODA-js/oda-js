@@ -6,6 +6,7 @@ import { IPackageContext } from '../interfaces/IPackageContext';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
+import { isIPackageContext, isEntity } from '../helpers';
 
 export class EntityContext implements IEntityContext {
   public entity: IEntity;
@@ -13,15 +14,20 @@ export class EntityContext implements IEntityContext {
   public package: IPackage;
   public errors: IValidationResult[];
   constructor(context: IPackageContext, entity: IEntity) {
-    this.model = context.model;
-    this.package = context.package;
-    this.entity = entity;
-    this.errors = [];
+    if (isIPackageContext(context)) {
+      this.package = context.package;
+      this.model = context.model;
+      this.entity = isEntity(entity) && entity;
+      this.errors = [];
+    }
   }
   public get isValid() {
-    return !!(this.model && this.package && this.entity);
+    return !!(this.model
+      && this.package
+      && this.entity
+      && Array.isArray(this.errors)
+    );
   }
-
   public restart(level: RestartType) {
     restart('entity');
   }

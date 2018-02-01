@@ -8,6 +8,7 @@ import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
 import { IField } from '../interfaces/IField';
 import { IFieldContext } from '../interfaces/IFieldContext';
+import { isIEntityContext, isField } from '../helpers';
 
 export class FieldContext implements IFieldContext {
   public model: IModel;
@@ -16,13 +17,21 @@ export class FieldContext implements IFieldContext {
   public field: IField;
   public errors: IValidationResult[];
   constructor(context: IEntityContext, field: IField) {
-    this.model = context.model;
-    this.package = context.package;
-    this.entity = context.entity;
-    this.field = field;
+    if (isIEntityContext(context)) {
+      this.model = context.model;
+      this.package = context.package;
+      this.entity = context.entity;
+      this.field = isField(field) && field;
+      this.errors = [];
+    }
   }
   public get isValid() {
-    return !!(this.model && this.package && this.entity && this.field);
+    return !!(this.model
+      && this.package
+      && this.entity
+      && this.field
+      && Array.isArray(this.errors)
+    );
   }
 
   public restart(level: RestartType) {

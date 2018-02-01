@@ -1,19 +1,22 @@
-import { ModelLevel, PackageLevel, EntityLevel, FieldLevel, RelationLevel } from '../errors';
 import { RestartType } from '../interfaces/types';
 
 export function restart(type: RestartType) {
   switch (type) {
     case 'model':
-      throw new ModelLevel();
+      throw new Error(type);
     case 'package':
-      throw new PackageLevel();
+      throw new Error(type);
     case 'entity':
-      throw new EntityLevel();
+      throw new Error(type);
     case 'field':
-      throw new FieldLevel();
+      throw new Error(type);
     case 'relation':
-      throw new RelationLevel();
+      throw new Error(type);
+    case 'mutation':
+      throw new Error(type);
+    case 'enum':
+      throw new Error(type);
     default:
-      throw Error('unknown restart level');
+      throw new Error('unknown');
   }
 }

@@ -6,6 +6,7 @@ import { IPackageContext } from '../interfaces/IPackageContext';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
+import { isIPackageContext, isMutation } from '../helpers';
 
 export class MutationContext implements IMutationContext {
   public mutation: IMutation;
@@ -13,15 +14,21 @@ export class MutationContext implements IMutationContext {
   public package: IPackage;
   public errors: IValidationResult[];
   constructor(context: IPackageContext, mutation: IMutation) {
-    this.model = context.model;
-    this.package = context.package;
-    this.mutation = mutation;
-    this.errors = [];
+    if (isIPackageContext(context)) {
+      this.model = context.model;
+      this.package = context.package;
+      this.mutation = isMutation(mutation) && mutation;
+      this.errors = [];
+    }
   }
   public get isValid() {
-    return !!(this.model && this.package && this.mutation);
+    return !!(
+      this.model
+      && this.package
+      && this.mutation
+      && Array.isArray(this.errors)
+    );
   }
-
   public restart(level: RestartType) {
     restart('mutation');
   }
