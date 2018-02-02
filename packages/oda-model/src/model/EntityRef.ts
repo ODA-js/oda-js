@@ -2,7 +2,7 @@ import { Record } from 'immutable';
 import * as camelcase from 'camelcase';
 import * as inflected from 'inflected';
 
-import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../../definitions';
+import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 

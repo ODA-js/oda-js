@@ -33,11 +33,11 @@ import { Field } from './model/Field';
 import { HasMany } from './model/HasMany';
 import { Model } from './model/Model';
 import { Package } from './model/Package';
-import { IRelationContext } from './interfaces/IRelationContext';
-import { IFieldContext } from './interfaces/IFieldContext';
-import { IModelContext } from './interfaces/IModelContext';
-import { IEntityContext } from './interfaces/IEntityContext';
-import { IPackageContext } from './interfaces/IPackageContext';
+import { IRelationContext } from './contexts/IRelationContext';
+import { IFieldContext } from './contexts/IFieldContext';
+import { IModelContext } from './contexts/IModelContext';
+import { IEntityContext } from './contexts/IEntityContext';
+import { IPackageContext } from './contexts/IPackageContext';
 
 describe('RelationProps helpers', () => {
   it('belongsToProps is detected', () => {

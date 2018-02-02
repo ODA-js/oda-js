@@ -1,4 +1,4 @@
-import { IFieldContext } from '../../interfaces/IFieldContext';
+import { IFieldContext } from '../../contexts/IFieldContext';
 import { IValidationResult } from '../../interfaces/IValidationResult';
 import { EntityRef } from './../../model/EntityRef';
 import { Rule } from '../../rule';
@@ -33,7 +33,7 @@ export default class implements Rule<IFieldContext> {
     if (field.identity) {
       field.updateWith({
         idKey: new EntityRef({
-          entity: field.entity,
+          entity: field.entity.name,
           field: field.name,
           backField: '',
         }),

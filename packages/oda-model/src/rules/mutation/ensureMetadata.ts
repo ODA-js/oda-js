@@ -1,4 +1,4 @@
-import { IMutationContext } from '../../interfaces/IMutationContext';
+import { IMutationContext } from '../../contexts/IMutationContext';
 import { Rule } from '../../rule';
 import { IValidationResult } from '../../interfaces/IValidationResult';
 

@@ -1,10 +1,10 @@
 import { Map } from 'immutable';
 
+import { ArrayToMap } from '../model/utils';
+import { IEntity } from './IEntity';
 import { IEntityRef } from './IEntityRef';
 import { IModelType, INamedItem } from './IModelType';
-import { ArrayToMap } from '../model/utils';
-import { IRelation, IRelationInit, IRelationStore } from './IRelation';
-import { IEntity } from './IEntity';
+import { IRelation, IRelationInit } from './IRelation';
 import { RelationInit } from './types';
 
 export interface IFieldACL {
@@ -64,4 +64,10 @@ export interface IField extends IModelType {
   readonly idKey?: IEntityRef;
   readonly order: number;
   readonly relation: IRelation;
+  readonly derived: boolean;
+  readonly persistent: boolean;
+  readonly required: boolean;
+  readonly indexed: boolean | string | string[];
+  readonly identity: boolean | string | string[];
+  readonly acl: Partial<IFieldACL>;
 }

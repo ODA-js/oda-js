@@ -1,4 +1,4 @@
-import { IModelContext } from '../../interfaces/IModelContext';
+import { IModelContext } from '../../contexts/IModelContext';
 import { IValidationResult } from '../../interfaces/IValidationResult';
 import { Rule } from '../../rule';
 

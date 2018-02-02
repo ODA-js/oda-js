@@ -1,20 +1,15 @@
 import { Map } from 'immutable';
 
 import { ArrayToMap } from '../model/utils';
-import { INamedItem, IModelType } from './IModelType';
-import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
-import { IPackage } from './IPackage';
+import { IModelType, INamedItem } from './IModelType';
+import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 
 export type EnumInitItem = IEnumItemInit | string;
 
-export interface IEnumInput extends Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
   values: EnumInitItem[] | {
     [name: string]: EnumInitItem;
   };
-}
-
-export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
-  values: IEnumItemInit[];
 }
 
 export interface IEnumStore extends INamedItem, IPackagedItemStore {

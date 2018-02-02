@@ -1,5 +1,5 @@
 import { IValidationResult } from '../../interfaces/IValidationResult';
-import { IPackageContext } from '../../interfaces/IPackageContext';
+import { IPackageContext } from '../../contexts/IPackageContext';
 import { Rule } from '../../rule';
 
 export default class implements Rule<IPackageContext> {

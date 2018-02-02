@@ -1,6 +1,6 @@
-import { ArrayToMap, MapType, ConvertToMap } from '../model/utils';
+import { ConvertToMap, MapType } from '../model/utils';
 import { IEntityRef } from './IEntityRef';
-import { IField, IFieldArgs } from './IField';
+import { IField } from './IField';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
 
 export interface IHasManyInit extends Partial<IRelationInit> {

@@ -1,6 +1,6 @@
 import { IVisitor } from '../interfaces/IVisitor';
 import { IEntity, IEntityInit, IEntityStore} from '../interfaces/IEntity';
-import { IPackageContext } from '../interfaces/IPackageContext';
+import { IPackageContext } from '../contexts/IPackageContext';
 import { Validator } from '../validators/Validator';
 import { EntityContext } from '../contexts/EntityContext';
 

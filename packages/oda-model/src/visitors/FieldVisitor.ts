@@ -1,6 +1,6 @@
 import { IVisitor } from '../interfaces/IVisitor';
 import { IField, IFieldStore, IFieldInit } from '../interfaces/IField';
-import { IEntityContext } from '../interfaces/IEntityContext';
+import { IEntityContext } from '../contexts/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { FieldContext } from '../contexts/FieldContext';
 

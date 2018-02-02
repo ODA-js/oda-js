@@ -1,4 +1,4 @@
-import { IFieldContext } from '../../interfaces/IFieldContext';
+import { IFieldContext } from '../../contexts/IFieldContext';
 import { IValidationResult } from '../../interfaces/IValidationResult';
 import { Rule } from '../../rule';
 

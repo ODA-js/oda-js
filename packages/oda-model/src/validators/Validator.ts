@@ -1,8 +1,8 @@
 import { isEntity, isField, isPackage, isRelation } from '../helpers';
-import { IEntityContext } from '../interfaces/IEntityContext';
-import { IFieldContext } from '../interfaces/IFieldContext';
-import { IModelContext } from '../interfaces/IModelContext';
-import { IPackageContext } from '../interfaces/IPackageContext';
+import { IEntityContext } from '../contexts/IEntityContext';
+import { IFieldContext } from '../contexts/IFieldContext';
+import { IModelContext } from '../contexts/IModelContext';
+import { IPackageContext } from '../contexts/IPackageContext';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
 import { ValdatedTypes, ValidationContext } from '../interfaces/types';

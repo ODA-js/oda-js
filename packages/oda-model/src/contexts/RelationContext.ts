@@ -1,10 +1,10 @@
 import { IEntity } from '../interfaces/IEntity';
 import { IField } from '../interfaces/IField';
-import { IFieldContext } from '../interfaces/IFieldContext';
+import { IFieldContext } from './IFieldContext';
 import { IModel } from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
 import { IRelation } from '../interfaces/IRelation';
-import { IRelationContext } from '../interfaces/IRelationContext';
+import { IRelationContext } from './IRelationContext';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';

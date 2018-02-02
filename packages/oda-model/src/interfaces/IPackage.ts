@@ -1,10 +1,10 @@
 import { Map } from 'immutable';
 
+import { IPackageContext } from '../contexts/IPackageContext';
 import { ArrayToMap } from '../model/utils';
 import { Rule } from '../rule';
 import { IModel } from './IModel';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackageContext } from './IPackageContext';
 import { IPackagedItem } from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
 

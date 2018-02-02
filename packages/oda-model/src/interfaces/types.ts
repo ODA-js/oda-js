@@ -1,18 +1,12 @@
-import { IBelongsToMany, IBelongsToManyInit } from './IBelongsToMany';
-import { IBelongsTo, IBelongsToInit } from './IBelongsTo';
-import { IEntity } from './IEntity';
-import { IEntityContext } from './IEntityContext';
-import { IField } from './IField';
-import { IFieldContext } from './IFieldContext';
-import { IHasMany, IHasManyInit } from './IHasMany';
-import { IHasOne, IHasOneInit } from './IHasOne';
-import { IModel } from './IModel';
-import { IModelContext } from './IModelContext';
-import { IPackage } from './IPackage';
-import { IPackageContext } from './IPackageContext';
-import { IRelationContext } from './IRelationContext';
-import { IMutation } from './IMutation';
-import { Relation } from '../model/Relation';
+import { IEntityContext } from '../contexts/IEntityContext';
+import { IFieldContext } from '../contexts/IFieldContext';
+import { IModelContext } from '../contexts/IModelContext';
+import { IPackageContext } from '../contexts/IPackageContext';
+import { IRelationContext } from '../contexts/IRelationContext';
+import { IBelongsToInit } from './IBelongsTo';
+import { IBelongsToManyInit } from './IBelongsToMany';
+import { IHasManyInit } from './IHasMany';
+import { IHasOneInit } from './IHasOne';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 

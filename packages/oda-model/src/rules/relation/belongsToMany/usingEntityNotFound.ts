@@ -1,4 +1,4 @@
-import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IRelationContext } from '../../../contexts/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { IEntity } from '../../../interfaces/IEntity';
@@ -15,7 +15,9 @@ export default class implements Rule<IRelationContext> {
         const sysEntity = context.model.packages.get('system')
           .items.get(context.relation.using.entity)as IEntity;
         if (isEntity(sysEntity)) {
-          context.package.addEntity(sysEntity);
+          context.package.updateWith({
+            packages: [sysEntity],
+          });
           result.push({
             message: 'using entity resolved from system package',
             result: 'fixable',

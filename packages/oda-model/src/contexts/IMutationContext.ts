@@ -1,6 +1,6 @@
 import { IPackageContext } from './IPackageContext';
-import { IMutation } from './IMutation';
-import { RestartType } from './types';
+import { IMutation } from '../interfaces/IMutation';
+import { RestartType } from '../interfaces/types';
 
 export interface IMutationContext extends IPackageContext {
   readonly mutation: IMutation;

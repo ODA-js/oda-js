@@ -1,5 +1,5 @@
 import { IEntity } from '../../../interfaces/IEntity';
-import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IRelationContext } from '../../../contexts/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { isEntity, IsBelongsToMany } from '../../../helpers';
@@ -27,7 +27,9 @@ export default class implements Rule<IRelationContext> {
         }
 
         if (opposites.length === 1) {
-          context.relation.opposite = opposites[0].name;
+          context.relation.updateWith({
+            opposite: opposites[0].name,
+          });
           result.push({
             message: 'found one possible opposite. assigned.',
             result: 'fixable',

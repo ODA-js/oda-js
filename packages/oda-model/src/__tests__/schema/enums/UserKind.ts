@@ -1,7 +1,7 @@
-import { IEnumInput } from './../../../interfaces/IEnum';
+import { IEnumInit } from './../../../interfaces/IEnum';
 
 
-const result: IEnumInput = {
+const result: IEnumInit = {
   name: 'ToDoType',
   values: {
     'public user': 'public',

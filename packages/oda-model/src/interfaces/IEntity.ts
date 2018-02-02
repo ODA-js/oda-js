@@ -1,10 +1,10 @@
-import { IModelType, INamedItem } from './IModelType';
-import { IField, IFieldInit } from './IField';
-import { IEntityContext } from './IEntityContext';
 import { Map, Set } from 'immutable';
-import { ArrayToMap, ConvertToMap } from '../model/utils';
-import { IPackagedItem, IPackagedItemStore, IPackagedItemInit } from './IPackagedItem';
+
+import { ConvertToMap } from '../model/utils';
+import { IField, IFieldInit } from './IField';
+import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
+import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 
 export interface IEntityACL {
   read?: string[];
@@ -45,19 +45,12 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
   indexed: Set<string>;
 }
 
-export interface IEntityInput extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
   singular?: string;
   plural?: string;
   fields: {
     [name: string]: Partial<IFieldInit>,
   } | Partial<IFieldInit>[];
-  package?: IPackage;
-}
-
-export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
-  singular?: string;
-  plural?: string;
-  fields: Partial<IFieldInit>[];
   package?: IPackage;
 }
 

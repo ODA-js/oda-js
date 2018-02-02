@@ -1,6 +1,6 @@
-import { IEntityInput } from '../../../interfaces/IEntity';
+import { IEntityInit } from '../../../interfaces/IEntity';
 
-const entity: IEntityInput = {
+const entity: IEntityInit = {
   name: 'ToDoItemsSharedToGroupsMap',
   description: 'Sharing ToDo items between groups',
   fields: {

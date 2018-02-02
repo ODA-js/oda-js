@@ -10,12 +10,12 @@ import { IPackage } from './interfaces/IPackage';
 import { IRelation, IRelationInit } from './interfaces/IRelation';
 import { IModelType } from './interfaces/IModelType';
 import { IEnum } from './interfaces/IEnum';
-import { IModelContext } from './interfaces/IModelContext';
-import { IEntityContext } from './interfaces/IEntityContext';
-import { IPackageContext } from './interfaces/IPackageContext';
-import { IFieldContext } from './interfaces/IFieldContext';
-import { IRelationContext } from './interfaces/IRelationContext';
-import { IEnumContext } from './interfaces/EnumContext';
+import { IModelContext } from './contexts/IModelContext';
+import { IEntityContext } from './contexts/IEntityContext';
+import { IPackageContext } from './contexts/IPackageContext';
+import { IFieldContext } from './contexts/IFieldContext';
+import { IRelationContext } from './contexts/IRelationContext';
+import { IEnumContext } from './contexts/IEnumContext';
 
 export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;

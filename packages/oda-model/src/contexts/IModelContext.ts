@@ -1,7 +1,7 @@
-import { IModel } from './IModel';
-import { RestartType } from './types';
+import { IModel } from '../interfaces/IModel';
+import { RestartType } from '../interfaces/types';
 import { error } from 'util';
-import { IValidationResult } from './IValidationResult';
+import { IValidationResult } from '../interfaces/IValidationResult';
 
 export interface IModelContext {
   readonly model: IModel;

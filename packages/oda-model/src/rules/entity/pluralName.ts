@@ -1,4 +1,4 @@
-import { IEntityContext } from '../../interfaces/IEntityContext';
+import { IEntityContext } from '../../contexts/IEntityContext';
 import { IValidationResult } from '../../interfaces/IValidationResult';
 import { Rule } from '../../rule';
 

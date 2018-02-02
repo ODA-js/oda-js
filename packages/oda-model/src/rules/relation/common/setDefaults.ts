@@ -1,6 +1,6 @@
 import {Persistent} from '../../../model/Persistent';
 import { IEntity } from '../../../interfaces/IEntity';
-import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IRelationContext } from '../../../contexts/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { isEntity } from '../../../helpers';

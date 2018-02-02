@@ -1,8 +1,8 @@
 import { IEntity } from '../interfaces/IEntity';
-import { IEntityContext } from '../interfaces/IEntityContext';
+import { IEntityContext } from './IEntityContext';
 import { IModel } from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
-import { IPackageContext } from '../interfaces/IPackageContext';
+import { IPackageContext } from './IPackageContext';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';

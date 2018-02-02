@@ -1,6 +1,6 @@
 import { IVisitor } from '../interfaces/IVisitor';
 import { IMutation, IMutationStore, IMutationInit } from '../interfaces/IMutation';
-import { IEntityContext } from '../interfaces/IEntityContext';
+import { IEntityContext } from '../contexts/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { MutationContext } from '../contexts/MutationContext';
 

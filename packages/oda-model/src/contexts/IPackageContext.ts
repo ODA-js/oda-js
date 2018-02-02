@@ -1,6 +1,6 @@
-import { IPackage } from './IPackage';
+import { IPackage } from '../interfaces/IPackage';
 import { IModelContext } from './IModelContext';
-import { RestartType } from './types';
+import { RestartType } from '../interfaces/types';
 
 export interface IPackageContext extends IModelContext {
   readonly package: IPackage;

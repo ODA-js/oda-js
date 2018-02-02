@@ -1,4 +1,4 @@
-import { IRelationContext } from '../../../interfaces/IRelationContext';
+import { IRelationContext } from '../../../contexts/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
 import { Rule } from '../../../rule';
 import { isEntity, IsBelongsToMany } from '../../../helpers';
@@ -24,12 +24,9 @@ export default class implements Rule<IRelationContext> {
               fullName: context.relation.fullName,
               normalName: context.relation.normalName,
               shortName: context.relation.shortName,
-              modelType: 'HasMany',
-              ref: replaceRef.using,
-              hasMany: replaceRef.using,
+              hasMany: context.relation.using,
               opposite: context.relation.opposite,
-              verb: 'HasMany',
-              fields: BelongsToManyTransform.fields.transform(context.relation.fields),
+              fields: BelongsToManyTransform.fields.reverse(context.relation.fields),
             }),
           });
           result.push({
