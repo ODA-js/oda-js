@@ -1,4 +1,4 @@
-import {Persistent, IUpdatable} from '../../../model/Persistent';
+import {Persistent} from '../../../model/Persistent';
 import { IEntity } from '../../../interfaces/IEntity';
 import { IRelationContext } from '../../../interfaces/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';
@@ -7,6 +7,7 @@ import { isEntity } from '../../../helpers';
 import { IRelationInit, IRelationStore } from '../../../interfaces/IRelation';
 import { IBelongsToMany } from '../../../interfaces/IBelongsToMany';
 import { IBelongsTo } from '../../../interfaces/IBelongsTo';
+import { IUpdatable } from '../../../interfaces/IUpdatable';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-common-ref-field-not-indexed-fix';

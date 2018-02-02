@@ -8,7 +8,10 @@
   },
   "typings": "dist/model/index.d.ts",
   "scripts": {
-    "prepublish": "./compile.sh"
+    "test": "jest",
+    "lint":"tslint --project ./",
+    "prepublish": "./compile.sh",
+    "debug":"node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -18,14 +21,35 @@
     "global": "^4.3.2",
     "immutable": "^4.0.0-rc.9",
     "inflected": "^2.0.3",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "yup": "^0.24.0"
   },
   "devDependencies": {
     "@types/camelcase": "4.1.0",
     "@types/decamelize": "1.2.0",
     "@types/inflected": "^1.1.29",
+    "@types/jest": "^22.1.1",
     "@types/node": "^8.0.20",
-    "tslint": "^5.8.0",
+    "jest": "^22.1.4",
+    "ts-jest": "^22.0.2",
+    "tslint": "^5.9.1",
+    "tsviz": "^1.0.11",
     "typescript": "^2.6.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testPathIgnorePatterns":[
+      "/node_modules/",
+      "/dist/"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   }
 }

@@ -13,9 +13,12 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
-    "pretty": true
+    "pretty": true,
+    "skipLibCheck": true,
+
   },
   "exclude": [
+    "src/**/__tests__/*.ts",
     "node_modules",
     "dist"
   ]
