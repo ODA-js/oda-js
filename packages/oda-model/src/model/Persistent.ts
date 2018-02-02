@@ -25,5 +25,6 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
     const t = this.constructor() as Persistent<TInputProps, TStoredProps>;
     t.store = this.store;
     t.init = this.init;
+    return t;
   }
 }

@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 
-import { ArrayToMap } from '../model/utils';
+import { ArrayToMap, MapType } from '../model/utils';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 
@@ -29,7 +29,10 @@ export interface IEnumItem extends IModelType {
 }
 
 export interface IEnumTransform {
-  values: ArrayToMap<IEnumItem>;
+  values: MapType< EnumInitItem[] | {
+    [name: string]: EnumInitItem;
+  }
+  , Map<string, IEnumItem>>;
 }
 
 export interface IEnum extends IModelType, IPackagedItem {

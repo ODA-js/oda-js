@@ -10,8 +10,9 @@ import {
   IEntityTransform,
   IEntityACL,
 } from '../interfaces/IEntity';
-import { IField } from '../interfaces/IField';
+import { IField, IFieldInit } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
+import { Field } from './Field';
 
 
 // tslint:disable-next-line:variable-name
@@ -32,7 +33,10 @@ export const DefaultEntity: Partial<IEntityStore> = {
 
 // tslint:disable-next-line:variable-name
 export const EntityTransform: IEntityTransform = {
-  fields: transformMap<IField>(),
+  fields: {
+    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
+    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
+  },
 };
 
 // tslint:disable-next-line:variable-name

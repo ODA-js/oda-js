@@ -121,7 +121,9 @@ describe('Context helpers', () => {
 
     models.entity = new Entity({
       name: 'ToDo',
-      fields: [models.field],
+      fields: [{
+        name: 'item',
+      }],
     });
 
     models.packages = new Package({

@@ -11,9 +11,10 @@ import {
   IRelationTransform,
 } from '../interfaces/IHasOne';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField } from '../interfaces/IField';
+import { IField, IFieldInit } from '../interfaces/IField';
 import { Relation } from './Relation';
 import { EntityRef } from './EntityRef';
+import { Field } from './Field';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: Partial<IHasOneStore> = {
@@ -39,7 +40,10 @@ export const HasOneTransform: IRelationTransform = {
     transform: (inp) => new EntityRef(inp),
     reverse: (inp) => inp.toString(),
   },
-  fields: transformMap<IField>(),
+  fields: {
+    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
+    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
+  },
 };
 
 // tslint:disable-next-line:variable-name

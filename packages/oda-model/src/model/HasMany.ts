@@ -11,9 +11,10 @@ import {
   IRelationTransform,
 } from '../interfaces/IHasMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField } from '../interfaces/IField';
+import { IField, IFieldInit } from '../interfaces/IField';
 import { Relation } from './Relation';
 import { EntityRef } from './EntityRef';
+import { Field } from './Field';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasMany: Partial<IHasManyStore> = {
@@ -39,12 +40,10 @@ export const HasManyTransform: IRelationTransform = {
     transform: (inp) => new EntityRef(inp),
     reverse: (inp) => inp.toString(),
   },
-  fields: convertMap<IField, Partial<IField>>((inp: IField) => {
-    return inp;
+  fields: {
+    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
+    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
   },
-    (inp: Partial<IField>) => {
-    return inp as IField;
-}  ),
 };
 
 // tslint:disable-next-line:variable-name

@@ -1,7 +1,8 @@
 import { ArrayToMap, MapType } from '../model/utils';
 import { IEntityRef } from './IEntityRef';
-import { IField } from './IField';
+import { IField, IFieldInit } from './IField';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
+import { Map} from 'immutable';
 
 export interface IBelongsToManyInit extends Partial<IRelationInit> {
   belongsToMany: string | IEntityRef;
@@ -16,7 +17,7 @@ export interface IBelongsToManyStore extends IRelationStore {
 export interface IRelationTransform {
   belongsToMany: MapType<string | IEntityRef, IEntityRef>;
   using: MapType<string | IEntityRef, IEntityRef>;
-  fields: ArrayToMap<IField>;
+  fields: MapType<Partial<IFieldInit>[], Map<string, IField>>;
 }
 
 export interface IBelongsToMany extends IRelation {

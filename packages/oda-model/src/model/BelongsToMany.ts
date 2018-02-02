@@ -1,11 +1,13 @@
-import { Record } from 'immutable';
+import { Record, Map } from 'immutable';
 
 import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTransform } from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField } from '../interfaces/IField';
+import { IField, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
 import { Relation } from './Relation';
 import { transformMap } from './utils';
+import { Field } from './Field';
+
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: Partial<IBelongsToManyStore> = {
@@ -36,7 +38,10 @@ export const BelongsToManyTransform: IRelationTransform = {
     transform: (inp) => new EntityRef(inp),
     reverse: (inp) => inp.toString(),
   },
-  fields: transformMap<IField>(),
+  fields: {
+    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
+    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
+  },
 };
 
 // tslint:disable-next-line:variable-name

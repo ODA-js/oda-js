@@ -1,6 +1,6 @@
 import { Map, Set } from 'immutable';
 
-import { ConvertToMap } from '../model/utils';
+import { MapType } from '../model/utils';
 import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
@@ -55,7 +55,9 @@ export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedIte
 }
 
 export interface IEntityTransform {
-  fields: ConvertToMap<IFieldInit, IField>;
+  fields: MapType<{
+    [name: string]: Partial<IFieldInit>,
+  } | Partial<IFieldInit>[], Map<string, IField>>;
 }
 
 export interface IEntity extends IModelType, IPackagedItem {

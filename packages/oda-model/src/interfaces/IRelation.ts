@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 
 import { IEntityRef } from './IEntityRef';
-import { IField } from './IField';
+import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { MetaModelType, RelationType } from './types';
 
@@ -26,7 +26,7 @@ export interface IRelationStore extends IRelationName, IRelationStorage, INamedI
 
 export interface IRelationInit extends Partial<IRelationName>, Partial<IRelationStorage>, Partial<INamedItem> {
   opposite: string;
-  fields: Partial<IField>[];
+  fields: Partial<IFieldInit>[];
 }
 
 export interface IRelation extends IModelType {
