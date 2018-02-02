@@ -34,7 +34,14 @@ export const DefaultEntity: Partial<IEntityStore> = {
 // tslint:disable-next-line:variable-name
 export const EntityTransform: IEntityTransform = {
   fields: {
-    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
+    transform: (input: {
+      [name: string]: Partial<IFieldInit>,
+    } | Partial<IFieldInit>[]) => {
+      if (!Array.isArray(input)) {
+        input = Object.keys(input).map(k => input[k]);
+      }
+      return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+    },
     reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
   },
 };

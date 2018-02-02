@@ -29,10 +29,9 @@ export interface IEnumItem extends IModelType {
 }
 
 export interface IEnumTransform {
-  values: MapType< EnumInitItem[] | {
+  values: MapType<EnumInitItem[] | {
     [name: string]: EnumInitItem;
-  }
-  , Map<string, IEnumItem>>;
+  }, Map<string, IEnumItem>>;
 }
 
 export interface IEnum extends IModelType, IPackagedItem {

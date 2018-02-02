@@ -1,9 +1,10 @@
 import { Record } from 'immutable';
 import { Map } from 'immutable';
 
-import { IEnumStore, IEnumTransform, IEnumItem, IEnumInit, IEnum } from '../interfaces/IEnum';
+import { IEnumStore, IEnumTransform, IEnumItem, IEnumInit, IEnum, EnumInitItem } from '../interfaces/IEnum';
 import { transformMap } from './utils';
 import { Persistent } from './Persistent';
+import { } from './interfaces/IEnum';
 import { IFieldStore } from '../interfaces/IField';
 
 // tslint:disable-next-line:variable-name
@@ -17,7 +18,25 @@ export const DefaultEnum: Partial<IEnumStore> = {
 
 // tslint:disable-next-line:variable-name
 export const EnumTransform: IEnumTransform = {
-  values: transformMap<IEnumItem>(),
+  values: {
+    transform: (input: EnumInitItem[] | {
+      [name: string]: EnumInitItem;
+    }) => {
+      if (!Array.isArray(input)) {
+        input = Object.keys(input).map(k => input[k]);
+      }
+      return Map<string, IEnumItem>(input.map(p => {
+        if (typeof p === 'string') {
+          return [p, {
+            value: p,
+          }];
+        } else {
+          return [p, p];
+        }
+      }) as [string, IEnumItem][]);
+    },
+    reverse: (input: Map<string, IEnumItem>) => Array.from(input.values()[Symbol.iterator]()),
+  },
 };
 
 // tslint:disable-next-line:variable-name
