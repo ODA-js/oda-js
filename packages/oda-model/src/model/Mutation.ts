@@ -147,10 +147,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   }
 
   public toJS(): Partial<IMutationInit> {
-    debugger;
-    let result = this.reverse(this.store);
-    return result;
+    return this.reverse(this.store);
   }
+
   constructor(init: Partial<IMutationInit> = {}) {
     super();
     this.store = new MutationStorage(this.transform(init));

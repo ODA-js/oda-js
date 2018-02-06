@@ -171,7 +171,7 @@ describe('Mutaion', () => {
         { name: 'p2', type: 'number', defaultValue: '1', required: false },
       ],
     })).not.toThrow();
-    debugger;
+
     expect(mutation.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
