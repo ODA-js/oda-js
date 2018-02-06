@@ -29,13 +29,31 @@ export const DefaultMutation: IMutationStore = {
 
 // tslint:disable-next-line:variable-name
 export const MutationACLTransform: IMutationACLTransform = {
-  execute: transformSet<string>(),
+  execute: {
+    transform: (input: string[]) => Set<string>(input),
+    reverse: (input: Set<string> | string[]) => {
+      if (Array.isArray(input)) {
+        return input;
+      } else {
+        return Array.from(input.values()[Symbol.iterator]());
+      }
+    },
+  },
+};
+
+let transformFieldArgs = {
+  transform: (input: Partial<IFieldArgs>[]) => {
+    return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+  },
+  reverse: (input: Map<string, IFieldArgs>) => {
+    return Array.from(input.values()[Symbol.iterator]());
+  },
 };
 
 // tslint:disable-next-line:variable-name
 export const MutationTransform: IMutationTransform = {
-  args: transformMap<IFieldArgs>(),
-  payload: transformMap<IFieldArgs>(),
+  args: transformFieldArgs,
+  payload: transformFieldArgs,
   acl: MutationACLTransform,
 };
 
@@ -62,13 +80,13 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return this.store.get('title', null);
   }
   public get args(): Map<string, IFieldArgs> {
-    return this.store.get('args', null);
+    return Map(this.store.get('args', null));
   }
   public get payload(): Map<string, IFieldArgs> {
-    return this.store.get('payload', null);
+    return Map(this.store.get('payload', null));
   }
 
-  protected transform(input: Partial<IMutationInit>): IMutationStore {
+  protected transform(input: Partial<IMutationInit>): Partial<IMutationStore> {
     const result: IMutationStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -95,32 +113,32 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
       }
     }
     return result;
-   }
+  }
 
-  protected reverse(input: IMutationStore): IMutationInit {
-
+  protected reverse(input: Record<IMutationStore>): IMutationInit {
     const result: IMutationInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'args') {
-            result.args = MutationTransform.args.reverse(input.args);
+            result.args = MutationTransform.args.reverse(input.get(f, null));
           } else if (f === 'payload') {
-            result.payload = MutationTransform.payload.reverse(input.payload);
+            result.payload = MutationTransform.payload.reverse(input.get(f, null));
           } else if (f === 'acl') {
-            for (let facl in input.acl) {
-              if (input.acl.hasOwnProperty(facl)) {
+            const acl = input.get(f, null);
+            for (let facl in acl) {
+              if (acl.hasOwnProperty(facl)) {
                 result.acl = {} as any;
                 if (facl === 'execute') {
-                  result.acl.execute = MutationTransform.acl.execute.reverse(input.acl.execute);
+                  result.acl.execute = MutationTransform.acl.execute.reverse(acl.execute);
                 } else {
-                  result[facl] = input[f];
+                  result.acl[facl] = core.acl[facl];
                 }
               }
             }
-            result.payload = MutationTransform.payload.reverse(input.payload);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }
@@ -128,6 +146,11 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return result;
   }
 
+  public toJS(): Partial<IMutationInit> {
+    debugger;
+    let result = this.reverse(this.store);
+    return result;
+  }
   constructor(init: Partial<IMutationInit> = {}) {
     super();
     this.store = new MutationStorage(this.transform(init));
