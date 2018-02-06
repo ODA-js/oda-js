@@ -27,7 +27,7 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
    * from stored to input
    * @param stored
    */
-  protected reverse(stored: Partial<TStoredProps>): Partial<TInputProps> {
+  protected reverse(stored: Record<TStoredProps>): Partial<TInputProps> {
     throw new Error('not implemented');
   }
 
@@ -36,7 +36,7 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
   }
 
   public toJS(): Partial<TInputProps> {
-    return this.reverse(this.store.toJS());
+    return this.reverse(this.store);
   }
 
   public clone() {
