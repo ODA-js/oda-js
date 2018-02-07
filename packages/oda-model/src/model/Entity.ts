@@ -13,10 +13,11 @@ import {
 import { IField, IFieldInit } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
 import { Field } from './Field';
+import { Package } from './Package';
 
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntity: Partial<IEntityStore> = {
+export const DefaultEntity: IEntityStore = {
   package: null,
   name: null,
   title: null,
@@ -24,11 +25,11 @@ export const DefaultEntity: Partial<IEntityStore> = {
   acl: null,
   plural: null,
   singular: null,
-  fields: Map<string, IField>(),
+  fields: null,
   storage: null,
-  indexed: Set<string>(),
-  relations: Set<string>(),
-  required: Set<string>(),
+  indexed: null,
+  relations: null,
+  required: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -38,11 +39,22 @@ export const EntityTransform: IEntityTransform = {
       [name: string]: Partial<IFieldInit>,
     } | Partial<IFieldInit>[]) => {
       if (!Array.isArray(input)) {
-        input = Object.keys(input).map(k => input[k]);
+        input = Object.keys(input).map(k => ({
+          name: k,
+          ...input[k],
+        }));
       }
+      debugger;
       return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
     },
-    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
+
+    reverse: (input:  Map<string, IField>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
+      } else {
+        return null;
+      }
+    },
   },
 };
 
@@ -86,9 +98,8 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
   public get indexed(): Set<string> {
     return this.store.get('indexed', null);
   }
-
-  protected transform(input: Partial<IEntityInit>): Partial<IEntityStore> {
-    const result: Partial<IEntityStore> = {};
+  protected transform(input: Partial<IEntityInit>): IEntityStore {
+    const result: IEntityStore = {} as any;
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
@@ -102,21 +113,24 @@ export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEn
     }
     return result;
   }
-  protected reverse(input: IEntityStore): IEntityInit {
+
+  protected reverse(input: Record<IEntityStore> & Readonly<IEntityStore>): IEntityInit {
     const result: IEntityInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'fields') {
             result.fields = EntityTransform.fields.reverse(input.fields);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }
     }
     return result;
   }
+
   constructor(init: Partial<IEntityInit> = {}) {
     super();
     this.store = new EntityStorage(this.transform(init));

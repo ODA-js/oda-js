@@ -26,9 +26,11 @@ import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
 import { IEntity } from '../interfaces/IEntity';
+import { IFieldContext } from '../contexts/IFieldContext';
+import { Package } from './Package';
 
 // tslint:disable-next-line:variable-name
-export const DefaultField: Partial<IFieldStore> = {
+export const DefaultField: IFieldStore = {
   name: null,
   title: null,
   description: null,
@@ -48,28 +50,48 @@ export const DefaultField: Partial<IFieldStore> = {
 
 // tslint:disable-next-line:variable-name
 export const FieldTransform: Partial<IFieldTransform> = {
-  args: transformMap<IFieldArgs>(),
+  args: {
+    transform: (input: IFieldArgs[]) => {
+      if (input) {
+        return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+      } else {
+        return null;
+      }
+    },
+    reverse: (input: Map<string, IFieldArgs>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]());
+      } else {
+        return null;
+      }
+    },
+  },
   relation: {
     transform: (inp: Partial<IRelationInit>): IRelation => {
-      if (IsBelongsToProps(inp)) {
-        return new BelongsTo(inp);
-      }
-      if (IsBelongsToManyProps(inp)) {
-        return new BelongsToMany(inp);
-      }
-      if (IsHasOneProps(inp)) {
-        return new HasOne(inp);
-      }
-      if (IsHasManyProps(inp)) {
-        return new HasMany(inp);
+      if (inp) {
+        if (IsBelongsToProps(inp)) {
+          return new BelongsTo(inp);
+        }
+        if (IsBelongsToManyProps(inp)) {
+          return new BelongsToMany(inp);
+        }
+        if (IsHasOneProps(inp)) {
+          return new HasOne(inp);
+        }
+        if (IsHasManyProps(inp)) {
+          return new HasMany(inp);
+        }
+      } else {
+        return null;
       }
     },
     reverse: (inp: IRelation): Partial<IRelationInit> => {
-      if (IsBelongsTo(inp)) {
-        return {
-          ...inp,
-          belongsTo: BelongsToTransform.belongsTo.reverse(inp.belongsTo),
-          fields: BelongsToTransform.fields.reverse(inp.fields),
+      if (inp) {
+        if (IsBelongsTo(inp)) {
+          return {
+            ...inp,
+            belongsTo: BelongsToTransform.belongsTo.reverse(inp.belongsTo),
+            fields: BelongsToTransform.fields.reverse(inp.fields),
         } as IBelongsToInit;
       }
       if (IsBelongsToMany(inp)) {
@@ -90,6 +112,9 @@ export const FieldTransform: Partial<IFieldTransform> = {
           fields: HasManyTransform.fields.reverse(inp.fields),
         } as IHasManyInit;
       }
+      } else {
+        return null;
+    }
     },
   },
 };
@@ -163,17 +188,18 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     }
     return result;
   }
-  protected reverse(input: IFieldStore): Partial<IFieldInit> {
-    const result: Partial<IFieldInit> = {};
+  protected reverse(input: Record<IFieldStore> & Readonly<IFieldStore>): IFieldInit {
+    const result: IFieldInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'args') {
             result.args = FieldTransform.args.reverse(input.args);
           } else if (f === 'relation') {
             result.relation = FieldTransform.relation.reverse(input.relation);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

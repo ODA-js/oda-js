@@ -10,7 +10,7 @@ import { Field } from './Field';
 
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsToMany: Partial<IBelongsToManyStore> = {
+export const DefaultBelongsToMany: IBelongsToManyStore = {
   name: null,
   title: null,
   description: null,

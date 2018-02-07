@@ -1,4 +1,4 @@
-import { Map, Set } from 'immutable';
+import { Map, Set, Record } from 'immutable';
 
 import { MapType } from '../model/utils';
 import { IField, IFieldInit } from './IField';
@@ -48,16 +48,19 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
 export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
   singular?: string;
   plural?: string;
-  fields: {
-    [name: string]: Partial<IFieldInit>,
-  } | Partial<IFieldInit>[];
+  fields?: {
+    [name: string]: IFieldInit,
+  } | IFieldInit[];
   package?: IPackage;
 }
 
 export interface IEntityTransform {
-  fields: MapType<{
-    [name: string]: Partial<IFieldInit>,
-  } | Partial<IFieldInit>[], Map<string, IField>>;
+  fields: {
+    transform: (input: {
+      [name: string]: IFieldInit,
+    } | IFieldInit[]) => Map<string, IField>;
+    reverse: (input:  Map<string, IField>) => IFieldInit[];
+  };
 }
 
 export interface IEntity extends IModelType, IPackagedItem {

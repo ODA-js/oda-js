@@ -17,7 +17,7 @@ import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 
 // tslint:disable-next-line:variable-name
-export const DefaultHasMany: Partial<IHasManyStore> = {
+export const DefaultHasMany: IHasManyStore = {
   name: null,
   title: null,
   description: null,

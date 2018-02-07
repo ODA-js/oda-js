@@ -18,7 +18,7 @@ import { inherits } from 'util';
 import { Field } from './Field';
 
 // tslint:disable-next-line:variable-name
-export const DefaultBelongsTo: Partial<IBelongsToStore> = {
+export const DefaultBelongsTo: IBelongsToStore = {
   name: null,
   title: null,
   description: null,

@@ -20,7 +20,7 @@ export type ArrayToSet<S> = {
   reverse: (input: Set<S>) => S[];
 };
 
-export function transformMap<S extends { name: string }>(): ArrayToMap<S> {
+export function transformMap<S extends { name: string, toJS() }>(): ArrayToMap<S> {
   return {
     transform: (input: S[]) => Map<string, S>(input.map(p => [p.name, p]) as [string, S][]),
     reverse: (input: Map<string, S>) => Array.from(input.values()[Symbol.iterator]()),
