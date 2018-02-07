@@ -15,12 +15,27 @@ export const DefaultModel: IModelStore = {
   name: null,
   title: null,
   description: null,
-  packages: Map<string, IPackage>(),
+  packages: null,
 };
 
 // tslint:disable-next-line:variable-name
 export const ModelTransform: IModelTransform = {
-  packages: transformMap<IPackage>(),
+  packages: {
+    transform: (input?: IPackage[]) => {
+      if (input) {
+        return Map<string, IPackage>(input.map(p => [p.name, p]) as [string, IPackage][]);
+      } else {
+        return null;
+      }
+    },
+    reverse: (input?: Map<string, IPackage>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackage);
+      } else {
+        return null;
+      }
+    },
+  },
 };
 
 // tslint:disable-next-line:variable-name
@@ -63,15 +78,17 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     }
     return result;
   }
-  protected reverse(input: IModelStore): IModelInit {
+
+  protected reverse(input: Record<IModelStore> & Readonly<IModelStore>): IModelInit {
     const result: IModelInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'packages') {
             result.packages = ModelTransform.packages.reverse(input.packages);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }
