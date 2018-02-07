@@ -123,18 +123,18 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
     return result;
   }
 
-  protected reverse(input: Record<IMutationStore>): IMutationInit {
+  protected reverse(input: Record<IMutationStore> & Readonly<IMutationStore>): IMutationInit {
     const result: IMutationInit = {} as any;
     if (input) {
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
           if (f === 'args') {
-            result.args = MutationTransform.args.reverse(input.get(f, null));
+            result.args = MutationTransform.args.reverse(input.args);
           } else if (f === 'payload') {
-            result.payload = MutationTransform.payload.reverse(input.get(f, null));
+            result.payload = MutationTransform.payload.reverse(input.payload);
           } else if (f === 'acl') {
-            const acl = input.get(f, null);
+            const acl = input.acl;
             for (let facl in acl) {
               if (acl.hasOwnProperty(facl)) {
                 result.acl = {} as any;

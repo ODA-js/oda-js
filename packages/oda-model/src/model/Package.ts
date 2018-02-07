@@ -84,14 +84,14 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
     return result;
   }
 
-  protected reverse(input: Record<IPackageStore>): IPackageInit {
+  protected reverse(input: Record<IPackageStore> & Readonly<IPackageStore>): IPackageInit {
     const result: IPackageInit = {} as any;
     if (input) {
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
           if (f === 'items') {
-            result.items = PackageTransform.items.reverse(input.get(f, null));
+            result.items = PackageTransform.items.reverse(input.items);
           } else {
             result[f] = core[f];
           }
