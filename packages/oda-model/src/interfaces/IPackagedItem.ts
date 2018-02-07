@@ -13,4 +13,5 @@ export interface IPackagedItemStore {
 export interface IPackagedItem {
   readonly name: string;
   readonly package?: IPackage;
+  toJS(): object;
 }

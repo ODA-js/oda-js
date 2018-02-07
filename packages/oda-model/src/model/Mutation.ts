@@ -42,11 +42,19 @@ export const MutationACLTransform: IMutationACLTransform = {
 };
 
 let transformFieldArgs = {
-  transform: (input: Partial<IFieldArgs>[]) => {
-    return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+  transform: (input?: Partial<IFieldArgs>[]) => {
+    if (input) {
+      return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+    } else {
+      return null;
+    }
   },
-  reverse: (input: Map<string, IFieldArgs>) => {
-    return Array.from(input.values()[Symbol.iterator]());
+  reverse: (input?: Map<string, IFieldArgs>) => {
+    if (input) {
+      return Array.from(input.values()[Symbol.iterator]());
+    } else {
+      return null;
+    }
   },
 };
 
@@ -144,10 +152,6 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
       }
     }
     return result;
-  }
-
-  public toJS(): Partial<IMutationInit> {
-    return this.reverse(this.store);
   }
 
   constructor(init: Partial<IMutationInit> = {}) {

@@ -19,7 +19,7 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
    * from input to stored
    * @param input input type
    */
-  protected transform(input: Partial<TInputProps>): Partial<TStoredProps> {
+  protected transform(input?: Partial<TInputProps>): Partial<TStoredProps> {
     throw new Error('not implemented');
   }
 
@@ -27,7 +27,7 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
    * from stored to input
    * @param stored
    */
-  protected reverse(stored: Record<TStoredProps>): Partial<TInputProps> {
+  protected reverse(stored?: Record<TStoredProps>): Partial<TInputProps> {
     throw new Error('not implemented');
   }
 

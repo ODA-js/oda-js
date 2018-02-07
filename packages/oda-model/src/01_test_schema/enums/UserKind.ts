@@ -1,4 +1,4 @@
-import { IEnumInit } from './../../../interfaces/IEnum';
+import { IEnumInit } from '../../interfaces/IEnum';
 
 
 const result: IEnumInit = {

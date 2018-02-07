@@ -6,10 +6,10 @@ import { IModelType } from '../interfaces/IModelType';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { transformMap } from './utils';
-import {IPackagedItem } from '../interfaces/IPackagedItem';
+import { IPackagedItem } from '../interfaces/IPackagedItem';
 
 // tslint:disable-next-line:variable-name
-export const DefaultPackage: Partial<IPackageStore> = {
+export const DefaultPackage: IPackageStore = {
   name: null,
   title: null,
   description: null,
@@ -21,7 +21,22 @@ export const DefaultPackage: Partial<IPackageStore> = {
 
 // tslint:disable-next-line:variable-name
 export const PackageTransform: IPackageTransform = {
-  items: transformMap<IPackagedItem>(),
+  items: {
+    transform: (input?: IPackagedItem[]) => {
+      if (input) {
+        return Map<string, IPackagedItem>(input.map(p => [p.name, p]) as [string, IPackagedItem][]);
+      } else {
+        return null;
+      }
+    },
+    reverse: (input?: Map<string, IPackagedItem>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackagedItem);
+      } else {
+        return null;
+      }
+    },
+  },
 };
 
 // tslint:disable-next-line:variable-name
@@ -69,15 +84,16 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
     return result;
   }
 
-  protected reverse(input: IPackageStore): IPackageInit {
+  protected reverse(input: Record<IPackageStore>): IPackageInit {
     const result: IPackageInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'items') {
-            result.items = PackageTransform.items.reverse(input.items);
+            result.items = PackageTransform.items.reverse(input.get(f, null));
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

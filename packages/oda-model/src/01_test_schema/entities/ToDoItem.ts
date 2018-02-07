@@ -1,5 +1,5 @@
 
-import { IEntityInit } from '../../../interfaces/IEntity';
+import { IEntityInit } from '../../interfaces/IEntity';
 
 const entity: IEntityInit = {
   name: 'ToDoItem',

@@ -1,4 +1,4 @@
-import schema from './schema';
+import schema from './../01_test_schema';
 import { IEntityInit } from './../interfaces/IEntity';
 import { IPackageInit } from './../interfaces/IPackage';
 import { IMutationInit } from './../interfaces/IMutation';
@@ -32,12 +32,18 @@ function LoadSchema(input: ModelLoad) {
     packages: [],
   });
 
-  return result;
+  return systemPkg;
 }
 
+describe('Schemaloading', () => {
+  let ld: IModelType;
 
-debugger;
-LoadSchema(schema);
+  it('has atl least one package', () => {
+    // ld.
+  });
+
+});
+
 
 
 

@@ -1,4 +1,4 @@
-import { IMutationInit } from '../../../interfaces/IMutation';
+import { IMutationInit } from '../../interfaces/IMutation';
 
 const mutation: IMutationInit = {
   name: 'loginUser',
