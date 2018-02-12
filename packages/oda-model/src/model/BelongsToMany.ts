@@ -4,7 +4,7 @@ import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTrans
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
-import { Relation } from './Relation';
+import { Relation, RelationTransform } from './Relation';
 import { transformMap } from './utils';
 import { Field } from './Field';
 
@@ -29,18 +29,11 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const BelongsToManyTransform: IRelationTransform = {
-  belongsToMany: {
-    transform: (inp) => new EntityRef(inp),
-    reverse: (inp) => inp.toString(),
-  },
+export const BelongsToManyTransform = {
+  ...RelationTransform('BelongsTo') as any,
   using: {
     transform: (inp) => new EntityRef(inp),
     reverse: (inp) => inp.toString(),
-  },
-  fields: {
-    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
-    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
   },
 };
 

@@ -12,7 +12,7 @@ import {
 } from '../interfaces/IHasOne';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
-import { Relation } from './Relation';
+import { Relation, RelationTransform } from './Relation';
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 
@@ -28,23 +28,14 @@ export const DefaultHasOne: IHasOneStore = {
   single: true,
   stored: true,
   embedded: true,
-// name
+  // name
   fullName: null,
   normalName: null,
   shortName: null,
 };
 
 // tslint:disable-next-line:variable-name
-export const HasOneTransform: IRelationTransform = {
-  hasOne: {
-    transform: (inp) => new EntityRef(inp),
-    reverse: (inp) => inp.toString(),
-  },
-  fields: {
-    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
-    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
-  },
-};
+export const HasOneTransform: IRelationTransform = RelationTransform('HasOne') as any;
 
 // tslint:disable-next-line:variable-name
 export const HasOneStorage = Record(DefaultHasOne);

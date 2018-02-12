@@ -12,7 +12,7 @@ import {
 } from '../interfaces/IHasMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
-import { Relation } from './Relation';
+import { Relation, RelationTransform } from './Relation';
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 
@@ -35,16 +35,7 @@ export const DefaultHasMany: IHasManyStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const HasManyTransform: IRelationTransform = {
-  hasMany: {
-    transform: (inp) => new EntityRef(inp),
-    reverse: (inp) => inp.toString(),
-  },
-  fields: {
-    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
-    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
-  },
-};
+export const HasManyTransform: IRelationTransform  = RelationTransform('HasMany') as any;
 
 // tslint:disable-next-line:variable-name
 export const HasManyStorage = Record(DefaultHasMany);

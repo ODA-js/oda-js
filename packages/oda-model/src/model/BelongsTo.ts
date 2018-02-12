@@ -1,4 +1,4 @@
-import { Relation } from './Relation';
+import { Relation, RelationTransform } from './Relation';
 import { IRelationStore } from '../interfaces/IRelation';
 import { Record } from 'immutable';
 import { Map, Set } from 'immutable';
@@ -36,16 +36,7 @@ export const DefaultBelongsTo: IBelongsToStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const BelongsToTransform: IRelationTransform = {
-  belongsTo: {
-    transform: (inp) => new EntityRef(inp),
-    reverse: (inp) => inp.toString(),
-  },
-  fields: {
-    transform: (input: IFieldInit[]) => Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]),
-    reverse: (input: Map<string, IField>) => Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS()),
-  },
-};
+export const BelongsToTransform: IRelationTransform = RelationTransform('BelongsTo') as any;
 
 // tslint:disable-next-line:variable-name
 export const BelongsToStorage = Record(DefaultBelongsTo);
