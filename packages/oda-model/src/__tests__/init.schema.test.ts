@@ -1,6 +1,6 @@
 import schema from './../01_test_schema';
 import { IEntityInit } from './../interfaces/IEntity';
-import { IPackageInit } from './../interfaces/IPackage';
+import { IPackageInit, IPackage } from './../interfaces/IPackage';
 import { IMutationInit } from './../interfaces/IMutation';
 import { INamedItem, IModelType } from '../interfaces/IModelType';
 import { IEnumInit } from '../interfaces/IEnum';
@@ -25,21 +25,38 @@ function LoadSchema(input: ModelLoad) {
       ...input.enums.map(m => new Enum(m)),
     ],
   });
+
   const result: IModelType = new Model({
     name: input.name,
     title: input.title,
     description: input.description,
-    packages: [],
+    packages: [
+      {
+        name: 'system',
+        items: [
+          ...input.entities.map(e => new Entity(e)),
+          ...input.mutations.map(m => new Mutation(m)),
+          ...input.enums.map(m => new Enum(m)),
+        ],
+      },
+    ],
   });
+  return result;
 
-  return systemPkg;
 }
 
 describe('Schemaloading', () => {
-  let ld: IModelType;
+  let model: IModelType;
+  beforeAll(() => {
+    model = LoadSchema(schema);
+  });
 
-  it('has atl least one package', () => {
-    // ld.
+  it('has at least one package', () => {
+    debugger;
+    expect(model).not.toBeUndefined();
+    expect(model.toJS()).toMatchObject({
+
+    });
   });
 
 });

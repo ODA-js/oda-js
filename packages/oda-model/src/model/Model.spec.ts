@@ -17,7 +17,12 @@ describe('Model', () => {
     expect(model.modelType).toBe('model');
     expect(model.description).toBeNull();
     expect(model.packages).toBeNull();
-    expect(model.defaultPackage).not.toBeNull();
+    expect(model.defaultPackage).not.toBeUndefined();
+    expect(model.defaultPackage.toJS()).toMatchObject({
+      name: 'default',
+      title: 'Default',
+      description: 'default package',
+    });
   });
 
   it('update strings', () => {

@@ -3,6 +3,7 @@ import { Map, Record } from 'immutable';
 import { IModel, IModelInit, IModelStore, IModelTransform } from '../interfaces/IModel';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
+import { Package } from './Package';
 
 // tslint:disable-next-line:variable-name
 export const DefaultModel: IModelStore = {
@@ -24,6 +25,7 @@ export const ModelTransform: IModelTransform = {
     },
     reverse: (input?: Map<string, IPackage>) => {
       if (input) {
+        debugger;
         return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackage);
       } else {
         return null;
@@ -91,6 +93,11 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
   }
   constructor(init: Partial<IModelInit> = {}) {
     super();
+    this._defaultPackage = new Package({
+      name: 'default',
+      title: 'Default',
+      description: 'default package',
+    });
     this.store = new ModelStorage(this.transform(init));
     this.init = new (Record<Partial<IModelInit>>(init))();
   }

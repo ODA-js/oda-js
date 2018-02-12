@@ -3,9 +3,10 @@ import { Map } from 'immutable';
 import { ArrayToMap } from '../model/utils';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
+import { IPackagedItem } from './IPackagedItem';
 
 export interface IModelInit extends Partial<INamedItem>  {
-  packages: IPackage[];
+  packages: IPackagedItem[];
 }
 
 export interface IModelStore extends INamedItem {
