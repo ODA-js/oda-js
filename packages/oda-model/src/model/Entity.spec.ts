@@ -24,6 +24,13 @@ describe('Entity', () => {
     expect(entity.modelType).toBe('entity');
     expect(entity.description).toBeNull();
     expect(entity.fields).toBeNull();
+    expect(entity.acl).toBeNull();
+    expect(entity.indexed).toBeNull();
+    expect(entity.package).toBeNull();
+    expect(entity.plural).toBeNull();
+    expect(entity.relations).toBeNull();
+    expect(entity.required).toBeNull();
+    expect(entity.singular).toBeNull();
   });
 
   it('update strings', () => {

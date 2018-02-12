@@ -44,7 +44,6 @@ export const EntityTransform: IEntityTransform = {
           ...input[k],
         }));
       }
-      debugger;
       return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
     },
 
