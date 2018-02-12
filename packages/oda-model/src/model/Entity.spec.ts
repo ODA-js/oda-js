@@ -20,8 +20,9 @@ describe('Entity', () => {
   });
 
   it('create empty', () => {
-    expect(entity.name).toBeNull();
     expect(entity.modelType).toBe('entity');
+    expect(entity.name).toBeNull();
+    expect(entity.title).toBeNull();
     expect(entity.description).toBeNull();
     expect(entity.fields).toBeNull();
     expect(entity.acl).toBeNull();
