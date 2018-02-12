@@ -46,14 +46,14 @@ export const BelongsToManyTransform = {
     },
   },
   fields: {
-    transform:  (input: IFieldInit[]) => {
+    transform: (input: IFieldInit[]) => {
       if (input) {
         return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
       } else {
         return null;
       }
     },
-    reverse : (input: Map<string, IField>) => {
+    reverse: (input: Map<string, IField>) => {
       if (input) {
         return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
       } else {
@@ -102,7 +102,7 @@ export class BelongsToMany
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'belongsToMany') {
             result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(input.belongsToMany);
           } else if (f === 'using') {
             result.using = BelongsToManyTransform.using.transform(input.using);
@@ -123,7 +123,7 @@ export class BelongsToMany
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'belongsToMany' || f === 'ref') {
             result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
           } else if (f === 'using') {
             result.using = BelongsToManyTransform.using.reverse(input.using);

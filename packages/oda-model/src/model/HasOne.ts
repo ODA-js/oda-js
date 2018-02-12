@@ -44,14 +44,14 @@ export const HasOneTransform: IRelationTransform = {
     },
   },
   fields: {
-    transform:  (input: IFieldInit[]) => {
+    transform: (input: IFieldInit[]) => {
       if (input) {
         return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
       } else {
         return null;
       }
     },
-    reverse : (input: Map<string, IField>) => {
+    reverse: (input: Map<string, IField>) => {
       if (input) {
         return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
       } else {
@@ -79,7 +79,7 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'hasOne') {
             result.hasOne = HasOneTransform.hasOne.transform(input.hasOne);
           } else if (f === 'fields') {
             result.fields = HasOneTransform.fields.transform(input.fields);
@@ -97,7 +97,7 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'hasOne' || f === 'ref') {
             result.hasOne = HasOneTransform.hasOne.reverse(input.hasOne);
           } else if (f === 'fields') {
             result.fields = HasOneTransform.fields.reverse(input.fields);

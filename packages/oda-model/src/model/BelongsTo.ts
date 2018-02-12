@@ -99,7 +99,7 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'belongsTo' || f === 'ref') {
             result.belongsTo = BelongsToTransform.belongsTo.reverse(input.belongsTo);
           } else if (f === 'fields') {
             result.fields = BelongsToTransform.fields.reverse(input.fields);

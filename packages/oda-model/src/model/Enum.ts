@@ -8,7 +8,7 @@ import { } from './interfaces/IEnum';
 import { IFieldStore } from '../interfaces/IField';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEnum: Partial<IEnumStore> = {
+export const DefaultEnum: IEnumStore = {
   name: null,
   title: null,
   description: null,
@@ -31,11 +31,17 @@ export const EnumTransform: IEnumTransform = {
             value: p,
           }];
         } else {
-          return [p, p];
+          return [p.name, p];
         }
       }) as [string, IEnumItem][]);
     },
-    reverse: (input: Map<string, IEnumItem>) => Array.from(input.values()[Symbol.iterator]()),
+    reverse: (input: Map<string, IEnumItem>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]());
+      } else {
+        return null;
+      }
+    },
   },
 };
 
@@ -73,15 +79,16 @@ export class Enum extends Persistent<IEnumInit, IEnumStore> implements IEnum {
     }
     return result;
   }
-  protected reverse(input: IEnumStore): IEnumInit {
+  protected reverse(input: Record<IEnumStore> & Readonly<IEnumStore>): IEnumInit {
     const result: IEnumInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'values') {
             result.values = EnumTransform.values.reverse(input.values);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

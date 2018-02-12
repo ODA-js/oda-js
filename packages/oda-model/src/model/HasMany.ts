@@ -44,14 +44,14 @@ export const HasManyTransform: IRelationTransform = {
     },
   },
   fields: {
-    transform:  (input: IFieldInit[]) => {
+    transform: (input: IFieldInit[]) => {
       if (input) {
         return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
       } else {
         return null;
       }
     },
-    reverse : (input: Map<string, IField>) => {
+    reverse: (input: Map<string, IField>) => {
       if (input) {
         return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
       } else {
@@ -79,7 +79,7 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'hasMany') {
             result.hasMany = HasManyTransform.hasMany.transform(input.hasMany);
           } else if (f === 'fields') {
             result.fields = HasManyTransform.fields.transform(input.fields);
@@ -98,7 +98,7 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'belongsTo') {
+          if (f === 'hasMany' || f === 'ref') {
             result.hasMany = HasManyTransform.hasMany.reverse(input.hasMany);
           } else if (f === 'fields') {
             result.fields = HasManyTransform.fields.reverse(input.fields);

@@ -3,11 +3,11 @@ import { Record } from 'immutable';
 import * as inflected from 'inflected';
 
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
-import { IEntityRef } from '../interfaces/IEntityRef';
+import { IEntityRef, IEntityRefStore, IEntityRefInit } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntityRef: IEntityRef = {
+export const DefaultEntityRef: IEntityRefStore = {
   backField: '',
   entity: '',
   field: '',
@@ -16,7 +16,7 @@ export const DefaultEntityRef: IEntityRef = {
 // tslint:disable-next-line:variable-name
 export const EntityRefStorage = Record(DefaultEntityRef);
 
-export class EntityRef extends Persistent<IEntityRef, IEntityRef>
+export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore>
   implements IEntityRef {
   public get backField(): string {
     return this.store.get('backField', '');
@@ -44,7 +44,7 @@ export class EntityRef extends Persistent<IEntityRef, IEntityRef>
     return result;
   }
 
-  protected reverse(input: Record<IEntityRef> & Readonly<IEntityRef>): IEntityRef {
+  protected reverse(input: Record<IEntityRefStore> & Readonly<IEntityRefStore>): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
       const core = input.toJS();

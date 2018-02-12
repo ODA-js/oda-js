@@ -76,7 +76,7 @@ describe('BelongsToMany', () => {
     expect(relation.ref.field).toBe('id');
     expect(relation.using).not.toBeNull();
     expect(relation.using.backField).toBe('id');
-    expect(relation.using.entity).toBe('Some');
+    expect(relation.using.entity).toBe('SomeOther');
     expect(relation.using.field).toBe('id');
     expect(relation.ref.toJS()).toMatchObject({
       entity: 'Some',
@@ -84,7 +84,7 @@ describe('BelongsToMany', () => {
       field: 'id',
     });
 
-    expect(relation.ref.toJS()).toMatchObject({
+    expect(relation.using.toJS()).toMatchObject({
       entity: 'SomeOther',
       backField: 'id',
       field: 'id',
