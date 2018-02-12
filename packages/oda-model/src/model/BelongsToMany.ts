@@ -1,12 +1,11 @@
-import { Record, Map } from 'immutable';
+import { Map, Record } from 'immutable';
 
-import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTransform } from '../interfaces/IBelongsToMany';
+import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore } from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
-import { Relation, RelationTransform } from './Relation';
-import { transformMap } from './utils';
 import { Field } from './Field';
+import { Relation } from './Relation';
 
 
 // tslint:disable-next-line:variable-name
@@ -19,9 +18,9 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
   belongsToMany: null,
   using: null,
   //storage
-  single: true,
-  stored: true,
-  embedded: true,
+  single: false,
+  stored: false,
+  embedded: false,
   // name
   fullName: null,
   normalName: null,
@@ -30,10 +29,53 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
 
 // tslint:disable-next-line:variable-name
 export const BelongsToManyTransform = {
-  ...RelationTransform('BelongsTo') as any,
+  belongsToMany: {
+    transform: (inp) => {
+      if (inp) {
+        return new EntityRef(inp);
+      } else {
+        return null;
+      }
+    },
+    reverse: (inp) => {
+      if (inp) {
+        return inp.toString();
+      } else {
+        return null;
+      }
+    },
+  },
+  fields: {
+    transform:  (input: IFieldInit[]) => {
+      if (input) {
+        return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+      } else {
+        return null;
+      }
+    },
+    reverse : (input: Map<string, IField>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
+      } else {
+        return null;
+      }
+    },
+  },
   using: {
-    transform: (inp) => new EntityRef(inp),
-    reverse: (inp) => inp.toString(),
+    transform: (inp) => {
+      if (inp) {
+        return new EntityRef(inp);
+      } else {
+        return null;
+      }
+    },
+    reverse: (inp) => {
+      if (inp) {
+        return inp.toString();
+      } else {
+        return null;
+      }
+    },
   },
 };
 
@@ -75,11 +117,12 @@ export class BelongsToMany
     return result;
   }
 
-  protected reverse(input: Partial<IBelongsToManyStore>): Partial<IBelongsToManyInit> {
+  protected reverse(input: Record<IBelongsToManyStore> & Readonly<IBelongsToManyStore>): Partial<IBelongsToManyInit> {
     const result: IBelongsToManyInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'belongsTo') {
             result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
           } else if (f === 'using') {
@@ -87,7 +130,7 @@ export class BelongsToMany
           } else if (f === 'fields') {
             result.fields = BelongsToManyTransform.fields.reverse(input.fields);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

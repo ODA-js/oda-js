@@ -1,20 +1,11 @@
-import { IRelationStore } from '../interfaces/IRelation';
-import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
+import { Map, Record } from 'immutable';
 
-import { Persistent } from './Persistent';
-import { transformMap, transformSet, convertMap } from './utils';
-import {
-  IHasManyStore,
-  IHasManyInit,
-  IHasMany,
-  IRelationTransform,
-} from '../interfaces/IHasMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
-import { Relation, RelationTransform } from './Relation';
+import { IHasMany, IHasManyInit, IHasManyStore, IRelationTransform } from '../interfaces/IHasMany';
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
+import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasMany: IHasManyStore = {
@@ -25,9 +16,9 @@ export const DefaultHasMany: IHasManyStore = {
   opposite: null,
   hasMany: null,
   //storage
-  single: true,
-  stored: true,
-  embedded: true,
+  single: false,
+  stored: false,
+  embedded: false,
   // name
   fullName: null,
   normalName: null,
@@ -35,7 +26,40 @@ export const DefaultHasMany: IHasManyStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const HasManyTransform: IRelationTransform  = RelationTransform('HasMany') as any;
+export const HasManyTransform: IRelationTransform = {
+  hasMany: {
+    transform: (inp) => {
+      if (inp) {
+        return new EntityRef(inp);
+      } else {
+        return null;
+      }
+    },
+    reverse: (inp) => {
+      if (inp) {
+        return inp.toString();
+      } else {
+        return null;
+      }
+    },
+  },
+  fields: {
+    transform:  (input: IFieldInit[]) => {
+      if (input) {
+        return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+      } else {
+        return null;
+      }
+    },
+    reverse : (input: Map<string, IField>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
+      } else {
+        return null;
+      }
+    },
+  },
+};
 
 // tslint:disable-next-line:variable-name
 export const HasManyStorage = Record(DefaultHasMany);
@@ -68,17 +92,18 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     return result;
   }
 
-  protected reverse(input: IHasManyStore): IHasManyInit {
+  protected reverse(input: Record<IHasManyStore> & Readonly<IHasManyStore>): IHasManyInit {
     const result: IHasManyInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'belongsTo') {
             result.hasMany = HasManyTransform.hasMany.reverse(input.hasMany);
           } else if (f === 'fields') {
             result.fields = HasManyTransform.fields.reverse(input.fields);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

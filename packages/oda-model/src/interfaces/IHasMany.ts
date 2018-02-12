@@ -1,8 +1,9 @@
-import { ConvertToMap, MapType } from '../model/utils';
+import { Map } from 'immutable';
+
+import { MapType } from '../model/utils';
 import { IEntityRef } from './IEntityRef';
 import { IField, IFieldInit } from './IField';
 import { IRelation, IRelationInit, IRelationStore } from './IRelation';
-import { Map} from 'immutable';
 
 export interface IHasManyInit extends Partial<IRelationInit> {
   hasMany: string | IEntityRef;

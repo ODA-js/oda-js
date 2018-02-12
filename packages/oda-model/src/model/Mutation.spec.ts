@@ -1,8 +1,5 @@
 import { Mutation } from './Mutation';
 import { Package } from './Package';
-import { Map, Set } from 'immutable';
-import { IPackagedItem } from '../interfaces/IPackagedItem';
-import { deepEqual } from 'assert';
 
 describe('Mutaion', () => {
   let mutation: Mutation;

@@ -1,6 +1,5 @@
-import { Map, Set, Record } from 'immutable';
+import { Map, Set } from 'immutable';
 
-import { MapType } from '../model/utils';
 import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';

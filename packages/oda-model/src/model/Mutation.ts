@@ -1,18 +1,16 @@
-import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
+import { Map, Record, Set } from 'immutable';
 
 import { IFieldArgs } from '../interfaces/IField';
 import {
   IMutation,
   IMutationACLStore,
+  IMutationACLTransform,
   IMutationInit,
   IMutationStore,
   IMutationTransform,
-  IMutationACLTransform,
 } from '../interfaces/IMutation';
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
 import { IPackage } from '../interfaces/IPackage';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationStore = {

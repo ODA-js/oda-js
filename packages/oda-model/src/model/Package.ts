@@ -1,12 +1,9 @@
-import { Record } from 'immutable';
-import { Map } from 'immutable';
+import { Map, Record } from 'immutable';
 
 import { IModel } from '../interfaces/IModel';
-import { IModelType } from '../interfaces/IModelType';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
-import { Persistent } from './Persistent';
-import { transformMap } from './utils';
 import { IPackagedItem } from '../interfaces/IPackagedItem';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultPackage: IPackageStore = {

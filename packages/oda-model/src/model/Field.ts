@@ -1,5 +1,4 @@
-import { Map } from 'immutable';
-import { Record } from 'immutable';
+import { Map, Record } from 'immutable';
 
 import {
   IsBelongsTo,
@@ -13,9 +12,9 @@ import {
 } from '../helpers';
 import { IBelongsToInit } from '../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
+import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField } from '../interfaces/IField';
-import { IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
+import { IField, IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -24,10 +23,6 @@ import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
 import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
-import { transformMap } from './utils';
-import { IEntity } from '../interfaces/IEntity';
-import { IFieldContext } from '../contexts/IFieldContext';
-import { Package } from './Package';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {

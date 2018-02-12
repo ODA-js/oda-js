@@ -1,7 +1,5 @@
+import camelcase from 'camelcase';
 import { Record } from 'immutable';
-
-import  camelcase from 'camelcase';
-
 import * as inflected from 'inflected';
 
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
@@ -9,7 +7,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEntityRef: Partial<IEntityRef> = {
+export const DefaultEntityRef: IEntityRef = {
   backField: '',
   entity: '',
   field: '',
@@ -46,12 +44,13 @@ export class EntityRef extends Persistent<IEntityRef, IEntityRef>
     return result;
   }
 
-  protected reverse(input: IEntityRef): IEntityRef {
+  protected reverse(input: Record<IEntityRef> & Readonly<IEntityRef>): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
-          result[f] = input[f];
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
+          result[f] = core[f];
         }
       }
     }

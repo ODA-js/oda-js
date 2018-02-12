@@ -1,19 +1,10 @@
-import { IModel } from '../interfaces/IModel';
-import { Record, Seq } from 'immutable';
-import { Map, Set } from 'immutable';
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
-import {
-  IEntityStore,
-  IEntity,
-  IEntityInit,
-  IEntityTransform,
-  IEntityACL,
-} from '../interfaces/IEntity';
+import { Map, Record, Set } from 'immutable';
+
+import { IEntity, IEntityInit, IEntityStore, IEntityTransform, IEntityACL } from '../interfaces/IEntity';
 import { IField, IFieldInit } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
 import { Field } from './Field';
-import { Package } from './Package';
+import { Persistent } from './Persistent';
 
 
 // tslint:disable-next-line:variable-name

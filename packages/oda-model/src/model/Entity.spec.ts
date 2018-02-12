@@ -1,12 +1,4 @@
-import { Package } from './Package';
-import { Mutation } from './Mutation';
 import { Entity } from './Entity';
-import { Model } from './Model';
-import { Map, Set } from 'immutable';
-import { IPackagedItem } from '../interfaces/IPackagedItem';
-import { deepEqual } from 'assert';
-import { IPackageInit } from '../interfaces/IPackage';
-import { Field } from './Field';
 
 describe('Entity', () => {
   let entity: Entity;

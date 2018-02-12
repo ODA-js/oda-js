@@ -1,20 +1,11 @@
-import { IRelationStore } from '../interfaces/IRelation';
-import { Record } from 'immutable';
-import { Map, Set } from 'immutable';
+import { Map, Record } from 'immutable';
 
-import { Persistent } from './Persistent';
-import { transformMap, transformSet } from './utils';
-import {
-  IHasOneStore,
-  IHasOneInit,
-  IHasOne,
-  IRelationTransform,
-} from '../interfaces/IHasOne';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
-import { Relation, RelationTransform } from './Relation';
+import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../interfaces/IHasOne';
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
+import { Relation } from './Relation';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {
@@ -26,8 +17,8 @@ export const DefaultHasOne: IHasOneStore = {
   hasOne: null,
   //storage
   single: true,
-  stored: true,
-  embedded: true,
+  stored: false,
+  embedded: false,
   // name
   fullName: null,
   normalName: null,
@@ -35,7 +26,40 @@ export const DefaultHasOne: IHasOneStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const HasOneTransform: IRelationTransform = RelationTransform('HasOne') as any;
+export const HasOneTransform: IRelationTransform = {
+  hasOne: {
+    transform: (inp) => {
+      if (inp) {
+        return new EntityRef(inp);
+      } else {
+        return null;
+      }
+    },
+    reverse: (inp) => {
+      if (inp) {
+        return inp.toString();
+      } else {
+        return null;
+      }
+    },
+  },
+  fields: {
+    transform:  (input: IFieldInit[]) => {
+      if (input) {
+        return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+      } else {
+        return null;
+      }
+    },
+    reverse : (input: Map<string, IField>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
+      } else {
+        return null;
+      }
+    },
+  },
+};
 
 // tslint:disable-next-line:variable-name
 export const HasOneStorage = Record(DefaultHasOne);
@@ -67,17 +91,18 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     }
     return result;
   }
-  protected reverse(input: IHasOneStore): IHasOneInit {
+  protected reverse(input: Record<IHasOneStore> & Readonly<IHasOneStore>): IHasOneInit {
     const result: IHasOneInit = {} as any;
     if (input) {
-      for (let f in input) {
-        if (input.hasOwnProperty(f)) {
+      const core = input.toJS();
+      for (let f in core) {
+        if (core.hasOwnProperty(f)) {
           if (f === 'belongsTo') {
             result.hasOne = HasOneTransform.hasOne.reverse(input.hasOne);
           } else if (f === 'fields') {
             result.fields = HasOneTransform.fields.reverse(input.fields);
           } else {
-            result[f] = input[f];
+            result[f] = core[f];
           }
         }
       }

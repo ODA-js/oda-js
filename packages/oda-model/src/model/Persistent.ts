@@ -1,4 +1,5 @@
 import { Record } from 'immutable';
+
 import { IUpdatable } from '../interfaces/IUpdatable';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
