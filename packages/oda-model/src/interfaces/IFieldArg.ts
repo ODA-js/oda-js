@@ -11,3 +11,7 @@ export interface IFieldArg extends IModelType, Readonly<IFieldArgInit> {
   readonly required?: boolean;
   readonly defaultValue?: string;
 }
+
+export type FieldArgsInput = {
+  [name: string]: Partial<IFieldArgInit>,
+} | IFieldArgInit[];

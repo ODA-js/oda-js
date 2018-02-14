@@ -3,7 +3,7 @@ import { Map } from 'immutable';
 import { ArrayToMap, MapType } from '../model/utils';
 import { IEntity } from './IEntity';
 import { IEntityRef } from './IEntityRef';
-import { IFieldArgInit, IFieldArg } from './IFieldArg';
+import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IRelation, IRelationInit } from './IRelation';
 import { RelationInit, FieldArgsTransformType } from './types';
@@ -28,7 +28,7 @@ export interface IFieldStorage {
 export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, INamedItem {
   entity?: IEntity;
   type?: string;
-  args?: IFieldArgInit[];
+  args?: FieldArgsInput;
   order?: number;
   relation?: Partial<RelationInit>;
 }

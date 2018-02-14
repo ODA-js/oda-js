@@ -3,7 +3,7 @@ import { Map } from 'immutable';
 import { ArrayToMap, MapType } from '../model/utils';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
-import {EnumInitItem, IEnumItem, IEnumItemInit } from './IEnumItem';
+import { EnumInitItem, IEnumItem, IEnumItemInit } from './IEnumItem';
 
 export interface IEnumInit extends INamedItem, IPackagedItemInit {
   values: EnumInitItem[] | {
@@ -28,5 +28,5 @@ export type EnumItemTransformType = {
   transform: (input: EnumInitItem[] | {
     [name: string]: EnumInitItem;
   }) => Map<string, IEnumItem>;
-  reverse: (input:  Map<string, IEnumItem>) => IEnumItemInit[];
+  reverse: (input: Map<string, IEnumItem>) => IEnumItemInit[];
 };

@@ -13,11 +13,11 @@ const mutation: IMutationInit = {
       required: true,
     },
   ],
-  payload: [
-    {
-      name: 'token',
+  payload: {
+    token: {
+      type: 'string',
     },
-  ],
+  },
 };
 
 export default mutation;

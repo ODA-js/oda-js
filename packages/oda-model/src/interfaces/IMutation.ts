@@ -1,7 +1,7 @@
 import { Map, Set } from 'immutable';
 
 import { ArrayToMap, ArrayToSet, MapType } from '../model/utils';
-import { IFieldArgInit, IFieldArg } from './IFieldArg';
+import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
@@ -29,8 +29,8 @@ export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPac
 }
 
 export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
-  args: IFieldArgInit[];
-  payload: IFieldArgInit[];
+  args: FieldArgsInput;
+  payload: FieldArgsInput;
   package?: IPackage;
 }
 
