@@ -1,7 +1,7 @@
 import { Map, Set } from 'immutable';
 
 import { ArrayToMap, ArrayToSet } from '../model/utils';
-import { IFieldArgs } from './IField';
+import { IFieldArg } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
@@ -23,13 +23,13 @@ export interface IMutationMetaDataStore {
 }
 
 export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPackagedItemStore {
-  args: Map<string, IFieldArgs>;
-  payload: Map<string, IFieldArgs>;
+  args: Map<string, IFieldArg>;
+  payload: Map<string, IFieldArg>;
 }
 
 export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
-  args: IFieldArgs[];
-  payload: IFieldArgs[];
+  args: IFieldArg[];
+  payload: IFieldArg[];
   package?: IPackage;
 }
 
@@ -38,15 +38,15 @@ export interface IMutationACLTransform {
 }
 
 export interface IMutationTransform {
-  args: ArrayToMap<IFieldArgs>;
-  payload: ArrayToMap<IFieldArgs>;
+  args: ArrayToMap<IFieldArg>;
+  payload: ArrayToMap<IFieldArg>;
   acl: IMutationACLTransform;
 }
 
 export interface IMutation extends IModelType, IPackagedItem {
   readonly modelType: 'mutation';
-  readonly args: Map<string, IFieldArgs>;
-  readonly payload: Map<string, IFieldArgs>;
+  readonly args: Map<string, IFieldArg>;
+  readonly payload: Map<string, IFieldArg>;
   readonly acl?: IMutationACLStore;
 }
 

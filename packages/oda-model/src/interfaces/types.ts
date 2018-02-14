@@ -7,7 +7,7 @@ import { IBelongsToInit } from './IBelongsTo';
 import { IBelongsToManyInit } from './IBelongsToMany';
 import { IHasManyInit } from './IHasMany';
 import { IHasOneInit } from './IHasOne';
-import { IFieldInit, IField } from './IField';
+import { IFieldInit, IField, IFieldArg } from './IField';
 import { Map } from 'immutable';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
@@ -18,7 +18,9 @@ export type MetaModelType =
   | 'mutation'
   | 'entity'
   | 'enum'
+  | 'enumItem'
   | 'field'
+  | 'fieldArg'
   | 'ref'
   | 'relation'
   ;
@@ -37,4 +39,11 @@ export type FieldTransformType = {
     [name: string]: Partial<IFieldInit>,
   } | IFieldInit[]) => Map<string, IField>;
   reverse: (input:  Map<string, IField>) => IFieldInit[];
+};
+
+export type FieldArgsTransformType = {
+  transform: (input: {
+    [name: string]: Partial<IFieldArg>,
+  } | IFieldArg[]) => Map<string, IFieldArg>;
+  reverse: (input:  Map<string, IFieldArg>) => IFieldArg[];
 };

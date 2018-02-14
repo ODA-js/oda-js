@@ -16,8 +16,7 @@ export interface IFieldMetaData {
   acl: IFieldACL;
 }
 
-export interface IFieldArgs {
-  name: string;
+export interface IFieldArg extends INamedItem {
   type?: string;
   required?: boolean;
   defaultValue?: string;
@@ -34,7 +33,7 @@ export interface IFieldStorage {
 export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, INamedItem {
   entity?: IEntity;
   type?: string;
-  args?: IFieldArgs[];
+  args?: IFieldArg[];
   order?: number;
   relation?: Partial<RelationInit>;
 }
@@ -42,14 +41,14 @@ export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaDa
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
   entity: IEntity;
   type: string;
-  args?: Map<string, IFieldArgs>;
+  args?: Map<string, IFieldArg>;
   idKey?: IEntityRef;
   order: number;
   relation?: IRelation;
 }
 
 export interface IFieldTransform {
-  args: ArrayToMap<IFieldArgs>;
+  args: ArrayToMap<IFieldArg>;
   relation: {
     transform: (inp: Partial<IRelationInit>) => IRelation,
     reverse: (inp: IRelation) => Partial<IRelationInit>,
@@ -60,7 +59,7 @@ export interface IField extends IModelType {
   readonly modelType: 'field';
   readonly entity: IEntity;
   readonly type: string;
-  readonly args?: Map<string, IFieldArgs>;
+  readonly args?: Map<string, IFieldArg>;
   readonly idKey?: IEntityRef;
   readonly order: number;
   readonly relation: IRelation;

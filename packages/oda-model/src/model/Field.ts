@@ -14,7 +14,7 @@ import { IBelongsToInit } from '../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldACL, IFieldArgs, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
+import { IField, IFieldACL, IFieldArg, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -125,7 +125,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get acl(): Partial<IFieldACL> {
     return this.store.get('acl', null);
   }
-  public get args(): Map<string, IFieldArgs> {
+  public get args(): Map<string, IFieldArg> {
     return this.store.get('args', null);
   }
   public get derived(): boolean {

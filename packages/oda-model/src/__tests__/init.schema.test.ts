@@ -51,17 +51,6 @@ describe('Schemaloading', () => {
     expect(model.toJS()).toMatchObject(
       {
         name: schema.name,
-        packages: [
-          {
-            name: 'system',
-            items: [
-              ...schema.entities,
-              ...schema.mutations,
-              ...schema.enums,
-            ],
-          },
-        ],
-
       });
   });
 

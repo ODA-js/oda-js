@@ -1,6 +1,7 @@
 import { Map, Set } from 'immutable';
+
+import { IField, IFieldArg, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
-import { IFieldInit, IField, IFieldArgs } from '../interfaces/IField';
 import { Field } from './Field';
 
 export type MapType<T, S> = {
@@ -88,14 +89,14 @@ export function TransformField() {
 
 export function TransformArgs() {
   return {
-    transform: (input: IFieldArgs[]) => {
+    transform: (input: IFieldArg[]) => {
       if (input) {
-        return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+        return Map<string, IFieldArg>(input.map(p => [p.name, p]) as [string, IFieldArg][]);
       } else {
         return null;
       }
     },
-    reverse: (input: Map<string, IFieldArgs>) => {
+    reverse: (input: Map<string, IFieldArg>) => {
       if (input) {
         return Array.from(input.values()[Symbol.iterator]());
       } else {

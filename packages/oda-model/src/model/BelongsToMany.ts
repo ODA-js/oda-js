@@ -8,7 +8,6 @@ import { Field } from './Field';
 import { Relation } from './Relation';
 import { TransformRef, TransformField } from './utils';
 
-
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: IBelongsToManyStore = {
   name: null,

@@ -1,10 +1,7 @@
-import { Map, Record } from 'immutable';
+import { Record } from 'immutable';
 
 import { IBelongsTo, IBelongsToInit, IBelongsToStore, IRelationTransform } from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldInit } from '../interfaces/IField';
-import { EntityRef } from './EntityRef';
-import { Field } from './Field';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 

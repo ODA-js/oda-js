@@ -1,12 +1,9 @@
-import { Map, Record } from 'immutable';
+import { Record } from 'immutable';
 
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldInit } from '../interfaces/IField';
 import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../interfaces/IHasOne';
-import { EntityRef } from './EntityRef';
-import { Field } from './Field';
 import { Relation } from './Relation';
-import { TransformRef, TransformField } from './utils';
+import { TransformField, TransformRef } from './utils';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {

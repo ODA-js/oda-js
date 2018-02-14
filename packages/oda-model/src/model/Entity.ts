@@ -1,12 +1,10 @@
 import { Map, Record, Set } from 'immutable';
 
-import { IEntity, IEntityInit, IEntityStore, IEntityTransform, IEntityACL } from '../interfaces/IEntity';
-import { IField, IFieldInit } from '../interfaces/IField';
+import { IEntity, IEntityInit, IEntityStore, IEntityTransform, IEntityACL} from '../interfaces/IEntity';
+import { IField } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
-import { Field } from './Field';
 import { Persistent } from './Persistent';
 import { TransformField } from './utils';
-
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {

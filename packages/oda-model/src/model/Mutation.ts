@@ -1,6 +1,6 @@
 import { Map, Record, Set } from 'immutable';
 
-import { IFieldArgs } from '../interfaces/IField';
+import { IFieldArg } from '../interfaces/IField';
 import {
   IMutation,
   IMutationACLStore,
@@ -69,10 +69,10 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   public get title(): string {
     return this.store.get('title', null);
   }
-  public get args(): Map<string, IFieldArgs> {
+  public get args(): Map<string, IFieldArg> {
     return Map(this.store.get('args', null));
   }
-  public get payload(): Map<string, IFieldArgs> {
+  public get payload(): Map<string, IFieldArg> {
     return Map(this.store.get('payload', null));
   }
 

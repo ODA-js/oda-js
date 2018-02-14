@@ -1,5 +1,4 @@
 import { Model } from './Model';
-import { Package } from './Package';
 
 describe('Model', () => {
   let model: Model;

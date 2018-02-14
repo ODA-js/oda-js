@@ -1,11 +1,9 @@
-import { Record } from 'immutable';
-import { Map } from 'immutable';
+import { Map, Record } from 'immutable';
 
-import { IEnumStore, IEnumTransform, IEnumItem, IEnumInit, IEnum, EnumInitItem } from '../interfaces/IEnum';
-import { transformMap } from './utils';
+import {  IEnum, IEnumInit,  IEnumStore, IEnumTransform } from '../interfaces/IEnum';
 import { Persistent } from './Persistent';
-import { } from './interfaces/IEnum';
-import { IFieldStore } from '../interfaces/IField';
+import { EnumInitItem, IEnumItem } from '../interfaces/IEnumItem';
+import { EnumItem } from './EnumItem';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEnum: IEnumStore = {
@@ -27,11 +25,11 @@ export const EnumTransform: IEnumTransform = {
       }
       return Map<string, IEnumItem>(input.map(p => {
         if (typeof p === 'string') {
-          return [p, {
-            value: p,
-          }];
+          return [p, new EnumItem({
+            name: p,
+          })];
         } else {
-          return [p.name, p];
+          return [p.name, new EnumItem(p)];
         }
       }) as [string, IEnumItem][]);
     },

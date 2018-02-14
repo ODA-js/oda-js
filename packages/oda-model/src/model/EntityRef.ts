@@ -3,7 +3,7 @@ import { Record } from 'immutable';
 import * as inflected from 'inflected';
 
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
-import { IEntityRef, IEntityRefStore, IEntityRefInit } from '../interfaces/IEntityRef';
+import { IEntityRef, IEntityRefInit, IEntityRefStore } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
