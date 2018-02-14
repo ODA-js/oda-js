@@ -13,8 +13,8 @@ export interface IEnumItemInit extends INamedItem {
   type?: string;
 }
 
-export interface IEnumItem extends IModelType {
-  enum?: IEnum;
-  value?: string;
-  type?: string;
+export interface IEnumItem extends IModelType, Readonly<IEnumItemInit> {
+  readonly enum?: IEnum;
+  readonly value?: string;
+  readonly type?: string;
 }

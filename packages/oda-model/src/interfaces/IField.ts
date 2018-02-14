@@ -1,12 +1,12 @@
 import { Map } from 'immutable';
 
-import { ArrayToMap } from '../model/utils';
+import { ArrayToMap, MapType } from '../model/utils';
 import { IEntity } from './IEntity';
 import { IEntityRef } from './IEntityRef';
-import { IFieldArg } from './IFieldArg';
+import { IFieldArgInit, IFieldArg } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IRelation, IRelationInit } from './IRelation';
-import { RelationInit } from './types';
+import { RelationInit, FieldArgsTransformType } from './types';
 
 export interface IFieldACL {
   read: string[];
@@ -28,7 +28,7 @@ export interface IFieldStorage {
 export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, INamedItem {
   entity?: IEntity;
   type?: string;
-  args?: IFieldArg[];
+  args?: IFieldArgInit[];
   order?: number;
   relation?: Partial<RelationInit>;
 }
@@ -43,7 +43,7 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
 }
 
 export interface IFieldTransform {
-  args: ArrayToMap<IFieldArg>;
+  args: FieldArgsTransformType;
   relation: {
     transform: (inp: Partial<IRelationInit>) => IRelation,
     reverse: (inp: IRelation) => Partial<IRelationInit>,
@@ -54,7 +54,7 @@ export interface IField extends IModelType {
   readonly modelType: 'field';
   readonly entity: IEntity;
   readonly type: string;
-  readonly args?: Map<string, IFieldArg>;
+  readonly args?: Map<string, IFieldArgInit>;
   readonly idKey?: IEntityRef;
   readonly order: number;
   readonly relation: IRelation;

@@ -24,7 +24,7 @@ import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
-import { IFieldArg } from '../interfaces/IFieldArg';
+import { IFieldArgInit } from '../interfaces/IFieldArg';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -46,7 +46,7 @@ export const DefaultField: IFieldStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const FieldTransform: Partial<IFieldTransform> = {
+export const FieldTransform: IFieldTransform = {
   args: TransformArgs(),
   relation: {
     transform: (inp: Partial<IRelationInit>): IRelation => {
@@ -126,7 +126,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get acl(): Partial<IFieldACL> {
     return this.store.get('acl', null);
   }
-  public get args(): Map<string, IFieldArg> {
+  public get args(): Map<string, IFieldArgInit> {
     return this.store.get('args', null);
   }
   public get derived(): boolean {

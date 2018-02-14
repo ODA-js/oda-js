@@ -8,7 +8,7 @@ import { IBelongsToManyInit } from './IBelongsToMany';
 import { IHasManyInit } from './IHasMany';
 import { IHasOneInit } from './IHasOne';
 import { IFieldInit, IField } from './IField';
-import { IFieldArg } from './IFieldArg';
+import { IFieldArgInit, IFieldArg } from './IFieldArg';
 import { Map } from 'immutable';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
@@ -44,7 +44,7 @@ export type FieldTransformType = {
 
 export type FieldArgsTransformType = {
   transform: (input: {
-    [name: string]: Partial<IFieldArg>,
-  } | IFieldArg[]) => Map<string, IFieldArg>;
-  reverse: (input:  Map<string, IFieldArg>) => IFieldArg[];
+    [name: string]: Partial<IFieldArgInit>,
+  } | IFieldArgInit[]) => Map<string, IFieldArg>;
+  reverse: (input:  Map<string, IFieldArg>) => IFieldArgInit[];
 };

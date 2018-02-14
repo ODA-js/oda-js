@@ -4,7 +4,8 @@ import { IField, IFieldInit } from '../interfaces/IField';
 
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
-import { IFieldArg } from '../interfaces/IFieldArg';
+import { FieldArg } from './FieldArg';
+import { IFieldArgInit, IFieldArg } from '../interfaces/IFieldArg';
 
 export type MapType<T, S> = {
   transform: (input: T) => S;
@@ -91,16 +92,16 @@ export function TransformField() {
 
 export function TransformArgs() {
   return {
-    transform: (input: IFieldArg[]) => {
+    transform: (input: IFieldArgInit[]) => {
       if (input) {
-        return Map<string, IFieldArg>(input.map(p => [p.name, p]) as [string, IFieldArg][]);
+        return Map<string, IFieldArg>(input.map(p => [p.name, new FieldArg(p)]) as [string, IFieldArg][]);
       } else {
         return null;
       }
     },
     reverse: (input: Map<string, IFieldArg>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]());
+        return Array.from(input.values()[Symbol.iterator]()).map(p => p.toJS() as IFieldArgInit) ;
       } else {
         return null;
       }
