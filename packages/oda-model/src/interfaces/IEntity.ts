@@ -44,7 +44,7 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
   indexed: Set<string>;
 }
 
-export interface IEntityInit extends Partial<IEntityMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPackagedItemInit {
   singular?: string;
   plural?: string;
   fields?: {

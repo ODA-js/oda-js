@@ -1,21 +1,25 @@
+import { IEntityContext } from './contexts/IEntityContext';
+import { IEnumContext } from './contexts/IEnumContext';
+import { IFieldContext } from './contexts/IFieldContext';
+import { IModelContext } from './contexts/IModelContext';
+import { IPackageContext } from './contexts/IPackageContext';
+import { IRelationContext } from './contexts/IRelationContext';
 import { IBelongsTo, IBelongsToInit } from './interfaces/IBelongsTo';
 import { IBelongsToMany, IBelongsToManyInit } from './interfaces/IBelongsToMany';
-import { IEntity } from './interfaces/IEntity';
+import { IEntity, IEntityInit } from './interfaces/IEntity';
+import { IEnum, IEnumInit } from './interfaces/IEnum';
 import { IField } from './interfaces/IField';
 import { IHasMany, IHasManyInit } from './interfaces/IHasMany';
 import { IHasOne, IHasOneInit } from './interfaces/IHasOne';
-import { IModel } from './interfaces/IModel';
-import { IMutation } from './interfaces/IMutation';
-import { IPackage } from './interfaces/IPackage';
-import { IRelation, IRelationInit } from './interfaces/IRelation';
+import { IModel, IModelInit } from './interfaces/IModel';
 import { IModelType } from './interfaces/IModelType';
-import { IEnum } from './interfaces/IEnum';
-import { IModelContext } from './contexts/IModelContext';
-import { IEntityContext } from './contexts/IEntityContext';
-import { IPackageContext } from './contexts/IPackageContext';
-import { IFieldContext } from './contexts/IFieldContext';
-import { IRelationContext } from './contexts/IRelationContext';
-import { IEnumContext } from './contexts/IEnumContext';
+import { IMutation, IMutationInit } from './interfaces/IMutation';
+import { IPackage } from './interfaces/IPackage';
+import { IPackagedItemInit, IPackagedItem } from './interfaces/IPackagedItem';
+import { IRelation, IRelationInit } from './interfaces/IRelation';
+import { Enum } from './model/Enum';
+import { Entity } from './model/Entity';
+import { Mutation } from './model/Mutation';
 
 export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
@@ -125,4 +129,26 @@ export function isIRelationContext(ctx: IModelContext): ctx is IRelationContext 
     && (ctx as IRelationContext).field
     && (ctx as IRelationContext).relation
     && Array.isArray((ctx as IRelationContext).errors));
+}
+
+export function isEnumInit(item: IPackagedItemInit): item is IEnumInit {
+  return !!(<IEnumInit>item).values;
+}
+
+export function isEntityInit(item: IPackagedItemInit): item is IEntityInit {
+  return !!(<IModelInit>item).packages;
+}
+
+export function isMutationInit(item: IPackagedItemInit): item is IMutationInit {
+  return !!(<IMutationInit>item).payload;
+}
+
+export function createPackagedItem(item: IPackagedItemInit): IPackagedItem {
+  if (isEnumInit(item)) {
+    return new Enum(item);
+  } else if (isEntityInit(item)) {
+    return new Entity(item);
+  } else if (isMutationInit(item)) {
+    return new Mutation(item);
+  }
 }

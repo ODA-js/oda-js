@@ -1,12 +1,10 @@
 import { Map } from 'immutable';
 
-import { ArrayToMap } from '../model/utils';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackage } from './IPackage';
-import { IPackagedItem } from './IPackagedItem';
+import { IPackage, IPackageInit } from './IPackage';
 
-export interface IModelInit extends Partial<INamedItem>  {
-  packages: IPackagedItem[];
+export interface IModelInit extends INamedItem  {
+  packages: IPackageInit[];
 }
 
 export interface IModelStore extends INamedItem {
@@ -14,7 +12,10 @@ export interface IModelStore extends INamedItem {
 }
 
 export interface IModelTransform {
-  packages: ArrayToMap<IPackage>;
+  packages: {
+    transform: (inp: IPackageInit[]) => Map<string, IPackage>,
+    reverse: (inp: Map<string, IPackage> ) => IPackageInit[],
+  };
 }
 
 export interface IModel extends IModelType {

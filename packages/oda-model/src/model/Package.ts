@@ -2,7 +2,7 @@ import { Map, Record } from 'immutable';
 
 import { IModel } from '../interfaces/IModel';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
-import { IPackagedItem } from '../interfaces/IPackagedItem';
+import { IPackagedItem, IPackagedItemInit } from '../interfaces/IPackagedItem';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
@@ -19,7 +19,7 @@ export const DefaultPackage: IPackageStore = {
 // tslint:disable-next-line:variable-name
 export const PackageTransform: IPackageTransform = {
   items: {
-    transform: (input?: IPackagedItem[]) => {
+    transform: (input?: IPackagedItemInit[]) => {
       if (input) {
         return Map<string, IPackagedItem>(input.map(p => [p.name, p]) as [string, IPackagedItem][]);
       } else {
@@ -28,7 +28,7 @@ export const PackageTransform: IPackageTransform = {
     },
     reverse: (input?: Map<string, IPackagedItem>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackagedItem);
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IPackagedItemInit);
       } else {
         return null;
       }

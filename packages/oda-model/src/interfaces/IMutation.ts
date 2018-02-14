@@ -27,7 +27,7 @@ export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPac
   payload: Map<string, IFieldArgs>;
 }
 
-export interface IMutationInit extends Partial<IMutationMetaData>, Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
   args: IFieldArgs[];
   payload: IFieldArgs[];
   package?: IPackage;

@@ -6,7 +6,7 @@ import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackage
 
 export type EnumInitItem = IEnumItemInit | string;
 
-export interface IEnumInit extends Partial<INamedItem>, Partial<IPackagedItemInit> {
+export interface IEnumInit extends INamedItem, IPackagedItemInit {
   values: EnumInitItem[] | {
     [name: string]: EnumInitItem;
   };

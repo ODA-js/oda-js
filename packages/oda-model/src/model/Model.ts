@@ -1,7 +1,7 @@
 import { Map, Record } from 'immutable';
 
 import { IModel, IModelInit, IModelStore, IModelTransform } from '../interfaces/IModel';
-import { IPackage } from '../interfaces/IPackage';
+import { IPackage, IPackageInit } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { Package } from './Package';
 
@@ -16,17 +16,16 @@ export const DefaultModel: IModelStore = {
 // tslint:disable-next-line:variable-name
 export const ModelTransform: IModelTransform = {
   packages: {
-    transform: (input?: IPackage[]) => {
+    transform: (input: IPackageInit[]) => {
       if (input) {
-        return Map<string, IPackage>(input.map(p => [p.name, p]) as [string, IPackage][]);
+        return Map<string, IPackage>(input.map(p => [p.name, new Package(p)]) as [string, IPackage][]);
       } else {
         return null;
       }
     },
     reverse: (input?: Map<string, IPackage>) => {
       if (input) {
-        debugger;
-        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackage);
+        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackageInit);
       } else {
         return null;
       }

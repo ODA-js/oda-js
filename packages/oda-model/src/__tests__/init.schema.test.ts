@@ -9,6 +9,8 @@ import { Entity } from '../model/Entity';
 import { Mutation } from '../model/Mutation';
 import { Package } from '../model/Package';
 import { Enum } from '../model/Enum';
+import { IPackagedItem } from '../interfaces/IPackagedItem';
+import { IModel } from '../interfaces/IModel';
 
 export interface ModelLoad extends INamedItem {
   packages: IPackageInit[];
@@ -18,28 +20,20 @@ export interface ModelLoad extends INamedItem {
 }
 
 function LoadSchema(input: ModelLoad) {
-  const systemPkg = new Package({
-    items: [
-      ...input.entities.map(e => new Entity(e)),
-      ...input.mutations.map(m => new Mutation(m)),
-      ...input.enums.map(m => new Enum(m)),
-    ],
-  });
+  const items = [
+    ...input.entities.map(e => new Entity(e)),
+    ...input.mutations.map(m => new Mutation(m)),
+    ...input.enums.map(m => new Enum(m)),
+  ];
 
-  const result: IModelType = new Model({
+  const result: IModel = new Model({
     name: input.name,
     title: input.title,
     description: input.description,
-    packages: [
-      {
-        name: 'system',
-        items: [
-          ...input.entities.map(e => new Entity(e)),
-          ...input.mutations.map(m => new Mutation(m)),
-          ...input.enums.map(m => new Enum(m)),
-        ],
-      },
-    ],
+  });
+
+  result.defaultPackage.updateWith({
+    items,
   });
   return result;
 
@@ -54,9 +48,21 @@ describe('Schemaloading', () => {
   it('has at least one package', () => {
     debugger;
     expect(model).not.toBeUndefined();
-    expect(model.toJS()).toMatchObject({
+    expect(model.toJS()).toMatchObject(
+      {
+        name: schema.name,
+        packages: [
+          {
+            name: 'system',
+            items: [
+              ...schema.entities,
+              ...schema.mutations,
+              ...schema.enums,
+            ],
+          },
+        ],
 
-    });
+      });
   });
 
 });
