@@ -17,8 +17,8 @@ export const DefaultEnumItem: IEnumItemInit = {
 export const EnumStorage = Record(DefaultEnumItem);
 
 export class EnumItem extends Persistent<IEnumItemInit, IEnumItemInit> implements IEnumItem {
-  public get modelType(): 'enum' {
-    return 'enum';
+  public get modelType(): 'enumItem' {
+    return 'enumItem';
   }
   public get name(): string {
     return this.store.get('name', null);

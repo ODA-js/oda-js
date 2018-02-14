@@ -40,8 +40,8 @@ export const DefaultField: IFieldArgInit = {
 export const FieldStorage = Record(DefaultField);
 
 export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implements IFieldArg {
-  public get modelType(): 'field' {
-    return 'field';
+  public get modelType(): 'fieldArg' {
+    return 'fieldArg';
   }
   public get name(): string {
     return this.store.get('name', null);
