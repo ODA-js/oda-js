@@ -1,32 +1,32 @@
 import { Enum } from './Enum';
 
 describe('Enum', () => {
-  let field: Enum;
+  let enumItem: Enum;
 
   beforeAll(() => {
     expect(() => new Enum()).not.toThrow();
   });
 
   beforeEach(() => {
-    field = new Enum();
+    enumItem = new Enum();
   });
 
   it('create empty', () => {
-    expect(field.name).toBeNull();
-    expect(field.modelType).toBe('enum');
-    expect(field.description).toBeNull();
-    expect(field.title).toBeNull();
-    expect(field.values).toBeNull();
+    expect(enumItem.name).toBeNull();
+    expect(enumItem.modelType).toBe('enum');
+    expect(enumItem.description).toBeNull();
+    expect(enumItem.title).toBeNull();
+    expect(enumItem.values).toBeNull();
   });
 
   it('update strings', () => {
-    expect(() => field.updateWith({
+    expect(() => enumItem.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
     })).not.toThrow();
 
-    expect(field.toJS()).toMatchObject({
+    expect(enumItem.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
@@ -34,7 +34,7 @@ describe('Enum', () => {
   });
 
   it('toJS with dupes', () => {
-    expect(() => field.updateWith({
+    expect(() => enumItem.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
@@ -43,9 +43,9 @@ describe('Enum', () => {
         { name: 'one' },
       ],
     })).not.toThrow();
-    expect(field.values.size).toBe(1);
+    expect(enumItem.values.size).toBe(1);
 
-    expect(field.toJS()).toMatchObject({
+    expect(enumItem.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
@@ -56,7 +56,7 @@ describe('Enum', () => {
   });
 
   it('toJS', () => {
-    expect(() => field.updateWith({
+    expect(() => enumItem.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
@@ -73,9 +73,9 @@ describe('Enum', () => {
     },
     )).not.toThrow();
 
-    expect(field.values).not.toBeNull();
+    expect(enumItem.values).not.toBeNull();
 
-    expect(field.toJS()).toMatchObject({
+    expect(enumItem.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',

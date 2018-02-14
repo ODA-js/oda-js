@@ -35,7 +35,7 @@ export const EnumTransform: IEnumTransform = {
     },
     reverse: (input: Map<string, IEnumItem>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]());
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IEnumItem);
       } else {
         return null;
       }

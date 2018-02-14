@@ -77,7 +77,7 @@ describe('Mutaion', () => {
     expect(mutation.args).not.toBeNull();
     expect(mutation.args.size).toBe(1);
 
-    expect(arg).toMatchObject({
+    expect(arg.toJS()).toMatchObject({
       name: '1',
       type: 'string',
       defaultValue: 'not empty',
@@ -92,7 +92,7 @@ describe('Mutaion', () => {
     expect(() => arg = mutation.args.get('1')).not.toThrow();
     expect(mutation.args).not.toBeNull();
     expect(mutation.args.size).toBe(1);
-    expect(arg).toMatchObject({
+    expect(arg.toJS()).toMatchObject({
       name: '1',
       type: 'number',
     });
@@ -115,7 +115,7 @@ describe('Mutaion', () => {
     expect(mutation.payload).not.toBeNull();
     expect(mutation.payload.size).toBe(1);
 
-    expect(arg).toMatchObject({
+    expect(arg.toJS()).toMatchObject({
       name: '1',
       type: 'string',
       defaultValue: 'not empty',
@@ -130,7 +130,7 @@ describe('Mutaion', () => {
     expect(() => arg = mutation.payload.get('1')).not.toThrow();
     expect(mutation.payload).not.toBeNull();
     expect(mutation.payload.size).toBe(1);
-    expect(arg).toMatchObject({
+    expect(arg.toJS()).toMatchObject({
       name: '1',
       type: 'number',
     });
