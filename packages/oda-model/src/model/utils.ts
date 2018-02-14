@@ -1,8 +1,10 @@
 import { Map, Set } from 'immutable';
 
-import { IField, IFieldArg, IFieldInit } from '../interfaces/IField';
+import { IField, IFieldInit } from '../interfaces/IField';
+
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
+import { IFieldArg } from '../interfaces/IFieldArg';
 
 export type MapType<T, S> = {
   transform: (input: T) => S;

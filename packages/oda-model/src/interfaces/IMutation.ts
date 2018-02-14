@@ -1,7 +1,7 @@
 import { Map, Set } from 'immutable';
 
 import { ArrayToMap, ArrayToSet } from '../model/utils';
-import { IFieldArg } from './IField';
+import { IFieldArg } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';

@@ -7,7 +7,8 @@ import { IBelongsToInit } from './IBelongsTo';
 import { IBelongsToManyInit } from './IBelongsToMany';
 import { IHasManyInit } from './IHasMany';
 import { IHasOneInit } from './IHasOne';
-import { IFieldInit, IField, IFieldArg } from './IField';
+import { IFieldInit, IField } from './IField';
+import { IFieldArg } from './IFieldArg';
 import { Map } from 'immutable';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';

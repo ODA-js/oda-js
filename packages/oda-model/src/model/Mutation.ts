@@ -1,6 +1,6 @@
 import { Map, Record, Set } from 'immutable';
 
-import { IFieldArg } from '../interfaces/IField';
+import { IFieldArg } from '../interfaces/IFieldArg';
 import {
   IMutation,
   IMutationACLStore,

@@ -3,6 +3,7 @@ import { Map } from 'immutable';
 import { ArrayToMap } from '../model/utils';
 import { IEntity } from './IEntity';
 import { IEntityRef } from './IEntityRef';
+import { IFieldArg } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IRelation, IRelationInit } from './IRelation';
 import { RelationInit } from './types';
@@ -14,12 +15,6 @@ export interface IFieldACL {
 
 export interface IFieldMetaData {
   acl: IFieldACL;
-}
-
-export interface IFieldArg extends INamedItem {
-  type?: string;
-  required?: boolean;
-  defaultValue?: string;
 }
 
 export interface IFieldStorage {

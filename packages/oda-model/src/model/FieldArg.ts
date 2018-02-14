@@ -15,6 +15,7 @@ import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldACL, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
+import { IFieldArg } from '../interfaces/IFieldArg';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -24,7 +25,6 @@ import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
-import { IFieldArg } from '../interfaces/IFieldArg';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -47,7 +47,7 @@ export const DefaultField: IFieldStore = {
 
 // tslint:disable-next-line:variable-name
 export const FieldTransform: Partial<IFieldTransform> = {
-  args: TransformArgs(),
+  args:  TransformArgs(),
   relation: {
     transform: (inp: Partial<IRelationInit>): IRelation => {
       if (inp) {
@@ -74,29 +74,29 @@ export const FieldTransform: Partial<IFieldTransform> = {
             ...inp,
             belongsTo: BelongsToTransform.belongsTo.reverse(inp.belongsTo),
             fields: BelongsToTransform.fields.reverse(inp.fields),
-          } as IBelongsToInit;
-        }
-        if (IsBelongsToMany(inp)) {
-          return {
-            ...inp,
-            fields: BelongsToManyTransform.fields.reverse(inp.fields),
-          } as IBelongsToManyInit;
-        }
-        if (IsHasOne(inp)) {
-          return {
-            ...inp,
-            fields: HasOneTransform.fields.reverse(inp.fields),
-          } as IHasOneInit;
-        }
-        if (IsHasMany(inp)) {
-          return {
-            ...inp,
-            fields: HasManyTransform.fields.reverse(inp.fields),
-          } as IHasManyInit;
-        }
+        } as IBelongsToInit;
+      }
+      if (IsBelongsToMany(inp)) {
+        return {
+          ...inp,
+          fields: BelongsToManyTransform.fields.reverse(inp.fields),
+        } as IBelongsToManyInit;
+      }
+      if (IsHasOne(inp)) {
+        return {
+          ...inp,
+          fields: HasOneTransform.fields.reverse(inp.fields),
+        } as IHasOneInit;
+      }
+      if (IsHasMany(inp)) {
+        return {
+          ...inp,
+          fields: HasManyTransform.fields.reverse(inp.fields),
+        } as IHasManyInit;
+      }
       } else {
         return null;
-      }
+    }
     },
   },
 };
@@ -188,7 +188,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
     }
     return result;
   }
-  constructor(init: Partial<IFieldInit> = {}) {
+  constructor(init: Partial<IFieldInit>  = {}) {
     super();
     this.store = new FieldStorage(this.transform(init));
     this.init = new (Record<Partial<IFieldInit>>(init))();
