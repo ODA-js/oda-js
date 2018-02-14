@@ -11,7 +11,7 @@ export default class implements Rule<IRelationContext> {
     if (IsBelongsToMany(context.relation) && context.relation.using.backField) {
       const bf = context.entity.fields.get(context.relation.using.backField);
       if (!bf) {
-        context.relation.using.backField = 'id';
+        context.relation.using.updateWith({backField: 'id'});
         result.push({
           message: this.description,
           result: 'fixable',
