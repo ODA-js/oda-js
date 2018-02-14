@@ -52,8 +52,8 @@ describe('Model', () => {
       description: 'very cool',
       title: 'very cool title',
       packages: [
-        new Package({ name: 'one' }),
-        new Package({ name: 'one' }),
+        { name: 'one', acl: 100, items: [] },
+        { name: 'one', acl: 100 , items: []},
       ],
     })).not.toThrow();
 

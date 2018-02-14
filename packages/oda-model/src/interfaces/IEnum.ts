@@ -16,7 +16,7 @@ export interface IEnumStore extends INamedItem, IPackagedItemStore {
   values: Map<string, IEnumItem>;
 }
 
-export interface IEnumItemInit extends Partial<INamedItem> {
+export interface IEnumItemInit extends INamedItem {
   enum?: IEnum;
   value?: string;
   type?: string;
@@ -38,4 +38,3 @@ export interface IEnum extends IModelType, IPackagedItem {
   readonly modelType: 'enum';
   readonly values: Map<string, IEnumItem>;
 }
-

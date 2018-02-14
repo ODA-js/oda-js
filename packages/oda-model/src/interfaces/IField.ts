@@ -31,7 +31,7 @@ export interface IFieldStorage {
   identity: boolean | string | string[];
 }
 
-export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, Partial<INamedItem> {
+export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, INamedItem {
   entity?: IEntity;
   type?: string;
   args?: IFieldArgs[];

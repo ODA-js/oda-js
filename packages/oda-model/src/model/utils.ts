@@ -1,4 +1,7 @@
 import { Map, Set } from 'immutable';
+import { EntityRef } from './EntityRef';
+import { IFieldInit, IField, IFieldArgs } from '../interfaces/IField';
+import { Field } from './Field';
 
 export type MapType<T, S> = {
   transform: (input: T) => S;
@@ -38,5 +41,66 @@ export function transformSet<S>(): ArrayToSet<S> {
   return {
     transform: (input: S[]) => Set<S>(input),
     reverse: (input: Set<S>) => Array.from(input.values()[Symbol.iterator]()),
+  };
+}
+
+export function TransformRef() {
+  return {
+    transform: (inp) => {
+      if (inp) {
+        return new EntityRef(inp);
+      } else {
+        return null;
+      }
+    },
+    reverse: (inp) => {
+      if (inp) {
+        return inp.toString();
+      } else {
+        return null;
+      }
+    },
+  };
+}
+
+export function TransformField() {
+  return {
+    transform: (input: {
+      [name: string]: Partial<IFieldInit>,
+    } | IFieldInit[]) => {
+      if (!Array.isArray(input)) {
+        input = Object.keys(input).map(k => ({
+          name: k,
+          ...input[k],
+        }));
+      }
+      return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+    },
+    reverse: (input: Map<string, IField>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IFieldInit);
+      } else {
+        return null;
+      }
+    },
+  };
+}
+
+export function TransformArgs() {
+  return {
+    transform: (input: IFieldArgs[]) => {
+      if (input) {
+        return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
+      } else {
+        return null;
+      }
+    },
+    reverse: (input: Map<string, IFieldArgs>) => {
+      if (input) {
+        return Array.from(input.values()[Symbol.iterator]());
+      } else {
+        return null;
+      }
+    },
   };
 }

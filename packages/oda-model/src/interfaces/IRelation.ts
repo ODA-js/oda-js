@@ -26,7 +26,9 @@ export interface IRelationStore extends IRelationName, IRelationStorage, INamedI
 
 export interface IRelationInit extends Partial<IRelationName>, Partial<IRelationStorage>, Partial<INamedItem> {
   opposite: string;
-  fields: Partial<IFieldInit>[];
+  fields?: {
+    [name: string]: Partial<IFieldInit>,
+  } | IFieldInit[];
 }
 
 export interface IRelation extends IModelType {

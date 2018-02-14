@@ -6,6 +6,7 @@ import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../inter
 import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 import { Relation } from './Relation';
+import { TransformRef, TransformField } from './utils';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {
@@ -27,38 +28,8 @@ export const DefaultHasOne: IHasOneStore = {
 
 // tslint:disable-next-line:variable-name
 export const HasOneTransform: IRelationTransform = {
-  hasOne: {
-    transform: (inp) => {
-      if (inp) {
-        return new EntityRef(inp);
-      } else {
-        return null;
-      }
-    },
-    reverse: (inp) => {
-      if (inp) {
-        return inp.toString();
-      } else {
-        return null;
-      }
-    },
-  },
-  fields: {
-    transform: (input: IFieldInit[]) => {
-      if (input) {
-        return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
-      } else {
-        return null;
-      }
-    },
-    reverse: (input: Map<string, IField>) => {
-      if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
-      } else {
-        return null;
-      }
-    },
-  },
+  hasOne: TransformRef(),
+  fields: TransformField(),
 };
 
 // tslint:disable-next-line:variable-name

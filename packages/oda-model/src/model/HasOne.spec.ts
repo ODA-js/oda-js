@@ -61,6 +61,23 @@ describe('HasOne', () => {
     });
   });
 
+  it('toJS with HashMap', () => {
+    expect(() => relation.updateWith({
+      fields: {
+        one: {},
+      },
+    },
+    )).not.toThrow();
+
+    expect(relation.ref).toBeNull();
+    expect(relation.fields.size).toBe(1);
+    expect(relation.toJS()).toMatchObject({
+      fields: [
+        { name: 'one' },
+      ],
+    });
+  });
+
   it('toJS ', () => {
     expect(() => relation.updateWith({
       hasOne: 'id@Some#id',

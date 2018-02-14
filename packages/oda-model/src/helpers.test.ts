@@ -134,7 +134,11 @@ describe('Context helpers', () => {
 
     models.model = new Model({
       name: 'TodoItems',
-      packages: [models.packages],
+      packages: [{
+        name: 'system',
+        acl: 10000,
+        items: [],
+      }],
     });
 
     contexts.model = new ModelContext(models.model);

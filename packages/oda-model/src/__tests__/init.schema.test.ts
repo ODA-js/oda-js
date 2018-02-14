@@ -46,7 +46,7 @@ describe('Schemaloading', () => {
   });
 
   it('has at least one package', () => {
-    debugger;
+
     expect(model).not.toBeUndefined();
     expect(model.toJS()).toMatchObject(
       {

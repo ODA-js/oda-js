@@ -23,6 +23,7 @@ import { BelongsToMany, BelongsToManyTransform } from './BelongsToMany';
 import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
+import { TransformArgs } from './utils';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -45,22 +46,7 @@ export const DefaultField: IFieldStore = {
 
 // tslint:disable-next-line:variable-name
 export const FieldTransform: Partial<IFieldTransform> = {
-  args: {
-    transform: (input: IFieldArgs[]) => {
-      if (input) {
-        return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
-      } else {
-        return null;
-      }
-    },
-    reverse: (input: Map<string, IFieldArgs>) => {
-      if (input) {
-        return Array.from(input.values()[Symbol.iterator]());
-      } else {
-        return null;
-      }
-    },
-  },
+  args:  TransformArgs(),
   relation: {
     transform: (inp: Partial<IRelationInit>): IRelation => {
       if (inp) {

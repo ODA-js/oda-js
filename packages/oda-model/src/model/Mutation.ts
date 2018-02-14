@@ -11,6 +11,7 @@ import {
 } from '../interfaces/IMutation';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
+import { TransformArgs } from './utils';
 
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationStore = {
@@ -39,27 +40,10 @@ export const MutationACLTransform: IMutationACLTransform = {
   },
 };
 
-let transformFieldArgs = {
-  transform: (input?: Partial<IFieldArgs>[]) => {
-    if (input) {
-      return Map<string, IFieldArgs>(input.map(p => [p.name, p]) as [string, IFieldArgs][]);
-    } else {
-      return null;
-    }
-  },
-  reverse: (input?: Map<string, IFieldArgs>) => {
-    if (input) {
-      return Array.from(input.values()[Symbol.iterator]());
-    } else {
-      return null;
-    }
-  },
-};
-
 // tslint:disable-next-line:variable-name
 export const MutationTransform: IMutationTransform = {
-  args: transformFieldArgs,
-  payload: transformFieldArgs,
+  args: TransformArgs(),
+  payload: TransformArgs(),
   acl: MutationACLTransform,
 };
 

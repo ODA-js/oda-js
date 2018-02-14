@@ -5,6 +5,7 @@ import { IField, IFieldInit } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
 import { Field } from './Field';
 import { Persistent } from './Persistent';
+import { TransformField } from './utils';
 
 
 // tslint:disable-next-line:variable-name
@@ -25,27 +26,7 @@ export const DefaultEntity: IEntityStore = {
 
 // tslint:disable-next-line:variable-name
 export const EntityTransform: IEntityTransform = {
-  fields: {
-    transform: (input: {
-      [name: string]: Partial<IFieldInit>,
-    } | Partial<IFieldInit>[]) => {
-      if (!Array.isArray(input)) {
-        input = Object.keys(input).map(k => ({
-          name: k,
-          ...input[k],
-        }));
-      }
-      return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
-    },
-
-    reverse: (input:  Map<string, IField>) => {
-      if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS());
-      } else {
-        return null;
-      }
-    },
-  },
+  fields: TransformField(),
 };
 
 // tslint:disable-next-line:variable-name

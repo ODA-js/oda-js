@@ -63,7 +63,7 @@ describe('Entity', () => {
     });
   });
 
-  it('toJS with dupes 2', () => {
+  it('toJS with HashMap', () => {
     expect(() => entity.updateWith({
       name: 'cool',
       description: 'very cool',

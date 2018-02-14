@@ -4,6 +4,7 @@ import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
+import { FieldTransformType } from './types';
 
 export interface IEntityACL {
   read?: string[];
@@ -48,18 +49,13 @@ export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPack
   singular?: string;
   plural?: string;
   fields?: {
-    [name: string]: IFieldInit,
+    [name: string]: Partial<IFieldInit>,
   } | IFieldInit[];
   package?: IPackage;
 }
 
 export interface IEntityTransform {
-  fields: {
-    transform: (input: {
-      [name: string]: IFieldInit,
-    } | IFieldInit[]) => Map<string, IField>;
-    reverse: (input:  Map<string, IField>) => IFieldInit[];
-  };
+  fields: FieldTransformType;
 }
 
 export interface IEntity extends IModelType, IPackagedItem {

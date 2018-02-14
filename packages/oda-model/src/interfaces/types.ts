@@ -7,6 +7,8 @@ import { IBelongsToInit } from './IBelongsTo';
 import { IBelongsToManyInit } from './IBelongsToMany';
 import { IHasManyInit } from './IHasMany';
 import { IHasOneInit } from './IHasOne';
+import { IFieldInit, IField } from './IField';
+import { Map } from 'immutable';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -29,3 +31,10 @@ export type ValidationContext =
 export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation' | 'enum';
 
 export type RelationInit = IHasManyInit | IHasOneInit | IBelongsToInit | IBelongsToManyInit;
+
+export type FieldTransformType = {
+  transform: (input: {
+    [name: string]: Partial<IFieldInit>,
+  } | IFieldInit[]) => Map<string, IField>;
+  reverse: (input:  Map<string, IField>) => IFieldInit[];
+};
