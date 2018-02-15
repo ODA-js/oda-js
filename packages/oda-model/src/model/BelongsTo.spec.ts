@@ -12,21 +12,8 @@ describe('BelongsTo', () => {
   });
 
   it('create empty', () => {
-    expect(relation.modelType).toBe('relation');
-    expect(relation.verb).toBe('BelongsTo');
-    expect(relation.title).toBeNull();
-    expect(relation.name).toBeNull();
-    expect(relation.description).toBeNull();
-    expect(relation.fields).toBeNull();
-    expect(relation.fullName).toBeNull();
-    expect(relation.shortName).toBeNull();
-    expect(relation.normalName).toBeNull();
-    expect(relation.opposite).toBeNull();
-    expect(relation.embedded).toBeTruthy();
-    expect(relation.single).toBeTruthy();
-    expect(relation.stored).toBeTruthy();
-    expect(relation.ref).toBeNull();
-    expect(relation.belongsTo).toBeNull();
+    expect(relation).toMatchSnapshot();
+    expect(relation.toJS()).toMatchSnapshot();
   });
 
   it('updates strings', () => {
@@ -35,13 +22,7 @@ describe('BelongsTo', () => {
       description: 'very cool',
       title: 'very cool title',
     })).not.toThrow();
-    expect(relation.name).toBe('cool');
-    expect(relation.description).toBe('very cool');
-    expect(relation.title).toBe('very cool title');
-    expect(() => relation.updateWith({
-      name: 'cool!',
-    })).not.toThrow();
-    expect(relation.name).toBe('cool!');
+    expect(relation).toMatchSnapshot();
   });
 
   it('toJS with dupes', () => {
@@ -55,11 +36,7 @@ describe('BelongsTo', () => {
 
     expect(relation.ref).toBeNull();
     expect(relation.fields.size).toBe(1);
-    expect(relation.toJS()).toMatchObject({
-      fields: [
-        { name: 'one' },
-      ],
-    });
+    expect(relation.toJS()).toMatchSnapshot();
   });
 
   it('toJS with HashMap', () => {

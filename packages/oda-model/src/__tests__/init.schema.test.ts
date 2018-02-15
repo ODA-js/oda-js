@@ -35,23 +35,24 @@ function LoadSchema(input: ModelLoad) {
   result.defaultPackage.updateWith({
     items,
   });
+
   return result;
 
 }
 
 describe('Schemaloading', () => {
-  let model: IModelType;
+  let model: IModel;
   beforeAll(() => {
-    model = LoadSchema(schema);
+    expect(() => model = LoadSchema(schema)).not.toThrow();
+
   });
 
   it('has at least one package', () => {
-
-    expect(model).not.toBeUndefined();
-    expect(model.toJS()).toMatchObject(
-      {
-        name: schema.name,
-      });
+    expect(model).toMatchSnapshot();
+    expect(model.packages.size).toBe(1);
+    debugger;
+    expect(model.packages.has('system')).toBeTruthy();
+    expect(model.toJS()).toMatchSnapshot();
   });
 
 });

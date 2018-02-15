@@ -15,12 +15,10 @@ describe('Model', () => {
     expect(model.name).toBeNull();
     expect(model.modelType).toBe('model');
     expect(model.description).toBeNull();
-    expect(model.packages).toBeNull();
+    expect(model.packages.size).toBe(1);
     expect(model.defaultPackage).not.toBeUndefined();
     expect(model.defaultPackage.toJS()).toMatchObject({
-      name: 'default',
-      title: 'Default',
-      description: 'default package',
+      name: 'system',
     });
   });
 
@@ -56,13 +54,14 @@ describe('Model', () => {
       ],
     })).not.toThrow();
 
-    expect(model.packages.size).toBe(1);
+    expect(model.packages.size).toBe(2);
 
     expect(model.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
       packages: [
+        { name: 'system' },
         { name: 'one' },
       ],
     });

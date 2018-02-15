@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BelongsTo create empty 1`] = `
+BelongsTo {
+  "init": Immutable.Record {},
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "fields": null,
+    "opposite": null,
+    "belongsTo": null,
+    "single": true,
+    "stored": true,
+    "embedded": true,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;
+
+exports[`BelongsTo create empty 2`] = `
+Object {
+  "belongsTo": null,
+  "description": null,
+  "embedded": true,
+  "fields": null,
+  "fullName": null,
+  "name": null,
+  "normalName": null,
+  "opposite": null,
+  "shortName": null,
+  "single": true,
+  "stored": true,
+  "title": null,
+}
+`;
+
+exports[`BelongsTo toJS with dupes 1`] = `
+Object {
+  "belongsTo": null,
+  "description": null,
+  "embedded": true,
+  "fields": Array [
+    Object {
+      "acl": null,
+      "args": null,
+      "derived": null,
+      "description": null,
+      "entity": null,
+      "idKey": null,
+      "identity": null,
+      "indexed": null,
+      "name": "one",
+      "order": null,
+      "persistent": null,
+      "relation": null,
+      "required": null,
+      "title": null,
+      "type": null,
+    },
+  ],
+  "fullName": null,
+  "name": null,
+  "normalName": null,
+  "opposite": null,
+  "shortName": null,
+  "single": true,
+  "stored": true,
+  "title": null,
+}
+`;
+
+exports[`BelongsTo updates strings 1`] = `
+BelongsTo {
+  "init": Immutable.Record {},
+  "store": Immutable.Record {
+    "name": "cool",
+    "title": "very cool title",
+    "description": "very cool",
+    "fields": null,
+    "opposite": null,
+    "belongsTo": null,
+    "single": true,
+    "stored": true,
+    "embedded": true,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;

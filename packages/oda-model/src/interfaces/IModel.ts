@@ -4,6 +4,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IPackage, IPackageInit } from './IPackage';
 
 export interface IModelInit extends INamedItem  {
+  defaultPackageName: string;
   packages: IPackageInit[];
 }
 

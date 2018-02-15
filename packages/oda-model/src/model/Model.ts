@@ -53,10 +53,14 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     return this.store.get('packages', null);
   }
   public get defaultPackage(): IPackage {
-    return this._defaultPackage;
+    return this.packages.get(this.defaultPackageName);
   }
 
-  private _defaultPackage: IPackage;
+  public get defaultPackageName(): string {
+    return this._defaultPackageName;
+  }
+
+  private _defaultPackageName: string = 'system';
 
   protected transform(input: Partial<IModelInit>): IModelStore {
     const result: IModelStore = {} as any;
@@ -90,14 +94,25 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     }
     return result;
   }
-  constructor(init: Partial<IModelInit> = {}) {
+
+  constructor(init: Partial<IModelInit> = {
+    defaultPackageName: 'system',
+  }) {
     super();
-    this._defaultPackage = new Package({
-      name: 'default',
-      title: 'Default',
-      description: 'default package',
-    });
+
+    if (init.hasOwnProperty('defaultPackageName') && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
+      this.defaultPackageName = init.defaultPackageName;
+    }
     this.store = new ModelStorage(this.transform(init));
     this.init = new (Record<Partial<IModelInit>>(init))();
+    if (!this.packages || !this.packages.has(this.defaultPackageName)) {
+      this.updateWith({
+        packages: [{
+          acl: 0,
+          name: this.defaultPackageName,
+          items: [],
+        }],
+      });
+    }
   }
 }
