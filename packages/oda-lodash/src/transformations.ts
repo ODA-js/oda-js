@@ -43,6 +43,8 @@ import * as invertBy from 'lodash/invertBy.js';
 import * as keys from 'lodash/keys.js';
 import * as values from 'lodash/values.js';
 import * as omit from 'lodash/omit.js';
+import { debug } from 'util';
+import { PageInfoType } from 'oda-gen-common/dist/types/pageInfo';
 
 function getType(v): String {
   return Object.prototype.toString.call(v).match(/\[object (.+)\]/)[1].toLowerCase();
@@ -119,6 +121,24 @@ const transformations = {
     },
   },
   '*': {
+    trim: (src: string | any) => {
+      if (typeof src === 'string') {
+        return src.trim();
+      } else {
+        if (typeof src === 'function') {
+          return (...args) => {
+            const result = src(...args);
+            if (typeof result === 'string') {
+              return result.trim();
+            } else {
+              return result;
+            }
+          }
+        } else {
+          return src;
+        }
+      }
+    },
     convert: (obj, type) => {
       if (obj !== null || obj !== undefined) {
         switch (type) {
@@ -186,6 +206,7 @@ export function applyTransformations(object, args) {
       if (!(object === undefined || object === null)) {
         let type = getType(object);
         if (expectedType !== '*' && expectedType !== type && type !== undefined) {
+          debugger;
           throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
         }
       }
