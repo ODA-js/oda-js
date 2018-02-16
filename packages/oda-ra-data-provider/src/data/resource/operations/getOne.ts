@@ -1,0 +1,27 @@
+import { reshape } from 'oda-lodash';
+
+import ResourceOperation from '../resourceOperation';
+
+export default class extends ResourceOperation {
+  public get query(): any {
+    return this.resource.queries.getOne(this.resource.fragments, this.resource.queries);
+  }
+  public get resultQuery(): any {
+    return this.resource.queries.getOneResult(this.resource.fragments, this.resource.queries);
+  }
+  constructor(options) {
+    super(options);
+    if (!this._parseResponse) {
+      this._parseResponse = (response) => {
+        const data = reshape(this.resultQuery, response.data);
+        return { data: data.item };
+      }
+    }
+
+    if (!this._variables) {
+      this._variables = (params) => ({
+        id: params.id,
+      });
+    }
+  }
+}
