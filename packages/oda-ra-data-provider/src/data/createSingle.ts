@@ -1,4 +1,4 @@
-import { actionType } from './../ui/consts';
+import { actionType } from './../constants';
 import { queries } from './resource/consts';
 import { INamedField, IResourceContainer } from './resource/interfaces';
 
