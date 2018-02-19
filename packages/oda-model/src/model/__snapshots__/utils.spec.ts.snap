@@ -1,0 +1,223 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transform Fields transform 1`] = `
+Immutable.Map {
+  "one": FieldArg {
+    "init": Immutable.Record {
+      "name": "one",
+    },
+    "store": Immutable.Record {
+      "name": "one",
+      "title": null,
+      "description": null,
+      "required": null,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "two": FieldArg {
+    "init": Immutable.Record {
+      "name": "two",
+      "required": true,
+    },
+    "store": Immutable.Record {
+      "name": "two",
+      "title": null,
+      "description": null,
+      "required": true,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "three": FieldArg {
+    "init": Immutable.Record {
+      "name": "three",
+      "required": false,
+      "defaultValue": "3",
+    },
+    "store": Immutable.Record {
+      "name": "three",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": null,
+      "defaultValue": "3",
+    },
+  },
+  "four": FieldArg {
+    "init": Immutable.Record {
+      "name": "four",
+      "required": false,
+      "defaultValue": "3",
+      "type": "Number",
+    },
+    "store": Immutable.Record {
+      "name": "four",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": "Number",
+      "defaultValue": "3",
+    },
+  },
+}
+`;
+
+exports[`transform Fields transform 2`] = `
+Array [
+  Object {
+    "defaultValue": null,
+    "description": null,
+    "name": "one",
+    "required": null,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": null,
+    "description": null,
+    "name": "two",
+    "required": true,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": "3",
+    "description": null,
+    "name": "three",
+    "required": false,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": "3",
+    "description": null,
+    "name": "four",
+    "required": false,
+    "title": null,
+    "type": "Number",
+  },
+]
+`;
+
+exports[`transform Fields transform hash 1`] = `
+Immutable.Map {
+  "one": FieldArg {
+    "init": Immutable.Record {
+      "name": "one",
+    },
+    "store": Immutable.Record {
+      "name": "one",
+      "title": null,
+      "description": null,
+      "required": null,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "two": FieldArg {
+    "init": Immutable.Record {
+      "name": "two",
+      "required": true,
+    },
+    "store": Immutable.Record {
+      "name": "two",
+      "title": null,
+      "description": null,
+      "required": true,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "three": FieldArg {
+    "init": Immutable.Record {
+      "name": "three",
+      "required": false,
+      "defaultValue": "3",
+    },
+    "store": Immutable.Record {
+      "name": "three",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": null,
+      "defaultValue": "3",
+    },
+  },
+  "four": FieldArg {
+    "init": Immutable.Record {
+      "name": "four",
+      "required": false,
+      "defaultValue": "3",
+      "type": "Number",
+    },
+    "store": Immutable.Record {
+      "name": "four",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": "Number",
+      "defaultValue": "3",
+    },
+  },
+}
+`;
+
+exports[`transform Fields transform hash 2`] = `
+Array [
+  Object {
+    "defaultValue": null,
+    "description": null,
+    "name": "one",
+    "required": null,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": null,
+    "description": null,
+    "name": "two",
+    "required": true,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": "3",
+    "description": null,
+    "name": "three",
+    "required": false,
+    "title": null,
+    "type": null,
+  },
+  Object {
+    "defaultValue": "3",
+    "description": null,
+    "name": "four",
+    "required": false,
+    "title": null,
+    "type": "Number",
+  },
+]
+`;
+
+exports[`transform Ref transform 1`] = `
+EntityRef {
+  "store": Immutable.Record {
+    "backField": "local",
+    "entity": "Entity",
+    "field": "id",
+  },
+}
+`;
+
+exports[`transform Ref transform 2`] = `"local@Entity#id"`;
+
+exports[`transform Ref transform 3`] = `
+EntityRef {
+  "store": Immutable.Record {
+    "backField": "local",
+    "entity": "Entity",
+    "field": "id",
+  },
+}
+`;

@@ -6,6 +6,7 @@ import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 import { FieldArg } from './FieldArg';
 import { IFieldArgInit, IFieldArg, FieldArgsInput } from '../interfaces/IFieldArg';
+import { IEntityRef } from '../interfaces/IEntityRef';
 
 export type MapType<T, S> = {
   transform: (input: T) => S;
@@ -22,16 +23,16 @@ export type ArrayToSet<S> = {
   reverse: (input: Set<S>) => S[];
 };
 
-export function TransformRef() {
+export function TransformRef(): MapType<string | IEntityRef, IEntityRef> {
   return {
-    transform: (inp) => {
+    transform: (inp: string | IEntityRef) => {
       if (inp) {
         return new EntityRef(inp);
       } else {
         return null;
       }
     },
-    reverse: (inp) => {
+    reverse: (inp: IEntityRef) => {
       if (inp) {
         return inp.toString();
       } else {

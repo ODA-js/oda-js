@@ -1,6 +1,6 @@
 import { Map, Record } from 'immutable';
 
-import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore } from '../interfaces/IBelongsToMany';
+import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTransform } from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
@@ -28,7 +28,7 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
 };
 
 // tslint:disable-next-line:variable-name
-export const BelongsToManyTransform = {
+export const BelongsToManyTransform: IRelationTransform = {
   belongsToMany: TransformRef(),
   fields: TransformField(),
   using: TransformRef(),
