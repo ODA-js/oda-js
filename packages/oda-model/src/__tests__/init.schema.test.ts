@@ -26,7 +26,7 @@ function LoadSchema(input: ModelLoad) {
     ...input.enums.map(m => new Enum(m)),
   ];
 
-  const result: IModel = new Model({
+  const result: Model = new Model({
     name: input.name,
     title: input.title,
     description: input.description,
@@ -36,21 +36,34 @@ function LoadSchema(input: ModelLoad) {
     items,
   });
 
+  result.updateWith({
+    packages: [...input.packages.map(p => {
+      return {
+        ...p,
+      };
+    })],
+  });
   return result;
 
 }
 
+// model; init; у; пакета;
+
+
 describe('Schemaloading', () => {
   let model: IModel;
   beforeAll(() => {
-    expect(() => model = LoadSchema(schema)).not.toThrow();
+    model = LoadSchema(schema);
+  });
 
+  it('loadSchema', () => {
+    expect(() => LoadSchema(schema)).not.toThrow();
   });
 
   it('has at least one package', () => {
+    expect(model).not.toBeUndefined();
     expect(model).toMatchSnapshot();
-    expect(model.packages.size).toBe(1);
-    debugger;
+    expect(model.packages.size).toBe(3);
     expect(model.packages.has('system')).toBeTruthy();
     expect(model.toJS()).toMatchSnapshot();
   });

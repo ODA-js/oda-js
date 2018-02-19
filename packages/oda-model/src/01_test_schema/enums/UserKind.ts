@@ -2,7 +2,7 @@ import { IEnumInit } from '../../interfaces/IEnum';
 
 
 const result: IEnumInit = {
-  name: 'ToDoType',
+  name: 'UserKind',
   values: {
     'public user': 'public',
     'registered user': 'registered',

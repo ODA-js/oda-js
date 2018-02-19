@@ -5,13 +5,13 @@ import { ArrayToMap } from '../model/utils';
 import { Rule } from '../rule';
 import { IModel } from './IModel';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackagedItem, IPackagedItemInit } from './IPackagedItem';
+import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
 
 export interface IPackageInit extends INamedItem {
   acl: number;
   abstract?: boolean;
-  items: IPackagedItemInit[];
+  items: PackagedItemInit[];
   model?: IModel;
 }
 
@@ -24,7 +24,7 @@ export interface IPackageStore extends INamedItem {
 
 export interface IPackageTransform {
   items: {
-      transform: (inp: IPackagedItemInit[]) => Map<string, IPackagedItem>,
+      transform: (inp: PackagedItemInit[], pkg: IPackage) => Map<string, IPackagedItem>,
       reverse: (inp: Map<string, IPackagedItem> ) => IPackagedItemInit[],
   };
 }

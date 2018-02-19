@@ -16,9 +16,13 @@ export const DefaultModel: IModelStore = {
 // tslint:disable-next-line:variable-name
 export const ModelTransform: IModelTransform = {
   packages: {
-    transform: (input: IPackageInit[]) => {
+    transform: (input: IPackageInit[], model: IModel) => {
       if (input) {
-        return Map<string, IPackage>(input.map(p => [p.name, new Package(p)]) as [string, IPackage][]);
+        return Map<string, IPackage>(input.map(p => [p.name, new Package({
+          ...p,
+          model,
+        },
+        )]) as [string, IPackage][]);
       } else {
         return null;
       }
@@ -68,7 +72,7 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'packages') {
-            result.packages = ModelTransform.packages.transform(input.packages);
+            result.packages = ModelTransform.packages.transform(input.packages, this);
           } else {
             result[f] = input[f];
           }
@@ -101,7 +105,7 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
     super();
 
     if (init.hasOwnProperty('defaultPackageName') && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
-      this.defaultPackageName = init.defaultPackageName;
+      this._defaultPackageName = init.defaultPackageName;
     }
     this.store = new ModelStorage(this.transform(init));
     this.init = new (Record<Partial<IModelInit>>(init))();
@@ -111,6 +115,7 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
           acl: 0,
           name: this.defaultPackageName,
           items: [],
+          model: this,
         }],
       });
     }

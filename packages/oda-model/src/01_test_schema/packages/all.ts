@@ -2,12 +2,11 @@ export default {
   'name': 'all',
   'abstract': true,
   'acl': 100,
-  'entities': [
+  'items': [
     'User',
     'Group',
     'ToDoItem',
     'ToDoItemsSharedToGroupsMap',
     'UsersToGroupsMap',
   ],
-  'mutations': [],
 };

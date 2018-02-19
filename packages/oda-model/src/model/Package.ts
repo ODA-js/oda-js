@@ -2,7 +2,7 @@ import { Map, Record } from 'immutable';
 
 import { IModel } from '../interfaces/IModel';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
-import { IPackagedItem, IPackagedItemInit } from '../interfaces/IPackagedItem';
+import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from '../interfaces/IPackagedItem';
 import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
@@ -19,9 +19,20 @@ export const DefaultPackage: IPackageStore = {
 // tslint:disable-next-line:variable-name
 export const PackageTransform: IPackageTransform = {
   items: {
-    transform: (input?: IPackagedItemInit[]) => {
+    transform: (input: PackagedItemInit[], pkg: Package) => {
       if (input) {
-        return Map<string, IPackagedItem>(input.map(p => [p.name, p]) as [string, IPackagedItem][]);
+        return Map<string, IPackagedItem>(input.map(p => {
+          if (typeof p === 'string') {
+            if (pkg.model.defaultPackage.items.has(p)) {
+              return [p, pkg.model.defaultPackage.items.get(p)];
+            } else {
+              throw Error('item does not exists');
+            }
+          } else {
+            return [p.name, p];
+          }
+        },
+        ) as [string, IPackagedItem][]);
       } else {
         return null;
       }
@@ -71,7 +82,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'items') {
-            result.items = PackageTransform.items.transform(input.items);
+            result.items = PackageTransform.items.transform(input.items, this);
           } else {
             result[f] = input[f];
           }
@@ -100,7 +111,14 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
 
   constructor(init: Partial<IPackageInit> = {}) {
     super();
-    this.store = new PackageStorage(this.transform(init));
+    if (init.model) {
+      this.store = new PackageStorage(this.transform({ model: init.model }));
+      this.updateWith(init);
+    } else if (!init.items) {
+      this.store = new PackageStorage(this.transform(init));
+    } else {
+      throw new Error('init error: items expects to have model');
+    }
     this.init = new (Record<Partial<IPackageInit>>(init))();
   }
 }

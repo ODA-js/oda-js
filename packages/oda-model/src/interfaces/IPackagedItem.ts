@@ -1,5 +1,7 @@
 import { IPackage } from './IPackage';
 
+export type PackagedItemInit = IPackagedItemInit | string;
+
 export interface IPackagedItemInit {
   name: string;
   package?: IPackage;

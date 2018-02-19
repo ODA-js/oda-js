@@ -1,6 +1,7 @@
 import { Model } from './Model';
 import { Mutation } from './Mutation';
 import { Package } from './Package';
+import { IModel } from '../interfaces/IModel';
 
 describe('Mutaion', () => {
   let pkg: Package;
@@ -11,6 +12,29 @@ describe('Mutaion', () => {
 
   beforeEach(() => {
     pkg = new Package();
+  });
+
+  it('throws items without model', () => {
+    expect(() =>
+      new Package({
+        items: [],
+      }),
+    ).toThrow();
+
+    expect(() =>
+      new Package({
+        name: 'cool package',
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      new Package({
+        model: {} as IModel,
+        items: [],
+      }),
+    ).not.toThrow();
+
+
   });
 
   it('create empty', () => {

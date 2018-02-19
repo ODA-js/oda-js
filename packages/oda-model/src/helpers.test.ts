@@ -129,7 +129,6 @@ describe('Context helpers', () => {
     models.packages = new Package({
       name: 'system',
       acl: 10000,
-      items: [],
     });
 
     models.model = new Model({

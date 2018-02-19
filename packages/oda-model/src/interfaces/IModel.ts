@@ -14,7 +14,7 @@ export interface IModelStore extends INamedItem {
 
 export interface IModelTransform {
   packages: {
-    transform: (inp: IPackageInit[]) => Map<string, IPackage>,
+    transform: (inp: IPackageInit[], model: IModel) => Map<string, IPackage>,
     reverse: (inp: Map<string, IPackage> ) => IPackageInit[],
   };
 }
