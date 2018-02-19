@@ -9,6 +9,10 @@ import {
   IsHasManyProps,
   IsHasOne,
   IsHasOneProps,
+  IsHasManyInit,
+  IsHasOneInit,
+  IsBelongsToManyInit,
+  IsBelongsToInit,
 } from '../helpers';
 import { IBelongsToInit } from '../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
@@ -25,6 +29,7 @@ import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
 import { IFieldArgInit } from '../interfaces/IFieldArg';
+import { RelationInit } from '../interfaces/types';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -69,29 +74,30 @@ export const FieldTransform: IFieldTransform = {
     },
     reverse: (inp: IRelation): Partial<IRelationInit> => {
       if (inp) {
-        if (IsBelongsTo(inp)) {
+        const core = inp;
+        if (IsBelongsTo(core)) {
           return {
-            ...inp,
-            belongsTo: BelongsToTransform.belongsTo.reverse(inp.belongsTo),
-            fields: BelongsToTransform.fields.reverse(inp.fields),
+            belongsTo: BelongsToTransform.belongsTo.reverse(core.belongsTo),
+            fields: BelongsToTransform.fields.reverse(core.fields),
           } as IBelongsToInit;
         }
-        if (IsBelongsToMany(inp)) {
+        if (IsBelongsToMany(core)) {
           return {
-            ...inp,
-            fields: BelongsToManyTransform.fields.reverse(inp.fields),
+            belongsToMany: BelongsToManyTransform.belongsToMany.reverse(core.belongsToMany),
+            using: BelongsToManyTransform.using.reverse(core.using),
+            fields: BelongsToManyTransform.fields.reverse(core.fields),
           } as IBelongsToManyInit;
         }
-        if (IsHasOne(inp)) {
+        if (IsHasOne(core)) {
           return {
-            ...inp,
-            fields: HasOneTransform.fields.reverse(inp.fields),
+            hasOne: HasOneTransform.hasOne.reverse(core.hasOne),
+            fields: HasOneTransform.fields.reverse(core.fields),
           } as IHasOneInit;
         }
-        if (IsHasMany(inp)) {
+        if (IsHasMany(core)) {
           return {
-            ...inp,
-            fields: HasManyTransform.fields.reverse(inp.fields),
+            hasMany: HasManyTransform.hasMany.reverse(core.hasMany),
+            fields: HasManyTransform.fields.reverse(core.fields),
           } as IHasManyInit;
         }
       } else {

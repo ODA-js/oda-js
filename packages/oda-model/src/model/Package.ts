@@ -100,7 +100,9 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
         if (core.hasOwnProperty(f)) {
           if (f === 'items') {
             result.items = PackageTransform.items.reverse(input.items);
-          } else {
+          } else if (f === 'model') {
+            result.model = undefined;
+           } else {
             result[f] = core[f];
           }
         }

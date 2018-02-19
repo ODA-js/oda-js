@@ -1,9 +1,12 @@
 import { Map, Record } from 'immutable';
 
-import { IModel, IModelInit, IModelStore, IModelTransform } from '../interfaces/IModel';
+import { IModel, IModelInit, IModelStore, IModelTransform, IModelLoad } from '../interfaces/IModel';
 import { IPackage, IPackageInit } from '../interfaces/IPackage';
 import { Package } from './Package';
 import { Persistent } from './Persistent';
+import { Entity } from './Entity';
+import { Mutation } from './Mutation';
+import { Enum } from './Enum';
 
 // tslint:disable-next-line:variable-name
 export const DefaultModel: IModelStore = {
@@ -119,5 +122,27 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
         }],
       });
     }
+  }
+  public static load(input: IModelLoad): Model {
+    const items = [
+      ...input.entities.map(e => new Entity(e)),
+      ...input.mutations.map(m => new Mutation(m)),
+      ...input.enums.map(m => new Enum(m)),
+    ];
+
+    const result: Model = new Model({
+      name: input.name,
+      title: input.title,
+      description: input.description,
+    });
+
+    result.defaultPackage.updateWith({
+      items,
+    });
+
+    result.updateWith({
+      packages: [...input.packages],
+    });
+    return result;
   }
 }

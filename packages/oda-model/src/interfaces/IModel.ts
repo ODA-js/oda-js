@@ -2,6 +2,9 @@ import { Map } from 'immutable';
 
 import { IModelType, INamedItem } from './IModelType';
 import { IPackage, IPackageInit } from './IPackage';
+import { IEntityInit } from './IEntity';
+import { IMutationInit } from './IMutation';
+import { IEnumInit } from './IEnum';
 
 export interface IModelInit extends INamedItem  {
   defaultPackageName: string;
@@ -23,4 +26,11 @@ export interface IModel extends IModelType {
   readonly defaultPackage: IPackage;
   readonly modelType: 'model';
   readonly packages: Map<string, IPackage>;
+}
+
+export interface IModelLoad extends INamedItem {
+  packages: IPackageInit[];
+  entities: IEntityInit[];
+  mutations: IMutationInit[];
+  enums: IEnumInit[];
 }

@@ -20,6 +20,7 @@ import { IRelation, IRelationInit } from './interfaces/IRelation';
 import { Enum } from './model/Enum';
 import { Entity } from './model/Entity';
 import { Mutation } from './model/Mutation';
+import { RelationInit } from './interfaces/types';
 
 export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
@@ -141,6 +142,22 @@ export function isEntityInit(item: IPackagedItemInit): item is IEntityInit {
 
 export function isMutationInit(item: IPackagedItemInit): item is IMutationInit {
   return !!(<IMutationInit>item).payload;
+}
+
+export function IsBelongsToInit(item: RelationInit): item is IBelongsToInit {
+  return !!(<IBelongsToInit>item).belongsTo;
+}
+
+export function IsBelongsToManyInit(item: RelationInit): item is IBelongsToManyInit {
+  return !!(<IBelongsToManyInit>item).belongsToMany;
+}
+
+export function IsHasOneInit(item: RelationInit): item is IHasOneInit {
+  return !!(<IHasOneInit>item).hasOne;
+}
+
+export function IsHasManyInit(item: RelationInit): item is IHasManyInit {
+  return !!(<IHasManyInit>item).hasMany;
 }
 
 export function createPackagedItem(item: IPackagedItemInit): IPackagedItem {

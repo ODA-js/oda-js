@@ -1,4 +1,5 @@
 import { Model } from './Model';
+import schema from '../01_test_schema/';
 
 describe('Model', () => {
   let model: Model;
@@ -9,6 +10,20 @@ describe('Model', () => {
 
   beforeEach(() => {
     model = new Model();
+  });
+
+  it('Model.load', () => {
+    expect(() =>  Model.load(schema)).not.toThrow();
+  });
+
+  it('load serialized model', () => {
+    let serialized;
+    expect(() => serialized = Model.load(schema)).not.toThrow();
+    expect(serialized).not.toBeUndefined();
+    expect(serialized).toMatchSnapshot();
+    expect(serialized.packages.size).toBe(3);
+    expect(serialized.packages.has('system')).toBeTruthy();
+    expect(serialized.toJS()).toMatchSnapshot();
   });
 
   it('create empty', () => {
