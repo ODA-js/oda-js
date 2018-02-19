@@ -15,19 +15,19 @@ export default class implements Rule<IFieldContext> {
     const result: IValidationResult[] = [];
     const field = context.field;
     field.updateWith({
-      derived: field.derived || (field.args && field.args.size > 0),
+      derived: !!field.derived || (!!field.args && field.args.size > 0),
     });
 
     field.updateWith({
-      persistent: field.persistent || !(field.derived || field.args && field.args.size > 0),
+      persistent: !!field.persistent || !(!!field.derived || !!field.args && field.args.size > 0),
     });
 
     field.updateWith({
-      required: field.required || !!field.identity,
+      required: !!field.required || !!field.identity,
     });
 
     field.updateWith({
-      indexed: field.indexed || field.identity,
+      indexed: !!field.indexed || !!field.identity,
     });
 
     if (field.identity) {

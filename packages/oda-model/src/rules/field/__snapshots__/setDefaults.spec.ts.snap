@@ -1,0 +1,241 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`setDefaults fix derived field 1`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "derived": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": true,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": null,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix derived field 2`] = `Array []`;
+
+exports[`setDefaults fix derived field 3`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "derived": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": true,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": false,
+    "order": null,
+    "persistent": false,
+    "relation": null,
+    "required": false,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix identity field 1`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "identity": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": false,
+    "entity": null,
+    "identity": true,
+    "idKey": null,
+    "indexed": true,
+    "order": null,
+    "persistent": true,
+    "relation": null,
+    "required": true,
+    "type": 'string',
+  },
+}
+`;
+
+exports[`setDefaults fix indexed field 1`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "indexed": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": null,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": true,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix indexed field 2`] = `Array []`;
+
+exports[`setDefaults fix indexed field 3`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "indexed": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": false,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": true,
+    "order": null,
+    "persistent": true,
+    "relation": null,
+    "required": false,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix persistend-derived field 1`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "derived": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": true,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": null,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix persistend-derived field 2`] = `Array []`;
+
+exports[`setDefaults fix persistend-derived field 3`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "derived": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": true,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": false,
+    "order": null,
+    "persistent": false,
+    "relation": null,
+    "required": false,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix simple field 1`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": null,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": null,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix simple field 2`] = `Array []`;
+
+exports[`setDefaults fix simple field 3`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": false,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": false,
+    "order": null,
+    "persistent": true,
+    "relation": null,
+    "required": false,
+    "type": null,
+  },
+}
+`;

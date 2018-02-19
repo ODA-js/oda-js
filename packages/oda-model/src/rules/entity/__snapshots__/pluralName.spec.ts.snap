@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pluralName not throw 1`] = `Array []`;
+
+exports[`pluralName throw 1`] = `
+Array [
+  Object {
+    "entity": "species",
+    "message": "plural form of entity\`s name of entity must be different from its singular form",
+    "result": "error",
+  },
+]
+`;
