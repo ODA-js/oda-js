@@ -9,15 +9,16 @@ import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
 import { isIFieldContext, isRelation } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class RelationContext implements IRelationContext {
+export class RelationContext implements IRelationContext, IValidationContext {
   public model: IModel;
   public package: IPackage;
   public entity: IEntity;
   public field: IField;
   public relation: IRelation;
   public errors: IValidationResult[];
-  constructor(context: IFieldContext, relation: IRelation) {
+  constructor(context: IFieldContext & IValidationContext, relation: IRelation) {
     if (isIFieldContext(context)) {
       this.model = context.model;
       this.package = context.package;

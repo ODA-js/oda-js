@@ -5,10 +5,11 @@ import { IField } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { TransformField } from './utils';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {
-  package: null,
+  context: null,
   name: null,
   title: null,
   description: null,
@@ -31,8 +32,8 @@ export const EntityTransform: IEntityTransform = {
 export const EntityStorage = Record(DefaultEntity);
 
 export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEntity {
-  public get package(): IPackage {
-    return this.store.get('package', null);
+  public get context(): IPackageContext {
+    return this.store.get('context', null);
   }
   public get modelType(): 'entity' {
     return 'entity';

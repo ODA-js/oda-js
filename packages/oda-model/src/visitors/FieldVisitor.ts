@@ -3,10 +3,11 @@ import { IField, IFieldStore, IFieldInit } from '../interfaces/IField';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { FieldContext } from '../contexts/FieldContext';
+import { IValidationContext } from '../contexts/IValidationContext';
 
 export class FieldVisitor implements IVisitor<IField, IEntityContext> {
   public validator: Validator;
-  public context: IEntityContext; // has to be parent context
+  public context: IEntityContext & IValidationContext; // has to be parent context
   public visit(item: IField) {
     const context = new FieldContext(this.context, item);
     const result = [];
@@ -38,7 +39,7 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
     }));
   }
 
-  constructor(validator: Validator, pkg: IEntityContext) {
+  constructor(validator: Validator, pkg: IEntityContext & IValidationContext) {
     this.validator = validator;
     this.context = pkg;
   }

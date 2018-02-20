@@ -9,13 +9,14 @@ import { restart } from './restart';
 import { IEnumContext } from './IEnumContext';
 import { IEnum } from '../interfaces/IEnum';
 import { isIPackageContext, isEnum } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class EnumContext implements IEnumContext {
+export class EnumContext implements IEnumContext, IValidationContext {
   public enum: IEnum;
   public model: IModel;
   public package: IPackage;
   public errors: IValidationResult[];
-  constructor(context: IPackageContext, iEnum: IEnum) {
+  constructor(context: IPackageContext & IValidationContext, iEnum: IEnum) {
     if (isIPackageContext(context)) {
       this.model = context.model;
       this.package = context.package;

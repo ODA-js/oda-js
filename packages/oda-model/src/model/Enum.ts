@@ -4,13 +4,14 @@ import {  IEnum, IEnumInit,  IEnumStore, IEnumTransform } from '../interfaces/IE
 import { Persistent } from './Persistent';
 import { EnumInitItem, IEnumItem } from '../interfaces/IEnumItem';
 import { EnumItem } from './EnumItem';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEnum: IEnumStore = {
   name: null,
   title: null,
   description: null,
-  package: null,
+  context: null,
   values: null,
 };
 
@@ -61,6 +62,9 @@ export class Enum extends Persistent<IEnumInit, IEnumStore> implements IEnum {
   }
   public get values(): Map<string, IEnumItem> {
     return this.store.get('values', null);
+  }
+  public get context(): IPackageContext {
+    return this.store.get('context', null);
   }
   protected transform(input: Partial<IEnumInit>): IEnumStore {
     const result: IEnumStore = {} as any;

@@ -1,12 +1,13 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IEntity, IEntityInit, IEntityStore} from '../interfaces/IEntity';
+import { IEntity, IEntityInit, IEntityStore } from '../interfaces/IEntity';
 import { IPackageContext } from '../contexts/IPackageContext';
 import { Validator } from '../validators/Validator';
 import { EntityContext } from '../contexts/EntityContext';
+import { IValidationContext } from '../contexts/IValidationContext';
 
 export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
   public validator: Validator;
-  public context: IPackageContext; // has to be parent context
+  public context: IPackageContext & IValidationContext; // has to be parent context
   public visit(item: IEntity) {
     const context = new EntityContext(this.context, item);
     const result = [];
@@ -39,7 +40,7 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
     }));
   }
 
-  constructor(validator: Validator, pkg: IPackageContext) {
+  constructor(validator: Validator, pkg: IPackageContext & IValidationContext) {
     this.validator = validator;
     this.context = pkg;
   }

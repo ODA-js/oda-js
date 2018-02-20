@@ -6,6 +6,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 import { FieldArgsTransformType } from './types';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 export interface IMutationACL {
   execute: string[];
@@ -26,12 +27,13 @@ export interface IMutationMetaDataStore {
 export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPackagedItemStore {
   args: Map<string, IFieldArg>;
   payload: Map<string, IFieldArg>;
+  context: IPackageContext;
 }
 
 export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
   args: FieldArgsInput;
   payload: FieldArgsInput;
-  package?: IPackage;
+  context: IPackageContext;
 }
 
 export interface IMutationACLTransform {
@@ -49,5 +51,6 @@ export interface IMutation extends IModelType, IPackagedItem {
   readonly args: Map<string, IFieldArgInit>;
   readonly payload: Map<string, IFieldArgInit>;
   readonly acl?: IMutationACLStore;
+  readonly context: IPackageContext;
 }
 

@@ -66,16 +66,50 @@ Field {
     "description": null,
     "acl": null,
     "args": null,
-    "derived": false,
+    "derived": null,
     "entity": null,
     "identity": true,
     "idKey": null,
+    "indexed": null,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`setDefaults fix identity field 2`] = `Array []`;
+
+exports[`setDefaults fix identity field 3`] = `
+Field {
+  "init": Immutable.Record {
+    "name": "user",
+    "identity": true,
+  },
+  "store": Immutable.Record {
+    "name": "user",
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": false,
+    "entity": null,
+    "identity": true,
+    "idKey": EntityRef {
+      "store": Immutable.Record {
+        "backField": "",
+        "entity": "cool entity",
+        "field": "user",
+      },
+    },
     "indexed": true,
     "order": null,
     "persistent": true,
     "relation": null,
     "required": true,
-    "type": 'string',
+    "type": null,
   },
 }
 `;
@@ -139,6 +173,7 @@ Field {
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
+    "persistent": true,
   },
   "store": Immutable.Record {
     "name": "user",
@@ -152,7 +187,7 @@ Field {
     "idKey": null,
     "indexed": null,
     "order": null,
-    "persistent": null,
+    "persistent": true,
     "relation": null,
     "required": null,
     "type": null,
@@ -167,6 +202,7 @@ Field {
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
+    "persistent": true,
   },
   "store": Immutable.Record {
     "name": "user",
@@ -180,7 +216,7 @@ Field {
     "idKey": null,
     "indexed": false,
     "order": null,
-    "persistent": false,
+    "persistent": true,
     "relation": null,
     "required": false,
     "type": null,

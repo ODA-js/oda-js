@@ -1,6 +1,7 @@
 import { IUpdatable } from './IUpdatable';
 import { IValidate } from './IValidate';
 import { MetaModelType } from './types';
+import { IContext } from '../contexts/IContext';
 
 export interface INamedItem {
   name: string;
@@ -13,4 +14,5 @@ export interface IModelType extends Readonly<INamedItem>, IValidate, IUpdatable 
   readonly title?: string;
   readonly description?: string;
   readonly modelType: MetaModelType;
+  readonly context?: IContext;
 }

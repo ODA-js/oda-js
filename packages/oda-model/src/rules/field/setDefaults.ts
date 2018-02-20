@@ -33,7 +33,7 @@ export default class implements Rule<IFieldContext> {
     if (field.identity) {
       field.updateWith({
         idKey: new EntityRef({
-          entity: field.entity.name,
+          entity: context.entity.name,
           field: field.name,
           backField: '',
         }),

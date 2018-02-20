@@ -1,19 +1,21 @@
 import { IPackage } from './IPackage';
+import { IContext } from '../contexts/IContext';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 export type PackagedItemInit = IPackagedItemInit | string;
 
 export interface IPackagedItemInit {
   name: string;
-  package?: IPackage;
+  context: IPackageContext;
 }
 
 export interface IPackagedItemStore {
   name: string;
-  package: IPackage;
+  context: IPackageContext;
 }
 
 export interface IPackagedItem {
   readonly name: string;
-  readonly package?: IPackage;
+  readonly context: IPackageContext;
   toJS(): object;
 }

@@ -7,6 +7,8 @@ import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
 import { IModelType, INamedItem } from './IModelType';
 import { IRelation, IRelationInit } from './IRelation';
 import { RelationInit, FieldArgsTransformType } from './types';
+import { IEntityContext } from '../contexts/IEntityContext';
+import { IRelationContext } from '../contexts/IRelationContext';
 
 export interface IFieldACL {
   read: string[];
@@ -31,6 +33,7 @@ export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaDa
   args?: FieldArgsInput;
   order?: number;
   relation?: Partial<RelationInit>;
+  context: IEntityContext | IRelationContext;
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
@@ -40,6 +43,7 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
   idKey?: IEntityRef;
   order: number;
   relation?: IRelation;
+  context: IEntityContext | IRelationContext;
 }
 
 export interface IFieldTransform {
@@ -52,7 +56,6 @@ export interface IFieldTransform {
 
 export interface IField extends IModelType {
   readonly modelType: 'field';
-  readonly entity: IEntity;
   readonly type: string;
   readonly args?: Map<string, IFieldArgInit>;
   readonly idKey?: IEntityRef;
@@ -64,4 +67,5 @@ export interface IField extends IModelType {
   readonly indexed: boolean | string | string[];
   readonly identity: boolean | string | string[];
   readonly acl: Partial<IFieldACL>;
+  readonly context: IEntityContext | IRelationContext;
 }

@@ -9,14 +9,15 @@ import { restart } from './restart';
 import { IField } from '../interfaces/IField';
 import { IFieldContext } from './IFieldContext';
 import { isIEntityContext, isField } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class FieldContext implements IFieldContext {
+export class FieldContext implements IFieldContext, IValidationContext {
   public model: IModel;
   public package: IPackage;
   public entity: IEntity;
   public field: IField;
   public errors: IValidationResult[];
-  constructor(context: IEntityContext, field: IField) {
+  constructor(context: IEntityContext & IValidationContext, field: IField) {
     if (isIEntityContext(context)) {
       this.model = context.model;
       this.package = context.package;

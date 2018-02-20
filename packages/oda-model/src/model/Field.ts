@@ -30,6 +30,8 @@ import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
 import { IFieldArgInit } from '../interfaces/IFieldArg';
 import { RelationInit } from '../interfaces/types';
+import { IEntityContext } from '../contexts/IEntityContext';
+import { IRelationContext } from '../contexts/IRelationContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -48,6 +50,7 @@ export const DefaultField: IFieldStore = {
   relation: null,
   required: null,
   type: null,
+  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -158,6 +161,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   }
   public get relation(): IRelation {
     return this.store.get('relation', null);
+  }
+  public get context(): IEntityContext | IRelationContext {
+    return this.store.get('context', null);
   }
   protected transform(input: Partial<IFieldInit>): IFieldStore {
     const result: IFieldStore = {} as any;

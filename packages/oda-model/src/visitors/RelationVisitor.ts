@@ -3,10 +3,11 @@ import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelatio
 import { IFieldContext } from '../contexts/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
+import { IValidationContext } from '../contexts/IValidationContext';
 
 export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
   public validator: Validator;
-  public context: IFieldContext; // has to be parent context
+  public context: IFieldContext & IValidationContext; // has to be parent context
   public visit(item: IRelation) {
     const context = new RelationContext(this.context, item);
     const result = [];
@@ -55,7 +56,7 @@ export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
     return result;
   }
 
-  constructor(validator: Validator, pkg: IFieldContext) {
+  constructor(validator: Validator, pkg: IFieldContext & IValidationContext) {
     this.validator = validator;
     this.context = pkg;
   }

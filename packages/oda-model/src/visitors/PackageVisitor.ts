@@ -4,10 +4,11 @@ import { IModelContext } from '../contexts/IModelContext';
 import { Validator } from '../validators/Validator';
 import { ModelContext } from '../contexts/ModelContext';
 import { PackageContext } from '../contexts/PackageContext';
+import { IValidationContext } from '../contexts/IValidationContext';
 
 export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
   public validator: Validator;
-  public context: IModelContext; // has to be parent context
+  public context: IModelContext & IValidationContext; // has to be parent context
   public visit(item: IPackage) {
     if (!this.context) {
       this.context = new ModelContext(item.model);
@@ -43,7 +44,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
     }));
   }
 
-  constructor(validator: Validator, model?: IModelContext) {
+  constructor(validator: Validator, model?: IModelContext & IValidationContext) {
     this.validator = validator;
     this.context = model;
   }

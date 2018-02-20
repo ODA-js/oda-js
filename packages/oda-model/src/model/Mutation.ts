@@ -12,11 +12,12 @@ import {
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationStore = {
   name: null,
-  package: null,
+  context: null,
   title: null,
   description: null,
   args: null,
@@ -54,8 +55,8 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore> implemen
   public get modelType(): 'mutation' {
     return 'mutation';
   }
-  public get package(): IPackage {
-    return this.store.get('package', null);
+  public get context(): IPackageContext {
+    return this.store.get('context', null);
   }
   public get name(): string {
     return this.store.get('name', null);

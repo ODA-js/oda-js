@@ -1,6 +1,6 @@
 import { Map, Record } from 'immutable';
 
-import { IModel } from '../interfaces/IModel';
+import { IModelContext } from '../contexts/IModelContext';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
 import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from '../interfaces/IPackagedItem';
 import { Persistent } from './Persistent';
@@ -13,7 +13,7 @@ export const DefaultPackage: IPackageStore = {
   acl: null,
   abstract: null,
   items: null,
-  model: null,
+  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -24,12 +24,18 @@ export const PackageTransform: IPackageTransform = {
         return Map<string, IPackagedItem>(input.map(p => {
           if (typeof p === 'string') {
             if (pkg.model.defaultPackage.items.has(p)) {
-              return [p, pkg.model.defaultPackage.items.get(p)];
+              return [p, {
+                ...pkg.model.defaultPackage.items.get(p),
+                package: pkg,
+              }];
             } else {
               throw Error('item does not exists');
             }
           } else {
-            return [p.name, p];
+            return [p.name, {
+              ...p,
+              package: pkg,
+            }];
           }
         },
         ) as [string, IPackagedItem][]);
@@ -72,8 +78,8 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
   public get items(): Map<string, IPackagedItem> {
     return this.store.get('items', null);
   }
-  public get model(): IModel {
-    return this.store.get('model', null);
+  public get context(): IModelContext {
+    return this.store.get('context', null);
   }
 
   protected transform(input: Partial<IPackageInit>): IPackageStore {

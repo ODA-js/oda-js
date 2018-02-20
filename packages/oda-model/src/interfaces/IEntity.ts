@@ -5,6 +5,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 import { FieldTransformType } from './types';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 export interface IEntityACL {
   read?: string[];
@@ -43,6 +44,7 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
   relations: Set<string>;
   required: Set<string>;
   indexed: Set<string>;
+  context: IPackageContext;
 }
 
 export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPackagedItemInit {
@@ -51,7 +53,7 @@ export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPack
   fields?: {
     [name: string]: Partial<IFieldInit>,
   } | IFieldInit[];
-  package?: IPackage;
+  context: IPackageContext;
 }
 
 export interface IEntityTransform {
@@ -66,4 +68,5 @@ export interface IEntity extends IModelType, IPackagedItem {
   readonly relations: Set<string>;
   readonly required: Set<string>;
   readonly indexed: Set<string>;
+  readonly context: IPackageContext;
 }

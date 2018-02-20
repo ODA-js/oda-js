@@ -11,6 +11,7 @@ import { EntityVisitor } from '../visitors/EntityVisitor';
 import { FieldVisitor } from '../visitors/FieldVisitor';
 import { PackageVisitor } from '../visitors/PackageVisitor';
 import { RelationVisitor } from '../visitors/RelationVisitor';
+import { IValidationContext } from '../contexts/IValidationContext';
 
 
 export class Validator implements IValidator {
@@ -33,10 +34,10 @@ export class Validator implements IValidator {
   }
 
   public check(item, options?: {
-    model?: IModelContext,
-    package?: IPackageContext,
-    entity?: IEntityContext,
-    field?: IFieldContext,
+    model?: IModelContext & IValidationContext,
+    package?: IPackageContext & IValidationContext,
+    entity?: IEntityContext & IValidationContext,
+    field?: IFieldContext & IValidationContext,
   }): IValidationResult[] {
     let walker;
     if (isPackage(item)) {

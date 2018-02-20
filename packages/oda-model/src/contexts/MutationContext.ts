@@ -7,13 +7,14 @@ import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
 import { isIPackageContext, isMutation } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class MutationContext implements IMutationContext {
+export class MutationContext implements IMutationContext, IValidationContext {
   public mutation: IMutation;
   public model: IModel;
   public package: IPackage;
   public errors: IValidationResult[];
-  constructor(context: IPackageContext, mutation: IMutation) {
+  constructor(context: IPackageContext & IValidationContext, mutation: IMutation) {
     if (isIPackageContext(context)) {
       this.model = context.model;
       this.package = context.package;

@@ -7,6 +7,7 @@ import { Persistent } from './Persistent';
 import { Entity } from './Entity';
 import { Mutation } from './Mutation';
 import { Enum } from './Enum';
+import { IContext } from '../contexts/IContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultModel: IModelStore = {
@@ -14,6 +15,7 @@ export const DefaultModel: IModelStore = {
   title: null,
   description: null,
   packages: null,
+  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -59,10 +61,12 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
   public get packages(): Map<string, IPackage> {
     return this.store.get('packages', null);
   }
+  public get context(): IContext {
+    return this.store.get('context', null);
+  }
   public get defaultPackage(): IPackage {
     return this.packages.get(this.defaultPackageName);
   }
-
   public get defaultPackageName(): string {
     return this._defaultPackageName;
   }

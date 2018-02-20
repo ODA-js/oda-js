@@ -4,8 +4,9 @@ import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
 import { isModel } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class ModelContext implements IModelContext {
+export class ModelContext implements IModelContext, IValidationContext {
   public model: IModel;
   public errors: IValidationResult[];
   constructor(model: IModel) {

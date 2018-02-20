@@ -38,6 +38,7 @@ import { IFieldContext } from './contexts/IFieldContext';
 import { IModelContext } from './contexts/IModelContext';
 import { IEntityContext } from './contexts/IEntityContext';
 import { IPackageContext } from './contexts/IPackageContext';
+import { IValidationContext } from './contexts/IValidationContext';
 
 describe('RelationProps helpers', () => {
   it('belongsToProps is detected', () => {
@@ -103,11 +104,11 @@ describe('Context helpers', () => {
   } = {} as any;
 
   const contexts: {
-    relation: IRelationContext,
-    field: IFieldContext,
-    model: IModelContext,
-    entity: IEntityContext,
-    packages: IPackageContext,
+    relation: IRelationContext & IValidationContext,
+    field: IFieldContext & IValidationContext,
+    model: IModelContext & IValidationContext,
+    entity: IEntityContext & IValidationContext,
+    packages: IPackageContext & IValidationContext,
   } = {} as any;
 
   beforeAll(() => {

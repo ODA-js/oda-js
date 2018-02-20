@@ -1,12 +1,10 @@
 import { Map } from 'immutable';
 
+import { IFieldContext } from '../contexts/IFieldContext';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldInit } from '../interfaces/IField';
+import { IField } from '../interfaces/IField';
 import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelation';
 import { RelationType } from '../interfaces/types';
-import decapitalize from './../lib/decapitalize';
-import { EntityRef } from './EntityRef';
-import { Field } from './Field';
 import { Persistent } from './Persistent';
 
 export abstract class Relation<P extends Partial<IRelationInit>, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
@@ -51,5 +49,8 @@ export abstract class Relation<P extends Partial<IRelationInit>, S extends IRela
   }
   public get shortName(): string {
     return this.store.get('shortName', null);
+  }
+  public get context(): IFieldContext {
+    return this.store.get('context', null);
   }
 }

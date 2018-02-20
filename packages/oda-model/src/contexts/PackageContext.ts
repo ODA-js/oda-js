@@ -6,12 +6,13 @@ import { IValidationResult } from '../interfaces/IValidationResult';
 import { RestartType } from '../interfaces/types';
 import { restart } from './restart';
 import { isIModelContext, isIPackageContext, isPackage } from '../helpers';
+import { IValidationContext } from './IValidationContext';
 
-export class PackageContext implements IPackageContext {
+export class PackageContext implements IPackageContext, IValidationContext {
   public model: IModel;
   public package: IPackage;
   public errors: IValidationResult[];
-  constructor(context: IModelContext, pkg: IPackage) {
+  constructor(context: IModelContext & IValidationContext, pkg: IPackage) {
     if (isIModelContext(context)) {
       this.model = context.model;
       this.package = isPackage(pkg) && pkg;

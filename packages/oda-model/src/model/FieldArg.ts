@@ -25,6 +25,8 @@ import { HasMany, HasManyTransform } from './HasMany';
 import { HasOne, HasOneTransform } from './HasOne';
 import { Persistent } from './Persistent';
 import { TransformArgs } from './utils';
+import { IFieldContext } from '../contexts/IFieldContext';
+import { IMutationContext } from '../contexts/IMutationContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldArgInit = {
@@ -34,6 +36,7 @@ export const DefaultField: IFieldArgInit = {
   required: null,
   type: null,
   defaultValue: null,
+  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -61,12 +64,14 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implement
   public get defaultValue(): string {
     return this.store.get('defaultValue', null);
   }
+  public get context(): IMutationContext | IFieldContext {
+    return this.store.get('context', null);
+  }
   protected transform(input: Partial<IFieldArgInit>): IFieldArgInit {
-    const result: IFieldStore = {} as any;
+    const result: IFieldArgInit = {} as any;
     if (input) {
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
-
           result[f] = input[f];
         }
       }
@@ -74,7 +79,7 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implement
     return result;
   }
   protected reverse(input: Record<IFieldArgInit> & Readonly<IFieldArgInit>): IFieldArgInit {
-    const result: IFieldInit = {} as any;
+    const result: IFieldArgInit = {} as any;
     if (input) {
       const core = input.toJS();
       for (let f in core) {
@@ -85,9 +90,9 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implement
     }
     return result;
   }
-  constructor(init: Partial<IFieldInit> = {}) {
+  constructor(init: Partial<IFieldArgInit> = {}) {
     super();
     this.store = new FieldStorage(this.transform(init));
-    this.init = new (Record<Partial<IFieldInit>>(init))();
+    this.init = new (Record<Partial<IFieldArgInit>>(init))();
   }
 }

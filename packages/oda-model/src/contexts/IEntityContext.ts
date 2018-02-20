@@ -4,5 +4,4 @@ import { RestartType } from '../interfaces/types';
 
 export interface IEntityContext extends IPackageContext {
   readonly entity: IEntity;
-  restart(level: RestartType);
 }
