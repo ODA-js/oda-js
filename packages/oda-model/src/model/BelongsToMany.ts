@@ -17,7 +17,6 @@ export const DefaultBelongsToMany: IBelongsToManyStore = {
   opposite: null,
   belongsToMany: null,
   using: null,
-  context: null,
   //storage
   single: false,
   stored: false,

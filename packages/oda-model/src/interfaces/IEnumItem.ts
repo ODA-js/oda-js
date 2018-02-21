@@ -5,6 +5,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 import { IEnum } from './IEnum';
 import { IEnumContext } from '../contexts/IEnumContext';
+import { IContextable } from '../contexts/IContextable';
 
 
 export type EnumInitItem = IEnumItemInit | string;
@@ -17,11 +18,9 @@ export interface IEnumItemInit extends INamedItem {
 export interface IEnumItemStore extends INamedItem {
   value: string;
   type: string;
-  context: IEnumContext;
 }
 
-export interface IEnumItem extends IModelType, Readonly<IEnumItemInit> {
+export interface IEnumItem extends IModelType, Readonly<IEnumItemInit>, IContextable<IEnumContext> {
   readonly value: string;
   readonly type: string;
-  readonly context: IEnumContext;
 }

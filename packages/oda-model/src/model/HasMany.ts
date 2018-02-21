@@ -13,7 +13,6 @@ export const DefaultHasMany: IHasManyStore = {
   fields: null,
   opposite: null,
   hasMany: null,
-  context: null,
   //storage
   single: false,
   stored: false,

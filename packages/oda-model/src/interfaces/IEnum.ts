@@ -15,7 +15,6 @@ export interface IEnumInit extends INamedItem, IPackagedItemInit {
 
 export interface IEnumStore extends INamedItem, IPackagedItemStore {
   values: Map<string, IEnumItem>;
-  context: IPackageContext;
 }
 
 export interface IEnumTransform {

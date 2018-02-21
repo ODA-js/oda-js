@@ -12,7 +12,6 @@ export interface IPackagedItemInit {
 
 export interface IPackagedItemStore {
   name: string;
-  context: IPackageContext;
 }
 
 export interface IPackagedItem extends IContextable<IPackageContext> {

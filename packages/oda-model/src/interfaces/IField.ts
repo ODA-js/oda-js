@@ -9,6 +9,7 @@ import { IRelation, IRelationInit } from './IRelation';
 import { RelationInit, FieldArgsTransformType } from './types';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { IRelationContext } from '../contexts/IRelationContext';
+import { IContextable } from '../contexts/IContextable';
 
 export interface IFieldACL {
   read: string[];
@@ -42,7 +43,6 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
   idKey?: IEntityRef;
   order: number;
   relation?: IRelation;
-  context: IEntityContext | IRelationContext;
 }
 
 export interface IFieldTransform {
@@ -53,7 +53,7 @@ export interface IFieldTransform {
   };
 }
 
-export interface IField extends IModelType {
+export interface IField extends IModelType, IContextable<IEntityContext | IRelationContext> {
   readonly modelType: 'field';
   readonly type: string;
   readonly args?: Map<string, IFieldArgInit>;
@@ -66,5 +66,4 @@ export interface IField extends IModelType {
   readonly indexed: boolean | string | string[];
   readonly identity: boolean | string | string[];
   readonly acl: Partial<IFieldACL>;
-  readonly context: IEntityContext | IRelationContext;
 }

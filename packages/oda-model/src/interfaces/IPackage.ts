@@ -20,7 +20,6 @@ export interface IPackageStore extends INamedItem {
   acl: number;
   abstract?: boolean;
   items: Map<string, IPackagedItem>;
-  context: IModelContext;
 }
 
 export interface IPackageTransform {

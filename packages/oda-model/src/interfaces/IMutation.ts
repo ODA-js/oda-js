@@ -7,6 +7,7 @@ import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 import { FieldArgsTransformType } from './types';
 import { IPackageContext } from '../contexts/IPackageContext';
+import { IContextable } from '../contexts/IContextable';
 
 export interface IMutationACL {
   execute: string[];
@@ -27,7 +28,6 @@ export interface IMutationMetaDataStore {
 export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPackagedItemStore {
   args: Map<string, IFieldArg>;
   payload: Map<string, IFieldArg>;
-  context: IPackageContext;
 }
 
 export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
@@ -45,11 +45,10 @@ export interface IMutationTransform {
   acl: IMutationACLTransform;
 }
 
-export interface IMutation extends IModelType, IPackagedItem {
+export interface IMutation extends IModelType, IPackagedItem, IContextable<IPackageContext> {
   readonly modelType: 'mutation';
   readonly args: Map<string, IFieldArgInit>;
   readonly payload: Map<string, IFieldArgInit>;
   readonly acl?: IMutationACLStore;
-  readonly context: IPackageContext;
 }
 

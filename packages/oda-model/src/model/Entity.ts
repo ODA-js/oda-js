@@ -10,7 +10,6 @@ import { IEntityContext } from '../contexts/IEntityContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {
-  context: null,
   name: null,
   title: null,
   description: null,
@@ -32,10 +31,7 @@ export const EntityTransform: IEntityTransform = {
 // tslint:disable-next-line:variable-name
 export const EntityStorage = Record(DefaultEntity);
 
-export class Entity extends Persistent<IEntityInit, IEntityStore> implements IEntity {
-  public get context(): IPackageContext {
-    return this.store.get('context', null);
-  }
+export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContext> implements IEntity {
   public get modelType(): 'entity' {
     return 'entity';
   }

@@ -6,6 +6,7 @@ import { IEntityInit } from './IEntity';
 import { IMutationInit } from './IMutation';
 import { IEnumInit } from './IEnum';
 import { IContext } from '../contexts/IContext';
+import { IContextable } from '../contexts/IContextable';
 
 export interface IModelInit extends INamedItem  {
   defaultPackageName: string;
@@ -14,7 +15,6 @@ export interface IModelInit extends INamedItem  {
 
 export interface IModelStore extends INamedItem {
   packages: Map<string, IPackage>;
-  context: IContext;
 }
 
 export interface IModelTransform {
@@ -24,11 +24,10 @@ export interface IModelTransform {
   };
 }
 
-export interface IModel extends IModelType {
+export interface IModel extends IModelType, IContextable<IContext> {
   readonly defaultPackage: IPackage;
   readonly modelType: 'model';
   readonly packages: Map<string, IPackage>;
-  readonly context: IContext;
 }
 
 export interface IModelLoad extends INamedItem {

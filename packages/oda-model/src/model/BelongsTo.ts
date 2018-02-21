@@ -13,7 +13,6 @@ export const DefaultBelongsTo: IBelongsToStore = {
   fields: null,
   opposite: null,
   belongsTo: null,
-  context: null,
   //storage
   single: true,
   stored: true,

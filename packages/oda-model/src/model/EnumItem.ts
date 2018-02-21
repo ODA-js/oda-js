@@ -12,13 +12,12 @@ export const DefaultEnumItem: IEnumItemStore = {
   description: null,
   type: null,
   value: null,
-  context: null,
 };
 
 // tslint:disable-next-line:variable-name
 export const EnumStorage = Record(DefaultEnumItem);
 
-export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore> implements IEnumItem {
+export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore, IEnumContext> implements IEnumItem {
   public get modelType(): 'enumItem' {
     return 'enumItem';
   }
@@ -36,9 +35,6 @@ export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore> implemen
   }
   public get type(): string {
     return this.store.get('type', null);
-  }
-  public get context(): IEnumContext {
-    return this.store.get('context', null);
   }
   protected transform(input: Partial<IEnumItemInit>): IEnumItemInit {
     const result: IEnumItemInit = {} as any;

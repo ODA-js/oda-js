@@ -5,6 +5,7 @@ import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { MetaModelType, RelationType } from './types';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { IContextable } from '../contexts/IContextable';
 
 
 // metadata attributes
@@ -23,7 +24,6 @@ export interface IRelationName {
 export interface IRelationStore extends IRelationName, IRelationStorage, INamedItem {
   opposite: string;
   fields: Map<string, IField>;
-  context: IFieldContext;
 }
 
 export interface IRelationInit extends Partial<IRelationName>, Partial<IRelationStorage>, Partial<INamedItem> {
@@ -33,7 +33,7 @@ export interface IRelationInit extends Partial<IRelationName>, Partial<IRelation
   } | IFieldInit[];
 }
 
-export interface IRelation extends IModelType {
+export interface IRelation extends IModelType, IContextable<IFieldContext> {
   readonly single: boolean;
   readonly stored: boolean;
   readonly embedded: boolean;
@@ -45,5 +45,4 @@ export interface IRelation extends IModelType {
   readonly ref: IEntityRef;
   readonly opposite?: string;
   readonly fields?: Map<string, IField>;
-  readonly context: IFieldContext;
 }

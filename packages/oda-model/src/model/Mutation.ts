@@ -17,7 +17,6 @@ import { IPackageContext } from '../contexts/IPackageContext';
 // tslint:disable-next-line:variable-name
 export const DefaultMutation: IMutationStore = {
   name: null,
-  context: null,
   title: null,
   description: null,
   args: null,
@@ -51,12 +50,9 @@ export const MutationTransform: IMutationTransform = {
 // tslint:disable-next-line:variable-name
 const MutationStorage = Record(DefaultMutation);
 
-export class Mutation extends Persistent<IMutationInit, IMutationStore> implements IMutation {
+export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackageContext> implements IMutation {
   public get modelType(): 'mutation' {
     return 'mutation';
-  }
-  public get context(): IPackageContext {
-    return this.store.get('context', null);
   }
   public get name(): string {
     return this.store.get('name', null);

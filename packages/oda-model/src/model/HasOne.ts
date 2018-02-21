@@ -13,7 +13,6 @@ export const DefaultHasOne: IHasOneStore = {
   fields: null,
   opposite: null,
   hasOne: null,
-  context: null,
   //storage
   single: true,
   stored: false,

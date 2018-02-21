@@ -15,7 +15,6 @@ export const DefaultModel: IModelStore = {
   title: null,
   description: null,
   packages: null,
-  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -47,7 +46,7 @@ export const ModelTransform: IModelTransform = {
 // tslint:disable-next-line:variable-name
 export const ModelStorage = Record(DefaultModel);
 
-export class Model extends Persistent<IModelInit, IModelStore> implements IModel {
+export class Model extends Persistent<IModelInit, IModelStore, IContext> implements IModel {
   public get modelType(): 'model' {
     return 'model';
   }
@@ -62,9 +61,6 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
   }
   public get packages(): Map<string, IPackage> {
     return this.store.get('packages', null);
-  }
-  public get context(): IContext {
-    return this.store.get('context', null);
   }
   public get defaultPackage(): IPackage {
     return this.packages.get(this.defaultPackageName);

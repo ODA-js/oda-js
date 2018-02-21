@@ -51,7 +51,6 @@ export const DefaultField: IFieldStore = {
   relation: null,
   required: null,
   type: null,
-  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -114,7 +113,7 @@ export const FieldTransform: IFieldTransform = {
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class Field extends Persistent<IFieldInit, IFieldStore> implements IField {
+export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | IRelationContext> implements IField {
   public get modelType(): 'field' {
     return 'field';
   }
@@ -163,9 +162,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore> implements IField
   public get relation(): IRelation {
     return this.store.get('relation', null);
   }
-  public get context(): IEntityContext | IRelationContext {
-    return this.store.get('context', null);
-  }
+
   protected transform(input: Partial<IFieldInit>): IFieldStore {
     const result: IFieldStore = {} as any;
     if (input) {

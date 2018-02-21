@@ -7,7 +7,8 @@ import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelatio
 import { RelationType } from '../interfaces/types';
 import { Persistent } from './Persistent';
 
-export abstract class Relation<P extends Partial<IRelationInit>, S extends IRelationStore> extends Persistent<P, S> implements IRelation {
+export abstract class Relation<P extends Partial<IRelationInit>, S extends IRelationStore>
+  extends Persistent<P, S, IFieldContext> implements IRelation {
   public get modelType(): 'relation' {
     return 'relation';
   }
@@ -49,8 +50,5 @@ export abstract class Relation<P extends Partial<IRelationInit>, S extends IRela
   }
   public get shortName(): string {
     return this.store.get('shortName', null);
-  }
-  public get context(): IFieldContext {
-    return this.store.get('context', null);
   }
 }

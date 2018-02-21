@@ -36,13 +36,12 @@ export const DefaultField: IFieldArgStore = {
   required: null,
   type: null,
   defaultValue: null,
-  context: null,
 };
 
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore> implements IFieldArg {
+export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutationContext | IFieldContext > implements IFieldArg {
   public get modelType(): 'fieldArg' {
     return 'fieldArg';
   }
@@ -63,9 +62,6 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore> implemen
   }
   public get defaultValue(): string {
     return this.store.get('defaultValue', null);
-  }
-  public get context(): IMutationContext | IFieldContext {
-    return this.store.get('context', null);
   }
   protected transform(input: Partial<IFieldArgInit>): IFieldArgInit {
     const result: IFieldArgInit = {} as any;

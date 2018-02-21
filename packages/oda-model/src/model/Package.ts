@@ -13,7 +13,6 @@ export const DefaultPackage: IPackageStore = {
   acl: null,
   abstract: null,
   items: null,
-  context: null,
 };
 
 // tslint:disable-next-line:variable-name
@@ -56,7 +55,7 @@ export const PackageTransform: IPackageTransform = {
 // tslint:disable-next-line:variable-name
 const PackageStorage = Record(DefaultPackage);
 
-export class Package extends Persistent<IPackageInit, IPackageStore> implements IPackage {
+export class Package extends Persistent<IPackageInit, IPackageStore, IModelContext> implements IPackage {
   public get modelType(): 'package' {
     return 'package';
   }
@@ -77,9 +76,6 @@ export class Package extends Persistent<IPackageInit, IPackageStore> implements 
   }
   public get items(): Map<string, IPackagedItem> {
     return this.store.get('items', null);
-  }
-  public get context(): IModelContext {
-    return this.store.get('context', null);
   }
 
   protected transform(input: Partial<IPackageInit>): IPackageStore {

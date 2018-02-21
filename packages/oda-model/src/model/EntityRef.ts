@@ -5,6 +5,7 @@ import * as inflected from 'inflected';
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
 import { IEntityRef, IEntityRefInit, IEntityRefStore } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
+import { IRelationContext } from '../contexts/IRelationContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntityRef: IEntityRefStore = {
@@ -16,7 +17,7 @@ export const DefaultEntityRef: IEntityRefStore = {
 // tslint:disable-next-line:variable-name
 export const EntityRefStorage = Record(DefaultEntityRef);
 
-export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore>
+export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRelationContext>
   implements IEntityRef {
   public get backField(): string {
     return this.store.get('backField', '');

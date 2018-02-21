@@ -4,8 +4,9 @@ import { IUpdatable } from '../interfaces/IUpdatable';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
 import { IContext } from '../contexts/IContext';
+import { IContextable } from '../contexts/IContextable';
 
-export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable {
+export abstract class Persistent<TInputProps, TStoredProps, TContext extends IContext> implements IUpdatable, IContextable<TContext> {
   protected store: Record<TStoredProps>;
   protected init: Partial<TInputProps>;
 
@@ -41,20 +42,24 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
     return this.reverse(this.store);
   }
 
+  public get context(): TContext {
+    return this._context;
+  }
+
+  private _context;
+
   public clone() {
-    const t = this.constructor() as Persistent<TInputProps, TStoredProps>;
+    const t = this.constructor() as Persistent<TInputProps, TStoredProps, TContext>;
     t.store = this.store;
     t.init = this.init;
     return t;
   }
 
-  public constructor(ctx?: IContext) {
+  public constructor(ctx?: TContext) {
     this.attach(ctx);
   }
 
-  public attach(ctx: IContext) {
-    this.updateWith({
-      context: ctx,
-    } as any);
+  public attach(ctx: TContext) {
+    this._context = ctx;
   }
 }
