@@ -8,6 +8,8 @@ import { Entity } from './Entity';
 import { Mutation } from './Mutation';
 import { Enum } from './Enum';
 import { IContext } from '../contexts/IContext';
+import { ModelFactory } from './Factory';
+import { IModelContext } from '../contexts/IModelContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultModel: IModelStore = {
@@ -26,7 +28,7 @@ export const ModelTransform: IModelTransform = {
           const pkg = new Package({
             ...p,
           });
-          pkg.attach();
+          pkg.attach(ModelFactory.getContext(model) as IModelContext);
           return [p.name, pkg];
         }) as [string, IPackage][]);
       } else {
@@ -120,7 +122,6 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
           acl: 0,
           name: this.defaultPackageName,
           items: [],
-          model: this,
         }],
       });
     }
