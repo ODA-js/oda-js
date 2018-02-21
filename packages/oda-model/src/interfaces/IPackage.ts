@@ -8,12 +8,12 @@ import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
 import { IModelContext } from '../contexts/IModelContext';
+import { IContextable } from '../contexts/IContextable';
 
 export interface IPackageInit extends INamedItem {
   acl: number;
   abstract?: boolean;
   items: PackagedItemInit[];
-  context: IModelContext;
 }
 
 export interface IPackageStore extends INamedItem {
@@ -30,12 +30,11 @@ export interface IPackageTransform {
   };
 }
 
-export interface IPackage extends IModelType {
+export interface IPackage extends IModelType, IContextable<IModelContext> {
   readonly modelType: 'package';
   readonly acl: number;
-  readonly abstract?: boolean;
+  readonly abstract: boolean;
   readonly items: Map<string, IPackagedItem>;
-  readonly context: IModelContext;
 }
 
 export class CheckMutationName implements Rule<IPackageContext> {

@@ -6,6 +6,7 @@ import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
 import { TransformField } from './utils';
 import { IPackageContext } from '../contexts/IPackageContext';
+import { IEntityContext } from '../contexts/IEntityContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntity: IEntityStore = {

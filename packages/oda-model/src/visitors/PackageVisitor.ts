@@ -11,7 +11,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
   public context: IModelContext & IValidationContext; // has to be parent context
   public visit(item: IPackage) {
     if (!this.context) {
-      this.context = new ModelContext(item.model);
+      this.context = new ModelContext(item.context.model);
     }
     const context = new PackageContext(this.context, item);
     const result = [];

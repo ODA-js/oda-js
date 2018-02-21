@@ -33,7 +33,6 @@ export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaDa
   args?: FieldArgsInput;
   order?: number;
   relation?: Partial<RelationInit>;
-  context: IEntityContext | IRelationContext;
 }
 
 export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {

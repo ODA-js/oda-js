@@ -2,11 +2,11 @@ import { Map, Record } from 'immutable';
 
 import { IEnum, IEnumInit, IEnumStore, IEnumTransform } from '../interfaces/IEnum';
 import { Persistent } from './Persistent';
-import { IEnumItem, IEnumItemInit } from '../interfaces/IEnumItem';
+import { IEnumItem, IEnumItemInit, IEnumItemStore } from '../interfaces/IEnumItem';
 import { IEnumContext } from '../contexts/IEnumContext';
 
 // tslint:disable-next-line:variable-name
-export const DefaultEnumItem: IEnumItemInit = {
+export const DefaultEnumItem: IEnumItemStore = {
   name: null,
   title: null,
   description: null,
@@ -18,7 +18,7 @@ export const DefaultEnumItem: IEnumItemInit = {
 // tslint:disable-next-line:variable-name
 export const EnumStorage = Record(DefaultEnumItem);
 
-export class EnumItem extends Persistent<IEnumItemInit, IEnumItemInit> implements IEnumItem {
+export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore> implements IEnumItem {
   public get modelType(): 'enumItem' {
     return 'enumItem';
   }
@@ -34,6 +34,9 @@ export class EnumItem extends Persistent<IEnumItemInit, IEnumItemInit> implement
   public get value(): string {
     return this.store.get('value', null);
   }
+  public get type(): string {
+    return this.store.get('type', null);
+  }
   public get context(): IEnumContext {
     return this.store.get('context', null);
   }
@@ -48,7 +51,7 @@ export class EnumItem extends Persistent<IEnumItemInit, IEnumItemInit> implement
     }
     return result;
   }
-  protected reverse(input: Record<IEnumItemInit> & Readonly<IEnumItemInit>): IEnumItemInit {
+  protected reverse(input: Record<IEnumItemStore> & Readonly<IEnumItemStore>): IEnumItemInit {
     const result: IEnumItemInit = {} as any;
     if (input) {
       const core = input.toJS();

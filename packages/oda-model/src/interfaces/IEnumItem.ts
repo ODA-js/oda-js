@@ -12,11 +12,16 @@ export type EnumInitItem = IEnumItemInit | string;
 export interface IEnumItemInit extends INamedItem {
   value?: string;
   type?: string;
+}
+
+export interface IEnumItemStore extends INamedItem {
+  value: string;
+  type: string;
   context: IEnumContext;
 }
 
 export interface IEnumItem extends IModelType, Readonly<IEnumItemInit> {
-  readonly value?: string;
-  readonly type?: string;
+  readonly value: string;
+  readonly type: string;
   readonly context: IEnumContext;
 }

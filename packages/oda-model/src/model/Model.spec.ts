@@ -1,4 +1,5 @@
 import { Model } from './Model';
+import { ModelFactory } from './../model/Factory';
 import schema from '../01_test_schema/';
 
 describe('Model', () => {
@@ -13,12 +14,12 @@ describe('Model', () => {
   });
 
   it('Model.load', () => {
-    expect(() =>  Model.load(schema)).not.toThrow();
+    expect(() => ModelFactory.createModel(schema)).not.toThrow();
   });
 
   it('load serialized model', () => {
     let serialized;
-    expect(() => serialized = Model.load(schema)).not.toThrow();
+    expect(() => serialized = ModelFactory.createModel(schema)).not.toThrow();
     expect(serialized).not.toBeUndefined();
     expect(serialized).toMatchSnapshot();
     expect(serialized.packages.size).toBe(3);

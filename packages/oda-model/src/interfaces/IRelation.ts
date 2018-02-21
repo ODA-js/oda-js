@@ -31,7 +31,6 @@ export interface IRelationInit extends Partial<IRelationName>, Partial<IRelation
   fields?: {
     [name: string]: Partial<IFieldInit>,
   } | IFieldInit[];
-  context: IFieldContext;
 }
 
 export interface IRelation extends IModelType {

@@ -32,6 +32,7 @@ import { IFieldArgInit } from '../interfaces/IFieldArg';
 import { RelationInit } from '../interfaces/types';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { IRelationContext } from '../contexts/IRelationContext';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {

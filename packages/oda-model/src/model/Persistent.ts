@@ -3,6 +3,7 @@ import { Record } from 'immutable';
 import { IUpdatable } from '../interfaces/IUpdatable';
 import { IValidationResult } from '../interfaces/IValidationResult';
 import { IValidator } from '../interfaces/IValidator';
+import { IContext } from '../contexts/IContext';
 
 export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatable {
   protected store: Record<TStoredProps>;
@@ -45,5 +46,15 @@ export abstract class Persistent<TInputProps, TStoredProps> implements IUpdatabl
     t.store = this.store;
     t.init = this.init;
     return t;
+  }
+
+  public constructor(ctx?: IContext) {
+    this.attach(ctx);
+  }
+
+  public attach(ctx: IContext) {
+    this.updateWith({
+      context: ctx,
+    } as any);
   }
 }

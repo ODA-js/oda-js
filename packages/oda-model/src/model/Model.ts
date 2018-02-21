@@ -23,11 +23,13 @@ export const ModelTransform: IModelTransform = {
   packages: {
     transform: (input: IPackageInit[], model: IModel) => {
       if (input) {
-        return Map<string, IPackage>(input.map(p => [p.name, new Package({
-          ...p,
-          model,
-        },
-        )]) as [string, IPackage][]);
+        return Map<string, IPackage>(input.map(p => {
+          const pkg = new Package({
+            ...p,
+          });
+          pkg.attach();
+          return [p.name, pkg];
+        }) as [string, IPackage][]);
       } else {
         return null;
       }
@@ -126,27 +128,5 @@ export class Model extends Persistent<IModelInit, IModelStore> implements IModel
         }],
       });
     }
-  }
-  public static load(input: IModelLoad): Model {
-    const items = [
-      ...input.entities.map(e => new Entity(e)),
-      ...input.mutations.map(m => new Mutation(m)),
-      ...input.enums.map(m => new Enum(m)),
-    ];
-
-    const result: Model = new Model({
-      name: input.name,
-      title: input.title,
-      description: input.description,
-    });
-
-    result.defaultPackage.updateWith({
-      items,
-    });
-
-    result.updateWith({
-      packages: [...input.packages],
-    });
-    return result;
   }
 }

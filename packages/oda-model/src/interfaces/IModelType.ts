@@ -14,5 +14,4 @@ export interface IModelType extends Readonly<INamedItem>, IValidate, IUpdatable 
   readonly title?: string;
   readonly description?: string;
   readonly modelType: MetaModelType;
-  readonly context?: IContext;
 }

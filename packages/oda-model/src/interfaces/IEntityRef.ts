@@ -7,13 +7,13 @@ export interface IEntityRefInit {
 }
 
 export interface IEntityRefStore {
-  backField?: string;
+  backField: string;
   entity: string;
-  field?: string;
+  field: string;
 }
 
 export interface IEntityRef extends IUpdatable {
-  readonly backField?: string;
+  readonly backField: string;
   readonly entity: string;
-  readonly field?: string;
+  readonly field: string;
 }

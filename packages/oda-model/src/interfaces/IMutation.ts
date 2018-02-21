@@ -33,7 +33,6 @@ export interface IMutationStore extends IMutationMetaDataStore, INamedItem, IPac
 export interface IMutationInit extends Partial<IMutationMetaData>, INamedItem, IPackagedItemInit {
   args: FieldArgsInput;
   payload: FieldArgsInput;
-  context: IPackageContext;
 }
 
 export interface IMutationACLTransform {

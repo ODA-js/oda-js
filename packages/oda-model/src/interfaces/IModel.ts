@@ -10,7 +10,6 @@ import { IContext } from '../contexts/IContext';
 export interface IModelInit extends INamedItem  {
   defaultPackageName: string;
   packages: IPackageInit[];
-  context: IContext;
 }
 
 export interface IModelStore extends INamedItem {

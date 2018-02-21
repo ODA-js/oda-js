@@ -15,7 +15,7 @@ import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldACL, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
-import { IFieldArgInit, IFieldArg } from '../interfaces/IFieldArg';
+import { IFieldArgInit, IFieldArg, IFieldArgStore } from '../interfaces/IFieldArg';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -29,7 +29,7 @@ import { IFieldContext } from '../contexts/IFieldContext';
 import { IMutationContext } from '../contexts/IMutationContext';
 
 // tslint:disable-next-line:variable-name
-export const DefaultField: IFieldArgInit = {
+export const DefaultField: IFieldArgStore = {
   name: null,
   title: null,
   description: null,
@@ -42,7 +42,7 @@ export const DefaultField: IFieldArgInit = {
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implements IFieldArg {
+export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore> implements IFieldArg {
   public get modelType(): 'fieldArg' {
     return 'fieldArg';
   }
@@ -78,7 +78,7 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgInit> implement
     }
     return result;
   }
-  protected reverse(input: Record<IFieldArgInit> & Readonly<IFieldArgInit>): IFieldArgInit {
+  protected reverse(input: Record<IFieldArgStore> & Readonly<IFieldArgStore>): IFieldArgInit {
     const result: IFieldArgInit = {} as any;
     if (input) {
       const core = input.toJS();

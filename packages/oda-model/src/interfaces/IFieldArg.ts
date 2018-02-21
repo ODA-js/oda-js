@@ -6,6 +6,12 @@ export interface IFieldArgInit extends INamedItem {
   type?: string;
   required?: boolean;
   defaultValue?: string;
+}
+
+export interface IFieldArgStore extends INamedItem {
+  type?: string;
+  required?: boolean;
+  defaultValue?: string;
   context: IMutationContext | IFieldContext;
 }
 
