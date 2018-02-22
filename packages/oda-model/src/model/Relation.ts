@@ -51,11 +51,13 @@ export abstract class Relation<P extends Partial<IRelationInit>, S extends IRela
   public get shortName(): string {
     return this.store.get('shortName', null);
   }
-  constructor(init: Partial<P>, context: IFieldContext) {
+  constructor(init?: Partial<P>, context?: IFieldContext) {
     super();
-    if (!context && init.fields) {
+    if (!context && init && init.fields) {
       throw new Error('conext must be provided');
     }
-    this.attach(context);
+    if (context) {
+      this.attach(context);
+    }
   }
 }

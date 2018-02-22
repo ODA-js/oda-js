@@ -107,11 +107,14 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
     return result;
   }
 
-  constructor(init: Partial<IModelInit>, context: IContext = new RuntimeContext({}) ) {
+  constructor(init?: Partial<IModelInit>, context?: IContext ) {
     super();
-    this.attach(context);
+    if (context) {
+      this.attach(context);
+    }
     ModelFactory.registerContext(this);
-    if (init.hasOwnProperty('defaultPackageName') && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
+    if (init && init.hasOwnProperty('defaultPackageName')
+      && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
       this._defaultPackageName = init.defaultPackageName;
     }
     this.store = new ModelStorage(this.transform(init));

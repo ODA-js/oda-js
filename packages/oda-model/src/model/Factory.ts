@@ -27,45 +27,47 @@ import { isModel, isEntity, isPackage, isMutation, isEnum } from '../helpers';
 
 export class ModelFactory {
   private static context = Map<IModelType, IContext>();
-  public static registerContext(item: IModelType): IContext {
-    if (ModelFactory.context.has(item)) {
-      return ModelFactory.context.get(item);
-    } else {
-      if (isModel(item)) {
-        const ctx = new RuntimeModelContext({
-          ...item.context,
-          model: item,
-        });
-        ModelFactory.context = ModelFactory.context.set(item, ctx);
-        return ctx;
-      } else if (isPackage(item)) {
-        const ctx = new RuntimePackageContext({
-          ...item.context,
-          package: item,
-        });
-        ModelFactory.context = ModelFactory.context.set(item, ctx);
-        return ctx;
-      } else if (isEntity(item)) {
-        const ctx = new RuntimeEntityContext({
-          ...item.context,
-          entity: item,
-        });
-        ModelFactory.context = ModelFactory.context.set(item, ctx);
-        return ctx;
-      } else if (isMutation(item)) {
-        const ctx = new RuntimeMutationContext({
-          ...item.context,
-          mutation: item,
-        });
-        ModelFactory.context = ModelFactory.context.set(item, ctx);
-        return ctx;
-      } else if (isEnum(item)) {
-        const ctx = new RuntimeEnumContext({
-          ...item.context,
-          enum: item,
-        });
-        ModelFactory.context = ModelFactory.context.set(item, ctx);
-        return ctx;
+  public static registerContext(item?: IModelType): IContext {
+    if (item) {
+      if (ModelFactory.context.has(item)) {
+        return ModelFactory.context.get(item);
+      } else {
+        if (isModel(item)) {
+          const ctx = new RuntimeModelContext({
+            ...item.context,
+            model: item,
+          });
+          ModelFactory.context = ModelFactory.context.set(item, ctx);
+          return ctx;
+        } else if (isPackage(item)) {
+          const ctx = new RuntimePackageContext({
+            ...item.context,
+            package: item,
+          });
+          ModelFactory.context = ModelFactory.context.set(item, ctx);
+          return ctx;
+        } else if (isEntity(item)) {
+          const ctx = new RuntimeEntityContext({
+            ...item.context,
+            entity: item,
+          });
+          ModelFactory.context = ModelFactory.context.set(item, ctx);
+          return ctx;
+        } else if (isMutation(item)) {
+          const ctx = new RuntimeMutationContext({
+            ...item.context,
+            mutation: item,
+          });
+          ModelFactory.context = ModelFactory.context.set(item, ctx);
+          return ctx;
+        } else if (isEnum(item)) {
+          const ctx = new RuntimeEnumContext({
+            ...item.context,
+            enum: item,
+          });
+          ModelFactory.context = ModelFactory.context.set(item, ctx);
+          return ctx;
+        }
       }
     }
   }

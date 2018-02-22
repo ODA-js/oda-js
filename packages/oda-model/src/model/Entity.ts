@@ -98,12 +98,14 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
     return result;
   }
 
-  constructor(init: Partial<IEntityInit>, context: IPackageContext) {
+  constructor(init?: Partial<IEntityInit>, context?: IPackageContext) {
     super();
-    if (!context && init.fields) {
+    if (!context && init && init.fields) {
       throw new Error('context must be provided');
     }
-    this.attach(context);
+    if (context) {
+      this.attach(context);
+    }
     this.store = new EntityStorage(this.transform(init));
     this.init = new (Record<Partial<IEntityInit>>(init))();
   }

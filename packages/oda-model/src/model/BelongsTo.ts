@@ -81,7 +81,7 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return result;
   }
 
-  constructor(init: Partial<IBelongsToInit>, context: IFieldContext) {
+  constructor(init?: Partial<IBelongsToInit>, context?: IFieldContext) {
     super(init, context);
     this.store = new BelongsToStorage(this.transform(init));
     this.init = new (Record<Partial<IBelongsToInit>>(init))();

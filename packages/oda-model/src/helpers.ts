@@ -163,12 +163,14 @@ export function IsHasManyInit(item: RelationInit): item is IHasManyInit {
 }
 
 export function createPackagedItem(item: IPackagedItemInit, pkg: IPackage): IPackagedItem {
-  const context = ModelFactory.getContext(pkg) as IPackageContext;
-  if (isEnumInit(item)) {
-    return new Enum(item, context);
-  } else if (isEntityInit(item)) {
-    return new Entity(item, context);
-  } else if (isMutationInit(item)) {
-    return new Mutation(item, context);
+  if (item && pkg) {
+    const context = ModelFactory.getContext(pkg) as IPackageContext;
+    if (isEnumInit(item)) {
+      return new Enum(item, context);
+    } else if (isEntityInit(item)) {
+      return new Entity(item, context);
+    } else if (isMutationInit(item)) {
+      return new Mutation(item, context);
+    }
   }
 }

@@ -199,10 +199,13 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
     }
     return result;
   }
-  constructor(init: Partial<IFieldInit>, context: IEntityContext | IRelationContext ) {
+  constructor(init?: Partial<IFieldInit>, context?: IEntityContext | IRelationContext ) {
     super();
-    if (!context && (init.args || init.relation)) {
+    if (!context && init && (init.args || init.relation)) {
       throw new Error('context must be provided');
+    }
+    if (context) {
+      this.attach(context);
     }
     this.store = new FieldStorage(this.transform(init));
     this.init = new (Record<Partial<IFieldInit>>(init))();

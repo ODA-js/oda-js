@@ -78,7 +78,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
     return this.store.get('items', null);
   }
 
-  protected transform(input: Partial<IPackageInit>): IPackageStore {
+  protected transform(input?: Partial<IPackageInit>): IPackageStore {
     const result: IPackageStore = {} as any;
     if (input) {
       for (let f in input) {
@@ -111,12 +111,14 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
     return result;
   }
 
-  constructor(init: Partial<IPackageInit>, context: IModelContext) {
+  constructor(init?: Partial<IPackageInit>, context?: IModelContext) {
     super();
-    if (!context && init.items) {
+    if (!context && init && init.items) {
       throw new Error('context must be provided');
     }
-    this.attach(context);
+    if (context) {
+      this.attach(context);
+    }
     this.store = new PackageStorage(this.transform(init));
     this.init = new (Record<Partial<IPackageInit>>(init))();
   }

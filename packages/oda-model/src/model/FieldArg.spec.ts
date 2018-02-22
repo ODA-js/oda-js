@@ -8,6 +8,7 @@ describe('FieldArg', () => {
   });
 
   beforeEach(() => {
+    debugger;
     enumItem = new FieldArg();
   });
 

@@ -60,7 +60,7 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
     return result;
   }
 
-  constructor(init: string | Partial<IEntityRef>, context: IRelationContext | IFieldContext) {
+  constructor(init?: string | Partial<IEntityRef>, context?: IRelationContext | IFieldContext) {
     super(context);
     if (typeof init === 'string') {
       let res = init.match(REF_PATTERN);
