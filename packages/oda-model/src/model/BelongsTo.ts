@@ -50,9 +50,9 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsTo') {
-            result.belongsTo = BelongsToTransform.belongsTo.transform(input.belongsTo);
+            result.belongsTo = BelongsToTransform.belongsTo.transform(input.belongsTo, this);
           } else if (f === 'fields') {
-            result.fields = BelongsToTransform.fields.transform(input.fields);
+            result.fields = BelongsToTransform.fields.transform(input.fields, this);
           } else {
             result[f] = input[f];
           }

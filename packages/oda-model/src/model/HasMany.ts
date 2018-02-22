@@ -51,7 +51,7 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
           if (f === 'hasMany') {
             result.hasMany = HasManyTransform.hasMany.transform(input.hasMany);
           } else if (f === 'fields') {
-            result.fields = HasManyTransform.fields.transform(input.fields);
+            result.fields = HasManyTransform.fields.transform(input.fields, this);
           } else {
             result[f] = input[f];
           }

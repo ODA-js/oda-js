@@ -33,6 +33,7 @@ import { RelationInit } from '../interfaces/types';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { IRelationContext } from '../contexts/IRelationContext';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { ModelFactory } from './Factory';
 
 // tslint:disable-next-line:variable-name
 export const DefaultField: IFieldStore = {
@@ -57,19 +58,19 @@ export const DefaultField: IFieldStore = {
 export const FieldTransform: IFieldTransform = {
   args: TransformArgs(),
   relation: {
-    transform: (inp: Partial<IRelationInit>): IRelation => {
+    transform: (inp: Partial<IRelationInit>, field: IField): IRelation => {
       if (inp) {
         if (IsBelongsToProps(inp)) {
-          return new BelongsTo(inp);
+          return new BelongsTo(inp, ModelFactory.getContext(field) as IFieldContext);
         }
         if (IsBelongsToManyProps(inp)) {
-          return new BelongsToMany(inp);
+          return new BelongsToMany(inp, ModelFactory.getContext(field) as IFieldContext);
         }
         if (IsHasOneProps(inp)) {
-          return new HasOne(inp);
+          return new HasOne(inp, ModelFactory.getContext(field) as IFieldContext);
         }
         if (IsHasManyProps(inp)) {
-          return new HasMany(inp);
+          return new HasMany(inp, ModelFactory.getContext(field) as IFieldContext);
         }
       } else {
         return null;
@@ -171,7 +172,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
           if (f === 'args') {
             result.args = FieldTransform.args.transform(input.args);
           } else if (f === 'relation') {
-            result.relation = FieldTransform.relation.transform(input.relation);
+            result.relation = FieldTransform.relation.transform(input.relation, this);
           } else {
             result[f] = input[f];
           }

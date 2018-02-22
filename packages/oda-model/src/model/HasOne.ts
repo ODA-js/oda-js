@@ -49,9 +49,9 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'hasOne') {
-            result.hasOne = HasOneTransform.hasOne.transform(input.hasOne);
+            result.hasOne = HasOneTransform.hasOne.transform(input.hasOne, this);
           } else if (f === 'fields') {
-            result.fields = HasOneTransform.fields.transform(input.fields);
+            result.fields = HasOneTransform.fields.transform(input.fields, this);
           } else {
             result[f] = input[f];
           }

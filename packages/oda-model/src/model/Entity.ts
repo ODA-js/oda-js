@@ -71,7 +71,7 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'fields') {
-            result.fields = EntityTransform.fields.transform(input.fields);
+            result.fields = EntityTransform.fields.transform(input.fields, this);
           } else {
             result[f] = input[f];
           }
@@ -98,7 +98,7 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
     return result;
   }
 
-  constructor(init: Partial<IEntityInit> = {}, context: IPackageContext) {
+  constructor(init: Partial<IEntityInit>, context: IPackageContext) {
     super();
     if (!context && init.fields) {
       throw new Error('context must be provided');

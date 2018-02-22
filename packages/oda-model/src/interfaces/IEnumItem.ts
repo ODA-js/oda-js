@@ -1,12 +1,6 @@
-import { Map } from 'immutable';
-
-import { ArrayToMap, MapType } from '../model/utils';
-import { IModelType, INamedItem } from './IModelType';
-import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
-import { IEnum } from './IEnum';
-import { IEnumContext } from '../contexts/IEnumContext';
 import { IContextable } from '../contexts/IContextable';
-
+import { IEnumContext } from '../contexts/IEnumContext';
+import { IModelType, INamedItem } from './IModelType';
 
 export type EnumInitItem = IEnumItemInit | string;
 

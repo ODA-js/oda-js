@@ -161,7 +161,7 @@ export function IsHasManyInit(item: RelationInit): item is IHasManyInit {
   return !!(<IHasManyInit>item).hasMany;
 }
 
-export function createPackagedItem(item: IPackagedItemInit): IPackagedItem {
+export function createPackagedItem(item: IPackagedItemInit, pkg: IPackage): IPackagedItem {
   if (isEnumInit(item)) {
     return new Enum(item);
   } else if (isEntityInit(item)) {

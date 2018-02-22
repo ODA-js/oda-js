@@ -59,11 +59,11 @@ export class BelongsToMany
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsToMany') {
-            result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(input.belongsToMany);
+            result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(input.belongsToMany, this);
           } else if (f === 'using') {
-            result.using = BelongsToManyTransform.using.transform(input.using);
+            result.using = BelongsToManyTransform.using.transform(input.using, this);
           } else if (f === 'fields') {
-            result.fields = BelongsToManyTransform.fields.transform(input.fields);
+            result.fields = BelongsToManyTransform.fields.transform(input.fields, this);
           } else {
             result[f] = input[f];
           }

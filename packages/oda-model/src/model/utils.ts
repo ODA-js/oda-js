@@ -1,33 +1,30 @@
 import { Map, Set } from 'immutable';
 
+import { IFieldContext } from '../contexts/IFieldContext';
+import { IMutationContext } from '../contexts/IMutationContext';
+import { IRelationContext } from '../contexts/IRelationContext';
+import { IEntity } from '../interfaces/IEntity';
+import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
-
+import { FieldArgsInput, IFieldArg, IFieldArgInit } from '../interfaces/IFieldArg';
+import { IMutation } from '../interfaces/IMutation';
+import { IRelation } from '../interfaces/IRelation';
 import { EntityRef } from './EntityRef';
+import { ModelFactory } from './Factory';
 import { Field } from './Field';
 import { FieldArg } from './FieldArg';
-import { IFieldArgInit, IFieldArg, FieldArgsInput } from '../interfaces/IFieldArg';
-import { IEntityRef } from '../interfaces/IEntityRef';
-
-export type MapType<T, S> = {
-  transform: (input: T) => S;
-  reverse: (input: S) => T;
-};
-
-export type ArrayToMap<S extends object> = {
-  transform: (input: S[]) => Map<string, S>;
-  reverse: (input: Map<string, S>) => S[];
-};
+import { FieldArgsTransform, EntityRefTransform, FieldTransformType } from '../interfaces/types';
 
 export type ArrayToSet<S> = {
   transform: (input: S[]) => Set<S>;
   reverse: (input: Set<S>) => S[];
 };
 
-export function TransformRef(): MapType<string | IEntityRef, IEntityRef> {
+export function TransformRef(): EntityRefTransform {
   return {
-    transform: (inp: string | IEntityRef) => {
+    transform: (inp: string | IEntityRef, relation: IRelation) => {
       if (inp) {
-        return new EntityRef(inp);
+        return new EntityRef(inp, ModelFactory.getContext(relation) as IRelationContext);
       } else {
         return null;
       }
@@ -42,18 +39,19 @@ export function TransformRef(): MapType<string | IEntityRef, IEntityRef> {
   };
 }
 
-export function TransformField() {
+export function TransformField(): FieldTransformType {
   return {
     transform: (input: {
       [name: string]: Partial<IFieldInit>,
-    } | IFieldInit[]) => {
+    } | IFieldInit[], owner: IEntity | IRelation) => {
+      const context = ModelFactory.getContext(owner) as IRelationContext;
       if (!Array.isArray(input)) {
         input = Object.keys(input).map(k => ({
           name: k,
           ...input[k],
         }));
       }
-      return Map<string, IField>(input.map(p => [p.name, new Field(p)]) as [string, IField][]);
+      return Map<string, IField>(input.map(p => [p.name, new Field(p, context)]) as [string, IField][]);
     },
     reverse: (input: Map<string, IField>) => {
       if (input) {
@@ -65,17 +63,18 @@ export function TransformField() {
   };
 }
 
-export function TransformArgs() {
+export function TransformArgs(): FieldArgsTransform {
   return {
-    transform: (input: FieldArgsInput) => {
+    transform: (input: FieldArgsInput, owner: IMutation | IField ) => {
       if (input) {
+        const context = ModelFactory.getContext(owner) as IMutationContext | IFieldContext;
         if (!Array.isArray(input)) {
           input = Object.keys(input).map(k => ({
             name: k,
             ...input[k],
           }));
         }
-        return Map<string, IFieldArg>(input.map(p => [p.name, new FieldArg(p)]) as [string, IFieldArg][]);
+        return Map<string, IFieldArg>(input.map(p => [p.name, new FieldArg(p, context)]) as [string, IFieldArg][]);
       } else {
         return null;
       }

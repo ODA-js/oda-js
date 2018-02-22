@@ -1,12 +1,12 @@
 import { Map } from 'immutable';
 
-import { IModelType, INamedItem } from './IModelType';
-import { IPackage, IPackageInit } from './IPackage';
-import { IEntityInit } from './IEntity';
-import { IMutationInit } from './IMutation';
-import { IEnumInit } from './IEnum';
 import { IContext } from '../contexts/IContext';
 import { IContextable } from '../contexts/IContextable';
+import { IEntityInit } from './IEntity';
+import { IEnumInit } from './IEnum';
+import { IModelType, INamedItem } from './IModelType';
+import { IMutationInit } from './IMutation';
+import { IPackage, IPackageInit } from './IPackage';
 
 export interface IModelInit extends INamedItem  {
   defaultPackageName: string;

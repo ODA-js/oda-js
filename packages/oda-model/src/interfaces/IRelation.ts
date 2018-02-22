@@ -1,11 +1,11 @@
 import { Map } from 'immutable';
 
+import { IContextable } from '../contexts/IContextable';
+import { IFieldContext } from '../contexts/IFieldContext';
 import { IEntityRef } from './IEntityRef';
 import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { MetaModelType, RelationType } from './types';
-import { IFieldContext } from '../contexts/IFieldContext';
-import { IContextable } from '../contexts/IContextable';
 
 
 // metadata attributes

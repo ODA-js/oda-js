@@ -1,7 +1,6 @@
 import { IUpdatable } from './IUpdatable';
 import { IValidate } from './IValidate';
 import { MetaModelType } from './types';
-import { IContext } from '../contexts/IContext';
 
 export interface INamedItem {
   name: string;

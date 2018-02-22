@@ -1,8 +1,5 @@
-import { IPackage } from './IPackage';
-import { IContext } from '../contexts/IContext';
-import { IPackageContext } from '../contexts/IPackageContext';
-import { isIPackageContext } from '../helpers';
 import { IContextable } from '../contexts/IContextable';
+import { IPackageContext } from '../contexts/IPackageContext';
 
 export type PackagedItemInit = IPackagedItemInit | string;
 

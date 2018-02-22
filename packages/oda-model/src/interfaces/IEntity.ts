@@ -1,12 +1,11 @@
 import { Map, Set } from 'immutable';
 
+import { IContextable } from '../contexts/IContextable';
+import { IPackageContext } from '../contexts/IPackageContext';
 import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackage } from './IPackage';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
 import { FieldTransformType } from './types';
-import { IPackageContext } from '../contexts/IPackageContext';
-import { IContextable } from '../contexts/IContextable';
 
 export interface IEntityACL {
   read?: string[];

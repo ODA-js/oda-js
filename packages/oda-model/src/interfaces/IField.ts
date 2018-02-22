@@ -1,15 +1,14 @@
 import { Map } from 'immutable';
 
-import { ArrayToMap, MapType } from '../model/utils';
-import { IEntity } from './IEntity';
-import { IEntityRef } from './IEntityRef';
-import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
-import { IModelType, INamedItem } from './IModelType';
-import { IRelation, IRelationInit } from './IRelation';
-import { RelationInit, FieldArgsTransformType } from './types';
+import { IContextable } from '../contexts/IContextable';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { IRelationContext } from '../contexts/IRelationContext';
-import { IContextable } from '../contexts/IContextable';
+import { IEntity } from './IEntity';
+import { IEntityRef } from './IEntityRef';
+import { FieldArgsInput, IFieldArg, IFieldArgInit } from './IFieldArg';
+import { IModelType, INamedItem } from './IModelType';
+import { IRelation, IRelationInit } from './IRelation';
+import { RelationInit, FieldArgsTransform } from './types';
 
 export interface IFieldACL {
   read: string[];
@@ -46,9 +45,9 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
 }
 
 export interface IFieldTransform {
-  args: FieldArgsTransformType;
+  args: FieldArgsTransform;
   relation: {
-    transform: (inp: Partial<IRelationInit>) => IRelation,
+    transform: (inp: Partial<IRelationInit>, field: IField) => IRelation,
     reverse: (inp: IRelation) => Partial<IRelationInit>,
   };
 }

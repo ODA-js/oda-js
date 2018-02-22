@@ -1,13 +1,12 @@
 import { Map, Set } from 'immutable';
 
-import { ArrayToMap, ArrayToSet, MapType } from '../model/utils';
-import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
-import { IModelType, INamedItem } from './IModelType';
-import { IPackage } from './IPackage';
-import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
-import { FieldArgsTransformType } from './types';
-import { IPackageContext } from '../contexts/IPackageContext';
 import { IContextable } from '../contexts/IContextable';
+import { IPackageContext } from '../contexts/IPackageContext';
+import { ArrayToSet } from '../model/utils';
+import { FieldArgsInput, IFieldArg, IFieldArgInit } from './IFieldArg';
+import { IModelType, INamedItem } from './IModelType';
+import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
+import { FieldArgsTransform } from './types';
 
 export interface IMutationACL {
   execute: string[];
@@ -40,8 +39,8 @@ export interface IMutationACLTransform {
 }
 
 export interface IMutationTransform {
-  args: FieldArgsTransformType;
-  payload: FieldArgsTransformType;
+  args: FieldArgsTransform;
+  payload: FieldArgsTransform;
   acl: IMutationACLTransform;
 }
 

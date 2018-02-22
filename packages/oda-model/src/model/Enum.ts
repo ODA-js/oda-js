@@ -1,10 +1,12 @@
 import { Map, Record } from 'immutable';
 
-import {  IEnum, IEnumInit,  IEnumStore, IEnumTransform } from '../interfaces/IEnum';
+import { IEnum, IEnumInit, IEnumStore, IEnumTransform } from '../interfaces/IEnum';
 import { Persistent } from './Persistent';
 import { EnumInitItem, IEnumItem } from '../interfaces/IEnumItem';
 import { EnumItem } from './EnumItem';
 import { IPackageContext } from '../contexts/IPackageContext';
+import { IEnumContext } from '../contexts/IEnumContext';
+import { ModelFactory } from './Factory';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEnum: IEnumStore = {
@@ -19,17 +21,18 @@ export const EnumTransform: IEnumTransform = {
   values: {
     transform: (input: EnumInitItem[] | {
       [name: string]: EnumInitItem;
-    }) => {
+    }, en: IEnum) => {
       if (!Array.isArray(input)) {
         input = Object.keys(input).map(k => input[k]);
       }
+      const context = ModelFactory.getContext(en) as IEnumContext;
       return Map<string, IEnumItem>(input.map(p => {
         if (typeof p === 'string') {
           return [p, new EnumItem({
             name: p,
-          })];
+          }, context)];
         } else {
-          return [p.name, new EnumItem(p)];
+          return [p.name, new EnumItem(p, context)];
         }
       }) as [string, IEnumItem][]);
     },
@@ -68,7 +71,7 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'values') {
-            result.values = EnumTransform.values.transform(input.values);
+            result.values = EnumTransform.values.transform(input.values, this);
           } else {
             result[f] = input[f];
           }
@@ -94,7 +97,7 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
     return result;
   }
 
-  constructor(init: Partial<IEnumInit> = {}, context: IPackageContext) {
+  constructor(init: Partial<IEnumInit>, context: IPackageContext) {
     super();
     if (!context && init.values) {
       throw new Error('context must be provided');

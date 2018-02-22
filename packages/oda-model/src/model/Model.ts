@@ -29,8 +29,7 @@ export const ModelTransform: IModelTransform = {
         return Map<string, IPackage>(input.map(p => {
           const pkg = new Package({
             ...p,
-          });
-          pkg.attach(ModelFactory.getContext(model) as IModelContext);
+          }, ModelFactory.getContext(model) as IModelContext);
           return [p.name, pkg];
         }) as [string, IPackage][]);
       } else {

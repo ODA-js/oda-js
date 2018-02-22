@@ -113,19 +113,19 @@ export class ModelFactory {
   }
 
   public static createEntity(input: IEnumInit, ctx: IPackageContext): IEntity {
-    const result = new Entity(input);
+    const result = new Entity(input, ctx);
     result.attach(ctx);
     return result;
   }
 
   public static createMutation(input: IMutationInit, ctx: IPackageContext): IMutation {
-    const result = new Mutation(input);
+    const result = new Mutation(input, ctx);
     result.attach(ctx);
     return result;
   }
 
   public static createEnum(input: IEnumInit, ctx: IPackageContext): IEnum {
-    const result = new Enum(input);
+    const result = new Enum(input, ctx);
     result.attach(ctx);
     return result;
   }

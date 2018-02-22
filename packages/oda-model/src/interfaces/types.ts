@@ -1,3 +1,5 @@
+import { Map } from 'immutable';
+
 import { IEntityContext } from '../contexts/IEntityContext';
 import { IFieldContext } from '../contexts/IFieldContext';
 import { IModelContext } from '../contexts/IModelContext';
@@ -5,11 +7,14 @@ import { IPackageContext } from '../contexts/IPackageContext';
 import { IRelationContext } from '../contexts/IRelationContext';
 import { IBelongsToInit } from './IBelongsTo';
 import { IBelongsToManyInit } from './IBelongsToMany';
+import { IField, IFieldInit } from './IField';
+import { FieldArgsInput, IFieldArg, IFieldArgInit } from './IFieldArg';
 import { IHasManyInit } from './IHasMany';
 import { IHasOneInit } from './IHasOne';
-import { IFieldInit, IField } from './IField';
-import { IFieldArgInit, IFieldArg, FieldArgsInput } from './IFieldArg';
-import { Map } from 'immutable';
+import { IEntity } from './IEntity';
+import { IRelation } from './IRelation';
+import { IMutation } from './IMutation';
+import { IEntityRef } from './IEntityRef';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -38,11 +43,15 @@ export type RelationInit = IHasManyInit | IHasOneInit | IBelongsToInit | IBelong
 export type FieldTransformType = {
   transform: (input: {
     [name: string]: Partial<IFieldInit>,
-  } | IFieldInit[]) => Map<string, IField>;
+  } | IFieldInit[], owner: IEntity | IRelation ) => Map<string, IField>;
   reverse: (input:  Map<string, IField>) => IFieldInit[];
 };
+export type FieldArgsTransform = {
+  transform: (input: FieldArgsInput, owner: IMutation | IField ) => Map<string, IFieldArg>;
+  reverse: (input: Map<string, IFieldArg>) => IFieldArgInit[];
+};
 
-export type FieldArgsTransformType = {
-  transform: (input: FieldArgsInput) => Map<string, IFieldArg>;
-  reverse: (input:  Map<string, IFieldArg>) => IFieldArgInit[];
+export type EntityRefTransform = {
+  transform: (inp: string | IEntityRef, relation: IRelation) => IEntityRef;
+  reverse: (inp: IEntityRef) => string;
 };

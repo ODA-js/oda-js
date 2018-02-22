@@ -1,11 +1,10 @@
 import { Map } from 'immutable';
 
-import { ArrayToMap, MapType } from '../model/utils';
+import { IContextable } from '../contexts/IContextable';
+import { IPackageContext } from '../contexts/IPackageContext';
+import { EnumInitItem, IEnumItem, IEnumItemInit } from './IEnumItem';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
-import { EnumInitItem, IEnumItem, IEnumItemInit } from './IEnumItem';
-import { IPackageContext } from '../contexts/IPackageContext';
-import { IContextable } from '../contexts/IContextable';
 
 export interface IEnumInit extends INamedItem, IPackagedItemInit {
   values: EnumInitItem[] | {
@@ -29,6 +28,6 @@ export interface IEnum extends IModelType, IPackagedItem, IContextable<IPackageC
 export type EnumItemTransformType = {
   transform: (input: EnumInitItem[] | {
     [name: string]: EnumInitItem;
-  }) => Map<string, IEnumItem>;
+  }, en: IEnum) => Map<string, IEnumItem>;
   reverse: (input: Map<string, IEnumItem>) => IEnumItemInit[];
 };

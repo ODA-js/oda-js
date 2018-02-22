@@ -1,7 +1,7 @@
-import { INamedItem, IModelType } from './IModelType';
-import { IMutationContext } from '../contexts/IMutationContext';
-import { IFieldContext } from '../contexts/IFieldContext';
 import { IContextable } from '../contexts/IContextable';
+import { IFieldContext } from '../contexts/IFieldContext';
+import { IMutationContext } from '../contexts/IMutationContext';
+import { IModelType, INamedItem } from './IModelType';
 
 export interface IFieldArgInit extends INamedItem {
   type?: string;

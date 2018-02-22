@@ -1,14 +1,12 @@
 import { Map } from 'immutable';
 
+import { IContextable } from '../contexts/IContextable';
+import { IModelContext } from '../contexts/IModelContext';
 import { IPackageContext } from '../contexts/IPackageContext';
-import { ArrayToMap } from '../model/utils';
 import { Rule } from '../rule';
-import { IModel } from './IModel';
 import { IModelType, INamedItem } from './IModelType';
 import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
-import { IModelContext } from '../contexts/IModelContext';
-import { IContextable } from '../contexts/IContextable';
 
 export interface IPackageInit extends INamedItem {
   acl: number;

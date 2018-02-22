@@ -60,7 +60,7 @@ export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore, IEnumCon
     return result;
   }
 
-  constructor(init: Partial<IEnumItemInit> = {}) {
+  constructor(init: Partial<IEnumItemInit>, context: IEnumContext) {
     super();
     this.store = new EnumStorage(this.transform(init));
     this.init = new (Record<Partial<IEnumItemInit>>(init))();
