@@ -7,6 +7,7 @@ import { IBelongsToInit} from '../../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../../interfaces/IBelongsToMany';
 import { IHasOneInit } from '../../interfaces/IHasOne';
 import { IHasManyInit } from '../../interfaces/IHasMany';
+import { ModelFactory } from '../../model/Factory';
 
 export default class implements Rule<IFieldContext> {
   public name = 'setDefaults';
@@ -36,7 +37,7 @@ export default class implements Rule<IFieldContext> {
           entity: context.entity.name,
           field: field.name,
           backField: '',
-        }),
+        }, ModelFactory.getContext(context.field) as IFieldContext),
       });
     }
     return result;

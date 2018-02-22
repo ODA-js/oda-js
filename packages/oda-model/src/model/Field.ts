@@ -170,7 +170,7 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'args') {
-            result.args = FieldTransform.args.transform(input.args);
+            result.args = FieldTransform.args.transform(input.args, this);
           } else if (f === 'relation') {
             result.relation = FieldTransform.relation.transform(input.relation, this);
           } else {

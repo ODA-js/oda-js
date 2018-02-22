@@ -79,9 +79,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'args') {
-            result.args = MutationTransform.args.transform(input.args);
+            result.args = MutationTransform.args.transform(input.args, this);
           } else if (f === 'payload') {
-            result.payload = MutationTransform.payload.transform(input.payload);
+            result.payload = MutationTransform.payload.transform(input.payload, this);
           } else if (f === 'acl') {
             for (let facl in input.acl) {
               if (input.acl.hasOwnProperty(facl)) {

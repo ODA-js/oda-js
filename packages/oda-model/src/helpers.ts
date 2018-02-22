@@ -22,6 +22,7 @@ import { Entity } from './model/Entity';
 import { Mutation } from './model/Mutation';
 import { RelationInit } from './interfaces/types';
 import { IValidationContext } from './contexts/IValidationContext';
+import { ModelFactory } from './model/Factory';
 
 export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
@@ -93,9 +94,9 @@ export function isIModelContext(ctx: IModelContext & IValidationContext): ctx is
 
 export function isIPackageContext(ctx: IModelContext & IValidationContext): ctx is IPackageContext & IValidationContext {
   return !!(ctx.isValid
-    && (ctx as IPackageContext  & IValidationContext).model
-    && (ctx as IPackageContext  & IValidationContext).package
-    && Array.isArray((ctx as IPackageContext  & IValidationContext).errors));
+    && (ctx as IPackageContext & IValidationContext).model
+    && (ctx as IPackageContext & IValidationContext).package
+    && Array.isArray((ctx as IPackageContext & IValidationContext).errors));
 }
 
 export function isIEntityContext(ctx: IModelContext & IValidationContext): ctx is IEntityContext & IValidationContext {
@@ -162,11 +163,12 @@ export function IsHasManyInit(item: RelationInit): item is IHasManyInit {
 }
 
 export function createPackagedItem(item: IPackagedItemInit, pkg: IPackage): IPackagedItem {
+  const context = ModelFactory.getContext(pkg) as IPackageContext;
   if (isEnumInit(item)) {
-    return new Enum(item);
+    return new Enum(item, context);
   } else if (isEntityInit(item)) {
-    return new Entity(item);
+    return new Entity(item, context);
   } else if (isMutationInit(item)) {
-    return new Mutation(item);
+    return new Mutation(item, context);
   }
 }

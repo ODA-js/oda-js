@@ -6,6 +6,8 @@ import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
 import { IEntityRef, IEntityRefInit, IEntityRefStore } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 import { IRelationContext } from '../contexts/IRelationContext';
+import { FieldContext } from '../contexts/FieldContext';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultEntityRef: IEntityRefStore = {
@@ -17,7 +19,7 @@ export const DefaultEntityRef: IEntityRefStore = {
 // tslint:disable-next-line:variable-name
 export const EntityRefStorage = Record(DefaultEntityRef);
 
-export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRelationContext>
+export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRelationContext | IFieldContext>
   implements IEntityRef {
   public get backField(): string {
     return this.store.get('backField', '');
@@ -58,7 +60,7 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
     return result;
   }
 
-  constructor(init: string | Partial<IEntityRef>, context: IRelationContext) {
+  constructor(init: string | Partial<IEntityRef>, context: IRelationContext | IFieldContext) {
     super(context);
     if (typeof init === 'string') {
       let res = init.match(REF_PATTERN);
