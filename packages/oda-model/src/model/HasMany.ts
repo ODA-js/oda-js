@@ -4,6 +4,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { IHasMany, IHasManyInit, IHasManyStore, IRelationTransform } from '../interfaces/IHasMany';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasMany: IHasManyStore = {
@@ -78,8 +79,8 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     }
     return result;
   }
-  constructor(init: Partial<IHasManyInit> = {}) {
-    super();
+  constructor(init: Partial<IHasManyInit>, context: IFieldContext) {
+    super(init, context);
     this.store = new HasManyStorage(this.transform(init));
     this.init = new (Record<Partial<IHasManyInit>>(init))();
   }

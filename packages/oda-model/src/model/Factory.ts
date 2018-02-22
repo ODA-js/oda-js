@@ -79,27 +79,26 @@ export class ModelFactory {
   }
 
   public static createModel(input: IModelLoad): IModel {
-    const items = [
-      ...input.entities.map(e => new Entity(e)),
-      ...input.mutations.map(m => new Mutation(m)),
-      ...input.enums.map(m => new Enum(m)),
-    ];
-
     const result: Model = new Model({
       name: input.name,
       title: input.title,
       description: input.description,
     });
 
+    const context = ModelFactory.registerContext(result.defaultPackage) as IPackageContext;
+
     result.defaultPackage.updateWith({
-      items,
+      items: [
+        ...input.entities.map(e => new Entity(e, context)),
+        ...input.mutations.map(m => new Mutation(m, context)),
+        ...input.enums.map(m => new Enum(m, context)),
+      ],
     });
 
     result.updateWith({
       packages: [...input.packages],
     });
-    ModelFactory.registerContext(result);
-    result.attach(new RuntimeContext({}));
+
     return result;
     // возвращать пару, значение и соотвествующий контекст.
   }

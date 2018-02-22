@@ -22,9 +22,9 @@ export const PackageTransform: IPackageTransform = {
       if (input) {
         return Map<string, IPackagedItem>(input.map(p => {
           if (typeof p === 'string') {
-            if (pkg.model.defaultPackage.items.has(p)) {
+            if (pkg.context.model.defaultPackage.items.has(p)) {
               return [p, {
-                ...pkg.model.defaultPackage.items.get(p),
+                ...pkg.context.model.defaultPackage.items.get(p),
                 package: pkg,
               }];
             } else {
@@ -102,9 +102,7 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
         if (core.hasOwnProperty(f)) {
           if (f === 'items') {
             result.items = PackageTransform.items.reverse(input.items);
-          } else if (f === 'model') {
-            result.model = undefined;
-           } else {
+          } else {
             result[f] = core[f];
           }
         }
@@ -113,16 +111,13 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
     return result;
   }
 
-  constructor(init: Partial<IPackageInit> = {}) {
+  constructor(init: Partial<IPackageInit>, context: IModelContext) {
     super();
-    if (init.model) {
-      this.store = new PackageStorage(this.transform({ model: init.model }));
-      this.updateWith(init);
-    } else if (!init.items) {
-      this.store = new PackageStorage(this.transform(init));
-    } else {
-      throw new Error('init error: items expects to have model');
+    if (!context && init.items) {
+      throw new Error('context must be provided');
     }
+    this.attach(context);
+    this.store = new PackageStorage(this.transform(init));
     this.init = new (Record<Partial<IPackageInit>>(init))();
   }
 }

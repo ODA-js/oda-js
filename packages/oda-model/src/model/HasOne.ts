@@ -4,6 +4,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../interfaces/IHasOne';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {
@@ -77,8 +78,8 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     }
     return result;
   }
-  constructor(init: Partial<IHasOneInit> = {}) {
-    super();
+  constructor(init: Partial<IHasOneInit>, context: IFieldContext) {
+    super(init, context);
     this.store = new HasOneStorage(this.transform(init));
     this.init = new (Record<Partial<IHasOneInit>>(init))();
   }

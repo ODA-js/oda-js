@@ -133,8 +133,12 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
     return result;
   }
 
-  constructor(init: Partial<IMutationInit> = {}) {
+  constructor(init: Partial<IMutationInit>, context: IPackageContext) {
     super();
+    if (!context && (init.payload || init.args)) {
+      throw new Error('context must be provided');
+    }
+    this.attach(context);
     this.store = new MutationStorage(this.transform(init));
     this.init = new (Record<Partial<IMutationInit>>(init))();
   }

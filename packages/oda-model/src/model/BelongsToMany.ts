@@ -7,6 +7,7 @@ import { EntityRef } from './EntityRef';
 import { Field } from './Field';
 import { Relation } from './Relation';
 import { TransformRef, TransformField } from './utils';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: IBelongsToManyStore = {
@@ -93,8 +94,8 @@ export class BelongsToMany
     return result;
   }
 
-  constructor(init: Partial<IBelongsToManyInit> = {}) {
-    super();
+  constructor(init: Partial<IBelongsToManyInit>, context: IFieldContext) {
+    super(init, context);
     this.store = new BelongsToManyStorage(this.transform(init));
     this.init = new (Record<Partial<IBelongsToManyInit>>(init))();
   }

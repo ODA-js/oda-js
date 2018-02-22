@@ -4,6 +4,7 @@ import { IBelongsTo, IBelongsToInit, IBelongsToStore, IRelationTransform } from 
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
+import { IFieldContext } from '../contexts/IFieldContext';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToStore = {
@@ -80,8 +81,8 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return result;
   }
 
-  constructor(init: Partial<IBelongsToInit> = {}) {
-    super();
+  constructor(init: Partial<IBelongsToInit>, context: IFieldContext) {
+    super(init, context);
     this.store = new BelongsToStorage(this.transform(init));
     this.init = new (Record<Partial<IBelongsToInit>>(init))();
   }

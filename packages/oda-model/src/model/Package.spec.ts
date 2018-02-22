@@ -29,7 +29,6 @@ describe('Mutaion', () => {
 
     expect(() =>
       new Package({
-        model: {} as IModel,
         items: [],
       }),
     ).not.toThrow();
@@ -45,7 +44,7 @@ describe('Mutaion', () => {
     expect(pkg.title).toBeNull();
     expect(pkg.abstract).toBeNull();
     expect(pkg.items).toBeNull();
-    expect(pkg.model).toBeNull();
+    expect(pkg.context).toBeUndefined();
   });
 
   it('update strings', () => {
@@ -91,20 +90,7 @@ describe('Mutaion', () => {
     expect(() => mutation = pkg.items.get('1')).not.toThrow();
   });
 
-  it('updates model', () => {
-    expect(() => pkg.updateWith({
-      model: new Model({ name: 'package1' }),
-    })).not.toThrow();
-    expect(pkg.model).not.toBeNull();
-    expect(pkg.model.name).toBe('package1');
-    expect(() => pkg.updateWith({
-      model: new Model({ name: 'package2' }),
-    })).not.toThrow();
-    expect(pkg.model).not.toBeNull();
-    expect(pkg.model.name).toBe('package2');
-  });
-
-  it('toJS with dupes', () => {
+   it('toJS with dupes', () => {
     expect(() => pkg.updateWith({
       name: 'cool',
       description: 'very cool',

@@ -94,8 +94,12 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
     return result;
   }
 
-  constructor(init: Partial<IEnumInit> = {}) {
+  constructor(init: Partial<IEnumInit> = {}, context: IPackageContext) {
     super();
+    if (!context && init.values) {
+      throw new Error('context must be provided');
+    }
+    this.attach(context);
     this.store = new EnumStorage(this.transform(init));
     this.init = new (Record<Partial<IEnumInit>>(init))();
   }

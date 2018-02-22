@@ -14,7 +14,7 @@ describe('Mutaion', () => {
 
   it('create empty', () => {
     expect(mutation.modelType).toBe('mutation');
-    expect(mutation.package).toBeNull();
+    expect(mutation.context).toBeUndefined();
     expect(mutation.name).toBeNull();
     expect(mutation.acl).not.toBeNull();
     expect(mutation.description).toBeNull();
@@ -134,19 +134,6 @@ describe('Mutaion', () => {
       name: '1',
       type: 'number',
     });
-  });
-
-  it('updates package', () => {
-    expect(() => mutation.updateWith({
-      package: new Package({ name: 'package1' }),
-    })).not.toThrow();
-    expect(mutation.package).not.toBeNull();
-    expect(mutation.package.name).toBe('package1');
-    expect(() => mutation.updateWith({
-      package: new Package({ name: 'package2' }),
-    })).not.toThrow();
-    expect(mutation.package).not.toBeNull();
-    expect(mutation.package.name).toBe('package2');
   });
 
   it('toJS with dupes', () => {

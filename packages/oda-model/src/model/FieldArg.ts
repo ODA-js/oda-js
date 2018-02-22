@@ -86,8 +86,8 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutatio
     }
     return result;
   }
-  constructor(init: Partial<IFieldArgInit> = {}) {
-    super();
+  constructor(init: Partial<IFieldArgInit>, context: IMutationContext | IFieldContext ) {
+    super(context);
     this.store = new FieldStorage(this.transform(init));
     this.init = new (Record<Partial<IFieldArgInit>>(init))();
   }

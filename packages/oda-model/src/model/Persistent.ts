@@ -56,7 +56,9 @@ export abstract class Persistent<TInputProps, TStoredProps, TContext extends ICo
   }
 
   public constructor(ctx?: TContext) {
-    this.attach(ctx);
+    if (ctx) {
+      this.attach(ctx);
+    }
   }
 
   public attach(ctx: TContext) {

@@ -19,7 +19,7 @@ describe('Entity', () => {
     expect(entity.fields).toBeNull();
     expect(entity.acl).toBeNull();
     expect(entity.indexed).toBeNull();
-    expect(entity.context).toBeNull();
+    expect(entity.context).toBeUndefined();
     expect(entity.plural).toBeNull();
     expect(entity.relations).toBeNull();
     expect(entity.required).toBeNull();

@@ -2,6 +2,7 @@
 
 exports[`setDefaults fix derived field 1`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
@@ -30,6 +31,7 @@ exports[`setDefaults fix derived field 2`] = `Array []`;
 
 exports[`setDefaults fix derived field 3`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
@@ -56,6 +58,7 @@ Field {
 
 exports[`setDefaults fix identity field 1`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "identity": true,
@@ -84,6 +87,7 @@ exports[`setDefaults fix identity field 2`] = `Array []`;
 
 exports[`setDefaults fix identity field 3`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "identity": true,
@@ -98,6 +102,7 @@ Field {
     "entity": null,
     "identity": true,
     "idKey": EntityRef {
+      "_context": undefined,
       "store": Immutable.Record {
         "backField": "",
         "entity": "cool entity",
@@ -116,6 +121,7 @@ Field {
 
 exports[`setDefaults fix indexed field 1`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "indexed": true,
@@ -144,6 +150,7 @@ exports[`setDefaults fix indexed field 2`] = `Array []`;
 
 exports[`setDefaults fix indexed field 3`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "indexed": true,
@@ -170,6 +177,7 @@ Field {
 
 exports[`setDefaults fix persistend-derived field 1`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
@@ -199,6 +207,7 @@ exports[`setDefaults fix persistend-derived field 2`] = `Array []`;
 
 exports[`setDefaults fix persistend-derived field 3`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
     "derived": true,
@@ -226,6 +235,7 @@ Field {
 
 exports[`setDefaults fix simple field 1`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
   },
@@ -253,6 +263,7 @@ exports[`setDefaults fix simple field 2`] = `Array []`;
 
 exports[`setDefaults fix simple field 3`] = `
 Field {
+  "_context": undefined,
   "init": Immutable.Record {
     "name": "user",
   },

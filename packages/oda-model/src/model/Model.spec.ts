@@ -14,6 +14,7 @@ describe('Model', () => {
   });
 
   it('Model.load', () => {
+    debugger;
     expect(() => ModelFactory.createModel(schema)).not.toThrow();
   });
 

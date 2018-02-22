@@ -10,6 +10,8 @@ import { Enum } from './Enum';
 import { IContext } from '../contexts/IContext';
 import { ModelFactory } from './Factory';
 import { IModelContext } from '../contexts/IModelContext';
+import { isContext } from 'vm';
+import { RuntimeContext } from './RuntimeContexts';
 
 // tslint:disable-next-line:variable-name
 export const DefaultModel: IModelStore = {
@@ -106,11 +108,10 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
     return result;
   }
 
-  constructor(init: Partial<IModelInit> = {
-    defaultPackageName: 'system',
-  }) {
+  constructor(init: Partial<IModelInit>, context: IContext = new RuntimeContext({}) ) {
     super();
-
+    this.attach(context);
+    ModelFactory.registerContext(this);
     if (init.hasOwnProperty('defaultPackageName') && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
       this._defaultPackageName = init.defaultPackageName;
     }
