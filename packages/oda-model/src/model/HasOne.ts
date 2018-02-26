@@ -81,6 +81,5 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
   constructor(init?: Partial<IHasOneInit>, context?: IFieldContext) {
     super(init, context);
     this.store = new HasOneStorage(this.transform(init));
-    this.init = new (Record<Partial<IHasOneInit>>(init))();
   }
 }

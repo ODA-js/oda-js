@@ -106,6 +106,5 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
       this.attach(context);
     }
     this.store = new EnumStorage(this.transform(init));
-    this.init = new (Record<Partial<IEnumInit>>(init))();
   }
 }

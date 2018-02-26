@@ -97,6 +97,5 @@ export class BelongsToMany
   constructor(init?: Partial<IBelongsToManyInit>, context?: IFieldContext) {
     super(init, context);
     this.store = new BelongsToManyStorage(this.transform(init));
-    this.init = new (Record<Partial<IBelongsToManyInit>>(init))();
   }
 }

@@ -142,6 +142,5 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
       this.attach(context);
     }
     this.store = new MutationStorage(this.transform(init));
-    this.init = new (Record<Partial<IMutationInit>>(init))();
   }
 }

@@ -208,6 +208,5 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
       this.attach(context);
     }
     this.store = new FieldStorage(this.transform(init));
-    this.init = new (Record<Partial<IFieldInit>>(init))();
   }
 }

@@ -8,8 +8,6 @@ import { IContextable } from '../contexts/IContextable';
 
 export abstract class Persistent<TInputProps, TStoredProps, TContext extends IContext> implements IUpdatable, IContextable<TContext> {
   protected store: Record<TStoredProps>;
-  protected init: Partial<TInputProps>;
-
   /**
    * validate current item
    * @param validator
@@ -51,7 +49,6 @@ export abstract class Persistent<TInputProps, TStoredProps, TContext extends ICo
   public clone() {
     const t = this.constructor() as Persistent<TInputProps, TStoredProps, TContext>;
     t.store = this.store;
-    t.init = this.init;
     return t;
   }
 

@@ -107,6 +107,5 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
       this.attach(context);
     }
     this.store = new EntityStorage(this.transform(init));
-    this.init = new (Record<Partial<IEntityInit>>(init))();
   }
 }

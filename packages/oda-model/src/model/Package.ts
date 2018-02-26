@@ -120,6 +120,5 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
       this.attach(context);
     }
     this.store = new PackageStorage(this.transform(init));
-    this.init = new (Record<Partial<IPackageInit>>(init))();
   }
 }

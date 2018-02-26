@@ -118,7 +118,6 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
       this._defaultPackageName = init.defaultPackageName;
     }
     this.store = new ModelStorage(this.transform(init));
-    this.init = new (Record<Partial<IModelInit>>(init))();
     if (!this.packages || !this.packages.has(this.defaultPackageName)) {
       this.updateWith({
         packages: [{
