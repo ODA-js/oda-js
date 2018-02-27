@@ -22,6 +22,7 @@ import {
   isMutation,
   isPackage,
   isRelation,
+  isIRelationContext,
 } from './helpers';
 import { IEntity } from './interfaces/IEntity';
 import { IField } from './interfaces/IField';
@@ -39,6 +40,8 @@ import { IModelContext } from './contexts/IModelContext';
 import { IEntityContext } from './contexts/IEntityContext';
 import { IPackageContext } from './contexts/IPackageContext';
 import { IValidationContext } from './contexts/IValidationContext';
+import { RelationContext } from './contexts/RelationContext';
+import { IPackagedItem, IPackagedItemInit } from './interfaces/IPackagedItem';
 
 describe('RelationProps helpers', () => {
   it('belongsToProps is detected', () => {
@@ -100,7 +103,7 @@ describe('Context helpers', () => {
     field: IField,
     model: IModel,
     entity: IEntity,
-    packages: IPackage,
+    package: IPackage,
   } = {} as any;
 
   const contexts: {
@@ -108,49 +111,45 @@ describe('Context helpers', () => {
     field: IFieldContext & IValidationContext,
     model: IModelContext & IValidationContext,
     entity: IEntityContext & IValidationContext,
-    packages: IPackageContext & IValidationContext,
+    package: IPackageContext & IValidationContext,
   } = {} as any;
 
   beforeAll(() => {
-    models.relation = new HasMany({
-      hasMany: 'i@m#id',
-    });
-
-    models.field = new Field({
-      name: 'item',
-    });
-
-    models.entity = new Entity({
-      name: 'ToDo',
-      fields: [{
-        name: 'item',
-      }],
-    });
-
-    models.packages = new Package({
-      name: 'system',
-      acl: 10000,
-    });
-
+    expect(() =>
     models.model = new Model({
       name: 'TodoItems',
       packages: [{
         name: 'system',
         acl: 10000,
-        items: [],
+        items: [{
+          name: 'ToDo',
+          fields: [{
+            name: 'item',
+            relation: {
+              hasMany: 'i@m#id',
+            },
+          }],
+        } as IPackagedItemInit],
       }],
-    });
+    })).not.toThrow();
+
+    models.package = models.model.packages.get('system');
+    models.entity = models.package.items.get('ToDo') as IEntity;
+    models.field = models.entity.fields.get('item');
+    models.relation = models.field.relation;
 
     contexts.model = new ModelContext(models.model);
-    contexts.packages = new PackageContext(contexts.model, models.packages);
-    contexts.entity = new EntityContext(contexts.packages, models.entity);
+    contexts.package = new PackageContext(contexts.model, models.package);
+    contexts.entity = new EntityContext(contexts.package, models.entity);
     contexts.field = new FieldContext(contexts.entity, models.field);
+    contexts.relation = new RelationContext(contexts.field, models.relation);
   });
 
   it('Init Context', () => {
     expect(isIModelContext(contexts.model)).toBeTruthy();
-    expect(isIPackageContext(contexts.packages)).toBeTruthy();
+    expect(isIPackageContext(contexts.package)).toBeTruthy();
     expect(isIEntityContext(contexts.entity)).toBeTruthy();
     expect(isIFieldContext(contexts.field)).toBeTruthy();
+    expect(isIRelationContext(contexts.relation)).toBeTruthy();
   });
 });

@@ -3,10 +3,6 @@
 exports[`transform Fields transform 1`] = `
 Immutable.Map {
   "one": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "one",
-    },
     "store": Immutable.Record {
       "name": "one",
       "title": null,
@@ -17,11 +13,6 @@ Immutable.Map {
     },
   },
   "two": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "two",
-      "required": true,
-    },
     "store": Immutable.Record {
       "name": "two",
       "title": null,
@@ -32,12 +23,6 @@ Immutable.Map {
     },
   },
   "three": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "three",
-      "required": false,
-      "defaultValue": "3",
-    },
     "store": Immutable.Record {
       "name": "three",
       "title": null,
@@ -48,13 +33,6 @@ Immutable.Map {
     },
   },
   "four": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "four",
-      "required": false,
-      "defaultValue": "3",
-      "type": "Number",
-    },
     "store": Immutable.Record {
       "name": "four",
       "title": null,
@@ -107,10 +85,6 @@ Array [
 exports[`transform Fields transform hash 1`] = `
 Immutable.Map {
   "one": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "one",
-    },
     "store": Immutable.Record {
       "name": "one",
       "title": null,
@@ -121,11 +95,6 @@ Immutable.Map {
     },
   },
   "two": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "two",
-      "required": true,
-    },
     "store": Immutable.Record {
       "name": "two",
       "title": null,
@@ -136,12 +105,6 @@ Immutable.Map {
     },
   },
   "three": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "three",
-      "required": false,
-      "defaultValue": "3",
-    },
     "store": Immutable.Record {
       "name": "three",
       "title": null,
@@ -152,13 +115,6 @@ Immutable.Map {
     },
   },
   "four": FieldArg {
-    "_context": undefined,
-    "init": Immutable.Record {
-      "name": "four",
-      "required": false,
-      "defaultValue": "3",
-      "type": "Number",
-    },
     "store": Immutable.Record {
       "name": "four",
       "title": null,
@@ -208,26 +164,8 @@ Array [
 ]
 `;
 
-exports[`transform Ref transform 1`] = `
-EntityRef {
-  "_context": undefined,
-  "store": Immutable.Record {
-    "backField": "local",
-    "entity": "Entity",
-    "field": "id",
-  },
-}
-`;
+exports[`transform Ref transform 1`] = `null`;
 
-exports[`transform Ref transform 2`] = `"local@Entity#id"`;
+exports[`transform Ref transform 2`] = `null`;
 
-exports[`transform Ref transform 3`] = `
-EntityRef {
-  "_context": undefined,
-  "store": Immutable.Record {
-    "backField": "local",
-    "entity": "Entity",
-    "field": "id",
-  },
-}
-`;
+exports[`transform Ref transform 3`] = `null`;

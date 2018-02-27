@@ -25,6 +25,7 @@ export class RelationContext implements IRelationContext, IValidationContext {
       this.entity = context.entity;
       this.field = context.field;
       this.relation = isRelation(relation) && relation;
+      this.errors = [];
     }
   }
   public get isValid() {

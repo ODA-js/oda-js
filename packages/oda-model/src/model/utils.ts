@@ -22,14 +22,14 @@ export type ArrayToSet<S> = {
 
 export function TransformRef(): EntityRefTransform {
   return {
-    transform: (inp: string | IEntityRef, relation: IRelation) => {
-      if (inp) {
+    transform: (inp?: string | IEntityRef, relation?: IRelation) => {
+      if (inp && relation) {
         return new EntityRef(inp, ModelFactory.getContext(relation) as IRelationContext);
       } else {
         return null;
       }
     },
-    reverse: (inp: IEntityRef) => {
+    reverse: (inp?: IEntityRef) => {
       if (inp) {
         return inp.toString();
       } else {
@@ -41,19 +41,23 @@ export function TransformRef(): EntityRefTransform {
 
 export function TransformField(): FieldTransformType {
   return {
-    transform: (input: {
+    transform: (input?: {
       [name: string]: Partial<IFieldInit>,
-    } | IFieldInit[], owner: IEntity | IRelation) => {
-      const context = ModelFactory.getContext(owner) as IRelationContext;
-      if (!Array.isArray(input)) {
-        input = Object.keys(input).map(k => ({
-          name: k,
-          ...input[k],
-        }));
+    } | IFieldInit[], owner?: IEntity | IRelation) => {
+      if (input && owner) {
+        const context = ModelFactory.getContext(owner) as IRelationContext;
+        if (!Array.isArray(input)) {
+          input = Object.keys(input).map(k => ({
+            name: k,
+            ...input[k],
+          }));
+        }
+        return Map<string, IField>(input.map(p => [p.name, new Field(p, context)]) as [string, IField][]);
+      } else {
+        return null;
       }
-      return Map<string, IField>(input.map(p => [p.name, new Field(p, context)]) as [string, IField][]);
     },
-    reverse: (input: Map<string, IField>) => {
+    reverse: (input?: Map<string, IField>) => {
       if (input) {
         return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IFieldInit);
       } else {
@@ -65,7 +69,7 @@ export function TransformField(): FieldTransformType {
 
 export function TransformArgs(): FieldArgsTransform {
   return {
-    transform: (input: FieldArgsInput, owner: IMutation | IField ) => {
+    transform: (input?: FieldArgsInput, owner?: IMutation | IField) => {
       if (input) {
         const context = ModelFactory.getContext(owner) as IMutationContext | IFieldContext;
         if (!Array.isArray(input)) {
@@ -79,9 +83,9 @@ export function TransformArgs(): FieldArgsTransform {
         return null;
       }
     },
-    reverse: (input: Map<string, IFieldArg>) => {
+    reverse: (input?: Map<string, IFieldArg>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(p => p.toJS() as IFieldArgInit) ;
+        return Array.from(input.values()[Symbol.iterator]()).map(p => p.toJS() as IFieldArgInit);
       } else {
         return null;
       }

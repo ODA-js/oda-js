@@ -5,6 +5,7 @@ import { IHasMany, IHasManyInit, IHasManyStore, IRelationTransform } from '../in
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasMany: IHasManyStore = {
@@ -46,6 +47,9 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
   protected transform(input: Partial<IHasManyInit>): IHasManyStore {
     const result: IHasManyStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'hasMany') {

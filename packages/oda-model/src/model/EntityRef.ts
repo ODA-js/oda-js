@@ -38,6 +38,9 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
   protected transform(input: Partial<IEntityRef>): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           result[f] = input[f];

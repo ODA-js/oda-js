@@ -167,6 +167,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
   protected transform(input: Partial<IFieldInit>): IFieldStore {
     const result: IFieldStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'args') {

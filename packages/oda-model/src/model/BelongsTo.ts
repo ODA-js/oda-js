@@ -5,6 +5,7 @@ import { IEntityRef } from '../interfaces/IEntityRef';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsTo: IBelongsToStore = {
@@ -47,6 +48,9 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
   protected transform(input: Partial<IBelongsToInit>): Partial<IBelongsToStore> {
     const result: Partial<IBelongsToStore> = {};
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsTo') {

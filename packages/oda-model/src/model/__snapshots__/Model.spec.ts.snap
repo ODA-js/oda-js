@@ -3,21 +3,13 @@
 exports[`Model load serialized model 1`] = `
 Model {
   "_defaultPackageName": "system",
-  "init": Immutable.Record {
-    "name": "ToDoListApplication",
-    "title": undefined,
-    "description": undefined,
-  },
   "store": Immutable.Record {
     "name": "ToDoListApplication",
     "title": null,
     "description": null,
     "packages": Immutable.Map {
       "system": Package {
-        "init": Immutable.Record {
-          "acl": 0,
-          "name": "system",
-          "items": Array [],
+        "_context": Immutable.Record {
           "model": [Circular],
         },
         "store": Immutable.Record {
@@ -28,32 +20,11 @@ Model {
           "abstract": null,
           "items": Immutable.Map {
             "User": Entity {
-              "init": Immutable.Record {
-                "name": "User",
-                "description": "User",
-                "fields": Object {
-                  "enabled": Object {
-                    "type": "boolean",
-                  },
-                  "groups": Object {
-                    "relation": Object {
-                      "belongsToMany": "Group#",
-                      "using": "UsersToGroupsMap#user",
-                    },
-                  },
-                  "isSystem": Object {
-                    "type": "boolean",
-                  },
-                  "password": Object {
-                    "required": true,
-                  },
-                  "userName": Object {
-                    "identity": true,
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "User",
                 "title": null,
                 "description": "User",
@@ -62,9 +33,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "userName": Field {
-                    "init": Immutable.Record {
-                      "name": "userName",
-                      "identity": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userName",
@@ -85,9 +57,10 @@ Model {
                     },
                   },
                   "password": Field {
-                    "init": Immutable.Record {
-                      "name": "password",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "password",
@@ -108,9 +81,10 @@ Model {
                     },
                   },
                   "isSystem": Field {
-                    "init": Immutable.Record {
-                      "name": "isSystem",
-                      "type": "boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "isSystem",
@@ -131,9 +105,10 @@ Model {
                     },
                   },
                   "enabled": Field {
-                    "init": Immutable.Record {
-                      "name": "enabled",
-                      "type": "boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "enabled",
@@ -154,12 +129,10 @@ Model {
                     },
                   },
                   "groups": Field {
-                    "init": Immutable.Record {
-                      "name": "groups",
-                      "relation": Object {
-                        "belongsToMany": "Group#",
-                        "using": "UsersToGroupsMap#user",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groups",
@@ -175,10 +148,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "Group#",
-                          "using": "UsersToGroupsMap#user",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -189,7 +158,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -219,33 +188,11 @@ Model {
               },
             },
             "Group": Entity {
-              "init": Immutable.Record {
-                "name": "Group",
-                "description": "Group of users that can share common ToDos",
-                "fields": Object {
-                  "description": Object {
-                    "indexed": "text",
-                  },
-                  "name": Object {
-                    "identity": true,
-                    "indexed": "text",
-                  },
-                  "todoItems": Object {
-                    "relation": Object {
-                      "belongsToMany": "ToDoItem#",
-                      "using": "ToDoItemsSharedToGroupsMap#group",
-                    },
-                  },
-                  "users": Object {
-                    "relation": Object {
-                      "belongsToMany": "User#",
-                      "using": "UsersToGroupsMap#group",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "Group",
                 "title": null,
                 "description": "Group of users that can share common ToDos",
@@ -254,10 +201,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "name": Field {
-                    "init": Immutable.Record {
-                      "name": "name",
-                      "indexed": "text",
-                      "identity": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "name",
@@ -278,9 +225,10 @@ Model {
                     },
                   },
                   "description": Field {
-                    "init": Immutable.Record {
-                      "name": "description",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "description",
@@ -301,12 +249,10 @@ Model {
                     },
                   },
                   "users": Field {
-                    "init": Immutable.Record {
-                      "name": "users",
-                      "relation": Object {
-                        "belongsToMany": "User#",
-                        "using": "UsersToGroupsMap#group",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "users",
@@ -322,10 +268,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "User#",
-                          "using": "UsersToGroupsMap#group",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -336,7 +278,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -359,12 +301,10 @@ Model {
                     },
                   },
                   "todoItems": Field {
-                    "init": Immutable.Record {
-                      "name": "todoItems",
-                      "relation": Object {
-                        "belongsToMany": "ToDoItem#",
-                        "using": "ToDoItemsSharedToGroupsMap#group",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "todoItems",
@@ -380,10 +320,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "ToDoItem#",
-                          "using": "ToDoItemsSharedToGroupsMap#group",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -394,7 +330,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "ToDoItem",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -424,30 +360,11 @@ Model {
               },
             },
             "UsersToGroupsMap": Entity {
-              "init": Immutable.Record {
-                "name": "UsersToGroupsMap",
-                "description": "Users to Groups mapping",
-                "fields": Object {
-                  "group": Object {
-                    "identity": "linkTable",
-                  },
-                  "groupLink": Object {
-                    "relation": Object {
-                      "belongsTo": "group@Group#",
-                    },
-                  },
-                  "user": Object {
-                    "identity": "linkTable",
-                  },
-                  "userLink": Object {
-                    "relation": Object {
-                      "belongsTo": "user@User#",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "UsersToGroupsMap",
                 "title": null,
                 "description": "Users to Groups mapping",
@@ -456,9 +373,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "user": Field {
-                    "init": Immutable.Record {
-                      "name": "user",
-                      "identity": "linkTable",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "user",
@@ -479,9 +397,10 @@ Model {
                     },
                   },
                   "group": Field {
-                    "init": Immutable.Record {
-                      "name": "group",
-                      "identity": "linkTable",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "group",
@@ -502,11 +421,10 @@ Model {
                     },
                   },
                   "userLink": Field {
-                    "init": Immutable.Record {
-                      "name": "userLink",
-                      "relation": Object {
-                        "belongsTo": "user@User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userLink",
@@ -522,9 +440,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "user@User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -535,7 +450,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "user",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -551,11 +466,10 @@ Model {
                     },
                   },
                   "groupLink": Field {
-                    "init": Immutable.Record {
-                      "name": "groupLink",
-                      "relation": Object {
-                        "belongsTo": "group@Group#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groupLink",
@@ -571,9 +485,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "group@Group#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -584,7 +495,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "group",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -607,59 +518,11 @@ Model {
               },
             },
             "ToDoItem": Entity {
-              "init": Immutable.Record {
-                "name": "ToDoItem",
-                "description": "ToDo item",
-                "fields": Array [
-                  Object {
-                    "name": "done",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "name",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "description",
-                  },
-                  Object {
-                    "name": "dueTo",
-                    "type": "Date",
-                  },
-                  Object {
-                    "name": "isPrivate",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "name": "type",
-                    "type": "ToDotype",
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "assignedTo",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "creator",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "name": "sharedTo",
-                    "relation": Object {
-                      "belongsToMany": "Group#",
-                      "using": "ToDoItemsSharedToGroupsMap#item",
-                    },
-                  },
-                ],
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "ToDoItem",
                 "title": null,
                 "description": "ToDo item",
@@ -668,12 +531,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "sharedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "sharedTo",
-                      "relation": Object {
-                        "belongsToMany": "Group#",
-                        "using": "ToDoItemsSharedToGroupsMap#item",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "sharedTo",
@@ -689,10 +550,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "Group#",
-                          "using": "ToDoItemsSharedToGroupsMap#item",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -703,7 +560,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -726,9 +583,10 @@ Model {
                     },
                   },
                   "done": Field {
-                    "init": Immutable.Record {
-                      "name": "done",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "done",
@@ -749,12 +607,10 @@ Model {
                     },
                   },
                   "assignedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "assignedTo",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "assignedTo",
@@ -770,9 +626,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -783,7 +636,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -799,9 +652,10 @@ Model {
                     },
                   },
                   "name": Field {
-                    "init": Immutable.Record {
-                      "name": "name",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "name",
@@ -822,12 +676,10 @@ Model {
                     },
                   },
                   "creator": Field {
-                    "init": Immutable.Record {
-                      "name": "creator",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "creator",
@@ -843,9 +695,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -856,7 +705,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -872,9 +721,10 @@ Model {
                     },
                   },
                   "dueTo": Field {
-                    "init": Immutable.Record {
-                      "name": "dueTo",
-                      "type": "Date",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "dueTo",
@@ -895,9 +745,10 @@ Model {
                     },
                   },
                   "isPrivate": Field {
-                    "init": Immutable.Record {
-                      "name": "isPrivate",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "isPrivate",
@@ -918,9 +769,10 @@ Model {
                     },
                   },
                   "type": Field {
-                    "init": Immutable.Record {
-                      "name": "type",
-                      "type": "ToDotype",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "type",
@@ -941,9 +793,10 @@ Model {
                     },
                   },
                   "description": Field {
-                    "init": Immutable.Record {
-                      "name": "description",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "description",
@@ -971,32 +824,11 @@ Model {
               },
             },
             "ToDoItemsSharedToGroupsMap": Entity {
-              "init": Immutable.Record {
-                "name": "ToDoItemsSharedToGroupsMap",
-                "description": "Sharing ToDo items between groups",
-                "fields": Object {
-                  "group": Object {
-                    "identity": "shared",
-                    "indexed": true,
-                  },
-                  "groupLink": Object {
-                    "relation": Object {
-                      "belongsTo": "group@Group#",
-                    },
-                  },
-                  "item": Object {
-                    "identity": "shared",
-                    "indexed": true,
-                  },
-                  "itemLink": Object {
-                    "relation": Object {
-                      "belongsTo": "item@ToDoItem#",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "ToDoItemsSharedToGroupsMap",
                 "title": null,
                 "description": "Sharing ToDo items between groups",
@@ -1005,10 +837,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "item": Field {
-                    "init": Immutable.Record {
-                      "name": "item",
-                      "indexed": true,
-                      "identity": "shared",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "item",
@@ -1029,10 +861,10 @@ Model {
                     },
                   },
                   "group": Field {
-                    "init": Immutable.Record {
-                      "name": "group",
-                      "indexed": true,
-                      "identity": "shared",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "group",
@@ -1053,11 +885,10 @@ Model {
                     },
                   },
                   "itemLink": Field {
-                    "init": Immutable.Record {
-                      "name": "itemLink",
-                      "relation": Object {
-                        "belongsTo": "item@ToDoItem#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "itemLink",
@@ -1073,9 +904,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "item@ToDoItem#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1086,7 +914,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "item",
                               "entity": "ToDoItem",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -1102,11 +930,10 @@ Model {
                     },
                   },
                   "groupLink": Field {
-                    "init": Immutable.Record {
-                      "name": "groupLink",
-                      "relation": Object {
-                        "belongsTo": "group@Group#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groupLink",
@@ -1122,9 +949,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "group@Group#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1135,7 +959,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "group",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -1158,35 +982,20 @@ Model {
               },
             },
             "loginUser": Mutation {
-              "init": Immutable.Record {
-                "name": "loginUser",
-                "description": "make user login",
-                "args": Array [
-                  Object {
-                    "name": "userName",
-                    "required": true,
-                  },
-                  Object {
-                    "name": "password",
-                    "required": true,
-                  },
-                ],
-                "payload": Object {
-                  "token": Object {
-                    "type": "string",
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
                 "name": "loginUser",
-                "package": null,
                 "title": null,
                 "description": "make user login",
                 "args": Immutable.Map {
                   "userName": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "userName",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userName",
@@ -1198,9 +1007,10 @@ Model {
                     },
                   },
                   "password": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "password",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "password",
@@ -1214,9 +1024,10 @@ Model {
                 },
                 "payload": Immutable.Map {
                   "token": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "token",
-                      "type": "string",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "token",
@@ -1234,26 +1045,20 @@ Model {
               },
             },
             "ToDoType": Enum {
-              "init": Immutable.Record {
-                "name": "ToDoType",
-                "values": Array [
-                  "usual",
-                  Object {
-                    "name": "super pupper",
-                    "type": "string",
-                    "value": "super",
-                  },
-                ],
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
                 "name": "ToDoType",
                 "title": null,
                 "description": null,
-                "package": null,
                 "values": Immutable.Map {
                   "usual": EnumItem {
-                    "init": Immutable.Record {
-                      "name": "usual",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "enum": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "usual",
@@ -1264,10 +1069,10 @@ Model {
                     },
                   },
                   "super pupper": EnumItem {
-                    "init": Immutable.Record {
-                      "name": "super pupper",
-                      "value": "super",
-                      "type": "string",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "enum": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "super pupper",
@@ -1281,28 +1086,20 @@ Model {
               },
             },
             "UserKind": Enum {
-              "init": Immutable.Record {
-                "name": "UserKind",
-                "values": Object {
-                  "admin": Object {
-                    "name": "super pupper",
-                    "title": "The super power User",
-                    "type": "string",
-                    "value": "admin",
-                  },
-                  "public user": "public",
-                  "registered user": "registered",
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
                 "name": "UserKind",
                 "title": null,
                 "description": null,
-                "package": null,
                 "values": Immutable.Map {
                   "public": EnumItem {
-                    "init": Immutable.Record {
-                      "name": "public",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "enum": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "public",
@@ -1313,8 +1110,10 @@ Model {
                     },
                   },
                   "registered": EnumItem {
-                    "init": Immutable.Record {
-                      "name": "registered",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "enum": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "registered",
@@ -1325,11 +1124,10 @@ Model {
                     },
                   },
                   "super pupper": EnumItem {
-                    "init": Immutable.Record {
-                      "name": "super pupper",
-                      "value": "admin",
-                      "type": "string",
-                      "title": "The super power User",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "enum": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "super pupper",
@@ -1343,21 +1141,10 @@ Model {
               },
             },
           },
-          "model": [Circular],
         },
       },
       "all": Package {
-        "init": Immutable.Record {
-          "name": "all",
-          "abstract": true,
-          "acl": 100,
-          "items": Array [
-            "User",
-            "Group",
-            "ToDoItem",
-            "ToDoItemsSharedToGroupsMap",
-            "UsersToGroupsMap",
-          ],
+        "_context": Immutable.Record {
           "model": [Circular],
         },
         "store": Immutable.Record {
@@ -1368,32 +1155,11 @@ Model {
           "abstract": true,
           "items": Immutable.Map {
             "User": Entity {
-              "init": Immutable.Record {
-                "name": "User",
-                "description": "User",
-                "fields": Object {
-                  "enabled": Object {
-                    "type": "boolean",
-                  },
-                  "groups": Object {
-                    "relation": Object {
-                      "belongsToMany": "Group#",
-                      "using": "UsersToGroupsMap#user",
-                    },
-                  },
-                  "isSystem": Object {
-                    "type": "boolean",
-                  },
-                  "password": Object {
-                    "required": true,
-                  },
-                  "userName": Object {
-                    "identity": true,
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "User",
                 "title": null,
                 "description": "User",
@@ -1402,9 +1168,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "userName": Field {
-                    "init": Immutable.Record {
-                      "name": "userName",
-                      "identity": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userName",
@@ -1425,9 +1192,10 @@ Model {
                     },
                   },
                   "password": Field {
-                    "init": Immutable.Record {
-                      "name": "password",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "password",
@@ -1448,9 +1216,10 @@ Model {
                     },
                   },
                   "isSystem": Field {
-                    "init": Immutable.Record {
-                      "name": "isSystem",
-                      "type": "boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "isSystem",
@@ -1471,9 +1240,10 @@ Model {
                     },
                   },
                   "enabled": Field {
-                    "init": Immutable.Record {
-                      "name": "enabled",
-                      "type": "boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "enabled",
@@ -1494,12 +1264,10 @@ Model {
                     },
                   },
                   "groups": Field {
-                    "init": Immutable.Record {
-                      "name": "groups",
-                      "relation": Object {
-                        "belongsToMany": "Group#",
-                        "using": "UsersToGroupsMap#user",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groups",
@@ -1515,10 +1283,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "Group#",
-                          "using": "UsersToGroupsMap#user",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1529,7 +1293,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -1559,33 +1323,11 @@ Model {
               },
             },
             "Group": Entity {
-              "init": Immutable.Record {
-                "name": "Group",
-                "description": "Group of users that can share common ToDos",
-                "fields": Object {
-                  "description": Object {
-                    "indexed": "text",
-                  },
-                  "name": Object {
-                    "identity": true,
-                    "indexed": "text",
-                  },
-                  "todoItems": Object {
-                    "relation": Object {
-                      "belongsToMany": "ToDoItem#",
-                      "using": "ToDoItemsSharedToGroupsMap#group",
-                    },
-                  },
-                  "users": Object {
-                    "relation": Object {
-                      "belongsToMany": "User#",
-                      "using": "UsersToGroupsMap#group",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "Group",
                 "title": null,
                 "description": "Group of users that can share common ToDos",
@@ -1594,10 +1336,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "name": Field {
-                    "init": Immutable.Record {
-                      "name": "name",
-                      "indexed": "text",
-                      "identity": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "name",
@@ -1618,9 +1360,10 @@ Model {
                     },
                   },
                   "description": Field {
-                    "init": Immutable.Record {
-                      "name": "description",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "description",
@@ -1641,12 +1384,10 @@ Model {
                     },
                   },
                   "users": Field {
-                    "init": Immutable.Record {
-                      "name": "users",
-                      "relation": Object {
-                        "belongsToMany": "User#",
-                        "using": "UsersToGroupsMap#group",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "users",
@@ -1662,10 +1403,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "User#",
-                          "using": "UsersToGroupsMap#group",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1676,7 +1413,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -1699,12 +1436,10 @@ Model {
                     },
                   },
                   "todoItems": Field {
-                    "init": Immutable.Record {
-                      "name": "todoItems",
-                      "relation": Object {
-                        "belongsToMany": "ToDoItem#",
-                        "using": "ToDoItemsSharedToGroupsMap#group",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "todoItems",
@@ -1720,10 +1455,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "ToDoItem#",
-                          "using": "ToDoItemsSharedToGroupsMap#group",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1734,7 +1465,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "ToDoItem",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -1764,59 +1495,11 @@ Model {
               },
             },
             "ToDoItem": Entity {
-              "init": Immutable.Record {
-                "name": "ToDoItem",
-                "description": "ToDo item",
-                "fields": Array [
-                  Object {
-                    "name": "done",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "name",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "description",
-                  },
-                  Object {
-                    "name": "dueTo",
-                    "type": "Date",
-                  },
-                  Object {
-                    "name": "isPrivate",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "name": "type",
-                    "type": "ToDotype",
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "assignedTo",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "creator",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "name": "sharedTo",
-                    "relation": Object {
-                      "belongsToMany": "Group#",
-                      "using": "ToDoItemsSharedToGroupsMap#item",
-                    },
-                  },
-                ],
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "ToDoItem",
                 "title": null,
                 "description": "ToDo item",
@@ -1825,12 +1508,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "sharedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "sharedTo",
-                      "relation": Object {
-                        "belongsToMany": "Group#",
-                        "using": "ToDoItemsSharedToGroupsMap#item",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "sharedTo",
@@ -1846,10 +1527,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "Group#",
-                          "using": "ToDoItemsSharedToGroupsMap#item",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1860,7 +1537,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -1883,9 +1560,10 @@ Model {
                     },
                   },
                   "done": Field {
-                    "init": Immutable.Record {
-                      "name": "done",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "done",
@@ -1906,12 +1584,10 @@ Model {
                     },
                   },
                   "assignedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "assignedTo",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "assignedTo",
@@ -1927,9 +1603,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -1940,7 +1613,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -1956,9 +1629,10 @@ Model {
                     },
                   },
                   "name": Field {
-                    "init": Immutable.Record {
-                      "name": "name",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "name",
@@ -1979,12 +1653,10 @@ Model {
                     },
                   },
                   "creator": Field {
-                    "init": Immutable.Record {
-                      "name": "creator",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "creator",
@@ -2000,9 +1672,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2013,7 +1682,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2029,9 +1698,10 @@ Model {
                     },
                   },
                   "dueTo": Field {
-                    "init": Immutable.Record {
-                      "name": "dueTo",
-                      "type": "Date",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "dueTo",
@@ -2052,9 +1722,10 @@ Model {
                     },
                   },
                   "isPrivate": Field {
-                    "init": Immutable.Record {
-                      "name": "isPrivate",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "isPrivate",
@@ -2075,9 +1746,10 @@ Model {
                     },
                   },
                   "type": Field {
-                    "init": Immutable.Record {
-                      "name": "type",
-                      "type": "ToDotype",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "type",
@@ -2098,9 +1770,10 @@ Model {
                     },
                   },
                   "description": Field {
-                    "init": Immutable.Record {
-                      "name": "description",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "description",
@@ -2128,32 +1801,11 @@ Model {
               },
             },
             "ToDoItemsSharedToGroupsMap": Entity {
-              "init": Immutable.Record {
-                "name": "ToDoItemsSharedToGroupsMap",
-                "description": "Sharing ToDo items between groups",
-                "fields": Object {
-                  "group": Object {
-                    "identity": "shared",
-                    "indexed": true,
-                  },
-                  "groupLink": Object {
-                    "relation": Object {
-                      "belongsTo": "group@Group#",
-                    },
-                  },
-                  "item": Object {
-                    "identity": "shared",
-                    "indexed": true,
-                  },
-                  "itemLink": Object {
-                    "relation": Object {
-                      "belongsTo": "item@ToDoItem#",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "ToDoItemsSharedToGroupsMap",
                 "title": null,
                 "description": "Sharing ToDo items between groups",
@@ -2162,10 +1814,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "item": Field {
-                    "init": Immutable.Record {
-                      "name": "item",
-                      "indexed": true,
-                      "identity": "shared",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "item",
@@ -2186,10 +1838,10 @@ Model {
                     },
                   },
                   "group": Field {
-                    "init": Immutable.Record {
-                      "name": "group",
-                      "indexed": true,
-                      "identity": "shared",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "group",
@@ -2210,11 +1862,10 @@ Model {
                     },
                   },
                   "itemLink": Field {
-                    "init": Immutable.Record {
-                      "name": "itemLink",
-                      "relation": Object {
-                        "belongsTo": "item@ToDoItem#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "itemLink",
@@ -2230,9 +1881,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "item@ToDoItem#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2243,7 +1891,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "item",
                               "entity": "ToDoItem",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2259,11 +1907,10 @@ Model {
                     },
                   },
                   "groupLink": Field {
-                    "init": Immutable.Record {
-                      "name": "groupLink",
-                      "relation": Object {
-                        "belongsTo": "group@Group#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groupLink",
@@ -2279,9 +1926,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "group@Group#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2292,7 +1936,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "group",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2315,30 +1959,11 @@ Model {
               },
             },
             "UsersToGroupsMap": Entity {
-              "init": Immutable.Record {
-                "name": "UsersToGroupsMap",
-                "description": "Users to Groups mapping",
-                "fields": Object {
-                  "group": Object {
-                    "identity": "linkTable",
-                  },
-                  "groupLink": Object {
-                    "relation": Object {
-                      "belongsTo": "group@Group#",
-                    },
-                  },
-                  "user": Object {
-                    "identity": "linkTable",
-                  },
-                  "userLink": Object {
-                    "relation": Object {
-                      "belongsTo": "user@User#",
-                    },
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "UsersToGroupsMap",
                 "title": null,
                 "description": "Users to Groups mapping",
@@ -2347,9 +1972,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "user": Field {
-                    "init": Immutable.Record {
-                      "name": "user",
-                      "identity": "linkTable",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "user",
@@ -2370,9 +1996,10 @@ Model {
                     },
                   },
                   "group": Field {
-                    "init": Immutable.Record {
-                      "name": "group",
-                      "identity": "linkTable",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "group",
@@ -2393,11 +2020,10 @@ Model {
                     },
                   },
                   "userLink": Field {
-                    "init": Immutable.Record {
-                      "name": "userLink",
-                      "relation": Object {
-                        "belongsTo": "user@User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userLink",
@@ -2413,9 +2039,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "user@User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2426,7 +2049,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "user",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2442,11 +2065,10 @@ Model {
                     },
                   },
                   "groupLink": Field {
-                    "init": Immutable.Record {
-                      "name": "groupLink",
-                      "relation": Object {
-                        "belongsTo": "group@Group#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "groupLink",
@@ -2462,9 +2084,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "group@Group#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2475,7 +2094,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "group",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2498,18 +2117,10 @@ Model {
               },
             },
           },
-          "model": [Circular],
         },
       },
       "public": Package {
-        "init": Immutable.Record {
-          "name": "public",
-          "abstract": false,
-          "acl": 0,
-          "items": Array [
-            "ToDoItem",
-            "loginUser",
-          ],
+        "_context": Immutable.Record {
           "model": [Circular],
         },
         "store": Immutable.Record {
@@ -2520,59 +2131,11 @@ Model {
           "abstract": false,
           "items": Immutable.Map {
             "ToDoItem": Entity {
-              "init": Immutable.Record {
-                "name": "ToDoItem",
-                "description": "ToDo item",
-                "fields": Array [
-                  Object {
-                    "name": "done",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "name",
-                  },
-                  Object {
-                    "indexed": "text",
-                    "name": "description",
-                  },
-                  Object {
-                    "name": "dueTo",
-                    "type": "Date",
-                  },
-                  Object {
-                    "name": "isPrivate",
-                    "type": "Boolean",
-                  },
-                  Object {
-                    "name": "type",
-                    "type": "ToDotype",
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "assignedTo",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "indexed": true,
-                    "name": "creator",
-                    "relation": Object {
-                      "belongsTo": "User#",
-                    },
-                  },
-                  Object {
-                    "name": "sharedTo",
-                    "relation": Object {
-                      "belongsToMany": "Group#",
-                      "using": "ToDoItemsSharedToGroupsMap#item",
-                    },
-                  },
-                ],
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
-                "package": null,
                 "name": "ToDoItem",
                 "title": null,
                 "description": "ToDo item",
@@ -2581,12 +2144,10 @@ Model {
                 "singular": null,
                 "fields": Immutable.Map {
                   "sharedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "sharedTo",
-                      "relation": Object {
-                        "belongsToMany": "Group#",
-                        "using": "ToDoItemsSharedToGroupsMap#item",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "sharedTo",
@@ -2602,10 +2163,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsToMany {
-                        "init": Immutable.Record {
-                          "belongsToMany": "Group#",
-                          "using": "ToDoItemsSharedToGroupsMap#item",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2616,7 +2173,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "Group",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "using": EntityRef {
@@ -2639,9 +2196,10 @@ Model {
                     },
                   },
                   "done": Field {
-                    "init": Immutable.Record {
-                      "name": "done",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "done",
@@ -2662,12 +2220,10 @@ Model {
                     },
                   },
                   "assignedTo": Field {
-                    "init": Immutable.Record {
-                      "name": "assignedTo",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "assignedTo",
@@ -2683,9 +2239,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2696,7 +2249,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2712,9 +2265,10 @@ Model {
                     },
                   },
                   "name": Field {
-                    "init": Immutable.Record {
-                      "name": "name",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "name",
@@ -2735,12 +2289,10 @@ Model {
                     },
                   },
                   "creator": Field {
-                    "init": Immutable.Record {
-                      "name": "creator",
-                      "indexed": true,
-                      "relation": Object {
-                        "belongsTo": "User#",
-                      },
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "creator",
@@ -2756,9 +2308,6 @@ Model {
                       "order": null,
                       "persistent": null,
                       "relation": BelongsTo {
-                        "init": Immutable.Record {
-                          "belongsTo": "User#",
-                        },
                         "store": Immutable.Record {
                           "name": null,
                           "title": null,
@@ -2769,7 +2318,7 @@ Model {
                             "store": Immutable.Record {
                               "backField": "",
                               "entity": "User",
-                              "field": "",
+                              "field": "id",
                             },
                           },
                           "single": true,
@@ -2785,9 +2334,10 @@ Model {
                     },
                   },
                   "dueTo": Field {
-                    "init": Immutable.Record {
-                      "name": "dueTo",
-                      "type": "Date",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "dueTo",
@@ -2808,9 +2358,10 @@ Model {
                     },
                   },
                   "isPrivate": Field {
-                    "init": Immutable.Record {
-                      "name": "isPrivate",
-                      "type": "Boolean",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "isPrivate",
@@ -2831,9 +2382,10 @@ Model {
                     },
                   },
                   "type": Field {
-                    "init": Immutable.Record {
-                      "name": "type",
-                      "type": "ToDotype",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "type",
@@ -2854,9 +2406,10 @@ Model {
                     },
                   },
                   "description": Field {
-                    "init": Immutable.Record {
-                      "name": "description",
-                      "indexed": "text",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "entity": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "description",
@@ -2884,35 +2437,20 @@ Model {
               },
             },
             "loginUser": Mutation {
-              "init": Immutable.Record {
-                "name": "loginUser",
-                "description": "make user login",
-                "args": Array [
-                  Object {
-                    "name": "userName",
-                    "required": true,
-                  },
-                  Object {
-                    "name": "password",
-                    "required": true,
-                  },
-                ],
-                "payload": Object {
-                  "token": Object {
-                    "type": "string",
-                  },
-                },
+              "_context": Immutable.Record {
+                "model": null,
+                "package": [Circular],
               },
               "store": Immutable.Record {
                 "name": "loginUser",
-                "package": null,
                 "title": null,
                 "description": "make user login",
                 "args": Immutable.Map {
                   "userName": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "userName",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "userName",
@@ -2924,9 +2462,10 @@ Model {
                     },
                   },
                   "password": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "password",
-                      "required": true,
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "password",
@@ -2940,9 +2479,10 @@ Model {
                 },
                 "payload": Immutable.Map {
                   "token": FieldArg {
-                    "init": Immutable.Record {
-                      "name": "token",
-                      "type": "string",
+                    "_context": Immutable.Record {
+                      "model": null,
+                      "package": null,
+                      "mutation": [Circular],
                     },
                     "store": Immutable.Record {
                       "name": "token",
@@ -2960,7 +2500,6 @@ Model {
               },
             },
           },
-          "model": [Circular],
         },
       },
     },
@@ -3074,7 +2613,6 @@ Object {
           ],
           "indexed": null,
           "name": "User",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3165,7 +2703,6 @@ Object {
           ],
           "indexed": null,
           "name": "Group",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3254,7 +2791,6 @@ Object {
           ],
           "indexed": null,
           "name": "UsersToGroupsMap",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3432,7 +2968,6 @@ Object {
           ],
           "indexed": null,
           "name": "ToDoItem",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3521,7 +3056,6 @@ Object {
           ],
           "indexed": null,
           "name": "ToDoItemsSharedToGroupsMap",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3553,7 +3087,6 @@ Object {
           ],
           "description": "make user login",
           "name": "loginUser",
-          "package": null,
           "payload": Array [
             Object {
               "defaultValue": null,
@@ -3569,7 +3102,6 @@ Object {
         Object {
           "description": null,
           "name": "ToDoType",
-          "package": null,
           "title": null,
           "values": Array [
             Object {
@@ -3591,7 +3123,6 @@ Object {
         Object {
           "description": null,
           "name": "UserKind",
-          "package": null,
           "title": null,
           "values": Array [
             Object {
@@ -3618,7 +3149,6 @@ Object {
           ],
         },
       ],
-      "model": undefined,
       "name": "system",
       "title": null,
     },
@@ -3723,7 +3253,6 @@ Object {
           ],
           "indexed": null,
           "name": "User",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3814,7 +3343,6 @@ Object {
           ],
           "indexed": null,
           "name": "Group",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -3992,7 +3520,6 @@ Object {
           ],
           "indexed": null,
           "name": "ToDoItem",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -4081,7 +3608,6 @@ Object {
           ],
           "indexed": null,
           "name": "ToDoItemsSharedToGroupsMap",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -4170,7 +3696,6 @@ Object {
           ],
           "indexed": null,
           "name": "UsersToGroupsMap",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -4179,7 +3704,6 @@ Object {
           "title": null,
         },
       ],
-      "model": undefined,
       "name": "all",
       "title": null,
     },
@@ -4358,7 +3882,6 @@ Object {
           ],
           "indexed": null,
           "name": "ToDoItem",
-          "package": null,
           "plural": null,
           "relations": null,
           "required": null,
@@ -4390,7 +3913,6 @@ Object {
           ],
           "description": "make user login",
           "name": "loginUser",
-          "package": null,
           "payload": Array [
             Object {
               "defaultValue": null,
@@ -4404,7 +3926,6 @@ Object {
           "title": null,
         },
       ],
-      "model": undefined,
       "name": "public",
       "title": null,
     },

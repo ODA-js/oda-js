@@ -68,6 +68,9 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
   protected transform(input: Partial<IEnumInit>): IEnumStore {
     const result: IEnumStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'values') {

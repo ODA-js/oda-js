@@ -8,6 +8,7 @@ import { Field } from './Field';
 import { Relation } from './Relation';
 import { TransformRef, TransformField } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultBelongsToMany: IBelongsToManyStore = {
@@ -56,6 +57,9 @@ export class BelongsToMany
   protected transform(input: Partial<IBelongsToManyInit>): Partial<IBelongsToManyStore> {
     const result: IBelongsToManyStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsToMany') {

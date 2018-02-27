@@ -68,6 +68,9 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
   protected transform(input: Partial<IEntityInit>): IEntityStore {
     const result: IEntityStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'fields') {

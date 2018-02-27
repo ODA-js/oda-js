@@ -4,6 +4,7 @@ import { IModelContext } from '../contexts/IModelContext';
 import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
 import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from '../interfaces/IPackagedItem';
 import { Persistent } from './Persistent';
+import { createPackagedItem } from '../helpers';
 
 // tslint:disable-next-line:variable-name
 export const DefaultPackage: IPackageStore = {
@@ -23,18 +24,12 @@ export const PackageTransform: IPackageTransform = {
         return Map<string, IPackagedItem>(input.map(p => {
           if (typeof p === 'string') {
             if (pkg.context.model.defaultPackage.items.has(p)) {
-              return [p, {
-                ...pkg.context.model.defaultPackage.items.get(p),
-                package: pkg,
-              }];
+              return [p, createPackagedItem(pkg.context.model.defaultPackage.items.get(p), pkg)];
             } else {
               throw Error('item does not exists');
             }
           } else {
-            return [p.name, {
-              ...p,
-              package: pkg,
-            }];
+            return [p.name, createPackagedItem(p, pkg)];
           }
         },
         ) as [string, IPackagedItem][]);
@@ -81,6 +76,9 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
   protected transform(input?: Partial<IPackageInit>): IPackageStore {
     const result: IPackageStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'items') {

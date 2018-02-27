@@ -5,6 +5,7 @@ import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../inter
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
+import { Persistent } from './Persistent';
 
 // tslint:disable-next-line:variable-name
 export const DefaultHasOne: IHasOneStore = {
@@ -46,6 +47,9 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
   protected transform(input: Partial<IHasOneInit>): IHasOneStore {
     const result: IHasOneStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'hasOne') {

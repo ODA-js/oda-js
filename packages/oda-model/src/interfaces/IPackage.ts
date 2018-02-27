@@ -11,7 +11,7 @@ import { IValidationResult } from './IValidationResult';
 export interface IPackageInit extends INamedItem {
   acl: number;
   abstract?: boolean;
-  items: PackagedItemInit[];
+  items?: PackagedItemInit[];
 }
 
 export interface IPackageStore extends INamedItem {

@@ -2,10 +2,54 @@
 
 exports[`setDefaults fix derived field 1`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "derived": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -31,10 +75,54 @@ exports[`setDefaults fix derived field 2`] = `Array []`;
 
 exports[`setDefaults fix derived field 3`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "derived": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -58,10 +146,54 @@ Field {
 
 exports[`setDefaults fix identity field 1`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "identity": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -87,10 +219,54 @@ exports[`setDefaults fix identity field 2`] = `Array []`;
 
 exports[`setDefaults fix identity field 3`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "identity": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -102,7 +278,6 @@ Field {
     "entity": null,
     "identity": true,
     "idKey": EntityRef {
-      "_context": undefined,
       "store": Immutable.Record {
         "backField": "",
         "entity": "cool entity",
@@ -121,10 +296,54 @@ Field {
 
 exports[`setDefaults fix indexed field 1`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "indexed": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -150,10 +369,54 @@ exports[`setDefaults fix indexed field 2`] = `Array []`;
 
 exports[`setDefaults fix indexed field 3`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "indexed": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -177,11 +440,54 @@ Field {
 
 exports[`setDefaults fix persistend-derived field 1`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "derived": true,
-    "persistent": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -207,11 +513,54 @@ exports[`setDefaults fix persistend-derived field 2`] = `Array []`;
 
 exports[`setDefaults fix persistend-derived field 3`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
-    "derived": true,
-    "persistent": true,
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -235,9 +584,54 @@ Field {
 
 exports[`setDefaults fix simple field 1`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",
@@ -263,9 +657,54 @@ exports[`setDefaults fix simple field 2`] = `Array []`;
 
 exports[`setDefaults fix simple field 3`] = `
 Field {
-  "_context": undefined,
-  "init": Immutable.Record {
-    "name": "user",
+  "_context": Immutable.Record {
+    "model": null,
+    "package": null,
+    "entity": Entity {
+      "_context": Immutable.Record {
+        "model": null,
+        "package": Package {
+          "_context": Immutable.Record {
+            "model": Model {
+              "_defaultPackageName": "system",
+              "store": Immutable.Record {
+                "name": "TodoItems",
+                "title": null,
+                "description": null,
+                "packages": Immutable.Map {
+                  "system": [Circular],
+                },
+              },
+            },
+          },
+          "store": Immutable.Record {
+            "name": "system",
+            "title": null,
+            "description": null,
+            "acl": 0,
+            "abstract": null,
+            "items": Immutable.Map {
+              "cool entity": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "cool entity",
+        "title": null,
+        "description": null,
+        "acl": null,
+        "plural": null,
+        "singular": null,
+        "fields": Immutable.Map {
+          "user": [Circular],
+        },
+        "storage": null,
+        "indexed": null,
+        "relations": null,
+        "required": null,
+      },
+    },
   },
   "store": Immutable.Record {
     "name": "user",

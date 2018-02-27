@@ -2,8 +2,6 @@
 
 exports[`BelongsTo create empty 1`] = `
 BelongsTo {
-  "_context": undefined,
-  "init": Immutable.Record {},
   "store": Immutable.Record {
     "name": null,
     "title": null,
@@ -75,8 +73,6 @@ Object {
 
 exports[`BelongsTo updates strings 1`] = `
 BelongsTo {
-  "_context": undefined,
-  "init": Immutable.Record {},
   "store": Immutable.Record {
     "name": "cool",
     "title": "very cool title",

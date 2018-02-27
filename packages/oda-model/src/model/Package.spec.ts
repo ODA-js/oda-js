@@ -28,9 +28,7 @@ describe('Mutaion', () => {
     ).not.toThrow();
 
     expect(() =>
-      new Package({
-        items: [],
-      }),
+      new Package(),
     ).not.toThrow();
 
 
@@ -90,7 +88,7 @@ describe('Mutaion', () => {
     expect(() => mutation = pkg.items.get('1')).not.toThrow();
   });
 
-   it('toJS with dupes', () => {
+  it('toJS with dupes', () => {
     expect(() => pkg.updateWith({
       name: 'cool',
       description: 'very cool',
@@ -104,7 +102,6 @@ describe('Mutaion', () => {
     })).not.toThrow();
 
     expect(pkg.items.size).toBe(1);
-
     expect(pkg.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',

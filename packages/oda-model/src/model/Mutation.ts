@@ -76,6 +76,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
   protected transform(input: Partial<IMutationInit>): Partial<IMutationStore> {
     const result: IMutationStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'args') {

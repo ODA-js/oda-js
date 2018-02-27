@@ -39,6 +39,9 @@ export class EnumItem extends Persistent<IEnumItemInit, IEnumItemStore, IEnumCon
   protected transform(input: Partial<IEnumItemInit>): IEnumItemInit {
     const result: IEnumItemInit = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           result[f] = input[f];

@@ -77,6 +77,9 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
   protected transform(input: Partial<IModelInit>): IModelStore {
     const result: IModelStore = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'packages') {

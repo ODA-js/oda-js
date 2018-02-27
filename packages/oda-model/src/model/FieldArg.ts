@@ -66,6 +66,9 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutatio
   protected transform(input: Partial<IFieldArgInit>): IFieldArgInit {
     const result: IFieldArgInit = {} as any;
     if (input) {
+      if (input instanceof Persistent) {
+        input = input.toJS();
+      }
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           result[f] = input[f];

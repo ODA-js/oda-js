@@ -87,36 +87,36 @@ export function IsHasMany(item: IRelation): item is IHasMany {
 }
 
 export function isIModelContext(ctx: IModelContext & IValidationContext): ctx is IModelContext & IValidationContext {
-  return !!(ctx.isValid
+  return !!(ctx && ctx.isValid
     && ctx.model
     && Array.isArray(ctx.errors));
 }
 
-export function isIPackageContext(ctx: IModelContext & IValidationContext): ctx is IPackageContext & IValidationContext {
-  return !!(ctx.isValid
+export function isIPackageContext(ctx?: IModelContext & IValidationContext): ctx is IPackageContext & IValidationContext {
+  return !!(ctx && ctx.isValid
     && (ctx as IPackageContext & IValidationContext).model
     && (ctx as IPackageContext & IValidationContext).package
     && Array.isArray((ctx as IPackageContext & IValidationContext).errors));
 }
 
-export function isIEntityContext(ctx: IModelContext & IValidationContext): ctx is IEntityContext & IValidationContext {
-  return !!(ctx.isValid
+export function isIEntityContext(ctx?: IModelContext & IValidationContext): ctx is IEntityContext & IValidationContext {
+  return !!(ctx && ctx.isValid
     && (ctx as IEntityContext & IValidationContext).model
     && (ctx as IEntityContext & IValidationContext).package
     && (ctx as IEntityContext & IValidationContext).entity
     && Array.isArray((ctx as IEntityContext & IValidationContext).errors));
 }
 
-export function isIEnumContext(ctx: IModelContext & IValidationContext): ctx is IEnumContext & IValidationContext {
-  return !!(ctx.isValid
+export function isIEnumContext(ctx?: IModelContext & IValidationContext): ctx is IEnumContext & IValidationContext {
+  return !!(ctx && ctx.isValid
     && (ctx as IEnumContext & IValidationContext).model
     && (ctx as IEnumContext & IValidationContext).package
     && (ctx as IEnumContext & IValidationContext).enum
     && Array.isArray((ctx as IEnumContext & IValidationContext).errors));
 }
 
-export function isIFieldContext(ctx: IModelContext & IValidationContext): ctx is IFieldContext & IValidationContext {
-  return !!(ctx.isValid
+export function isIFieldContext(ctx?: IModelContext & IValidationContext): ctx is IFieldContext & IValidationContext {
+  return !!(ctx && ctx.isValid
     && (ctx as IFieldContext & IValidationContext).model
     && (ctx as IFieldContext & IValidationContext).package
     && (ctx as IFieldContext & IValidationContext).entity
@@ -124,8 +124,8 @@ export function isIFieldContext(ctx: IModelContext & IValidationContext): ctx is
     && Array.isArray((ctx as IFieldContext & IValidationContext).errors));
 }
 
-export function isIRelationContext(ctx: IModelContext & IValidationContext): ctx is IRelationContext & IValidationContext {
-  return !!(ctx.isValid
+export function isIRelationContext(ctx?: IModelContext & IValidationContext): ctx is IRelationContext & IValidationContext {
+  return !!(ctx && ctx.isValid
     && (ctx as IRelationContext & IValidationContext).model
     && (ctx as IRelationContext & IValidationContext).package
     && (ctx as IRelationContext & IValidationContext).entity
@@ -139,7 +139,7 @@ export function isEnumInit(item: IPackagedItemInit): item is IEnumInit {
 }
 
 export function isEntityInit(item: IPackagedItemInit): item is IEntityInit {
-  return !!(<IModelInit>item).packages;
+  return !!(<IEntityInit>item).fields;
 }
 
 export function isMutationInit(item: IPackagedItemInit): item is IMutationInit {
