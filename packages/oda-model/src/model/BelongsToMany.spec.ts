@@ -12,22 +12,8 @@ describe('BelongsToMany', () => {
   });
 
   it('create empty', () => {
-    expect(relation.modelType).toBe('relation');
-    expect(relation.verb).toBe('BelongsToMany');
-    expect(relation.title).toBeNull();
-    expect(relation.name).toBeNull();
-    expect(relation.description).toBeNull();
-    expect(relation.fields).toBeNull();
-    expect(relation.fullName).toBeNull();
-    expect(relation.shortName).toBeNull();
-    expect(relation.normalName).toBeNull();
-    expect(relation.opposite).toBeNull();
-    expect(relation.embedded).toBeFalsy();
-    expect(relation.single).toBeFalsy();
-    expect(relation.stored).toBeFalsy();
-    expect(relation.ref).toBeNull();
-    expect(relation.belongsToMany).toBeNull();
-    expect(relation.using).toBeNull();
+    expect(relation).toMatchSnapshot();
+    expect(relation.toJS()).toMatchSnapshot();
   });
 
   it('updates strings', () => {
@@ -45,6 +31,20 @@ describe('BelongsToMany', () => {
     expect(relation.name).toBe('cool!');
   });
 
+  it('updates with null or undefined', () => {
+    expect(() => relation.updateWith({
+      name: 'cool',
+      description: 'very cool',
+      title: 'very cool title',
+    })).not.toThrow();
+    expect(relation.toJS()).toMatchSnapshot();
+    expect(() => relation.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(relation.toJS()).toMatchSnapshot();
+  });
+
   it('toJS with dupes', () => {
     expect(() => relation.updateWith({
       fields: [
@@ -56,11 +56,7 @@ describe('BelongsToMany', () => {
 
     expect(relation.ref).toBeNull();
     expect(relation.fields.size).toBe(1);
-    expect(relation.toJS()).toMatchObject({
-      fields: [
-        { name: 'one' },
-      ],
-    });
+    expect(relation.toJS()).toMatchSnapshot();
   });
 
   it('toJS with HashMap', () => {
@@ -73,11 +69,7 @@ describe('BelongsToMany', () => {
 
     expect(relation.ref).toBeNull();
     expect(relation.fields.size).toBe(1);
-    expect(relation.toJS()).toMatchObject({
-      fields: [
-        { name: 'one' },
-      ],
-    });
+    expect(relation.toJS()).toMatchSnapshot();
   });
 
   it('toJS ', () => {
@@ -87,28 +79,8 @@ describe('BelongsToMany', () => {
     },
     )).not.toThrow();
 
-    expect(relation.ref).not.toBeNull();
-    expect(relation.ref.backField).toBe('id');
-    expect(relation.ref.entity).toBe('Some');
-    expect(relation.ref.field).toBe('id');
-    expect(relation.using).not.toBeNull();
-    expect(relation.using.backField).toBe('id');
-    expect(relation.using.entity).toBe('SomeOther');
-    expect(relation.using.field).toBe('id');
-    expect(relation.ref.toJS()).toMatchObject({
-      entity: 'Some',
-      backField: 'id',
-      field: 'id',
-    });
-
-    expect(relation.using.toJS()).toMatchObject({
-      entity: 'SomeOther',
-      backField: 'id',
-      field: 'id',
-    });
-
-    expect(relation.toJS()).toMatchObject({
-      belongsToMany: 'id@Some#id',
-    });
+    expect(relation.ref.toJS()).toMatchSnapshot();
+    expect(relation.using.toJS()).toMatchSnapshot();
+    expect(relation.toJS()).toMatchSnapshot();
   });
 });

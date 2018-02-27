@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BelongsToMany create empty 1`] = `
+BelongsToMany {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "fields": null,
+    "opposite": null,
+    "belongsToMany": null,
+    "using": null,
+    "single": false,
+    "stored": false,
+    "embedded": false,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;
+
+exports[`BelongsToMany create empty 2`] = `
+Object {
+  "embedded": false,
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`BelongsToMany toJS  1`] = `
+Object {
+  "backField": "id",
+  "entity": "Some",
+  "field": "id",
+}
+`;
+
+exports[`BelongsToMany toJS  2`] = `
+Object {
+  "backField": "id",
+  "entity": "SomeOther",
+  "field": "id",
+}
+`;
+
+exports[`BelongsToMany toJS  3`] = `
+Object {
+  "belongsToMany": "id@Some#id",
+  "embedded": false,
+  "single": false,
+  "stored": false,
+  "using": "id@SomeOther#id",
+}
+`;
+
+exports[`BelongsToMany toJS with HashMap 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`BelongsToMany toJS with dupes 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`BelongsToMany updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": false,
+  "name": "cool",
+  "single": false,
+  "stored": false,
+  "title": "very cool title",
+}
+`;
+
+exports[`BelongsToMany updates with null or undefined 2`] = `
+Object {
+  "embedded": false,
+  "name": "cool",
+  "single": false,
+  "stored": false,
+}
+`;

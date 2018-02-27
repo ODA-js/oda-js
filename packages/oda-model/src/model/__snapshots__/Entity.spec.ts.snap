@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Entity create empty 1`] = `
+Entity {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "acl": null,
+    "plural": null,
+    "singular": null,
+    "fields": null,
+    "storage": null,
+    "indexed": null,
+    "relations": null,
+    "required": null,
+  },
+}
+`;
+
+exports[`Entity create empty 2`] = `Object {}`;
+
+exports[`Entity toJS with HashMap 1`] = `
+Object {
+  "description": "very cool",
+  "fields": Array [
+    Object {
+      "name": "one",
+      "type": "string",
+    },
+    Object {
+      "name": "two",
+    },
+  ],
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Entity toJS with dupes 1 1`] = `
+Object {
+  "description": "very cool",
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Entity updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Entity updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+}
+`;

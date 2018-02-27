@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Mutaion create empty 1`] = `
+Mutation {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "args": null,
+    "payload": null,
+    "acl": Object {
+      "execute": Immutable.Set [],
+    },
+  },
+}
+`;
+
+exports[`Mutaion create empty 2`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+}
+`;
+
+exports[`Mutaion toJS with dupes 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [
+      "admin",
+      "public",
+    ],
+  },
+  "args": Array [
+    Object {
+      "defaultValue": "not empty",
+      "name": "i1",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "defaultValue": "1",
+      "name": "i2",
+      "required": false,
+      "type": "number",
+    },
+  ],
+  "description": "very cool",
+  "name": "cool",
+  "payload": Array [
+    Object {
+      "defaultValue": "10",
+      "name": "p1",
+      "required": true,
+      "type": "number",
+    },
+    Object {
+      "defaultValue": "1",
+      "name": "p2",
+      "required": false,
+      "type": "number",
+    },
+  ],
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates acl 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [
+      "admin",
+      "public",
+    ],
+  },
+}
+`;
+
+exports[`Mutaion updates acl 2`] = `
+Object {
+  "acl": Object {
+    "execute": Array [
+      "admin",
+      "public",
+      "system",
+    ],
+  },
+}
+`;
+
+exports[`Mutaion updates input args 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "args": Array [],
+}
+`;
+
+exports[`Mutaion updates input args 2`] = `
+Object {
+  "defaultValue": "not empty",
+  "name": "1",
+  "required": true,
+  "type": "string",
+}
+`;
+
+exports[`Mutaion updates input args 3`] = `
+Object {
+  "name": "1",
+  "type": "number",
+}
+`;
+
+exports[`Mutaion updates payload 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "payload": Array [],
+}
+`;
+
+exports[`Mutaion updates payload 2`] = `
+Object {
+  "defaultValue": "not empty",
+  "name": "1",
+  "required": true,
+  "type": "string",
+}
+`;
+
+exports[`Mutaion updates payload 3`] = `
+Object {
+  "name": "1",
+  "type": "number",
+}
+`;
+
+exports[`Mutaion updates strings 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates strings 2`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "description": "very cool",
+  "name": "cool!",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates with null or undefined 1`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates with null or undefined 2`] = `
+Object {
+  "acl": Object {
+    "execute": Array [],
+  },
+  "name": "cool",
+}
+`;

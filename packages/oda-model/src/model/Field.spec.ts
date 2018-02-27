@@ -12,20 +12,8 @@ describe('Field', () => {
   });
 
   it('create empty', () => {
-    expect(field.name).toBeNull();
-    expect(field.modelType).toBe('field');
-    expect(field.description).toBeNull();
-    expect(field.title).toBeNull();
-    expect(field.args).toBeNull();
-    expect(field.derived).toBeNull();
-    expect(field.persistent).toBeNull();
-    expect(field.order).toBeNull();
-    expect(field.required).toBeNull();
-    expect(field.indexed).toBeNull();
-    expect(field.identity).toBeNull();
-    expect(field.idKey).toBeNull();
-    expect(field.entity).toBeNull();
-    expect(field.relation).toBeNull();
+    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('update strings', () => {
@@ -34,12 +22,21 @@ describe('Field', () => {
       description: 'very cool',
       title: 'very cool title',
     })).not.toThrow();
+    expect(field.toJS()).toMatchSnapshot();
+  });
 
-    expect(field.toJS()).toMatchObject({
+  it('updates with null or undefined', () => {
+    expect(() => field.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
-    });
+    })).not.toThrow();
+    expect(field.toJS()).toMatchSnapshot();
+    expect(() => field.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('toJS with dupes', () => {
@@ -54,15 +51,7 @@ describe('Field', () => {
     })).not.toThrow();
 
     expect(field.args.size).toBe(1);
-
-    expect(field.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-      args: [
-        { name: 'one' },
-      ],
-    });
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('toJS with relations hasMany', () => {
@@ -77,12 +66,7 @@ describe('Field', () => {
     )).not.toThrow();
 
     expect(field.relation).not.toBeNull();
-
-    expect(field.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-    });
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('toJS with relations hasOne', () => {
@@ -97,13 +81,9 @@ describe('Field', () => {
     )).not.toThrow();
 
     expect(field.relation).not.toBeNull();
-
-    expect(field.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-    });
+    expect(field.toJS()).toMatchSnapshot();
   });
+
   it('toJS with relations belongsTo', () => {
     expect(() => field.updateWith({
       name: 'cool',
@@ -116,13 +96,9 @@ describe('Field', () => {
     )).not.toThrow();
 
     expect(field.relation).not.toBeNull();
-
-    expect(field.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-    });
+    expect(field.toJS()).toMatchSnapshot();
   });
+
   it('toJS with relations belongsToMany', () => {
     expect(() => field.updateWith({
       name: 'cool',
@@ -136,11 +112,6 @@ describe('Field', () => {
     )).not.toThrow();
 
     expect(field.relation).not.toBeNull();
-
-    expect(field.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-    });
+    expect(field.toJS()).toMatchSnapshot();
   });
 });

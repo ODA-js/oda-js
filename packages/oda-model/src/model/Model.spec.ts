@@ -20,22 +20,12 @@ describe('Model', () => {
   it('load serialized model', () => {
     let serialized;
     expect(() => serialized = ModelFactory.createModel(schema)).not.toThrow();
-    expect(serialized).not.toBeUndefined();
-    expect(serialized).toMatchSnapshot();
-    expect(serialized.packages.size).toBe(3);
-    expect(serialized.packages.has('system')).toBeTruthy();
     expect(serialized.toJS()).toMatchSnapshot();
   });
 
   it('create empty', () => {
-    expect(model.name).toBeNull();
-    expect(model.modelType).toBe('model');
-    expect(model.description).toBeNull();
-    expect(model.packages.size).toBe(1);
-    expect(model.defaultPackage).not.toBeUndefined();
-    expect(model.defaultPackage.toJS()).toMatchObject({
-      name: 'system',
-    });
+    expect(model).toMatchSnapshot();
+    expect(model.toJS()).toMatchSnapshot();
   });
 
   it('update strings', () => {
@@ -45,18 +35,28 @@ describe('Model', () => {
       title: 'very cool title',
     })).not.toThrow();
 
-    expect(model.toJS()).toMatchObject({
+    expect(model.toJS()).toMatchSnapshot();
+  });
+
+  it('updates with null or undefined', () => {
+    expect(() => model.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
-    });
+    })).not.toThrow();
+    expect(model.toJS()).toMatchSnapshot();
+    expect(() => model.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(model.toJS()).toMatchSnapshot();
   });
 
   it('update packages', () => {
     expect(() => model.updateWith({
       packages: [],
     })).not.toThrow();
-    expect(model.defaultPackage).not.toBeNull();
+    expect(model.toJS()).toMatchSnapshot();
   });
 
   it('toJS with dupes', () => {
@@ -66,20 +66,10 @@ describe('Model', () => {
       title: 'very cool title',
       packages: [
         { name: 'one', acl: 100, items: [] },
-        { name: 'one', acl: 100 , items: []},
+        { name: 'one', acl: 100, items: [] },
       ],
     })).not.toThrow();
 
-    expect(model.packages.size).toBe(2);
-
-    expect(model.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-      packages: [
-        { name: 'system' },
-        { name: 'one' },
-      ],
-    });
+    expect(model.toJS()).toMatchSnapshot();
   });
 });

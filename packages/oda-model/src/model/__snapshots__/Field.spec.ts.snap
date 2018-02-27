@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Field create empty 1`] = `
+Field {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "acl": null,
+    "args": null,
+    "derived": null,
+    "entity": null,
+    "identity": null,
+    "idKey": null,
+    "indexed": null,
+    "order": null,
+    "persistent": null,
+    "relation": null,
+    "required": null,
+    "type": null,
+  },
+}
+`;
+
+exports[`Field create empty 2`] = `Object {}`;
+
+exports[`Field toJS with dupes 1`] = `
+Object {
+  "args": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Field toJS with relations belongsTo 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "relation": Object {
+    "belongsTo": "id@Some#id",
+    "fields": null,
+  },
+  "title": "very cool title",
+}
+`;
+
+exports[`Field toJS with relations belongsToMany 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "relation": Object {
+    "belongsToMany": "id@Some#id",
+    "fields": null,
+    "using": "Some@At#this",
+  },
+  "title": "very cool title",
+}
+`;
+
+exports[`Field toJS with relations hasMany 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "relation": Object {
+    "fields": null,
+    "hasMany": "id@Some#id",
+  },
+  "title": "very cool title",
+}
+`;
+
+exports[`Field toJS with relations hasOne 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "relation": Object {
+    "fields": null,
+    "hasOne": "id@Some#id",
+  },
+  "title": "very cool title",
+}
+`;
+
+exports[`Field update strings 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Field updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Field updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+}
+`;

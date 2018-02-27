@@ -12,11 +12,8 @@ describe('Enum', () => {
   });
 
   it('create empty', () => {
-    expect(enumItem.name).toBeNull();
-    expect(enumItem.modelType).toBe('enum');
-    expect(enumItem.description).toBeNull();
-    expect(enumItem.title).toBeNull();
-    expect(enumItem.values).toBeNull();
+    expect(enumItem).toMatchSnapshot();
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 
   it('update strings', () => {
@@ -26,11 +23,21 @@ describe('Enum', () => {
       title: 'very cool title',
     })).not.toThrow();
 
-    expect(enumItem.toJS()).toMatchObject({
+    expect(enumItem.toJS()).toMatchSnapshot();
+  });
+
+  it('updates with null or undefined', () => {
+    expect(() => enumItem.updateWith({
       name: 'cool',
       description: 'very cool',
       title: 'very cool title',
-    });
+    })).not.toThrow();
+    expect(enumItem.toJS()).toMatchSnapshot();
+    expect(() => enumItem.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 
   it('toJS with dupes', () => {
@@ -45,14 +52,7 @@ describe('Enum', () => {
     })).not.toThrow();
     expect(enumItem.values.size).toBe(1);
 
-    expect(enumItem.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-      values: [
-        { name: 'one' },
-      ],
-    });
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 
   it('toJS', () => {
@@ -74,21 +74,6 @@ describe('Enum', () => {
     )).not.toThrow();
 
     expect(enumItem.values).not.toBeNull();
-
-    expect(enumItem.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-      values: [
-        { name: 'one' },
-        {
-          name: 'other',
-          type: 'string',
-          title: 'Other',
-          value: 'OTHER',
-          description: 'the other values',
-        },
-       ],
-    });
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 });

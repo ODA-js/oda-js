@@ -35,14 +35,8 @@ describe('Mutaion', () => {
   });
 
   it('create empty', () => {
-    expect(pkg.modelType).toBe('package');
-    expect(pkg.name).toBeNull();
-    expect(pkg.acl).toBeNull();
-    expect(pkg.description).toBeNull();
-    expect(pkg.title).toBeNull();
-    expect(pkg.abstract).toBeNull();
-    expect(pkg.items).toBeNull();
-    expect(pkg.context).toBeUndefined();
+    expect(pkg).toMatchSnapshot();
+    expect(pkg.toJS()).toMatchSnapshot();
   });
 
   it('update strings', () => {
@@ -53,24 +47,32 @@ describe('Mutaion', () => {
       acl: 100,
       abstract: true,
     })).not.toThrow();
-    expect(pkg.name).toBe('cool');
-    expect(pkg.description).toBe('very cool');
-    expect(pkg.title).toBe('very cool title');
-    expect(pkg.abstract).toBe(true);
-    expect(pkg.acl).toBe(100);
+    expect(pkg.toJS()).toMatchSnapshot();
     expect(() => pkg.updateWith({
       abstract: false,
     })).not.toThrow();
-    expect(pkg.abstract).toBe(false);
+    expect(pkg.toJS()).toMatchSnapshot();
+  });
+
+  it('updates with null or undefined', () => {
+    expect(() => pkg.updateWith({
+      name: 'cool',
+      description: 'very cool',
+      title: 'very cool title',
+    })).not.toThrow();
+    expect(pkg.toJS()).toMatchSnapshot();
+    expect(() => pkg.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(pkg.toJS()).toMatchSnapshot();
   });
 
   it('update items', () => {
     expect(() => pkg.updateWith({
       items: [],
     })).not.toThrow();
-    expect(pkg.items).not.toBeNull();
-    expect(pkg.items.size).toBe(0);
-
+    expect(pkg.toJS()).toMatchSnapshot();
     expect(() => pkg.updateWith({
       items: [
         new Mutation({
@@ -79,13 +81,7 @@ describe('Mutaion', () => {
       ],
     })).not.toThrow();
 
-    let mutation;
-    expect(pkg.items.has('1'));
-    expect(() => mutation = pkg.items.get('1')).not.toThrow();
-    expect(pkg.items).not.toBeNull();
-    expect(pkg.items.size).toBe(1);
-
-    expect(() => mutation = pkg.items.get('1')).not.toThrow();
+    expect(pkg.toJS()).toMatchSnapshot();
   });
 
   it('toJS with dupes', () => {
@@ -101,16 +97,6 @@ describe('Mutaion', () => {
       ],
     })).not.toThrow();
 
-    expect(pkg.items.size).toBe(1);
-    expect(pkg.toJS()).toMatchObject({
-      name: 'cool',
-      description: 'very cool',
-      title: 'very cool title',
-      acl: 100,
-      abstract: false,
-      items: [
-        { name: 'one' },
-      ],
-    });
+    expect(pkg.toJS()).toMatchSnapshot();
   });
 });

@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Mutaion create empty 1`] = `
+Package {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "acl": null,
+    "abstract": null,
+    "items": null,
+  },
+}
+`;
+
+exports[`Mutaion create empty 2`] = `Object {}`;
+
+exports[`Mutaion toJS with dupes 1`] = `
+Object {
+  "abstract": false,
+  "acl": 100,
+  "description": "very cool",
+  "items": Array [
+    Object {
+      "acl": Object {
+        "execute": Array [],
+      },
+      "name": "one",
+    },
+  ],
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion update items 1`] = `
+Object {
+  "items": Array [],
+}
+`;
+
+exports[`Mutaion update items 2`] = `
+Object {
+  "items": Array [
+    Object {
+      "acl": Object {
+        "execute": Array [],
+      },
+      "name": "1",
+    },
+  ],
+}
+`;
+
+exports[`Mutaion update strings 1`] = `
+Object {
+  "abstract": true,
+  "acl": 100,
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion update strings 2`] = `
+Object {
+  "abstract": false,
+  "acl": 100,
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`Mutaion updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+}
+`;

@@ -41,17 +41,17 @@ export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' 
 export type RelationInit = IHasManyInit | IHasOneInit | IBelongsToInit | IBelongsToManyInit;
 
 export type FieldTransformType = {
-  transform: (input: {
+  transform: (input?: {
     [name: string]: Partial<IFieldInit>,
-  } | IFieldInit[], owner: IEntity | IRelation ) => Map<string, IField>;
-  reverse: (input:  Map<string, IField>) => IFieldInit[];
+  } | IFieldInit[], owner?: IEntity | IRelation ) => Map<string, IField>;
+  reverse: (input?:  Map<string, IField>) => IFieldInit[];
 };
 export type FieldArgsTransform = {
-  transform: (input: FieldArgsInput, owner: IMutation | IField ) => Map<string, IFieldArg>;
-  reverse: (input: Map<string, IFieldArg>) => IFieldArgInit[];
+  transform: (input?: FieldArgsInput, owner?: IMutation | IField ) => Map<string, IFieldArg>;
+  reverse: (input?: Map<string, IFieldArg>) => IFieldArgInit[];
 };
 
 export type EntityRefTransform = {
-  transform: (inp: string | IEntityRef, relation: IRelation) => IEntityRef;
-  reverse: (inp: IEntityRef) => string;
+  transform: (inp?: string | IEntityRef, relation?: IRelation) => IEntityRef;
+  reverse: (inp?: IEntityRef) => string;
 };

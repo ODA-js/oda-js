@@ -8,16 +8,12 @@ describe('FieldArg', () => {
   });
 
   beforeEach(() => {
-    debugger;
     enumItem = new FieldArg();
   });
 
   it('create empty', () => {
-    expect(enumItem.name).toBeNull();
-    expect(enumItem.modelType).toBe('fieldArg');
-    expect(enumItem.description).toBeNull();
-    expect(enumItem.title).toBeNull();
-    expect(enumItem.defaultValue).toBeNull();
+    expect(enumItem).toMatchSnapshot();
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 
   it('update strings', () => {
@@ -34,6 +30,20 @@ describe('FieldArg', () => {
     });
   });
 
+  it('updates with null or undefined', () => {
+    expect(() => enumItem.updateWith({
+      name: 'cool',
+      description: 'very cool',
+      title: 'very cool title',
+    })).not.toThrow();
+    expect(enumItem.toJS()).toMatchSnapshot();
+    expect(() => enumItem.updateWith({
+      description: null,
+      title: undefined,
+    })).not.toThrow();
+    expect(enumItem.toJS()).toMatchSnapshot();
+  });
+
   it('toJS', () => {
     expect(() => enumItem.updateWith({
       name: 'other',
@@ -45,12 +55,6 @@ describe('FieldArg', () => {
 
     expect(enumItem.defaultValue).not.toBeNull();
 
-    expect(enumItem.toJS()).toMatchObject({
-      name: 'other',
-      type: 'string',
-      title: 'Other',
-      defaultValue: 'OTHER',
-      description: 'the other values',
-    });
+    expect(enumItem.toJS()).toMatchSnapshot();
   });
 });
