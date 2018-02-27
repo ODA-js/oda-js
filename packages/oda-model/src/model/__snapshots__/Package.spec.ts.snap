@@ -22,9 +22,6 @@ Object {
   "description": "very cool",
   "items": Array [
     Object {
-      "acl": Object {
-        "execute": Array [],
-      },
       "name": "one",
     },
   ],
@@ -43,9 +40,6 @@ exports[`Mutaion update items 2`] = `
 Object {
   "items": Array [
     Object {
-      "acl": Object {
-        "execute": Array [],
-      },
       "name": "1",
     },
   ],

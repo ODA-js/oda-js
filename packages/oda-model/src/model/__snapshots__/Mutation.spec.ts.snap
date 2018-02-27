@@ -8,20 +8,12 @@ Mutation {
     "description": null,
     "args": null,
     "payload": null,
-    "acl": Object {
-      "execute": Immutable.Set [],
-    },
+    "acl": null,
   },
 }
 `;
 
-exports[`Mutaion create empty 2`] = `
-Object {
-  "acl": Object {
-    "execute": Array [],
-  },
-}
-`;
+exports[`Mutaion create empty 2`] = `Object {}`;
 
 exports[`Mutaion toJS with dupes 1`] = `
 Object {
@@ -90,9 +82,6 @@ Object {
 
 exports[`Mutaion updates input args 1`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "args": Array [],
 }
 `;
@@ -115,9 +104,6 @@ Object {
 
 exports[`Mutaion updates payload 1`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "payload": Array [],
 }
 `;
@@ -140,9 +126,6 @@ Object {
 
 exports[`Mutaion updates strings 1`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "description": "very cool",
   "name": "cool",
   "title": "very cool title",
@@ -151,9 +134,6 @@ Object {
 
 exports[`Mutaion updates strings 2`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "description": "very cool",
   "name": "cool!",
   "title": "very cool title",
@@ -162,9 +142,6 @@ Object {
 
 exports[`Mutaion updates with null or undefined 1`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "description": "very cool",
   "name": "cool",
   "title": "very cool title",
@@ -173,9 +150,6 @@ Object {
 
 exports[`Mutaion updates with null or undefined 2`] = `
 Object {
-  "acl": Object {
-    "execute": Array [],
-  },
   "name": "cool",
 }
 `;

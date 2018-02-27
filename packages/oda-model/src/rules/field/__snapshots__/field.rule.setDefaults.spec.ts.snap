@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule fix derived field 1`] = `
+Object {
+  "derived": true,
+  "name": "user",
+}
+`;
+
+exports[`rule fix derived field 2`] = `Array []`;
+
+exports[`rule fix derived field 3`] = `
+Object {
+  "derived": true,
+  "indexed": false,
+  "name": "user",
+  "persistent": false,
+  "required": false,
+}
+`;
+
+exports[`rule fix identity field 1`] = `
+Object {
+  "identity": true,
+  "name": "user",
+}
+`;
+
+exports[`rule fix identity field 2`] = `Array []`;
+
+exports[`rule fix identity field 3`] = `
+Object {
+  "derived": false,
+  "identity": true,
+  "indexed": true,
+  "name": "user",
+  "persistent": true,
+  "required": true,
+}
+`;
+
+exports[`rule fix indexed field 1`] = `
+Object {
+  "indexed": true,
+  "name": "user",
+}
+`;
+
+exports[`rule fix indexed field 2`] = `Array []`;
+
+exports[`rule fix indexed field 3`] = `
+Object {
+  "derived": false,
+  "indexed": true,
+  "name": "user",
+  "persistent": true,
+  "required": false,
+}
+`;
+
+exports[`rule fix persistend-derived field 1`] = `
+Object {
+  "derived": true,
+  "name": "user",
+  "persistent": true,
+}
+`;
+
+exports[`rule fix persistend-derived field 2`] = `Array []`;
+
+exports[`rule fix persistend-derived field 3`] = `[Function]`;
+
+exports[`rule fix simple field 1`] = `
+Object {
+  "name": "user",
+}
+`;
+
+exports[`rule fix simple field 2`] = `Array []`;
+
+exports[`rule fix simple field 3`] = `
+Object {
+  "derived": false,
+  "indexed": false,
+  "name": "user",
+  "persistent": true,
+  "required": false,
+}
+`;

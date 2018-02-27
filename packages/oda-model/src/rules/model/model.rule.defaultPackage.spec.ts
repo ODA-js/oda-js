@@ -1,30 +1,25 @@
-import Rule from './emptyName';
+import Rule from './defaultPackage';
 
-describe('emptyName', () => {
+describe('rule', () => {
   let rule: Rule;
   beforeAll(() => {
     rule = new Rule();
   });
 
   it('throw', () => {
-
     const result = rule.validate({
-      field: {
+      model: {
       },
     } as any);
-
     expect(result).toMatchSnapshot();
-
   });
 
   it('not throw', () => {
     const result = rule.validate({
-      field: {
-        name: 'species',
+      model: {
+        defaultPackage: 'species',
       },
     } as any);
-
     expect(result).toMatchSnapshot();
-
   });
 });

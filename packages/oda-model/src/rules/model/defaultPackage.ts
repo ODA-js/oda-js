@@ -7,7 +7,7 @@ export default class implements Rule<IModelContext> {
   public description = 'model have default package';
   public validate(context: IModelContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    if (!context.model.name) {
+    if (!context.model.defaultPackage) {
       result.push({
         message: this.description,
         result: 'error',

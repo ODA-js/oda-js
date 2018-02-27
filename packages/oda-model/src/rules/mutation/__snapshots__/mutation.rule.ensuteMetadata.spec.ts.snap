@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule fix acl 1`] = `
+Mutation {
+  "_context": Immutable.Record {
+    "model": null,
+    "package": Package {
+      "_context": Immutable.Record {
+        "model": Model {
+          "_defaultPackageName": "system",
+          "store": Immutable.Record {
+            "name": "TodoItems",
+            "title": null,
+            "description": null,
+            "packages": Immutable.Map {
+              "system": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "system",
+        "title": null,
+        "description": null,
+        "acl": 0,
+        "abstract": null,
+        "items": Immutable.Map {
+          "mutation": [Circular],
+        },
+      },
+    },
+  },
+  "store": Immutable.Record {
+    "name": "mutation",
+    "title": null,
+    "description": null,
+    "args": Immutable.Map {
+      "input": FieldArg {
+        "_context": Immutable.Record {
+          "model": null,
+          "package": null,
+          "mutation": [Circular],
+        },
+        "store": Immutable.Record {
+          "name": "input",
+          "title": null,
+          "description": null,
+          "required": null,
+          "type": null,
+          "defaultValue": null,
+        },
+      },
+    },
+    "payload": Immutable.Map {
+      "result": FieldArg {
+        "_context": Immutable.Record {
+          "model": null,
+          "package": null,
+          "mutation": [Circular],
+        },
+        "store": Immutable.Record {
+          "name": "result",
+          "title": null,
+          "description": null,
+          "required": null,
+          "type": null,
+          "defaultValue": null,
+        },
+      },
+    },
+    "acl": null,
+  },
+}
+`;
+
+exports[`rule fix acl 2`] = `
+Mutation {
+  "_context": Immutable.Record {
+    "model": null,
+    "package": Package {
+      "_context": Immutable.Record {
+        "model": Model {
+          "_defaultPackageName": "system",
+          "store": Immutable.Record {
+            "name": "TodoItems",
+            "title": null,
+            "description": null,
+            "packages": Immutable.Map {
+              "system": [Circular],
+            },
+          },
+        },
+      },
+      "store": Immutable.Record {
+        "name": "system",
+        "title": null,
+        "description": null,
+        "acl": 0,
+        "abstract": null,
+        "items": Immutable.Map {
+          "mutation": [Circular],
+        },
+      },
+    },
+  },
+  "store": Immutable.Record {
+    "name": "mutation",
+    "title": null,
+    "description": null,
+    "args": Immutable.Map {
+      "input": FieldArg {
+        "_context": Immutable.Record {
+          "model": null,
+          "package": null,
+          "mutation": [Circular],
+        },
+        "store": Immutable.Record {
+          "name": "input",
+          "title": null,
+          "description": null,
+          "required": null,
+          "type": null,
+          "defaultValue": null,
+        },
+      },
+    },
+    "payload": Immutable.Map {
+      "result": FieldArg {
+        "_context": Immutable.Record {
+          "model": null,
+          "package": null,
+          "mutation": [Circular],
+        },
+        "store": Immutable.Record {
+          "name": "result",
+          "title": null,
+          "description": null,
+          "required": null,
+          "type": null,
+          "defaultValue": null,
+        },
+      },
+    },
+    "acl": Object {
+      "execute": Immutable.Set [],
+    },
+  },
+}
+`;

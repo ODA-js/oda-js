@@ -219,9 +219,6 @@ Object {
           "name": "ToDoItemsSharedToGroupsMap",
         },
         Object {
-          "acl": Object {
-            "execute": Array [],
-          },
           "args": Array [
             Object {
               "name": "userName",
@@ -513,9 +510,6 @@ Object {
           "name": "ToDoItem",
         },
         Object {
-          "acl": Object {
-            "execute": Array [],
-          },
           "args": Array [
             Object {
               "name": "userName",

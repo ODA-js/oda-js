@@ -1,16 +1,10 @@
-import Rule from './setDefaults';
-import { Field } from '../../model/Field';
-import { Entity } from '../../model/Entity';
-import { IRelation } from '../../interfaces/IRelation';
-import { IField } from '../../interfaces/IField';
-import { IModel } from '../../interfaces/IModel';
-import { IEntity } from '../../interfaces/IEntity';
-import { IPackage } from '../../interfaces/IPackage';
-import { Model } from '../../model/Model';
 import { IPackagedItemInit } from '../../interfaces/IPackagedItem';
+import { Entity } from '../../model/Entity';
+import { Model } from '../../model/Model';
 import { Package } from '../../model/Package';
+import Rule from './setDefaults';
 
-describe('setDefaults', () => {
+describe('rule', () => {
   let rule: Rule;
 
   const models: {
@@ -129,7 +123,7 @@ describe('setDefaults', () => {
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS()).toMatchSnapshot();
+    expect(field.toJS).toMatchSnapshot();
   });
 
 });

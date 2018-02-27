@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pluralName not throw 1`] = `Array []`;
+exports[`rule not throw 1`] = `Array []`;
 
-exports[`pluralName throw 1`] = `
+exports[`rule throw 1`] = `
 Array [
   Object {
     "entity": "species",

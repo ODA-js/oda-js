@@ -21,9 +21,7 @@ export const DefaultMutation: IMutationStore = {
   description: null,
   args: null,
   payload: null,
-  acl: {
-    execute: Set<string>(),
-  },
+  acl: null,
 };
 
 // tslint:disable-next-line:variable-name
