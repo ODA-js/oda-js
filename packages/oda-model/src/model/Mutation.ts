@@ -111,24 +111,26 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'args') {
-            result.args = MutationTransform.args.reverse(input.args);
-          } else if (f === 'payload') {
-            result.payload = MutationTransform.payload.reverse(input.payload);
-          } else if (f === 'acl') {
-            const acl = input.acl;
-            for (let facl in acl) {
-              if (acl.hasOwnProperty(facl)) {
-                result.acl = {} as any;
-                if (facl === 'execute') {
-                  result.acl.execute = MutationTransform.acl.execute.reverse(acl.execute);
-                } else {
-                  result.acl[facl] = core.acl[facl];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'args') {
+              result.args = MutationTransform.args.reverse(input.args);
+            } else if (f === 'payload') {
+              result.payload = MutationTransform.payload.reverse(input.payload);
+            } else if (f === 'acl') {
+              const acl = input.acl;
+              for (let facl in acl) {
+                if (acl.hasOwnProperty(facl)) {
+                  result.acl = {} as any;
+                  if (facl === 'execute') {
+                    result.acl.execute = MutationTransform.acl.execute.reverse(acl.execute);
+                  } else {
+                    result.acl[facl] = core.acl[facl];
+                  }
                 }
               }
+            } else {
+              result[f] = core[f];
             }
-          } else {
-            result[f] = core[f];
           }
         }
       }

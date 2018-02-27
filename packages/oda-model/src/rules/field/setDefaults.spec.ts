@@ -38,13 +38,13 @@ describe('setDefaults', () => {
     const entity = models.package.items.get('cool entity') as Entity;
     const field = entity.fields.get('user');
 
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
       entity: entity,
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('fix indexed field', () => {
@@ -59,13 +59,13 @@ describe('setDefaults', () => {
     });
     const entity = models.package.items.get('cool entity') as Entity;
     const field = entity.fields.get('user');
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
       entity: entity,
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('fix identity field', () => {
@@ -80,13 +80,13 @@ describe('setDefaults', () => {
     });
     const entity = models.package.items.get('cool entity') as Entity;
     const field = entity.fields.get('user');
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
       entity: entity,
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('fix derived field', () => {
@@ -101,13 +101,13 @@ describe('setDefaults', () => {
     });
     const entity = models.package.items.get('cool entity') as Entity;
     const field = entity.fields.get('user');
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
       entity: entity,
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
   it('fix persistend-derived field', () => {
@@ -123,13 +123,13 @@ describe('setDefaults', () => {
     });
     const entity = models.package.items.get('cool entity') as Entity;
     const field = entity.fields.get('user');
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
       entity: entity,
       field: field,
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field).toMatchSnapshot();
+    expect(field.toJS()).toMatchSnapshot();
   });
 
 });

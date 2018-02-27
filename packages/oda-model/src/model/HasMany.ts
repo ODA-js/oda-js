@@ -71,12 +71,14 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'hasMany' || f === 'ref') {
-            result.hasMany = HasManyTransform.hasMany.reverse(input.hasMany);
-          } else if (f === 'fields') {
-            result.fields = HasManyTransform.fields.reverse(input.fields);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'hasMany' || f === 'ref') {
+              result.hasMany = HasManyTransform.hasMany.reverse(input.hasMany);
+            } else if (f === 'fields') {
+              result.fields = HasManyTransform.fields.reverse(input.fields);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

@@ -99,10 +99,12 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'packages') {
-            result.packages = ModelTransform.packages.reverse(input.packages);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'packages') {
+              result.packages = ModelTransform.packages.reverse(input.packages);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

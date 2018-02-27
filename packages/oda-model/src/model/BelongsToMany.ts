@@ -83,14 +83,16 @@ export class BelongsToMany
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'belongsToMany' || f === 'ref') {
-            result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
-          } else if (f === 'using') {
-            result.using = BelongsToManyTransform.using.reverse(input.using);
-          } else if (f === 'fields') {
-            result.fields = BelongsToManyTransform.fields.reverse(input.fields);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'belongsToMany' || f === 'ref') {
+              result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
+            } else if (f === 'using') {
+              result.using = BelongsToManyTransform.using.reverse(input.using);
+            } else if (f === 'fields') {
+              result.fields = BelongsToManyTransform.fields.reverse(input.fields);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

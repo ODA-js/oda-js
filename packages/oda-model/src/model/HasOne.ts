@@ -70,12 +70,14 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'hasOne' || f === 'ref') {
-            result.hasOne = HasOneTransform.hasOne.reverse(input.hasOne);
-          } else if (f === 'fields') {
-            result.fields = HasOneTransform.fields.reverse(input.fields);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'hasOne' || f === 'ref') {
+              result.hasOne = HasOneTransform.hasOne.reverse(input.hasOne);
+            } else if (f === 'fields') {
+              result.fields = HasOneTransform.fields.reverse(input.fields);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

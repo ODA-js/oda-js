@@ -89,10 +89,12 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'values') {
-            result.values = EnumTransform.values.reverse(input.values);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'values') {
+              result.values = EnumTransform.values.reverse(input.values);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

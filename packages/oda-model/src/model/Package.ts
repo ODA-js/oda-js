@@ -98,10 +98,12 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'items') {
-            result.items = PackageTransform.items.reverse(input.items);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'items') {
+              result.items = PackageTransform.items.reverse(input.items);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }

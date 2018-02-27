@@ -190,19 +190,23 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'args') {
-            result.args = FieldTransform.args.reverse(input.args);
-          } else if (f === 'relation') {
-            result.relation = FieldTransform.relation.reverse(input.relation);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'args') {
+              result.args = FieldTransform.args.reverse(input.args);
+            } else if (f === 'relation') {
+              result.relation = FieldTransform.relation.reverse(input.relation);
+            } else if (f === 'idKey') {
+              continue;
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }
     }
     return result;
   }
-  constructor(init?: Partial<IFieldInit>, context?: IEntityContext | IRelationContext ) {
+  constructor(init?: Partial<IFieldInit>, context?: IEntityContext | IRelationContext) {
     super();
     if (!context && init && (init.args || init.relation)) {
       throw new Error('context must be provided');

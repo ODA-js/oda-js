@@ -83,7 +83,9 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutatio
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            result[f] = core[f];
+          }
         }
       }
     }

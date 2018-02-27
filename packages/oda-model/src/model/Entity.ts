@@ -90,10 +90,12 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
       const core = input.toJS();
       for (let f in core) {
         if (core.hasOwnProperty(f)) {
-          if (f === 'fields') {
-            result.fields = EntityTransform.fields.reverse(input.fields);
-          } else {
-            result[f] = core[f];
+          if (core[f] !== undefined && core[f] !== null) {
+            if (f === 'fields') {
+              result.fields = EntityTransform.fields.reverse(input.fields);
+            } else {
+              result[f] = core[f];
+            }
           }
         }
       }
