@@ -33,7 +33,6 @@ describe('rule', () => {
         },
       } as IMutationInit],
     });
-    debugger;
     const mutation = models.package.items.get('mutation');
     expect(mutation).toMatchSnapshot();
     const result = rule.validate({
