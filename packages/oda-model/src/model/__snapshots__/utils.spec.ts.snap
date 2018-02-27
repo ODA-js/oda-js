@@ -48,35 +48,21 @@ Immutable.Map {
 exports[`transform Fields transform 2`] = `
 Array [
   Object {
-    "defaultValue": null,
-    "description": null,
     "name": "one",
-    "required": null,
-    "title": null,
-    "type": null,
   },
   Object {
-    "defaultValue": null,
-    "description": null,
     "name": "two",
     "required": true,
-    "title": null,
-    "type": null,
   },
   Object {
     "defaultValue": "3",
-    "description": null,
     "name": "three",
     "required": false,
-    "title": null,
-    "type": null,
   },
   Object {
     "defaultValue": "3",
-    "description": null,
     "name": "four",
     "required": false,
-    "title": null,
     "type": "Number",
   },
 ]
@@ -130,35 +116,21 @@ Immutable.Map {
 exports[`transform Fields transform hash 2`] = `
 Array [
   Object {
-    "defaultValue": null,
-    "description": null,
     "name": "one",
-    "required": null,
-    "title": null,
-    "type": null,
   },
   Object {
-    "defaultValue": null,
-    "description": null,
     "name": "two",
     "required": true,
-    "title": null,
-    "type": null,
   },
   Object {
     "defaultValue": "3",
-    "description": null,
     "name": "three",
     "required": false,
-    "title": null,
-    "type": null,
   },
   Object {
     "defaultValue": "3",
-    "description": null,
     "name": "four",
     "required": false,
-    "title": null,
     "type": "Number",
   },
 ]
