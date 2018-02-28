@@ -7,6 +7,7 @@ import { HasMany } from '../../../model/HasMany';
 import { BelongsToManyTransform } from '../../../model/BelongsToMany';
 import { ModelFactory } from '../../../model/Factory';
 import { IFieldContext } from '../../../contexts/IFieldContext';
+import { IBelongsToManyInit } from '../../../interfaces/IBelongsToMany';
 
 export default class implements Rule<IRelationContext> {
   public name = 'relation-btm-ref-entity-not-found-relink';
@@ -18,18 +19,19 @@ export default class implements Rule<IRelationContext> {
       if (IsBelongsToMany(context.relation) && context.relation.using.entity) {
         const refEntity = context.package.items.get(context.relation.using.entity) as IEntity;
         if (isEntity(refEntity)) {
+          const relation = context.relation.toJS() as IBelongsToManyInit;
           context.field.updateWith({
-            relation: new HasMany({
-              name: context.relation.name,
-              title: context.relation.title,
-              description: context.relation.description,
-              fullName: context.relation.fullName,
-              normalName: context.relation.normalName,
-              shortName: context.relation.shortName,
-              hasMany: context.relation.using,
-              opposite: context.relation.opposite,
-              fields: BelongsToManyTransform.fields.reverse(context.relation.fields),
-            }, ModelFactory.getContext(context.field) as IFieldContext),
+            relation: {
+              name: relation.name,
+              title: relation.title,
+              description: relation.description,
+              fullName: relation.fullName,
+              normalName: relation.normalName,
+              shortName: relation.shortName,
+              hasMany: relation.using,
+              opposite: relation.opposite,
+              fields: relation.fields,
+            },
           });
           result.push({
             message: this.description,
