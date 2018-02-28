@@ -9,7 +9,7 @@ export default class implements Rule<IRelationContext> {
     const result: IValidationResult[] = [];
     if (!context.relation.ref.backField
       && !!context.field.identity
-      && typeof !!context.field.identity === 'boolean'
+      && typeof context.field.identity === 'boolean'
     ) {
       result.push({
         message: this.description,

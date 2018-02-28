@@ -8,22 +8,23 @@ import { IMutationInit } from '../../interfaces/IMutation';
 describe('rule', () => {
   let rule: Rule;
 
-  const models: {
-    model: Model,
-    package: Package,
-  } = {} as any;
-
   beforeEach(() => {
     rule = new Rule();
-    expect(() => models.model = new Model({
-      name: 'TodoItems',
-    })).not.toThrow();
-    models.package = models.model.packages.get('system') as Package;
   });
 
   it('fix acl', () => {
-    models.package.updateWith({
-      items: [{
+    let update = {};
+    const updateWith = jest.fn((args) => {
+      update = {
+        ...update,
+        ...args,
+      };
+    });
+
+    const result = rule.validate({
+      model: {},
+      package: {},
+      mutation: {
         name: 'mutation',
         args: {
           input: {},
@@ -31,16 +32,10 @@ describe('rule', () => {
         payload: {
           result: {},
         },
-      } as IMutationInit],
-    });
-    const mutation = models.package.items.get('mutation');
-    expect(mutation).toMatchSnapshot();
-    const result = rule.validate({
-      model: {},
-      package: {},
-      mutation,
+        updateWith,
+      },
     } as any);
-    expect(mutation).toMatchSnapshot();
+    expect(update).toMatchSnapshot();
   });
 
 });

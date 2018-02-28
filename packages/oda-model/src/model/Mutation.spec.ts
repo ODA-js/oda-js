@@ -27,7 +27,6 @@ describe('Mutaion', () => {
     expect(() => mutation.updateWith({
       name: 'cool!',
     })).not.toThrow();
-    expect(mutation.name).toBe('cool!');
     expect(mutation.toJS()).toMatchSnapshot();
   });
 

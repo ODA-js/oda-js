@@ -7,123 +7,113 @@ import Rule from './setDefaults';
 describe('rule', () => {
   let rule: Rule;
 
-  const models: {
-    model: Model,
-    package: Package,
-  } = {} as any;
-
   beforeEach(() => {
     rule = new Rule();
-    expect(() => models.model = new Model({
-      name: 'TodoItems',
-    })).not.toThrow();
-    models.package = models.model.packages.get('system') as Package;
   });
 
   it('fix simple field', () => {
-    models.package.updateWith({
-      items: [{
-          name: 'cool entity',
-          fields: [{
-            name: 'user',
-          }],
-        } as IPackagedItemInit],
+    let update = {};
+    const updateWith = jest.fn((args) => update = {
+      ...update,
+      ...args,
     });
-    const entity = models.package.items.get('cool entity') as Entity;
-    const field = entity.fields.get('user');
-
-    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
-      entity: entity,
-      field: field,
+      entity: {
+        name: 'cool entity',
+      },
+      field: {
+        name: 'user',
+        updateWith,
+      },
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS()).toMatchSnapshot();
+    expect(updateWith).toHaveBeenCalledTimes(4);
+    expect(update).toMatchSnapshot();
   });
 
   it('fix indexed field', () => {
-    models.package.updateWith({
-      items: [{
-          name: 'cool entity',
-          fields: [{
-            name: 'user',
-            indexed: true,
-          }],
-        } as IPackagedItemInit],
+    let update = {};
+    const updateWith = jest.fn((args) => update = {
+      ...update,
+      ...args,
     });
-    const entity = models.package.items.get('cool entity') as Entity;
-    const field = entity.fields.get('user');
-    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
-      entity: entity,
-      field: field,
+      entity: {
+        name: 'cool entity',
+      },
+      field: {
+        name: 'user',
+        indexed: true,
+        updateWith,
+      },
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS()).toMatchSnapshot();
+    expect(updateWith).toHaveBeenCalledTimes(4);
+    expect(update).toMatchSnapshot();
   });
 
   it('fix identity field', () => {
-    models.package.updateWith({
-      items: [{
-          name: 'cool entity',
-          fields: [{
-            name: 'user',
-            identity: true,
-          }],
-        } as IPackagedItemInit],
+    let update = {};
+    const updateWith = jest.fn((args) => update = {
+      ...update,
+      ...args,
     });
-    const entity = models.package.items.get('cool entity') as Entity;
-    const field = entity.fields.get('user');
-    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
-      entity: entity,
-      field: field,
+      entity: {
+        name: 'cool entity',
+      },
+      field: {
+        name: 'user',
+        identity: true,
+        updateWith,
+      },
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS()).toMatchSnapshot();
+    expect(updateWith).toHaveBeenCalledTimes(5);
+    expect(update).toMatchSnapshot();
   });
 
   it('fix derived field', () => {
-    models.package.updateWith({
-      items: [{
-          name: 'cool entity',
-          fields: [{
-            name: 'user',
-            derived: true,
-          }],
-        } as IPackagedItemInit],
+    let update = {};
+    const updateWith = jest.fn((args) => update = {
+      ...update,
+      ...args,
     });
-    const entity = models.package.items.get('cool entity') as Entity;
-    const field = entity.fields.get('user');
-    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
-      entity: entity,
-      field: field,
+      entity: {
+        name: 'cool entity',
+      },
+      field: {
+        name: 'user',
+        derived: true,
+        updateWith,
+      },
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS()).toMatchSnapshot();
+    expect(updateWith).toHaveBeenCalledTimes(4);
+    expect(update).toMatchSnapshot();
   });
 
   it('fix persistend-derived field', () => {
-    models.package.updateWith({
-      items: [{
-          name: 'cool entity',
-          fields: [{
-            name: 'user',
-            derived: true,
-            persistent: true,
-          }],
-        } as IPackagedItemInit],
+    let update = {};
+    const updateWith = jest.fn((args) => update = {
+      ...update,
+      ...args,
     });
-    const entity = models.package.items.get('cool entity') as Entity;
-    const field = entity.fields.get('user');
-    expect(field.toJS()).toMatchSnapshot();
     const result = rule.validate({
-      entity: entity,
-      field: field,
+      entity: {
+        name: 'cool entity',
+      },
+      field: {
+        name: 'user',
+        derived: true,
+        persistent: true,
+        updateWith,
+      },
     } as any);
     expect(result).toMatchSnapshot();
-    expect(field.toJS).toMatchSnapshot();
+    expect(updateWith).toHaveBeenCalledTimes(4);
+    expect(update).toMatchSnapshot();
   });
 
 });
