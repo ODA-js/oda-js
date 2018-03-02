@@ -27,7 +27,7 @@ export default class implements Rule<IRelationContext> {
             } else {
               entity.updateWith({ fields: [field] });
               result.push({
-                message: `${field.name} is not met in using entity`,
+                message: `relation field '${field.name}' is not met in using entity`,
                 result: 'fixable',
               });
             }
