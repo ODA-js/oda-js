@@ -15,6 +15,7 @@ export default class implements Rule<IRelationContext> {
         let opposites = Array.from(entity.fields.values())
           .filter(f => f.relation && (
             (f.relation.ref.entity === context.entity.name && f.relation.ref.field === context.field.name) ||
+
             (IsBelongsToMany(f.relation) && f.relation.using && IsBelongsToMany(context.relation) && context.relation.using
               && f.relation.using.entity === context.relation.using.entity)),
         );
