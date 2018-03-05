@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.0.20",
+    "@types/graphql": "0.12.4",
     "@types/passport": "^0.4.2",
     "@types/passport-local": "^1.0.32",
     "@types/sequelize": "^4.27.1",
