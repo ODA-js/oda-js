@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule not throw 1 1`] = `Array []`;
+
+exports[`rule throw 1`] = `
+Array [
+  Object {
+    "message": "referenced field not found",
+    "result": "error",
+  },
+]
+`;
