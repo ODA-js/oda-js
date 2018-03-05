@@ -119,8 +119,14 @@ const transformations = {
     isMatch: (src: string, args) => {
       return (new RegExp(args.match, args.flags)).test(src);
     },
+    toJSON: (str: string) => {
+      return JSON.parse(str);
+    }
   },
   '*': {
+    stringify: (src: any) => {
+      return JSON.stringify(src);
+    },
     trim: (src: string | any) => {
       if (typeof src === 'string') {
         return src.trim();
