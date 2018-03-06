@@ -27,6 +27,6 @@
     "@types/inflected": "^1.1.29",
     "@types/graphql": "0.12.4",
     "@types/node": "^8.0.20",
-    "typescript": "^2.6.2"
+    "typescript": "^2.7.2"
   }
 }

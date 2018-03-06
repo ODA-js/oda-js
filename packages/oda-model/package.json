@@ -35,7 +35,7 @@
     "tslint": "^5.9.1",
     "tsviz": "^1.0.11",
     "@types/graphql": "^0.12.4",
-    "typescript": "^2.6.2"
+    "typescript": "^2.7.2"
   },
   "jest": {
     "transform": {

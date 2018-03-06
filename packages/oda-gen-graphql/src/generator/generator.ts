@@ -6,7 +6,7 @@ import * as template from '../graphql-backend-template';
 import AclDefault from '../acl';
 
 import { utils } from 'oda-api-graphql';
-import { BelongsTo } from '../../../oda-model/dist/model/belongsto';
+import { BelongsTo } from 'oda-model';
 
 const { get, deepMerge } = utils;
 const { defaultTypeMapper, prepareMapper } = template.utils;
