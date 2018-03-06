@@ -7,7 +7,7 @@ import {
   CREATE as RA_CREATE,
   UPDATE as RA_UPDATE,
   DELETE as RA_DELETE,
-} from 'react-admin';
+} from 'ra-core';
 
 export const actionType = {
   CREATE: 'CREATE',
