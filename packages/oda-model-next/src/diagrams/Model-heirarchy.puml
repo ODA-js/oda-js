@@ -1,0 +1,28 @@
+@startuml hierarchy
+
+interface IUpdatable
+interface IValidate
+interface IModelType extends IValidate, IUpdatable
+together {
+  interface IEnum extends IModelType, IPackagedItems
+  interface IEnumItem extends IModelType
+}
+together {
+  interface IPackage extends IModelType
+  interface IPackagedItems
+}
+together {
+  interface IEntity extends IPackagedItems, IModelType
+  interface IField extends IModelType
+  interface IModel extends IModelType
+  interface IMutation extends IModelType, IPackagedItems
+}
+together {
+  interface IRelation extends IModelType
+  interface IBelongsToMany extends IRelation
+  interface IBelongsTo extends IRelation
+  interface IHasMany extends IRelation
+  interface IHasOne extends IRelation
+}
+
+@enduml

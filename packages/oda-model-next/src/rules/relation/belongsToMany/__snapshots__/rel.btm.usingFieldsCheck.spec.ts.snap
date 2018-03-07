@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule not throw 1 1`] = `Array []`;
+
+exports[`rule not throw 2 1`] = `Array []`;
+
+exports[`rule throw 1`] = `
+Array [
+  Object {
+    "message": "type of relation field 'two' and in using entity differs",
+    "result": "fixable",
+  },
+  Object {
+    "message": "relation field 'three' is not met in using entity",
+    "result": "fixable",
+  },
+]
+`;

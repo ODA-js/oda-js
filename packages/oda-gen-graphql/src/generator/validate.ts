@@ -6,7 +6,7 @@ import AclDefault from '../acl';
 import * as template from '../graphql-backend-template';
 import initModel from './initModel';
 import { Generator } from './interfaces';
-import { MetaModel } from '../../../oda-model/dist/model/metamodel';
+import { MetaModel } from 'oda-model';
 
 const { get, deepMerge } = utils;
 const { defaultTypeMapper, prepareMapper } = template.utils;
@@ -95,23 +95,22 @@ export function collectErrors(model: MetaModel, existingTypes: object) {
   const validator = Validator();
   const errors: IValidationResult[] = model.validate(validator);
   //custom validator
-  model.packages.forEach((pkg: ModelPackage) => {
-    Array.from(pkg.entities.values()).forEach((cur) => {
-      Array.from(cur.fields.values())
-        .filter(f => !f.relation)
-        .forEach(fld => {
-          if (!existingTypes[fld.type.toLowerCase()]) {
-            errors.push({
-              package: pkg.name,
-              entity: cur.name,
-              field: fld.name,
-              result: 'error',
-              message: `type '${fld.type}' have no proper mapping`,
-            });
-          }
-        });
-    }, {});
-  });
+  const pkg = model.defaultPackage;
+  Array.from(pkg.entities.values()).forEach((cur) => {
+    Array.from(cur.fields.values())
+      .filter(f => !f.relation)
+      .forEach(fld => {
+        if (!existingTypes[fld.type.toLowerCase()]) {
+          errors.push({
+            package: pkg.name,
+            entity: cur.name,
+            field: fld.name,
+            result: 'error',
+            message: `type '${fld.type}' have no proper mapping`,
+          });
+        }
+      });
+  }, {});
   return errors;
 }
 

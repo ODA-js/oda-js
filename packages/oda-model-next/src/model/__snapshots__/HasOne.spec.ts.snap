@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HasOne create empty 1`] = `
+HasOne {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "fields": null,
+    "opposite": null,
+    "hasOne": null,
+    "single": true,
+    "stored": false,
+    "embedded": false,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;
+
+exports[`HasOne create empty 2`] = `
+Object {
+  "embedded": false,
+  "single": true,
+  "stored": false,
+}
+`;
+
+exports[`HasOne toJS  1`] = `
+Object {
+  "backField": "id",
+  "entity": "Some",
+  "field": "id",
+}
+`;
+
+exports[`HasOne toJS  2`] = `
+Object {
+  "embedded": false,
+  "hasOne": "id@Some#id",
+  "single": true,
+  "stored": false,
+}
+`;
+
+exports[`HasOne toJS with HashMap 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": true,
+  "stored": false,
+}
+`;
+
+exports[`HasOne toJS with dupes 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": true,
+  "stored": false,
+}
+`;
+
+exports[`HasOne updates strings 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": false,
+  "name": "cool",
+  "single": true,
+  "stored": false,
+  "title": "very cool title",
+}
+`;
+
+exports[`HasOne updates strings 2`] = `
+Object {
+  "description": "very cool",
+  "embedded": false,
+  "name": "cool!",
+  "single": true,
+  "stored": false,
+  "title": "very cool title",
+}
+`;
+
+exports[`HasOne updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": false,
+  "name": "cool",
+  "single": true,
+  "stored": false,
+  "title": "very cool title",
+}
+`;
+
+exports[`HasOne updates with null or undefined 2`] = `
+Object {
+  "embedded": false,
+  "name": "cool",
+  "single": true,
+  "stored": false,
+}
+`;

@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FieldArg create empty 1`] = `
+FieldArg {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "required": null,
+    "type": null,
+    "defaultValue": null,
+  },
+}
+`;
+
+exports[`FieldArg create empty 2`] = `Object {}`;
+
+exports[`FieldArg toJS 1`] = `
+Object {
+  "defaultValue": "OTHER",
+  "description": "the other values",
+  "name": "other",
+  "title": "Other",
+  "type": "string",
+}
+`;
+
+exports[`FieldArg updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`FieldArg updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+}
+`;

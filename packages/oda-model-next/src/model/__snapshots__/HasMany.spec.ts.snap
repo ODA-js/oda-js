@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HasMany create empty 1`] = `
+HasMany {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "fields": null,
+    "opposite": null,
+    "hasMany": null,
+    "single": false,
+    "stored": false,
+    "embedded": false,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;
+
+exports[`HasMany create empty 2`] = `
+Object {
+  "embedded": false,
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`HasMany toJS  1`] = `
+Object {
+  "backField": "id",
+  "entity": "Some",
+  "field": "id",
+}
+`;
+
+exports[`HasMany toJS  2`] = `
+Object {
+  "embedded": false,
+  "hasMany": "id@Some#id",
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`HasMany toJS with HashMap 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`HasMany toJS with dupes 1`] = `
+Object {
+  "embedded": false,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": false,
+  "stored": false,
+}
+`;
+
+exports[`HasMany updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": false,
+  "name": "cool",
+  "single": false,
+  "stored": false,
+  "title": "very cool title",
+}
+`;
+
+exports[`HasMany updates with null or undefined 2`] = `
+Object {
+  "embedded": false,
+  "name": "cool",
+  "single": false,
+  "stored": false,
+}
+`;

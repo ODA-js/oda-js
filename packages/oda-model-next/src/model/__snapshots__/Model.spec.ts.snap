@@ -1,0 +1,612 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Model create empty 1`] = `
+Model {
+  "_defaultPackageName": "system",
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "packages": Immutable.Map {
+      "system": Package {
+        "_context": Immutable.Record {
+          "model": [Circular],
+        },
+        "store": Immutable.Record {
+          "name": "system",
+          "title": null,
+          "description": null,
+          "acl": 0,
+          "abstract": null,
+          "items": Immutable.Map {},
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`Model create empty 2`] = `
+Object {
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+  ],
+}
+`;
+
+exports[`Model load serialized model 1`] = `
+Object {
+  "name": "ToDoListApplication",
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [
+        Object {
+          "description": "User",
+          "fields": Array [
+            Object {
+              "identity": true,
+              "name": "userName",
+            },
+            Object {
+              "name": "password",
+              "required": true,
+            },
+            Object {
+              "name": "isSystem",
+              "type": "boolean",
+            },
+            Object {
+              "name": "enabled",
+              "type": "boolean",
+            },
+            Object {
+              "name": "groups",
+              "relation": Object {
+                "belongsToMany": "Group#id",
+                "fields": null,
+                "using": "UsersToGroupsMap#user",
+              },
+            },
+          ],
+          "name": "User",
+        },
+        Object {
+          "description": "Group of users that can share common ToDos",
+          "fields": Array [
+            Object {
+              "identity": true,
+              "indexed": "text",
+              "name": "name",
+            },
+            Object {
+              "indexed": "text",
+              "name": "description",
+            },
+            Object {
+              "name": "users",
+              "relation": Object {
+                "belongsToMany": "User#id",
+                "fields": null,
+                "using": "UsersToGroupsMap#group",
+              },
+            },
+            Object {
+              "name": "todoItems",
+              "relation": Object {
+                "belongsToMany": "ToDoItem#id",
+                "fields": null,
+                "using": "ToDoItemsSharedToGroupsMap#group",
+              },
+            },
+          ],
+          "name": "Group",
+        },
+        Object {
+          "description": "Users to Groups mapping",
+          "fields": Array [
+            Object {
+              "identity": "linkTable",
+              "name": "user",
+            },
+            Object {
+              "identity": "linkTable",
+              "name": "group",
+            },
+            Object {
+              "name": "userLink",
+              "relation": Object {
+                "belongsTo": "user@User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "groupLink",
+              "relation": Object {
+                "belongsTo": "group@Group#id",
+                "fields": null,
+              },
+            },
+          ],
+          "name": "UsersToGroupsMap",
+        },
+        Object {
+          "description": "ToDo item",
+          "fields": Array [
+            Object {
+              "name": "sharedTo",
+              "relation": Object {
+                "belongsToMany": "Group#id",
+                "fields": null,
+                "using": "ToDoItemsSharedToGroupsMap#item",
+              },
+            },
+            Object {
+              "name": "done",
+              "type": "Boolean",
+            },
+            Object {
+              "indexed": true,
+              "name": "assignedTo",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "indexed": "text",
+              "name": "name",
+            },
+            Object {
+              "indexed": true,
+              "name": "creator",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "dueTo",
+              "type": "Date",
+            },
+            Object {
+              "name": "isPrivate",
+              "type": "Boolean",
+            },
+            Object {
+              "name": "type",
+              "type": "ToDotype",
+            },
+            Object {
+              "indexed": "text",
+              "name": "description",
+            },
+          ],
+          "name": "ToDoItem",
+        },
+        Object {
+          "description": "Sharing ToDo items between groups",
+          "fields": Array [
+            Object {
+              "identity": "shared",
+              "indexed": true,
+              "name": "item",
+            },
+            Object {
+              "identity": "shared",
+              "indexed": true,
+              "name": "group",
+            },
+            Object {
+              "name": "itemLink",
+              "relation": Object {
+                "belongsTo": "item@ToDoItem#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "groupLink",
+              "relation": Object {
+                "belongsTo": "group@Group#id",
+                "fields": null,
+              },
+            },
+          ],
+          "name": "ToDoItemsSharedToGroupsMap",
+        },
+        Object {
+          "args": Array [
+            Object {
+              "name": "userName",
+              "required": true,
+            },
+            Object {
+              "name": "password",
+              "required": true,
+            },
+          ],
+          "description": "make user login",
+          "name": "loginUser",
+          "payload": Array [
+            Object {
+              "name": "token",
+              "type": "string",
+            },
+          ],
+        },
+        Object {
+          "name": "ToDoType",
+          "values": Array [
+            Object {
+              "name": "usual",
+            },
+            Object {
+              "name": "super pupper",
+              "type": "string",
+              "value": "super",
+            },
+          ],
+        },
+        Object {
+          "name": "UserKind",
+          "values": Array [
+            Object {
+              "name": "public",
+            },
+            Object {
+              "name": "registered",
+            },
+            Object {
+              "name": "super pupper",
+              "title": "The super power User",
+              "type": "string",
+              "value": "admin",
+            },
+          ],
+        },
+      ],
+      "name": "system",
+    },
+    Object {
+      "abstract": true,
+      "acl": 100,
+      "items": Array [
+        Object {
+          "description": "User",
+          "fields": Array [
+            Object {
+              "identity": true,
+              "name": "userName",
+            },
+            Object {
+              "name": "password",
+              "required": true,
+            },
+            Object {
+              "name": "isSystem",
+              "type": "boolean",
+            },
+            Object {
+              "name": "enabled",
+              "type": "boolean",
+            },
+            Object {
+              "name": "groups",
+              "relation": Object {
+                "belongsToMany": "Group#id",
+                "fields": null,
+                "using": "UsersToGroupsMap#user",
+              },
+            },
+          ],
+          "name": "User",
+        },
+        Object {
+          "description": "Group of users that can share common ToDos",
+          "fields": Array [
+            Object {
+              "identity": true,
+              "indexed": "text",
+              "name": "name",
+            },
+            Object {
+              "indexed": "text",
+              "name": "description",
+            },
+            Object {
+              "name": "users",
+              "relation": Object {
+                "belongsToMany": "User#id",
+                "fields": null,
+                "using": "UsersToGroupsMap#group",
+              },
+            },
+            Object {
+              "name": "todoItems",
+              "relation": Object {
+                "belongsToMany": "ToDoItem#id",
+                "fields": null,
+                "using": "ToDoItemsSharedToGroupsMap#group",
+              },
+            },
+          ],
+          "name": "Group",
+        },
+        Object {
+          "description": "ToDo item",
+          "fields": Array [
+            Object {
+              "name": "sharedTo",
+              "relation": Object {
+                "belongsToMany": "Group#id",
+                "fields": null,
+                "using": "ToDoItemsSharedToGroupsMap#item",
+              },
+            },
+            Object {
+              "name": "done",
+              "type": "Boolean",
+            },
+            Object {
+              "indexed": true,
+              "name": "assignedTo",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "indexed": "text",
+              "name": "name",
+            },
+            Object {
+              "indexed": true,
+              "name": "creator",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "dueTo",
+              "type": "Date",
+            },
+            Object {
+              "name": "isPrivate",
+              "type": "Boolean",
+            },
+            Object {
+              "name": "type",
+              "type": "ToDotype",
+            },
+            Object {
+              "indexed": "text",
+              "name": "description",
+            },
+          ],
+          "name": "ToDoItem",
+        },
+        Object {
+          "description": "Sharing ToDo items between groups",
+          "fields": Array [
+            Object {
+              "identity": "shared",
+              "indexed": true,
+              "name": "item",
+            },
+            Object {
+              "identity": "shared",
+              "indexed": true,
+              "name": "group",
+            },
+            Object {
+              "name": "itemLink",
+              "relation": Object {
+                "belongsTo": "item@ToDoItem#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "groupLink",
+              "relation": Object {
+                "belongsTo": "group@Group#id",
+                "fields": null,
+              },
+            },
+          ],
+          "name": "ToDoItemsSharedToGroupsMap",
+        },
+        Object {
+          "description": "Users to Groups mapping",
+          "fields": Array [
+            Object {
+              "identity": "linkTable",
+              "name": "user",
+            },
+            Object {
+              "identity": "linkTable",
+              "name": "group",
+            },
+            Object {
+              "name": "userLink",
+              "relation": Object {
+                "belongsTo": "user@User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "groupLink",
+              "relation": Object {
+                "belongsTo": "group@Group#id",
+                "fields": null,
+              },
+            },
+          ],
+          "name": "UsersToGroupsMap",
+        },
+      ],
+      "name": "all",
+    },
+    Object {
+      "abstract": false,
+      "acl": 0,
+      "items": Array [
+        Object {
+          "description": "ToDo item",
+          "fields": Array [
+            Object {
+              "name": "sharedTo",
+              "relation": Object {
+                "belongsToMany": "Group#id",
+                "fields": null,
+                "using": "ToDoItemsSharedToGroupsMap#item",
+              },
+            },
+            Object {
+              "name": "done",
+              "type": "Boolean",
+            },
+            Object {
+              "indexed": true,
+              "name": "assignedTo",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "indexed": "text",
+              "name": "name",
+            },
+            Object {
+              "indexed": true,
+              "name": "creator",
+              "relation": Object {
+                "belongsTo": "User#id",
+                "fields": null,
+              },
+            },
+            Object {
+              "name": "dueTo",
+              "type": "Date",
+            },
+            Object {
+              "name": "isPrivate",
+              "type": "Boolean",
+            },
+            Object {
+              "name": "type",
+              "type": "ToDotype",
+            },
+            Object {
+              "indexed": "text",
+              "name": "description",
+            },
+          ],
+          "name": "ToDoItem",
+        },
+        Object {
+          "args": Array [
+            Object {
+              "name": "userName",
+              "required": true,
+            },
+            Object {
+              "name": "password",
+              "required": true,
+            },
+          ],
+          "description": "make user login",
+          "name": "loginUser",
+          "payload": Array [
+            Object {
+              "name": "token",
+              "type": "string",
+            },
+          ],
+        },
+      ],
+      "name": "public",
+    },
+  ],
+}
+`;
+
+exports[`Model toJS with dupes 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+    Object {
+      "acl": 100,
+      "items": Array [],
+      "name": "one",
+    },
+  ],
+  "title": "very cool title",
+}
+`;
+
+exports[`Model update packages 1`] = `
+Object {
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+  ],
+}
+`;
+
+exports[`Model update strings 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+  ],
+  "title": "very cool title",
+}
+`;
+
+exports[`Model updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+  ],
+  "title": "very cool title",
+}
+`;
+
+exports[`Model updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+  "packages": Array [
+    Object {
+      "acl": 0,
+      "items": Array [],
+      "name": "system",
+    },
+  ],
+}
+`;

@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EnumItem create empty 1`] = `
+EnumItem {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "type": null,
+    "value": null,
+  },
+}
+`;
+
+exports[`EnumItem create empty 2`] = `Object {}`;
+
+exports[`EnumItem toJS 1`] = `
+Object {
+  "description": "the other values",
+  "name": "other",
+  "title": "Other",
+  "type": "string",
+  "value": "OTHER",
+}
+`;
+
+exports[`EnumItem update strings 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`EnumItem updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "name": "cool",
+  "title": "very cool title",
+}
+`;
+
+exports[`EnumItem updates with null or undefined 2`] = `
+Object {
+  "name": "cool",
+}
+`;

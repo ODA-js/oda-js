@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BelongsTo create empty 1`] = `
+BelongsTo {
+  "store": Immutable.Record {
+    "name": null,
+    "title": null,
+    "description": null,
+    "fields": null,
+    "opposite": null,
+    "belongsTo": null,
+    "single": true,
+    "stored": true,
+    "embedded": true,
+    "fullName": null,
+    "normalName": null,
+    "shortName": null,
+  },
+}
+`;
+
+exports[`BelongsTo create empty 2`] = `
+Object {
+  "embedded": true,
+  "single": true,
+  "stored": true,
+}
+`;
+
+exports[`BelongsTo toJS  1`] = `
+Object {
+  "backField": "id",
+  "entity": "Some",
+  "field": "id",
+}
+`;
+
+exports[`BelongsTo toJS  2`] = `
+Object {
+  "belongsTo": "id@Some#id",
+  "embedded": true,
+  "single": true,
+  "stored": true,
+}
+`;
+
+exports[`BelongsTo toJS with HashMap 1`] = `
+Object {
+  "embedded": true,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": true,
+  "stored": true,
+}
+`;
+
+exports[`BelongsTo toJS with dupes 1`] = `
+Object {
+  "embedded": true,
+  "fields": Array [
+    Object {
+      "name": "one",
+    },
+  ],
+  "single": true,
+  "stored": true,
+}
+`;
+
+exports[`BelongsTo updates strings 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": true,
+  "name": "cool",
+  "single": true,
+  "stored": true,
+  "title": "very cool title",
+}
+`;
+
+exports[`BelongsTo updates with null or undefined 1`] = `
+Object {
+  "description": "very cool",
+  "embedded": true,
+  "name": "cool",
+  "single": true,
+  "stored": true,
+  "title": "very cool title",
+}
+`;
+
+exports[`BelongsTo updates with null or undefined 2`] = `
+Object {
+  "embedded": true,
+  "name": "cool",
+  "single": true,
+  "stored": true,
+}
+`;

@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transform Fields transform 1`] = `
+Immutable.Map {
+  "one": FieldArg {
+    "store": Immutable.Record {
+      "name": "one",
+      "title": null,
+      "description": null,
+      "required": null,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "two": FieldArg {
+    "store": Immutable.Record {
+      "name": "two",
+      "title": null,
+      "description": null,
+      "required": true,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "three": FieldArg {
+    "store": Immutable.Record {
+      "name": "three",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": null,
+      "defaultValue": "3",
+    },
+  },
+  "four": FieldArg {
+    "store": Immutable.Record {
+      "name": "four",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": "Number",
+      "defaultValue": "3",
+    },
+  },
+}
+`;
+
+exports[`transform Fields transform 2`] = `
+Array [
+  Object {
+    "name": "one",
+  },
+  Object {
+    "name": "two",
+    "required": true,
+  },
+  Object {
+    "defaultValue": "3",
+    "name": "three",
+    "required": false,
+  },
+  Object {
+    "defaultValue": "3",
+    "name": "four",
+    "required": false,
+    "type": "Number",
+  },
+]
+`;
+
+exports[`transform Fields transform hash 1`] = `
+Immutable.Map {
+  "one": FieldArg {
+    "store": Immutable.Record {
+      "name": "one",
+      "title": null,
+      "description": null,
+      "required": null,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "two": FieldArg {
+    "store": Immutable.Record {
+      "name": "two",
+      "title": null,
+      "description": null,
+      "required": true,
+      "type": null,
+      "defaultValue": null,
+    },
+  },
+  "three": FieldArg {
+    "store": Immutable.Record {
+      "name": "three",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": null,
+      "defaultValue": "3",
+    },
+  },
+  "four": FieldArg {
+    "store": Immutable.Record {
+      "name": "four",
+      "title": null,
+      "description": null,
+      "required": false,
+      "type": "Number",
+      "defaultValue": "3",
+    },
+  },
+}
+`;
+
+exports[`transform Fields transform hash 2`] = `
+Array [
+  Object {
+    "name": "one",
+  },
+  Object {
+    "name": "two",
+    "required": true,
+  },
+  Object {
+    "defaultValue": "3",
+    "name": "three",
+    "required": false,
+  },
+  Object {
+    "defaultValue": "3",
+    "name": "four",
+    "required": false,
+    "type": "Number",
+  },
+]
+`;
+
+exports[`transform Ref transform 1`] = `null`;
+
+exports[`transform Ref transform 2`] = `null`;
+
+exports[`transform Ref transform 3`] = `null`;

@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule fix derived field 1`] = `Array []`;
+
+exports[`rule fix derived field 2`] = `
+Object {
+  "derived": true,
+  "indexed": false,
+  "persistent": false,
+  "required": false,
+}
+`;
+
+exports[`rule fix identity field 1`] = `Array []`;
+
+exports[`rule fix identity field 2`] = `
+Object {
+  "derived": false,
+  "idKey": EntityRef {
+    "store": Immutable.Record {
+      "backField": "",
+      "entity": "cool entity",
+      "field": "user",
+    },
+  },
+  "indexed": true,
+  "persistent": true,
+  "required": true,
+}
+`;
+
+exports[`rule fix indexed field 1`] = `Array []`;
+
+exports[`rule fix indexed field 2`] = `
+Object {
+  "derived": false,
+  "indexed": true,
+  "persistent": true,
+  "required": false,
+}
+`;
+
+exports[`rule fix persistend-derived field 1`] = `Array []`;
+
+exports[`rule fix persistend-derived field 2`] = `
+Object {
+  "derived": true,
+  "indexed": false,
+  "persistent": true,
+  "required": false,
+}
+`;
+
+exports[`rule fix simple field 1`] = `Array []`;
+
+exports[`rule fix simple field 2`] = `
+Object {
+  "derived": false,
+  "indexed": false,
+  "persistent": true,
+  "required": false,
+}
+`;
