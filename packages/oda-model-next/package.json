@@ -1,6 +1,6 @@
 {
   "name": "oda-model-next",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "typescript": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/camelcase": "4.1.0",
     "@types/decamelize": "1.2.0",
+    "@types/graphql": "^0.12.4",
     "@types/inflected": "^1.1.29",
     "@types/jest": "^22.1.1",
     "@types/node": "^8.0.20",
@@ -34,7 +35,6 @@
     "ts-jest": "^22.0.2",
     "tslint": "^5.9.1",
     "tsviz": "^1.0.11",
-    "@types/graphql": "^0.12.4",
     "typescript": "^2.7.2"
   },
   "jest": {

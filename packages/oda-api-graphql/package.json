@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "0.4.19",
+  "version": "0.4.20",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -25,9 +25,9 @@
     "sequelize": "^4.35.2"
   },
   "devDependencies": {
+    "@types/graphql": "0.12.4",
     "@types/inflected": "^1.1.29",
     "@types/node": "^8.0.20",
-    "@types/graphql": "0.12.4",
     "@types/sequelize": "^4.27.8",
     "typescript": "^2.7.2"
   }
