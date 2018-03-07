@@ -1,6 +1,6 @@
-import * as validation from './validation';
+import Validator from './validation';
 
 export {
-  validation,
+  Validator,
 };
 

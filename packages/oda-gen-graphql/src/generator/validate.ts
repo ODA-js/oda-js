@@ -6,7 +6,7 @@ import AclDefault from '../acl';
 import * as template from '../graphql-backend-template';
 import initModel from './initModel';
 import { Generator } from './interfaces';
-import { MetaModel } from '../../../oda-model/dist/model/metamodel';
+import { MetaModel } from 'oda-model';
 
 const { get, deepMerge } = utils;
 const { defaultTypeMapper, prepareMapper } = template.utils;

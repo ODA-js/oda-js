@@ -23,7 +23,9 @@ import { Package } from './Package';
 import { Map } from 'immutable';
 import { Persistent } from './Persistent';
 import { IModelType } from '../interfaces/IModelType';
+import { IModelHook } from '../interfaces/IModelHook';
 import { isModel, isEntity, isPackage, isMutation, isEnum } from '../helpers';
+import fold from '../lib/json/fold';
 
 export class ModelFactory {
   private static context = Map<IModelType, IContext>();
@@ -80,7 +82,7 @@ export class ModelFactory {
     }
   }
 
-  public static createModel(input: IModelLoad): IModel {
+  public static createModel(input: IModelLoad, hooks: IModelHook): IModel {
     const result: Model = new Model({
       name: input.name,
       title: input.title,

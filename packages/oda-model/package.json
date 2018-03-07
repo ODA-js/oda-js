@@ -1,12 +1,12 @@
 {
-  "name": "oda-model",
-  "version": "0.0.34",
+  "name": "oda-model-next",
+  "version": "0.1.0",
   "description": "",
-  "main": "dist/model/index.js",
+  "main": "dist/index.js",
   "typescript": {
-    "definition": "dist/model/index.d.ts"
+    "definition": "dist/index.d.ts"
   },
-  "typings": "dist/model/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "lint": "tslint --project ./",
