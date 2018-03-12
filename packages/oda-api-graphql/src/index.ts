@@ -43,4 +43,6 @@ export {
   SequelizeApi,
   ConnectorsApiBase,
   Filter,
+  fromGlobalId,
+  toGlobalId,
 };
