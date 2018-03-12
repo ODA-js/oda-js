@@ -3,7 +3,7 @@ import { common } from 'oda-gen-graphql';
 
 import {
   fromGlobalId,
-} from 'graphql-relay';
+} from 'oda-api-graphql';
 
 let { fillDefaults } = common.lib;
 

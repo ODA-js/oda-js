@@ -3,7 +3,7 @@ import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
 import * as get from 'lodash/get';
 
-import { fromGlobalId } from 'graphql-relay';
+import { fromGlobalId } from 'oda-api-graphql';
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { emptyConnection, idToCursor, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';

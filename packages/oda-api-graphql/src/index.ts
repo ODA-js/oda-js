@@ -19,6 +19,7 @@ import { Connector } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
 import * as Filter from './filter';
+import { fromGlobalId, toGlobalId } from './globalId';
 
 export {
   acl,

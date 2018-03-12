@@ -1,4 +1,4 @@
-import { fromGlobalId } from 'graphql-relay';
+import { fromGlobalId } from './globalId';
 
 import validId from './utils/validId';
 

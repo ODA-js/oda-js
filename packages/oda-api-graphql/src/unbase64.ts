@@ -1,3 +1,3 @@
 export default (i) => {
-  return ((new Buffer(i, 'base64')).toString('ascii'));
+  return ((Buffer.from(i, 'base64')).toString('ascii'));
 };

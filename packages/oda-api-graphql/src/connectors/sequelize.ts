@@ -4,7 +4,7 @@ import pagination from '../pagination';
 import cursorDirection from '../direction';
 import { DIRECTION } from '../consts';
 
-import { fromGlobalId } from 'graphql-relay';
+import { fromGlobalId } from './../globalId';
 import * as Sequelize from 'sequelize';
 
 import ConnectorsApiBase from './api';

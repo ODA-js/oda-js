@@ -6,7 +6,7 @@ import * as get from 'lodash/get';
 let logger = log4js.getLogger('graphql:query:#{entity.name}');
 import {
   globalIdField,
-} from 'graphql-relay';
+} from 'oda-api-graphql';
 
 <#-if(entity.relations.length > 0){#>
 import RegisterConnectors from '../../../../data/registerConnectors';

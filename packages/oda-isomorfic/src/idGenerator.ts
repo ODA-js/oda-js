@@ -1,5 +1,5 @@
 import * as md5Hex from 'md5-hex';
-import { toGlobalId, fromGlobalId } from 'graphql-relay';
+import { toGlobalId, fromGlobalId } from 'oda-api-graphql';
 
 function decimalToHex(d, padding) {
   let hex = Number(d).toString(16);

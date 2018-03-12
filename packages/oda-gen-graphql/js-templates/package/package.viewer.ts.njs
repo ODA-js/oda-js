@@ -1,12 +1,11 @@
 
 import { passport } from 'oda-api-common';
-import { fromGlobalId } from 'graphql-relay';
 import RegisterConnectors from '../../data/registerConnectors';
 import { common } from 'oda-gen-graphql';
-
 import {
+  fromGlobalId,
   globalIdField,
-} from 'graphql-relay';
+} from 'oda-api-graphql';
 
 let { fillDefaults } = common.lib;
 

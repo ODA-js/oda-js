@@ -1,4 +1,4 @@
-import { fromGlobalId } from 'graphql-relay';
+import { fromGlobalId } from './globalId';
 
 export default mutation => async (root,
   { input }: { input: { clientMutationId: string } },

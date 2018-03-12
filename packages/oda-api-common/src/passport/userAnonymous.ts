@@ -1,4 +1,4 @@
-import { toGlobalId } from 'graphql-relay';
+import { toGlobalId } from 'oda-api-graphql';
 
 export default () => ({
   id: toGlobalId('User', '000000000000000000000000'),
