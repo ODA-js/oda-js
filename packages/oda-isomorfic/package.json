@@ -1,6 +1,6 @@
 {
   "name": "oda-isomorfic",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,8 +13,8 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "oda-api-graphql": "^0.4.20",
-    "md5-hex": "^2.0.0"
+    "md5-hex": "^2.0.0",
+    "oda-api-graphql": "^0.4.21"
   },
   "devDependencies": {
     "@types/graphql": "0.12.4",
