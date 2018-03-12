@@ -19,7 +19,7 @@ import { Connector } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
 import * as Filter from './filter';
-import { fromGlobalId, toGlobalId } from './globalId';
+import { fromGlobalId, toGlobalId, globalIdField } from './globalId';
 
 export {
   acl,
@@ -45,4 +45,5 @@ export {
   Filter,
   fromGlobalId,
   toGlobalId,
+  globalIdField,
 };
