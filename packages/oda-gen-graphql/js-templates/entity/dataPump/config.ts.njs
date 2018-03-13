@@ -12,7 +12,6 @@ export default {
 
 <# chunkStart(`../../../dataPump/${entity.name}/import`); #>
 
-let mongoose = require('mongoose');
 import { fromGlobalId } from 'oda-api-graphql';
 import { utils } from 'oda-api-graphql';
 

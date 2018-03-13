@@ -10,8 +10,6 @@ import { lib } from 'oda-gen-common';
 
 const { selectionTree: traverse } = lib;
 
-let mongoose = require('mongoose');
-
 import { utils } from 'oda-api-graphql';
 
 const { validId } = utils;
