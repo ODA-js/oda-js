@@ -75,14 +75,21 @@ export default class RegisterConnectors {
   }
 
   async syncDb(force: boolean = false) {
-<#- for(let entity of pack.entities.filter(e=>e.adapter === 'sequelize')){#>
+<#- let list = pack.entities.filter(e=>e.adapter === 'sequelize') #>
+<#- if(list.length > 0){ #>
+<#-   for(let entity of list){#>
     this.Init#{entity.name}();
-<#- }#>
+<#-   }#>
     await this.sequelize.sync({force});
+<#-}#>
   }
 
   async close(){
-    await this.sequelize.close();
-    await this.mongoose.close();
+    if (this.sequelize && typeof this.sequelize.close === 'function'){
+      await this.sequelize.close();
+    }
+    if(this.mongoose && typeof this.mongoose.close === 'function'){
+      await this.mongoose.close();
+    }
   }
 };
