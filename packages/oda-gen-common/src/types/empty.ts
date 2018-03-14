@@ -1,5 +1,5 @@
 import deepMerge from './../lib/deepMerge';
-import fillDefaults from './../lib/fillDefaults';
+import override from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
 import * as invariant from 'invariant';
 import * as warning from 'warning';
@@ -147,11 +147,9 @@ export class GQLModule {
         if (!extendees.has(e.name)) {
           extendees = extendees.set(e.name, e);
         } else {
-          debugger;
+          // первый вариант мержится здесь!!!
           let original = extendees.get(e.name);
-          /// похоже что тут проблема
-          e.override(original);
-          extendees = extendees.set(e.name, e);
+          original.override(e);
         }
       });
     }
@@ -159,7 +157,7 @@ export class GQLModule {
   }
 
   public build() {
-    debugger;
+    // debugger;
     if (!this._extendees) {
       this._extendees = OrderedMap();
     } else {
@@ -195,17 +193,17 @@ export class GQLModule {
         this.override(obj[i]);
       }
     } else {
-      this._resolver = fillDefaults(obj._resolver, this.resolver);
-      this._query = fillDefaults(obj._query, this.query);
-      this._viewer = fillDefaults(obj._viewer, this.viewer);
-      this._mutation = fillDefaults(obj._mutation, this.mutation);
-      this._subscription = fillDefaults(obj._subscription, this.subscription);
-      this._typeDef = fillDefaults(obj._typeDef, this._typeDef);
-      this._mutationEntry = fillDefaults(obj._mutationEntry, this._mutationEntry);
-      this._subscriptionEntry = fillDefaults(obj._subscriptionEntry, this._subscriptionEntry);
-      this._queryEntry = fillDefaults(obj._queryEntry, this._queryEntry);
-      this._viewerEntry = fillDefaults(obj._viewerEntry, this._viewerEntry);
-      this._hooks = fillDefaults(obj._hooks, this.hooks);
+      this._resolver = override(this._resolver, obj.resolver);
+      this._query = override(this._query, obj.query);
+      this._viewer = override(this._viewer, obj.viewer);
+      this._mutation = override(this._mutation, obj.mutation);
+      this._subscription = override(this._subscription, obj.subscription);
+      this._typeDef = override(this._typeDef, obj._typeDef);
+      this._mutationEntry = override(this._mutationEntry, obj._mutationEntry);
+      this._subscriptionEntry = override(this._subscriptionEntry, obj._subscriptionEntry);
+      this._queryEntry = override(this._queryEntry, obj._queryEntry);
+      this._viewerEntry = override(this._viewerEntry, obj._viewerEntry);
+      this._hooks = override(this._hooks, obj.hooks);
     }
   }
 }

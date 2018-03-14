@@ -70,7 +70,6 @@ describe("module override", () => {
 
   it('override strings', () => {
     const schema = new MainSchema({});
-    debugger;
     schema.build();
     expect(schema.queryEntry).not.toBeNull();
     expect(schema.queryEntry).not.toBeUndefined();
@@ -79,10 +78,8 @@ describe("module override", () => {
 
   it('remove items if needed', () => {
     const schema = new MainSchema({});
-    debugger;
     schema.build();
-    // expect(schema.resolver.User).toBeNull();
-    expect(schema.resolver.User.toBeRemoved).toBeUndefined();
+    expect(schema.resolver.User.toBeRemoved).toBeNull();
   })
 });
 
@@ -127,14 +124,14 @@ describe('module prohibit', () => {
       id: 'User',
       isSystem: true,
       isAdmin: true,
+      toBeRemoved: null,
     });
     expect(schema.queryEntry).not.toBeNull();
-    expect(schema.queryEntry).not.toBeUndefined();
   })
 
   it('override strings', () => {
     const schema = new User({});
-    debugger;
+    // debugger;
     schema.build();
     expect(schema.queryEntry).not.toBeNull();
     expect(schema.queryEntry).not.toBeUndefined();
@@ -143,9 +140,8 @@ describe('module prohibit', () => {
 
   it('remove items if needed', () => {
     const schema = new User({});
-    debugger;
     schema.build();
     // expect(schema.resolver.User).toBeNull();
-    expect(schema.resolver.User.toBeRemoved).toBeUndefined();
+    expect(schema.resolver.User.toBeRemoved).toBeNull();
   })
 });
