@@ -3,6 +3,7 @@ import fillDefaults from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
 import * as invariant from 'invariant';
 import * as warning from 'warning';
+import { OrderedMap } from 'immutable';
 // let padding = 0;
 
 const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
@@ -78,7 +79,7 @@ export class GQLModule {
   protected _hooks: { [key: string]: any }[];
 
   protected _extend: GQLModule[];
-  protected _extendees: Map<string, GQLModule>;
+  protected _extendees: OrderedMap<string, GQLModule>;
 
   // собирать объекты по порядку, а затем
   // билдить.... их...
@@ -139,29 +140,32 @@ export class GQLModule {
     this._extend = extend;
   }
 
-  public discover(extendees: Map<string, GQLModule>) {
-    // console.log(padLeft(this.name, padding++));
+  public discover(extendees: OrderedMap<string, GQLModule>) {
     if (this._extend && this._extend.length > 0) {
       this._extend.forEach(e => {
-        e.discover(extendees);
+        extendees = e.discover(extendees);
         if (!extendees.has(e.name)) {
-          extendees.set(e.name, e);
+          extendees = extendees.set(e.name, e);
         } else {
+          debugger;
           let original = extendees.get(e.name);
-          original.override(e);
+          /// похоже что тут проблема
+          e.override(original);
+          extendees = extendees.set(e.name, e);
         }
       });
     }
-    // --padding;
+    return extendees;
   }
 
   public build() {
+    debugger;
     if (!this._extendees) {
-      this._extendees = new Map<string, GQLModule>();
+      this._extendees = OrderedMap();
     } else {
-      this._extendees.clear();
+      this._extendees = this._extendees.clear();
     }
-    this.discover(this._extendees);
+    this._extendees = this.discover(this._extendees);
     this.extend(Array.from(this._extendees.values()));
   }
 
