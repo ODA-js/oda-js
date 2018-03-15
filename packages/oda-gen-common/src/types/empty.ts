@@ -4,6 +4,7 @@ import * as jsonUtils from '../lib';
 import * as invariant from 'invariant';
 import * as warning from 'warning';
 import { OrderedMap } from 'immutable';
+import { resolve } from 'dns';
 // let padding = 0;
 
 const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
@@ -79,7 +80,9 @@ export class GQLModule {
   protected _hooks: { [key: string]: any }[];
 
   protected _extend: GQLModule[];
-  protected _extendees: OrderedMap<string, GQLModule>;
+  protected _composite: GQLModule[];
+  protected _extendsOf: OrderedMap<string, GQLModule>;
+  protected _compositeOf: OrderedMap<string, GQLModule>;
 
   // собирать объекты по порядку, а затем
   // билдить.... их...
@@ -110,6 +113,7 @@ export class GQLModule {
     subscription,
     hooks,
     extend,
+    composite,
   }: {
       name?: string,
       resolver?: { [key: string]: any };
@@ -124,26 +128,56 @@ export class GQLModule {
       viewerEntry?: { [key: string]: string[] };
       hooks?: { [key: string]: any }[];
       extend?: GQLModule[],
+      composite?: GQLModule[],
     }) {
-    this._name = name;
-    this._resolver = resolver;
-    this._query = query;
-    this._viewer = viewer;
-    this._mutation = mutation;
-    this._subscription = subscription;
-    this._typeDef = typeDef;
-    this._mutationEntry = mutationEntry;
-    this._subscriptionEntry = subscriptionEntry;
-    this._queryEntry = queryEntry;
-    this._viewerEntry = viewerEntry;
-    this._hooks = hooks;
-    this._extend = extend;
+    if (name !== undefined) {
+      this._name = name;
+    }
+    if (resolver !== undefined) {
+      this._resolver = resolver;
+    }
+    if (query !== undefined) {
+      this._query = query;
+    }
+    if (viewer !== undefined) {
+      this._viewer = viewer;
+    }
+    if (mutation !== undefined) {
+      this._mutation = mutation;
+    }
+    if (subscription !== undefined) {
+      this._subscription = subscription;
+    }
+    if (typeDef !== undefined) {
+      this._typeDef = typeDef;
+    }
+    if (mutationEntry !== undefined) {
+      this._mutationEntry = mutationEntry;
+    }
+    if (subscriptionEntry !== undefined) {
+      this._subscriptionEntry = subscriptionEntry;
+    }
+    if (queryEntry !== undefined) {
+      this._queryEntry = queryEntry;
+    }
+    if (viewerEntry !== undefined) {
+      this._viewerEntry = viewerEntry;
+    }
+    if (hooks !== undefined) {
+      this._hooks = hooks;
+    }
+    if (extend !== undefined) {
+      this._extend = extend;
+    }
+    if (composite !== undefined) {
+      this._composite = composite;
+    }
   }
 
-  public discover(extendees: OrderedMap<string, GQLModule>) {
+  public discoverExtendsOf(extendees: OrderedMap<string, GQLModule>) {
     if (this._extend && this._extend.length > 0) {
       this._extend.forEach(e => {
-        extendees = e.discover(extendees);
+        extendees = e.discoverExtendsOf(extendees);
         if (!extendees.has(e.name)) {
           extendees = extendees.set(e.name, e);
         } else {
@@ -156,34 +190,124 @@ export class GQLModule {
     return extendees;
   }
 
-  public build() {
-    // debugger;
-    if (!this._extendees) {
-      this._extendees = OrderedMap();
-    } else {
-      this._extendees = this._extendees.clear();
+  public discoverCompositeOf(composees: OrderedMap<string, GQLModule>) {
+    if (this._composite && this._composite.length > 0) {
+      this._composite.forEach(e => {
+        composees = e.discoverCompositeOf(composees);
+        if (!composees.has(e.name)) {
+          composees = composees.set(e.name, e);
+        } else {
+          // первый вариант мержится здесь!!!
+          let original = composees.get(e.name);
+          original.override(e);
+        }
+      });
     }
-    this._extendees = this.discover(this._extendees);
-    this.extend(Array.from(this._extendees.values()));
+    return composees;
   }
 
+  public build() {
+    // debugger;
+    if (!this._extendsOf) {
+      this._extendsOf = OrderedMap();
+    } else {
+      this._extendsOf = this._extendsOf.clear();
+    }
+    if (!this._compositeOf) {
+      this._compositeOf = OrderedMap();
+    } else {
+      this._compositeOf = this._compositeOf.clear();
+    }
+    this._extendsOf = this.discoverExtendsOf(this._extendsOf);
+    this.extend(Array.from(this._extendsOf.values()));
+
+    this._compositeOf = this.discoverCompositeOf(this._compositeOf);
+    this.compose(Array.from(this._compositeOf.values()));
+  }
+
+  // compose all thing together
+  private compose(obj: GQLModule | GQLModule[]) {
+    if (Array.isArray(obj)) {
+      for (let i = 0, len = obj.length; i < len; i++) {
+        this.compose(obj[i]);
+      }
+    } else {
+      if (obj._resolver !== undefined) {
+        this._resolver = deepMerge(this._resolver, obj._resolver);
+      }
+      if (obj._query !== undefined) {
+        this._query = deepMerge(this._query, obj._query);
+      }
+      if (obj._viewer !== undefined) {
+        this._viewer = deepMerge(this._viewer, obj._viewer);
+      }
+      if (obj._mutation !== undefined) {
+        this._mutation = deepMerge(this._mutation, obj._mutation);
+      }
+      if (obj._subscription !== undefined) {
+        this._subscription = deepMerge(this._subscription, obj._subscription);
+      }
+      if (obj._typeDef !== undefined) {
+        this._typeDef = deepMerge(this._typeDef, obj._typeDef);
+      }
+      if (obj._mutationEntry !== undefined) {
+        this._mutationEntry = deepMerge(this._mutationEntry, obj._mutationEntry);
+      }
+      if (obj._subscriptionEntry !== undefined) {
+        this._subscriptionEntry = deepMerge(this._subscriptionEntry, obj._subscriptionEntry);
+      }
+      if (obj._queryEntry !== undefined) {
+        this._queryEntry = deepMerge(this._queryEntry, obj._queryEntry);
+      }
+      if (obj._viewerEntry !== undefined) {
+        this._viewerEntry = deepMerge(this._viewerEntry, obj._viewerEntry);
+      }
+      if (obj._hooks !== undefined) {
+        this._hooks = [...(this._hooks || []), ...(obj._hooks || [])];
+      }
+    }
+  }
+
+  // extend current object
   private extend(obj: GQLModule | GQLModule[]) {
     if (Array.isArray(obj)) {
       for (let i = 0, len = obj.length; i < len; i++) {
         this.extend(obj[i]);
       }
     } else {
-      this._resolver = deepMerge(this._resolver, obj.resolver);
-      this._query = deepMerge(this._query, obj.query);
-      this._viewer = deepMerge(this._viewer, obj.viewer);
-      this._mutation = deepMerge(this._mutation, obj.mutation);
-      this._subscription = deepMerge(this._subscription, obj.subscription);
-      this._typeDef = deepMerge(this._typeDef, obj._typeDef);
-      this._mutationEntry = deepMerge(this._mutationEntry, obj._mutationEntry);
-      this._subscriptionEntry = deepMerge(this._subscriptionEntry, obj._subscriptionEntry);
-      this._queryEntry = deepMerge(this._queryEntry, obj._queryEntry);
-      this._viewerEntry = deepMerge(this._viewerEntry, obj._viewerEntry);
-      this._hooks = [...this._hooks || [], ...obj.hooks || []];
+      if (obj._resolver !== undefined) {
+        this._resolver = override(obj._resolver, this._resolver);
+      }
+      if (obj._query !== undefined) {
+        this._query = override(obj._query, this._query);
+      }
+      if (obj._viewer !== undefined) {
+        this._viewer = override(obj._viewer, this._viewer);
+      }
+      if (obj._mutation !== undefined) {
+        this._mutation = override(obj._mutation, this._mutation);
+      }
+      if (obj._subscription !== undefined) {
+        this._subscription = override(obj._subscription, this._subscription);
+      }
+      if (obj._typeDef !== undefined) {
+        this._typeDef = override(obj._typeDef, this._typeDef);
+      }
+      if (obj._mutationEntry !== undefined) {
+        this._mutationEntry = override(obj._mutationEntry, this._mutationEntry);
+      }
+      if (obj._subscriptionEntry !== undefined) {
+        this._subscriptionEntry = override(obj._subscriptionEntry, this._subscriptionEntry);
+      }
+      if (obj._queryEntry !== undefined) {
+        this._queryEntry = override(obj._queryEntry, this._queryEntry);
+      }
+      if (obj._viewerEntry !== undefined) {
+        this._viewerEntry = override(obj._viewerEntry, this._viewerEntry);
+      }
+      if (obj._hooks !== undefined) {
+        this._hooks = override(obj._hooks, this._hooks);
+      }
     }
   }
 
@@ -193,17 +317,39 @@ export class GQLModule {
         this.override(obj[i]);
       }
     } else {
-      this._resolver = override(this._resolver, obj.resolver);
-      this._query = override(this._query, obj.query);
-      this._viewer = override(this._viewer, obj.viewer);
-      this._mutation = override(this._mutation, obj.mutation);
-      this._subscription = override(this._subscription, obj.subscription);
-      this._typeDef = override(this._typeDef, obj._typeDef);
-      this._mutationEntry = override(this._mutationEntry, obj._mutationEntry);
-      this._subscriptionEntry = override(this._subscriptionEntry, obj._subscriptionEntry);
-      this._queryEntry = override(this._queryEntry, obj._queryEntry);
-      this._viewerEntry = override(this._viewerEntry, obj._viewerEntry);
-      this._hooks = override(this._hooks, obj.hooks);
+      if (obj._resolver !== undefined) {
+        this._resolver = override(this._resolver, obj._resolver);
+      }
+      if (obj._query !== undefined) {
+        this._query = override(this._query, obj._query);
+      }
+      if (obj._viewer !== undefined) {
+        this._viewer = override(this._viewer, obj._viewer);
+      }
+      if (obj._mutation !== undefined) {
+        this._mutation = override(this._mutation, obj._mutation);
+      }
+      if (obj._subscription !== undefined) {
+        this._subscription = override(this._subscription, obj._subscription);
+      }
+      if (obj._typeDef !== undefined) {
+        this._typeDef = override(this._typeDef, obj._typeDef);
+      }
+      if (obj._mutationEntry !== undefined) {
+        this._mutationEntry = override(this._mutationEntry, obj._mutationEntry);
+      }
+      if (obj._subscriptionEntry !== undefined) {
+        this._subscriptionEntry = override(this._subscriptionEntry, obj._subscriptionEntry);
+      }
+      if (obj._queryEntry !== undefined) {
+        this._queryEntry = override(this._queryEntry, obj._queryEntry);
+      }
+      if (obj._viewerEntry !== undefined) {
+        this._viewerEntry = override(this._viewerEntry, obj._viewerEntry);
+      }
+      if (obj._hooks !== undefined) {
+        this._hooks = override(this._hooks, obj._hooks);
+      }
     }
   }
 }
