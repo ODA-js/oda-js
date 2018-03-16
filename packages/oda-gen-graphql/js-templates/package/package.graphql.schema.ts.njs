@@ -7,7 +7,7 @@ import { #{pack.name}Package } from './index';
 
 export class #{pack.name}Schema extends common.types.GQLModule {
   protected _name = '#{pack.name}Schema';
-  protected _extend = [
+  protected _composite = [
     new #{pack.name}Package({}),
   ];
 

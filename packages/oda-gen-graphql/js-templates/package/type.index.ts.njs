@@ -12,7 +12,7 @@ import { #{entity.name} } from './#{entity.name}';
 
 export class #{pack.name}Entities extends common.types.GQLModule {
   protected _name = '#{pack.name}Entities';
-  protected _extend = [
+  protected _composite = [
     new NodeEntity({}),
     new ViewerEntity({}),
 <# for(let entity of pack.entities){-#>
