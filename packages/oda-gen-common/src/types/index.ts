@@ -39,7 +39,7 @@ export {
 
 export class DefaultTypes extends GQLModule {
   protected _name = 'DefaultTypes';
-  protected _extend = [
+  protected _composite = [
     new StateOfFieldType({}),
     new StateOfConectionType({}),
     new PageInfoType({}),

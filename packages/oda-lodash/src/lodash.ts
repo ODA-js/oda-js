@@ -186,7 +186,7 @@ export class ConvertTypeArgument extends types.GQLModule {
 
 export class LodashModule extends types.GQLModule {
   protected _name = 'LodashModule';
-  protected _extend = [
+  protected _composite = [
     new RegularExpression({}),
     new Path({}),
     new Predicate({}),
