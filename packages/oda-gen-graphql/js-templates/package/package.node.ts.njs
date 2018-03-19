@@ -47,7 +47,7 @@ export class NodeEntity extends common.types.GQLModule {
     });
 
     this._queryEntry = fillDefaults(this._queryEntry, {
-      'viewerEntry': [`
+      'queryEntry': [`
         node(id: ID!): Node
       `],
     });
