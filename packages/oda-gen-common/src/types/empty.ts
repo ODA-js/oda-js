@@ -183,7 +183,9 @@ export class GQLModule {
         } else {
           // первый вариант мержится здесь!!!
           let original = extendees.get(e.name);
-          original.override(e);
+          if (original !== e) {
+            original.override(e);
+          }
         }
       });
     }
@@ -197,9 +199,10 @@ export class GQLModule {
         if (!composees.has(e.name)) {
           composees = composees.set(e.name, e);
         } else {
-          // первый вариант мержится здесь!!!
           let original = composees.get(e.name);
-          original.override(e);
+          if (original !== e) {
+            original.override(e);
+          }
         }
       });
     }
@@ -218,6 +221,7 @@ export class GQLModule {
     } else {
       this._compositeOf = this._compositeOf.clear();
     }
+
     this._extendsOf = this.discoverExtendsOf(this._extendsOf);
     this.extend(Array.from(this._extendsOf.values()));
 

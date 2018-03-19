@@ -1,6 +1,6 @@
 import { GQLModule } from './empty';
 
-describe("module override", () => {
+describe("override by name", () => {
 
   class UserHooks extends GQLModule {
     protected _name = 'UserHooks';
@@ -14,6 +14,9 @@ describe("module override", () => {
     protected _name = 'User';
     protected _queryEntry = {
       'queryEntry': [`original`],
+    };
+    protected _viewerEntry = {
+      'viewerEntry': [`original`],
     };
     protected _resolver = {
       User: {
@@ -33,6 +36,7 @@ describe("module override", () => {
     protected _queryEntry = {
       'queryEntry': [`override`],
     };
+    protected _viewerEntry = null;
     protected _resolver = {
       User: {
         id: 'User',
@@ -99,9 +103,15 @@ describe("module override", () => {
     schema.build();
     expect(schema.resolver.User.toBeRemoved).toBeNull();
   })
+
+  it('remove any entiy if needed', () => {
+    const schema = new MainSchema({});
+    schema.build();
+    expect(schema.viewerEntry.length).toBe(0);
+  })
 });
 
-describe('class override', () => {
+describe('override in module', () => {
   class UserHooks extends GQLModule {
     protected _name = 'UserHooks';
     protected _hooks = [{
@@ -153,7 +163,6 @@ describe('class override', () => {
   }
 
   it('override objects', () => {
-    debugger
     const schema = new User({});
     schema.build();
     expect(schema.resolver.User).not.toBeNull();
