@@ -50,7 +50,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     if (this.user && !this.user.isSystem) {
       if (typeof obj === 'object' && obj !== null && obj !== undefined) {
         if (obj.owner) {
-          result = this._viewer.ids.hasOwnProperty(obj.owner.toString()) ? obj : null;
+          result = this._viewer && this._viewer.ids.hasOwnProperty(obj.owner.toString()) ? obj : null;
         }
       }
     }
