@@ -20,5 +20,9 @@ export default function override(...args: Object[]) {
 }
 
 function _override(src, dst) {
-  return mergeWith(src, dst, mergeAll);
+  if (dst !== null) {
+    return mergeWith(src, dst, mergeAll);
+  } else {
+    return null;
+  }
 }
