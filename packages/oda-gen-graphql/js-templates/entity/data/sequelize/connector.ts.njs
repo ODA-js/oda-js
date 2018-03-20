@@ -367,9 +367,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
       delete entity.id;
       delete entity._id;
     } else {
-      if (entity.id) {
-        entity._id = entity.id;
-        delete entity.id;
+      if (entity._id) {
+        entity.id = entity._id;
+        delete entity._id;
       }
     }
     return entity;
