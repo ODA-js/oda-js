@@ -101,7 +101,7 @@ export default (args: Generator) => {
 
     // generate per package
     packages.forEach(pkg => {
-      let generate = $generateGraphql.bind(null, pkg, raw, rootDir, pkg.name/*role is package name*/, aclAllow, typeMapper);
+      let generate = $generateGraphql.bind(null, pkg, raw, rootDir, pkg.name/*role is package name*/, aclAllow, typeMapper, defaultAdapter);
       let generatePkg = $generatePkg.bind(null, raw, rootDir, typeMapper);
       const curConfig = config.packages[pkg.name];
       const entities = Array.from(pkg.entities.values());

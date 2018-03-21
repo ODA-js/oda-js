@@ -6,8 +6,9 @@ import { capitalize, decapitalize } from '../../utils';
 
 export const template = 'entity/query/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
-  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
+export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }, defaultAdapter: 'mongoose' | 'sequelize') {
+  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
+  return te.run(mapper(entity, pack, role, aclAllow, typeMapper, adapter), template);
 }
 
 export interface MapperOutupt {
@@ -26,6 +27,7 @@ export interface MapperOutupt {
       }[]
     }[];
   };
+  adapter: 'mongoose' | 'sequelize';
   idMap: string[];
   relations: {
     derived: boolean;
@@ -62,7 +64,7 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }, adapter: 'mongoose' | 'sequelize'): MapperOutupt {
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
@@ -167,6 +169,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       }),
     },
     relations,
+    adapter,
     idMap: relations.filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
       .map(f => f.field),
   };

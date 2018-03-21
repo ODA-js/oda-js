@@ -6,7 +6,7 @@ import * as fs from 'fs-extra';
 
 const { get, deepMerge } = utils;
 
-export default function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow, typeMapper: { [key: string]: (string) => string },
+export default function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow, typeMapper: { [key: string]: (string) => string }, defaultAdapter: 'mongoose' | 'sequelize',
   collection, cfg, type, route: string, ext: string, fileName?: string) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
@@ -19,7 +19,7 @@ export default function $generateGraphql(pkg, raw: Factory, rootDir: string, rol
 
     let parts = route.split('.');
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow, typeMapper);
+      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow, typeMapper, defaultAdapter);
       if (typeof source === 'string') {
         let parts = route.split('.');
         if (!fileName) {
