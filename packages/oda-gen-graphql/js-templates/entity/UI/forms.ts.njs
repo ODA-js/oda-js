@@ -589,7 +589,7 @@ if(manyRels.length > 0){#>
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{f.ref.entity}" target="#{f.ref.opposite}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{f.ref.entity}" target="#{f.ref.opposite}" idKey="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#}#>

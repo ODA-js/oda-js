@@ -19,7 +19,7 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
   * @returns {Promise} the Promise for a REST response
   */
   return (type, resourceName, params) => {
-    console.log("Type is ", type, 'resource', resourceName);
+    console.log('resource', resourceName, "type", type);
     const resource: IResource = resources.resource(resourceName);
     if (!resource) {
       throw new Error(`No matching resource found for name ${resourceName}`);
