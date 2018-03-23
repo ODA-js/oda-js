@@ -13,8 +13,8 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
 
   public mongoose: any;
 
-  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
-    super({ connectors, user, owner, acls, userGroup });
+  constructor({ mongoose, connectors, user, owner, acls, userGroup, initOwner, logUser }) {
+    super({ connectors, user, owner, acls, userGroup, initOwner, logUser });
     this.mongoose = mongoose;
   }
 

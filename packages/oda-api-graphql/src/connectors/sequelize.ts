@@ -15,8 +15,8 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
 
   public sequelize: Sequelize.Sequelize;
 
-  constructor({ sequelize, connectors, user, owner, acls, userGroup }) {
-    super({ connectors, user, owner, acls, userGroup });
+  constructor({ sequelize, connectors, user, owner, acls, userGroup, initOwner, logUser }) {
+    super({ connectors, user, owner, acls, userGroup, initOwner, logUser });
     this.sequelize = sequelize;
   }
 
