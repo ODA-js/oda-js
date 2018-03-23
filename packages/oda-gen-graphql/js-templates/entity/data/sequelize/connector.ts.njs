@@ -50,15 +50,14 @@ import { I#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({sequelize, connectors, user, owner, acls, userGroup}) {
+  constructor({sequelize, connectors, user, owner, acls, userGroup , initOwner, logUser}) {
     logger.trace('constructor');
     super({sequelize, connectors, user, acls, userGroup
 <#-if( entity.needOwner ){-#>
 , owner
 <#-} else {-#>
 , owner: false
-<#-}-#>
-    });
+<#-}-#>, initOwner, logUser });
     this.initSchema('#{entity.name}', #{ entity.name }Schema);
 
     this.loaderKeys = {

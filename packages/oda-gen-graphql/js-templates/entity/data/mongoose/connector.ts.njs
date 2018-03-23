@@ -50,15 +50,14 @@ import { Partial#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({mongoose, connectors, user, owner, acls, userGroup}) {
+  constructor({mongoose, connectors, user, owner, acls, userGroup, initOwner, logUser}) {
     logger.trace('constructor');
     super({mongoose, connectors, user, acls, userGroup
 <#-if( entity.needOwner ){-#>
 , owner
 <#-} else {-#>
 , owner: false
-<#-}-#>
-    });
+<#-}-#>, initOwner, logUser});
     this.initSchema('#{entity.name}', #{ entity.name }Schema());
 
     this.loaderKeys = {
