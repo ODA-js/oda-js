@@ -18,13 +18,19 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   public storeToCache: any;
   protected acls: ACLCRUD<(object) => object>;
 
-  constructor({ connectors, user, owner, acls, userGroup }) {
+  constructor({ connectors, user, owner, acls, userGroup, initOwner, logUser }) {
     this.connectors = connectors;
     this.user = user;
     this.userGroup = userGroup;
     this.acls = acls;
     if (!this.acls.read.defaultAccess) {
       this.acls.read.defaultAccess = this._canView;
+    }
+    if (initOwner) {
+      this.initOwner = initOwner;
+    }
+    if (logUser) {
+      this.logUser = logUser;
     }
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
