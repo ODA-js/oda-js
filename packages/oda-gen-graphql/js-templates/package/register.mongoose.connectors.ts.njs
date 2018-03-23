@@ -15,7 +15,7 @@ export default class RegisterConnectors {
 
   public Init#{entity.name}(): #{entity.name}Connector {
     if (!this._#{entity.name}) {
-      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup });
+      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup, initOwner: false, logUser: false });
     }
     return this._#{entity.name};
   }
