@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-rm -fr node_modules
-rm -fr sinopia/storage
+rm -rf node_modules
+rm -rf sinopia/storage
 for i in $(ls -d packages/*/); do
   echo ${i%%/};
   pushd ${i%%/}
