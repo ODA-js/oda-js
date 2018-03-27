@@ -15,7 +15,6 @@ export default class extends ResourceOperation {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = (response) => {
-        // debugger
         const data = reshape(this.resultQuery, response.data);
         return {
           data: data.items.data,

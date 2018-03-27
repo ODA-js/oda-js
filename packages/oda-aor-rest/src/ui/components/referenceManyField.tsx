@@ -42,7 +42,6 @@ export class ReferenceManyField extends Component {
   fetchReferences(
     { reference, record, resource, target, perPage, filter, idKey } = this.props
   ) {
-    debugger;
     const { crudGetManyReference } = this.props;
     const pagination = { page: 1, perPage };
     const relatedTo = nameRelatedTo(
