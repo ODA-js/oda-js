@@ -10,6 +10,7 @@ export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: st
 
 export interface MapperOutupt {
   name: string;
+  role: string;
   entities: {
     name: string;
     entry: string;
@@ -23,6 +24,7 @@ import {
 export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   return {
     name: capitalize(pack.name),
+    role: pack.name,
     entities: getEntities(pack)
       .map(e => ({
         name: e.name,

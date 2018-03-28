@@ -17,6 +17,8 @@ const List = loadable(() => import('./list'));
 const Grid = loadable(() => import('./grid'));
 
 export default {
+  name: '#{entity.name}',
+  role: '#{entity.role}',
   Title,
   Filter,
   Form,
@@ -51,11 +53,10 @@ import {
 } from "admin-on-rest";
 
 const ListView = (props, context) => {
-  const Grid = context.uix.#{entity.name}.Grid;
-  const Filter = context.uix.#{entity.name}.Filter;
+  const { Grid, Filter} = context.uix['#{entity.role}/#{entity.name}'];
 
   return (
-    <List {...props} filters={<Filter />}>
+    <List {...props} filters={<Filter />} title={context.translate("resources.#{entity.name}.name", { smart_count:2 })}>
       <Grid {...props} />
     </List>
   )
@@ -63,6 +64,7 @@ const ListView = (props, context) => {
 
 ListView.contextTypes = {
   uix: PropTypes.object.isRequired,
+  translate: PropTypes.func.isRequired,
 }
 
 export default ListView;
@@ -94,7 +96,7 @@ const Grid = (props, context) => (
 .filter(f=>entity.UI.list[f.field])
 .forEach(f=>{
 -#><#-if(f.single){#>
-    <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+    <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
       <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
 <#-}-#>
@@ -256,7 +258,7 @@ class Form extends Component {
 #>
         <Label text="resources.#{entity.name}.fields.#{f.field}" />
         <DependentInput resolve={selectorFor('#{f.field}')} scoped >
-          <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+          <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
         </DependentInput>
@@ -285,7 +287,7 @@ class Form extends Component {
         } else {
 #>
         <Label text="resources.#{entity.name}.fields.#{f.field}" />
-        <ReferenceInput label="" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceInput label="" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
 <#}#>
@@ -301,7 +303,7 @@ class Form extends Component {
             defaultValue={actionType.USE}
           />
           <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
-            <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+            <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
               <SelectInput optionText="#{f.ref.listLabel.source}" />
             </ReferenceInput>
           </DependentInput>
@@ -331,7 +333,7 @@ class Form extends Component {
         </EmbeddedArrayInput>
 <#} else {#>
         <Label text="resources.#{entity.name}.fields.#{f.field}" />
-        <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
 <#}#>
@@ -379,8 +381,7 @@ import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
 const EditForm = (props, context) => {
-  const Form = context.uix.#{entity.name}.Form;
-  const Title = context.uix.#{entity.name}.Title;
+  const { Form, Title } = context.uix['#{entity.role}/#{entity.name}'];
   const { translate } = context;
 
   return (
@@ -421,8 +422,7 @@ import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
 const CreateForm = (props, context) =>{
-  const Form = context.uix.#{entity.name}.Form;
-  const Title = context.uix.#{entity.name}.Title;
+  const { Form, Title } = context.uix['#{entity.role}/#{entity.name}'];
   const { translate } = context;
 
   return (
@@ -492,13 +492,11 @@ const showIfExists = field => root => !!root[field];
 const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
 
 const ShowView = (props, context) => {
-  const { uix } = context;
-  const Title = uix.#{entity.name}.Title;
-  const { translate } = context;
+  const { translate, uix } = context;
+  const { Title } = uix['#{entity.role}/#{entity.name}'];
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
 if(manyRels.length > 0){#>
-  const {
 <#
  const uniqueEntities = manyRels.filter(f=> !f.single && !entity.UI.embedded.names.hasOwnProperty(f.field))
   .reduce((hash, curr)=> {
@@ -509,9 +507,8 @@ if(manyRels.length > 0){#>
   Object.keys(uniqueEntities).forEach(key=>{
     let f = uniqueEntities[key];
 -#>
-    #{f.ref.entity},
+  const #{f.ref.entity} = uix['#{entity.role}/#{f.ref.entity}'];
 <#})-#>
-  } = uix;
 <#-}-#>
 
   return (
@@ -534,7 +531,7 @@ if(manyRels.length > 0){#>
         let current = entity.UI.embedded.names[f.field];
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}" >
-          <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}" target="#{f.ref.opposite}">
+          <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}">
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
 
@@ -549,7 +546,7 @@ if(manyRels.length > 0){#>
         </DependentField>
 <#} else {#>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+          <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
             <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
           </ReferenceField>
         </DependentField>
@@ -563,8 +560,8 @@ if(manyRels.length > 0){#>
         if(fieldCount > 0) {;
 #>
         <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
-          <EmbeddedArrayField reference="#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
-            <ReferenceField label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+          <EmbeddedArrayField reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+            <ReferenceField label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
               <TextField source="#{f.ref.listLabel.source}" />
             </ReferenceField>
 <#
@@ -590,7 +587,7 @@ if(manyRels.length > 0){#>
           </EmbeddedArrayField>
         </DependentField>
 <#} else {#>
-        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{f.ref.entity}" target="#{f.ref.opposite}" idKey="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" idKey="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <#{f.ref.entity}.Grid />
         </ReferenceManyField>
 <#}#>
@@ -613,6 +610,7 @@ export default {
   resources: {
     #{entity.name}: {
       name: '#{entity.name} |||| #{entity.plural}',
+      listName: '#{entity.name} |||| #{entity.plural}',
       fields: {
 <#entity.fields.forEach(f=>{-#>
         #{f.name}: '#{f.label}',

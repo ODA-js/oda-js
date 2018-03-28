@@ -9,7 +9,8 @@ import set from 'lodash/set';
 export default {
   queries,
   fragments,
-  name: '#{entity.name}',
+  name: '#{entity.role}/#{entity.name}',
+  role: '#{entity.role}',
   fields: {
   <#- entity.fields.forEach(f => {#>
     #{f.name}: { type: '#{f.resourceType}' },
@@ -17,7 +18,7 @@ export default {
   <#- entity.relations.forEach(f => {#>
     #{f.field}: {
       ref: {
-        resource: '#{f.ref.entity}',
+        resource: '#{entity.role}/#{f.ref.entity}',
         type: data.resource.interfaces.refType.#{f.verb},
       },
     },
@@ -57,7 +58,7 @@ export default {
 export const extension = [
   <#- entity.relations.filter(f=> f.verb === 'BelongsToMany').forEach(f => {#>
     {
-      name:'#{f.ref.entity}',
+      name:'#{entity.role}/#{f.ref.entity}',
       fields:{
       <#- f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(f => {#>
         #{f.name}: { type: '#{f.resourceType}' },

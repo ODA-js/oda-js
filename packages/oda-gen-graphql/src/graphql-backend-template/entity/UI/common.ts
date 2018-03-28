@@ -47,6 +47,7 @@ export interface UIView {
 
 export interface MapperOutupt {
   packageName: string;
+  role: string;
   name: string;
   UI: UIView;
   plural: string;
@@ -375,7 +376,8 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     });
 
   return {
-    packageName: pack.name,
+    packageName: capitalize(pack.name),
+    role: pack.name,
     name: entity.name,
     UI,
     plural: entity.plural,
