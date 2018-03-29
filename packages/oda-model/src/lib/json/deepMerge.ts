@@ -29,6 +29,10 @@ export function arrayItemOperation(inp: any) {
         .map(f => f.trim())
         .filter(f => f && f !== 'undefined' && f !== 'null')
         .map(arrayItemOperation);
+    } else if (inp.startsWith('=')) {
+      return {
+        $assign: arrayItemOperation(inp.slice(1, inp.length)),
+      };
     } else {
       return inp;
     }
@@ -49,15 +53,28 @@ export function arrayItemOperation(inp: any) {
 }
 
 function pushUnique(result, current) {
-  if (find(result, current) === -1) {
-    result.push(current);
+  if (Array.isArray(current)) {
+    current.forEach(item => {
+      pushUnique(result, item);
+    });
+  } else {
+    if (find(result, current) === -1) {
+      result.push(current);
+    }
   }
+
 }
 
 function removeIfExists(result, current: any) {
-  const index = find(result, current);
-  if (index !== -1) {
-    result.splice(index, 1);
+  if (Array.isArray(current)) {
+    current.forEach(item => {
+      removeIfExists(result, item);
+    });
+  } else {
+    const index = find(result, current);
+    if (index !== -1) {
+      result.splice(index, 1);
+    }
   }
 }
 
@@ -65,6 +82,10 @@ function processArrayItem(result: any[], value: any) {
   const item = arrayItemOperation(value);
   if (typeof item === 'object' && item.hasOwnProperty('$unset')) {
     removeIfExists(result, item.$unset);
+  } else if (typeof item === 'object' && item.hasOwnProperty('$assign')) {
+    result.length = 0;
+    if (!Array.isArray(item.$assign)) item.$assign = [item.$assign];
+    result.push(...item.$assign);
   } else {
     pushUnique(result, item);
   }

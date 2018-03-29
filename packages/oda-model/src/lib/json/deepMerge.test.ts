@@ -1,4 +1,4 @@
-import { find, arrayItemOperation, processArrayItem, processArray } from './deepMerge';
+import { find, arrayItemOperation, processArray } from './deepMerge';
 
 describe('find', () => {
   it('number', () => {
@@ -45,6 +45,19 @@ describe('arrayItemOperation', () => {
     expect(arrayItemOperation(val) !== val).toBeTruthy()
     expect(arrayItemOperation(val)).toMatchObject(['7', '5', { $unset: 'undefined' }, '3']);
   })
+
+  it('assigns', () => {
+    expect(arrayItemOperation('=7')).toMatchObject({ $assign: '7' });
+    expect(arrayItemOperation('=[7,5,3]')).toMatchObject({ $assign: ['7', '5', '3'] });
+    expect(arrayItemOperation('=[7,  5  ,,3]')).toMatchObject({ $assign: ['7', '5', '3'] });
+    expect(arrayItemOperation('=[7,5,null,3]')).toMatchObject({ $assign: ['7', '5', '3'] });
+    expect(arrayItemOperation('=[7,5,undefined,3]')).toMatchObject({ $assign: ['7', '5', '3'] });
+    expect(arrayItemOperation('[7,=5,undefined,3]')).toMatchObject(['7', { $assign: '5' }, '3']);
+    expect(arrayItemOperation(['7', '=5', 'undefined', '3'])).toMatchObject(['7', { $assign: '5' }, 'undefined', '3']);
+    const val = ['7', '5', '=undefined', '3'];
+    expect(arrayItemOperation(val) !== val).toBeTruthy()
+    expect(arrayItemOperation(val)).toMatchObject(['7', '5', { $assign: 'undefined' }, '3']);
+  });
 });
 
 describe('processArray', () => {
@@ -71,9 +84,29 @@ describe('processArray', () => {
   });
   it('remove string', () => {
     const src = ['0', '1', '2', '3', '4', '5', '6'];
-    debugger;
     processArray(src, '^1');
     expect(find(src, '1')).toBe(-1);
+  });
+  it('remove string list', () => {
+    const src = ['0', '1', '2', '3', '4', '5', '6'];
+    debugger;
+    processArray(src, '^[1, 2, 5]');
+    expect(find(src, '1')).toBe(-1);
+    expect(find(src, '2')).toBe(-1);
+    expect(find(src, '5')).toBe(-1);
+  });
+  it('assign string', () => {
+    const src = ['0', '1', '2', '3', '4', '5', '6'];
+    processArray(src, '=1');
+    expect(find(src, '1')).toBe(0);
+    expect(src.length).toBe(1);
+  });
+  it('assign string list', () => {
+    const src = ['0', '1', '2', '3', '4', '5', '6'];
+    processArray(src, '=[100, 200]');
+    expect(find(src, '100')).toBe(0);
+    expect(find(src, '200')).toBe(1);
+    expect(src.length).toBe(2);
   });
 });
 
