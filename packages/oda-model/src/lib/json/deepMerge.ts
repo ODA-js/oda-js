@@ -34,52 +34,49 @@ export function arrayItemOperation(inp: any) {
     }
   } else {
     if (Array.isArray(inp)) {
-      return inp.map(arrayItemOperation);
+      const res = [];
+      let changed = false;
+      inp.forEach((item, index, array) => {
+        const ret = arrayItemOperation(item);
+        res.push(ret);
+        changed = !(!changed && ret === item);
+      });
+      return changed ? res : inp;
     } else {
       return inp
     }
   }
 }
 
-// разные варианты, обработки в том числе когда в одном массиве несколько вариантов удаление и добавление вперемешку
-// написать тестик
-export function processArrayItem(result: Object[], current: any) {
-  const value = arrayItemOperation(current);
-  if (value !== current) {
-    Object.keys(value)
-      .filter(k => k.startsWith('$'))
-      .forEach(op => {
-        if (op === '$unset') {
-          const _item = value[op];
-          if (Array.isArray(_item)) {
-            _item.forEach(i => removeIfExists(i));
-          } else {
-            removeIfExists(_item);
-          }
-        }
-      });
+function pushUnique(result, current) {
+  if (find(result, current) === -1) {
+    result.push(current);
   }
-  function removeIfExists(_item: any) {
-    const index = find(result, _item);
-    if (index !== -1) {
-      result.splice(index, 1);
-    }
+}
+
+function removeIfExists(result, current: any) {
+  const index = find(result, current);
+  if (index !== -1) {
+    result.splice(index, 1);
+  }
+}
+
+function processArrayItem(result: any[], value: any) {
+  const item = arrayItemOperation(value);
+  if (typeof item === 'object' && item.hasOwnProperty('$unset')) {
+    removeIfExists(result, item.$unset);
+  } else {
+    pushUnique(result, item);
   }
 }
 
 export function processArray(result: any[], current: any) {
   if (Array.isArray(current)) {
     current.forEach(item => {
-      pushUnique(current);
+      processArrayItem(result, item);
     });
   } else {
-    pushUnique(current);
-  }
-
-  function pushUnique(current) {
-    if (find(result, current) === -1) {
-      result.push(current);
-    }
+    processArrayItem(result, current);
   }
 }
 
