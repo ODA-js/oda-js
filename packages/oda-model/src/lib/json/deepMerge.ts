@@ -3,13 +3,13 @@ import { isEqual } from 'lodash';
 import get from './get';
 import set from './set';
 
-function find(array: any[], item) {
+export function find(array: any[], item) {
   let result = array.indexOf(item);
   if (result === -1 && typeof item === 'object') {
     array.some((f, i) => {
       const res = isEqual(f, item);
       if (res) {
-       result = i;
+        result = i;
       }
       return res;
     });
@@ -17,15 +17,80 @@ function find(array: any[], item) {
   return result;
 }
 
-export default function deepMerge(...args: Object[]) {
+export function arrayItemOperation(inp: any) {
+  if (typeof inp === 'string') {
+    if (inp.startsWith('^')) {
+      return {
+        $unset: arrayItemOperation(inp.slice(1, inp.length)),
+      };
+    } else if (inp.startsWith('[') && inp.endsWith(']')) {
+      return inp.slice(1, inp.length - 1)
+        .split(',')
+        .map(f => f.trim())
+        .filter(f => f && f !== 'undefined' && f !== 'null')
+        .map(arrayItemOperation);
+    } else {
+      return inp;
+    }
+  } else {
+    if (Array.isArray(inp)) {
+      return inp.map(arrayItemOperation);
+    } else {
+      return inp
+    }
+  }
+}
+
+// разные варианты, обработки в том числе когда в одном массиве несколько вариантов удаление и добавление вперемешку
+// написать тестик
+export function processArrayItem(result: Object[], current: any) {
+  const value = arrayItemOperation(current);
+  if (value !== current) {
+    Object.keys(value)
+      .filter(k => k.startsWith('$'))
+      .forEach(op => {
+        if (op === '$unset') {
+          const _item = value[op];
+          if (Array.isArray(_item)) {
+            _item.forEach(i => removeIfExists(i));
+          } else {
+            removeIfExists(_item);
+          }
+        }
+      });
+  }
+  function removeIfExists(_item: any) {
+    const index = find(result, _item);
+    if (index !== -1) {
+      result.splice(index, 1);
+    }
+  }
+}
+
+export function processArray(result: any[], current: any) {
+  if (Array.isArray(current)) {
+    current.forEach(item => {
+      pushUnique(current);
+    });
+  } else {
+    pushUnique(current);
+  }
+
+  function pushUnique(current) {
+    if (find(result, current) === -1) {
+      result.push(current);
+    }
+  }
+}
+
+export default function deepMerge(...args: object[]) {
   if (args.length > 0) {
     // дописать merge с массивами
     let result = new (<any>args[0].constructor)();
-    let array = Array.isArray(result);
     for (let i = 0, len = args.length; i < len; i++) {
       let current = args[i];
       if (current !== undefined) {
-        if (!array) {
+        if (!Array.isArray(result)) {
           let keys = Object.keys(current);
           for (let j = 0, kLen = keys.length; j < kLen; j++) {
             let key = keys[j];
@@ -40,17 +105,7 @@ export default function deepMerge(...args: Object[]) {
             }
           }
         } else {
-          if (Array.isArray(current)) {
-            (<Object[]>current).forEach(item => {
-              if (find(result, item) === -1) {
-                  result.push(item);
-                }
-              });
-          } else {
-            if (result.indexOf(current) === -1) {
-              result.push(current);
-            }
-          }
+          processArray(result, current);
         }
       }
     }
@@ -59,3 +114,5 @@ export default function deepMerge(...args: Object[]) {
     return args[0];
   }
 }
+
+
