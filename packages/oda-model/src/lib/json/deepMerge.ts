@@ -19,7 +19,7 @@ export function find(array: any[], item) {
 
 export function arrayItemOperation(inp: any) {
   if (typeof inp === 'string') {
-    if (inp.startsWith('^')) {
+    if (inp.startsWith('-')) {
       return {
         $unset: arrayItemOperation(inp.slice(1, inp.length)),
       };
