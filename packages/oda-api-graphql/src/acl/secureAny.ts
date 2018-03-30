@@ -3,7 +3,7 @@ export interface ACLCRUD<T> {
   create?: Secure<T>;
   read?: Secure<T>;
   update?: Secure<T>;
-  delete?: Secure<T>;
+  remove?: Secure<T>;
 }
 
 export interface Acl<T> {

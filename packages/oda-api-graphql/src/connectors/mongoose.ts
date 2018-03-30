@@ -13,8 +13,8 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
 
   public mongoose: any;
 
-  constructor({ mongoose, connectors, user, owner, acls, userGroup, initOwner, logUser }) {
-    super({ connectors, user, owner, acls, userGroup, initOwner, logUser });
+  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
+    super({ connectors, user, owner, acls, userGroup });
     this.mongoose = mongoose;
   }
 
@@ -33,7 +33,6 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
       this.model = this.mongoose.model(name);
     }
   }
-
   public async getCount(args) {
     let query = this.getFilter(args);
     return (await this.model.count(query));
@@ -160,6 +159,23 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
     this.storeToCache(result);
 
     return result;
+  }
+
+  public async create(obj: Payload) {
+    return await (new (this.model)(obj)).save();
+  }
+
+  public async update(record, obj: Payload) {
+    for (let f in obj) {
+      if (obj.hasOwnProperty(f)) {
+        record.set(f, obj[f]);
+      }
+    }
+    return await record.save();
+  }
+
+  public async remove(record) {
+    return await record.remove();
   }
 
   protected logUser() {

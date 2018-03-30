@@ -50,14 +50,14 @@ import { Partial#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({mongoose, connectors, user, owner, acls, userGroup, initOwner, logUser}) {
+  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
     logger.trace('constructor');
-    super({mongoose, connectors, user, acls, userGroup
-<#-if( entity.needOwner ){-#>
+    super({ mongoose, connectors, user, acls, userGroup
+<#-if (entity.needOwner) {-#>
 , owner
 <#-} else {-#>
 , owner: false
-<#-}-#>, initOwner, logUser});
+<#-}-#> });
     this.initSchema('#{entity.name}', #{ entity.name }Schema());
 
     this.loaderKeys = {
@@ -122,7 +122,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
 #>
       by#{loaderName}: new Dataloader(keys => by#{loaderName}(keys)
         .then(this.updaters.by#{loaderName})
-<#- if(loaderName === 'Id'){#>, {
+<#- if (loaderName === 'Id') {#>, {
           cacheKeyFn: key => typeof key !== 'object' ? key : key.toString(),
         }
 <#-}-#>),
@@ -143,7 +143,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   public async create(payload: Partial#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
-    let result = await  (new (this.model)(entity)).save();
+    let result = await this.create(entity);
     this.storeToCache([result]);
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
@@ -156,13 +156,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     logger.trace(`findOneBy#{f.cName}AndUpdate`);
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
-    if(result){
-      for (let f in entity) {
-        if (entity.hasOwnProperty(f)) {
-          result.set(f, entity[f]);
-        }
-      }
-      result = await result.save();
+    if (result) {
+      result = await this.update(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -183,13 +178,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     logger.trace(`findOneBy#{findBy}AndUpdate with #{withArgs} `);
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
-    if(result){
-      for (let f in entity) {
-        if (entity.hasOwnProperty(f)) {
-          result.set(f, entity[f]);
-        }
-      }
-      result = await result.save();
+    if (result) {
+      result = await this.update(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -206,8 +196,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   public async findOneBy#{f.cName}AndRemove(#{ukey}: #{type}) {
     logger.trace(`findOneBy#{f.cName}AndRemove`);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
-    if( result ){
-      result = await result.remove();
+    if (result) {
+      result = await this.remove(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -227,8 +217,8 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   public async findOneBy#{findBy}AndRemove(#{findArgs}) {
     logger.trace(`findOneBy#{findBy}AndRemove with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
-    if( result ){
-      result = await result.remove();
+    if (result) {
+      result = await this.remove(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -256,17 +246,17 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     if (current) {
       await this.connectors.#{connection.ref.entity}.findOneByIdAndUpdate(
         args.#{connection.refFieldName},
-        { #{connection.ref.field}: current.#{connection.ref.backField}});
+        { #{connection.ref.field}: current.#{connection.ref.backField} });
     }
 <#} else if (connection.verb === 'BelongsTo') {#>
-    let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName} );
+    let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName});
     if (opposite) {
       await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName},
       { #{connection.ref.backField || connection.field}: opposite.#{connection.ref.field} });
     }
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
-    let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName} );
+    let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName});
     if (current && opposite) {
       let update: any = {
         #{connection.ref.using.field}: current.#{connection.ref.backField},
@@ -316,7 +306,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, { #{connection.ref.backField || connection.field}: null });
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
-    let opposite = await this.connectors.#{connection.ref.entity}.findOneById( args.#{connection.refFieldName} );
+    let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName});
     if (current && opposite) {
       let connection = await this.connectors.#{connection.ref.using.entity}.getList({
         filter: {
@@ -365,7 +355,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
 
 <#-});-#>
 
-  public getPayload(args: Partial#{entity.name}, update?: boolean) {
+  public getPayload(args: Partial#{entity.name}, update?: boolean): Partial#{ entity.name } {
     let entity: any = {};
     <#- for (let f of entity.args.create) {#>
       if (args.#{f.name} !== undefined) {

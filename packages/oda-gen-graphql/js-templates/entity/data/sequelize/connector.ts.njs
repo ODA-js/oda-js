@@ -143,7 +143,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
   public async create(payload: I#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
-    let result = await this.model.create(entity);
+    let result = this.create(entity);
     this.storeToCache([result]);
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
@@ -157,7 +157,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if(result){
-      await result.update(entity);
+      await this.update(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -179,7 +179,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if(result){
-      await result.update(entity);
+      await this.update(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -197,7 +197,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     logger.trace(`findOneBy#{f.cName}AndRemove`);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if( result ){
-      result = await result.destroy();
+      result = this.remove(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -218,7 +218,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     logger.trace(`findOneBy#{findBy}AndRemove with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if( result ){
-      result = await result.destroy();
+      result = this.remove(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {

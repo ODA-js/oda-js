@@ -18,7 +18,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   public storeToCache: any;
   protected acls: ACLCRUD<(object) => object>;
 
-  constructor({ connectors, user, owner, acls, userGroup, initOwner, logUser }) {
+  constructor({ connectors, user, owner, acls, userGroup }) {
     this.connectors = connectors;
     this.user = user;
     this.userGroup = userGroup;
@@ -26,11 +26,14 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     if (!this.acls.read.defaultAccess) {
       this.acls.read.defaultAccess = this._canView;
     }
-    if (initOwner) {
-      this.initOwner = initOwner;
+    if (!this.acls.create.defaultAccess) {
+      this.acls.create.defaultAccess = this._canView;
     }
-    if (logUser) {
-      this.logUser = logUser;
+    if (!this.acls.update.defaultAccess) {
+      this.acls.update.defaultAccess = this._canView;
+    }
+    if (!this.acls.remove.defaultAccess) {
+      this.acls.remove.defaultAccess = this._canView;
     }
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
@@ -72,6 +75,18 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     return result
       .map(r => (r && r.toJSON) ? r.toJSON() : r)
       .map(r => this.ensureId(r));
+  }
+
+  public async create(obj: Payload) {
+    throw new Error('not implemented');
+  }
+
+  public async update(record, obj: Payload) {
+    throw new Error('not implemented');
+  }
+
+  public async remove(record) {
+    throw new Error('not implemented');
   }
 
   public getPayload(args) { return {} as Payload; };

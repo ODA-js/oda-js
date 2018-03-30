@@ -15,8 +15,8 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
 
   public sequelize: Sequelize.Sequelize;
 
-  constructor({ sequelize, connectors, user, owner, acls, userGroup, initOwner, logUser }) {
-    super({ connectors, user, owner, acls, userGroup, initOwner, logUser });
+  constructor({ sequelize, connectors, user, owner, acls, userGroup }) {
+    super({ connectors, user, owner, acls, userGroup });
     this.sequelize = sequelize;
   }
 
@@ -155,6 +155,18 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
     this.storeToCache(result);
 
     return result;
+  }
+
+  public async create(obj: Payload) {
+    return await this.model.create(obj);
+  }
+
+  public async update(record, obj: Payload) {
+    return await record.update(obj);
+  }
+
+  public async remove(record) {
+    return await record.destroy();
   }
 
   protected logUser() {

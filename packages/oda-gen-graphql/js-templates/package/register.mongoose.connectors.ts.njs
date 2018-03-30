@@ -15,7 +15,7 @@ export default class RegisterConnectors {
 
   public Init#{entity.name}(): #{entity.name}Connector {
     if (!this._#{entity.name}) {
-      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup, initOwner: false, logUser: false });
+      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup });
     }
     return this._#{entity.name};
   }
@@ -36,11 +36,12 @@ export default class RegisterConnectors {
   public systemGQL;
 
   public initGQL({
-      userGQL,
-      systemGQL
-    }:{
+    userGQL,
+    systemGQL
+  }: {
       userGQL?,
-      systemGQL?,}){
+      systemGQL?,
+    }) {
     this.userGQL = userGQL ? userGQL : this.userGQL;
     this.systemGQL = systemGQL ? systemGQL : this.systemGQL;
   }
@@ -60,7 +61,12 @@ export default class RegisterConnectors {
       owner?: any,
       mongoose?: any,
       sequelize?: any,
-      acls?: acl.secureAny.Acls<(object) => object>;
+      acls?: {
+        read: acl.secureAny.Acls<(object) => object>;
+        update: acl.secureAny.Acls<(object) => object>;
+        create: acl.secureAny.Acls<(object) => object>;
+        remove: acl.secureAny.Acls<(object) => object>;
+      }
       userGroup?: string;
       userGQL?,
       systemGQL?,
@@ -69,9 +75,14 @@ export default class RegisterConnectors {
     this.owner = owner;
     this.mongoose = mongoose;
     this.sequelize = sequelize;
-    this.acls = { read: new acl.secureAny.Secure<(object) => object>({ acls }) };
+    this.acls = {
+      read: new acl.secureAny.Secure<(object) => object>({ acls: acls ? acls.read: undefined }),
+      update: new acl.secureAny.Secure<(object) => object>({ acls: acls ? acls.update: undefined }),
+      create: new acl.secureAny.Secure<(object) => object>({ acls: acls ? acls.create: undefined }),
+      remove: new acl.secureAny.Secure<(object) => object>({ acls: acls ? acls.remove: undefined }),
+    };
     this.userGroup = userGroup;
-    this.initGQL({userGQL, systemGQL});
+    this.initGQL({ userGQL, systemGQL });
   }
 
   async syncDb(force: boolean = false) {
@@ -84,11 +95,11 @@ export default class RegisterConnectors {
 <#-}#>
   }
 
-  async close(){
-    if (this.sequelize && typeof this.sequelize.close === 'function'){
+  async close() {
+    if (this.sequelize && typeof this.sequelize.close === 'function') {
       await this.sequelize.close();
     }
-    if(this.mongoose && typeof this.mongoose.close === 'function'){
+    if (this.mongoose && typeof this.mongoose.close === 'function') {
       await this.mongoose.close();
     }
   }
