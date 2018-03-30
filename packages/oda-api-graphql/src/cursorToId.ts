@@ -1,5 +1,5 @@
 import { PREFIX } from './consts';
-import unbase64 from './unbase64';
+import { unbase64 } from 'oda-isomorfic';
 
 export default (cursor) => {
   let result;

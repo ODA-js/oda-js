@@ -1,5 +1,3 @@
-import base64 from './base64';
-import unbase64 from './unbase64';
 import * as consts from './consts';
 import cursorToId from './cursorToId';
 import emptyConnection from './emptyConnection';
@@ -14,12 +12,13 @@ import * as utils from './utils';
 import * as dataPump from './dataPump';
 import MongooseApi from './connectors/mongoose';
 import SequelizeApi from './connectors/sequelize';
-import ConnectorsApiBase from './connectors/api';
+import ConnectorsApiBase, { ACLCheck } from './connectors/api';
 import { Connector } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
 import * as Filter from './filter';
-import { fromGlobalId, toGlobalId, globalIdField } from './globalId';
+import { fromGlobalId, toGlobalId, base64, unbase64 } from 'oda-isomorfic';
+import { globalIdField } from './globalId';
 
 export {
   acl,
@@ -46,4 +45,5 @@ export {
   fromGlobalId,
   toGlobalId,
   globalIdField,
+  ACLCheck,
 };

@@ -62,10 +62,10 @@ export default class RegisterConnectors {
       mongoose?: any,
       sequelize?: any,
       acls?: {
-        read: acl.secureAny.Acls<(object) => object>;
-        update: acl.secureAny.Acls<(object) => object>;
-        create: acl.secureAny.Acls<(object) => object>;
-        remove: acl.secureAny.Acls<(object) => object>;
+        read?: acl.secureAny.Acls<(object) => object>;
+        update?: acl.secureAny.Acls<(object) => object>;
+        create?: acl.secureAny.Acls<(object) => object>;
+        remove?: acl.secureAny.Acls<(object) => object>;
       }
       userGroup?: string;
       userGQL?,

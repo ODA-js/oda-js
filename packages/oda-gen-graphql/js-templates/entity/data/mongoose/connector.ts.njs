@@ -143,7 +143,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   public async create(payload: Partial#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
-    let result = await this.create(entity);
+    let result = await this.createSecure(entity);
     this.storeToCache([result]);
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
@@ -157,7 +157,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if (result) {
-      result = await this.update(result, entity);
+      result = await this.updateSecure(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -179,7 +179,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if (result) {
-      result = await this.update(result, entity);
+      result = await this.updateSecure(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -197,7 +197,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     logger.trace(`findOneBy#{f.cName}AndRemove`);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if (result) {
-      result = await this.remove(result);
+      result = await this.removeSecure(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -218,7 +218,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     logger.trace(`findOneBy#{findBy}AndRemove with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if (result) {
-      result = await this.remove(result);
+      result = await this.removeSecure(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {

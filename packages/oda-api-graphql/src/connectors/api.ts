@@ -1,5 +1,10 @@
 import { ACLCRUD } from '../acl/secureAny';
 
+export type ACLCheck = (context, obj: {
+  source?: any,
+  payload?: any;
+}) => object
+
 export default class ConnectorsApiBase<Connectors, Payload> {
   protected user;
   protected userGroup;
@@ -16,7 +21,10 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   public updaters: any;
   public loaderKeys: any;
   public storeToCache: any;
-  protected acls: ACLCRUD<(object) => object>;
+  protected acls: ACLCRUD<(context: ConnectorsApiBase<Connectors, Payload>, obj: {
+    source?: any,
+    payload?: Payload;
+  }) => object>;
 
   constructor({ connectors, user, owner, acls, userGroup }) {
     this.connectors = connectors;
@@ -54,18 +62,18 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     source?: any,
     payload?: Payload;
   }) {
-    return this.acls[action].allow(this.userGroup, this.constructor.name).call(this, obj) as Payload;
+    return this.acls[action].allow(this.userGroup, this.constructor.name)(this, obj) as Payload;
   }
 
-  protected _defaultAccess(obj: {
+  protected _defaultAccess(context: ConnectorsApiBase<Connectors, Payload>, obj: {
     source?: any,
     payload?: Payload;
   }) {
     let result = obj.source;
-    if (this.user && !this.user.isSystem) {
+    if (context.user && !context.user.isSystem) {
       if (typeof result === 'object' && result !== null && result !== undefined) {
         if (result.owner) {
-          result = this._viewer && this._viewer.ids.hasOwnProperty(result.owner.toString()) ? result : null;
+          result = context._viewer && context._viewer.ids.hasOwnProperty(result.owner.toString()) ? result : null;
         }
       }
     }
@@ -83,7 +91,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
       .map(r => this.ensureId(r));
   }
 
-  public async create(payload: Payload) {
+  public async createSecure(payload: Payload) {
     if (this.can('create', { payload })) {
       return this._create(payload);
     }
@@ -93,9 +101,9 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     throw new Error('not implemented');
   }
 
-  public async update(source, payload: Payload) {
+  public async updateSecure(source, payload: Payload) {
     if (this.can('update', { source, payload })) {
-      return this._create(payload);
+      return this._update(source, payload);
     }
   }
 
@@ -103,7 +111,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     throw new Error('not implemented');
   }
 
-  public async remove(source) {
+  public async removeSecure(source) {
     if (this.can('remove', { source })) {
       return this._remove(source);
     }
