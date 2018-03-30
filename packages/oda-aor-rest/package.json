@@ -1,6 +1,6 @@
 {
   "name": "oda-aor-rest",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "apollo-link-http": "^1.5.3",
     "comparator.js": "0.0.11",
     "material-ui": "^0.20.0",
-    "oda-lodash": "^0.1.8",
+    "oda-lodash": "^0.1.9",
     "prop-types": "^15.6.1",
     "redux-form": "^7.3.0",
     "redux-saga": "^0.16.0"
@@ -30,6 +30,6 @@
     "@types/graphql": "0.12.4",
     "@types/node": "^8.0.20",
     "@types/react": "^16.0.40",
-    "typescript": "^2.7.2"
+    "typescript": "~2.7.2"
   }
 }

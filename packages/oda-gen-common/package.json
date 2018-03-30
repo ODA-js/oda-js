@@ -1,6 +1,6 @@
 {
   "name": "oda-gen-common",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "@types/node": "^8.0.20",
     "jest": "^22.4.2",
     "ts-jest": "^22.4.1",
-    "typescript": "^2.7.2"
+    "typescript": "~2.7.2"
   },
   "jest": {
     "transform": {

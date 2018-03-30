@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "0.4.28",
+  "version": "0.4.29",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "isomorphic-fetch": "^2.2.1",
     "iterall": "^1.2.2",
     "mongoose": "^4.13.9",
+    "oda-isomorfic": "^0.0.28",
     "sequelize": "^4.35.2"
   },
   "peerDependencies": {
@@ -30,6 +31,6 @@
     "@types/inflected": "^1.1.29",
     "@types/node": "^8.0.20",
     "@types/sequelize": "^4.27.8",
-    "typescript": "^2.7.2"
+    "typescript": "~2.4.2"
   }
 }
