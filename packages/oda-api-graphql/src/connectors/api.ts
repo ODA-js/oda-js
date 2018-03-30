@@ -24,16 +24,16 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     this.userGroup = userGroup;
     this.acls = acls;
     if (!this.acls.read.defaultAccess) {
-      this.acls.read.defaultAccess = this._canView;
+      this.acls.read.defaultAccess = this._defaultAccess;
     }
     if (!this.acls.create.defaultAccess) {
-      this.acls.create.defaultAccess = this._canView;
+      this.acls.create.defaultAccess = this._defaultAccess;
     }
     if (!this.acls.update.defaultAccess) {
-      this.acls.update.defaultAccess = this._canView;
+      this.acls.update.defaultAccess = this._defaultAccess;
     }
     if (!this.acls.remove.defaultAccess) {
-      this.acls.remove.defaultAccess = this._canView;
+      this.acls.remove.defaultAccess = this._defaultAccess;
     }
     this.setupViewer(owner);
     this.storeToCache = this.updateLoaders('All Fields');
@@ -50,16 +50,22 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     }, {}) as Payload;
   }
 
-  public canView(obj: Payload) {
-    return this.acls.read.allow(this.userGroup, this.constructor.name).call(this, obj) as Payload;
+  public can(action: 'create' | 'read' | 'update' | 'remove', obj: {
+    source?: any,
+    payload?: Payload;
+  }) {
+    return this.acls[action].allow(this.userGroup, this.constructor.name).call(this, obj) as Payload;
   }
 
-  protected _canView(obj) {
-    let result = obj;
+  protected _defaultAccess(obj: {
+    source?: any,
+    payload?: Payload;
+  }) {
+    let result = obj.source;
     if (this.user && !this.user.isSystem) {
-      if (typeof obj === 'object' && obj !== null && obj !== undefined) {
-        if (obj.owner) {
-          result = this._viewer && this._viewer.ids.hasOwnProperty(obj.owner.toString()) ? obj : null;
+      if (typeof result === 'object' && result !== null && result !== undefined) {
+        if (result.owner) {
+          result = this._viewer && this._viewer.ids.hasOwnProperty(result.owner.toString()) ? result : null;
         }
       }
     }
@@ -77,15 +83,33 @@ export default class ConnectorsApiBase<Connectors, Payload> {
       .map(r => this.ensureId(r));
   }
 
-  public async create(obj: Payload) {
+  public async create(payload: Payload) {
+    if (this.can('create', { payload })) {
+      return this._create(payload);
+    }
+  }
+
+  protected async _create(payload: Payload) {
     throw new Error('not implemented');
   }
 
-  public async update(record, obj: Payload) {
+  public async update(source, payload: Payload) {
+    if (this.can('update', { source, payload })) {
+      return this._create(payload);
+    }
+  }
+
+  protected async _update(source, payload: Payload) {
     throw new Error('not implemented');
   }
 
-  public async remove(record) {
+  public async remove(source) {
+    if (this.can('remove', { source })) {
+      return this._remove(source);
+    }
+  }
+
+  protected async _remove(record) {
     throw new Error('not implemented');
   }
 
@@ -143,7 +167,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
           }
         }
       }
-      return items.map(this.canView.bind(this));
+      return items.map(source => this.can.call(this, 'read', { source }));
     };
   }
 

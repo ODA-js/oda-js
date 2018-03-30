@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "fte.js": "^0.6.0",
-    "graphql": "^0.12.3",
     "inflected": "^2.0.4",
     "lodash": "^4.17.5",
     "oda-api-graphql": "^0.4.27",

@@ -136,15 +136,15 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
       });
     }, pageSize);
 
-    for await (let item of iterator) {
+    for await (let source of iterator) {
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-        if (this.canView(item)) {
+        if (this.can('read', { source })) {
           if (hasExtraCondition) {
-            if (await checkExtraCriteria(item)) {
-              result.push(item);
+            if (await checkExtraCriteria(source)) {
+              result.push(source);
             }
           } else {
-            result.push(item);
+            result.push(source);
           }
         }
       } else {

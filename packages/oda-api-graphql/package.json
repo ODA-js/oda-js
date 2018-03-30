@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "core-js": "^2.5.3",
-    "graphql": "^0.12.3",
     "graphql-anywhere": "^4.1.5",
     "graphql-tag": "^2.8.0",
     "inflected": "^2.0.4",
@@ -22,6 +21,9 @@
     "iterall": "^1.2.2",
     "mongoose": "^4.13.9",
     "sequelize": "^4.35.2"
+  },
+  "peerDependencies": {
+    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
   },
   "devDependencies": {
     "@types/graphql": "0.12.4",
