@@ -4,7 +4,7 @@ import pagination from '../pagination';
 import cursorDirection from '../direction';
 import { DIRECTION } from '../consts';
 
-import { fromGlobalId } from './../globalId';
+import { fromGlobalId } from 'oda-isomorfic';
 import * as Sequelize from 'sequelize';
 
 import ConnectorsApiBase from './api';
@@ -157,15 +157,15 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
     return result;
   }
 
-  public async create(obj: Payload) {
+  protected async _create(obj: Payload) {
     return await this.model.create(obj);
   }
 
-  public async update(record, obj: Payload) {
+  protected async _update(record, obj: Payload) {
     return await record.update(obj);
   }
 
-  public async remove(record) {
+  protected async _remove(record) {
     return await record.destroy();
   }
 

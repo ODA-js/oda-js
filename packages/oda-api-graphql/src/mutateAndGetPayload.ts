@@ -1,4 +1,4 @@
-import { fromGlobalId } from './globalId';
+import { fromGlobalId } from 'oda-isomorfic';
 
 export default mutation => async (root,
   { input }: { input: { clientMutationId: string } },

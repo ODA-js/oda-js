@@ -3,7 +3,7 @@ import pagination from '../pagination';
 import cursorDirection from '../direction';
 import { DIRECTION } from '../consts';
 
-import { fromGlobalId } from './../globalId';
+import { fromGlobalId } from 'oda-isomorfic';
 
 import ConnectorsApiBase from './api';
 
@@ -161,11 +161,11 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
     return result;
   }
 
-  public async create(obj: Payload) {
+  protected async _create(obj: Payload) {
     return await (new (this.model)(obj)).save();
   }
 
-  public async update(record, obj: Payload) {
+  protected async _update(record, obj: Payload) {
     for (let f in obj) {
       if (obj.hasOwnProperty(f)) {
         record.set(f, obj[f]);
@@ -174,7 +174,7 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
     return await record.save();
   }
 
-  public async remove(record) {
+  protected async _remove(record) {
     return await record.remove();
   }
 

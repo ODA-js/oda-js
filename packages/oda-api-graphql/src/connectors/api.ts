@@ -35,7 +35,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
       this.acls.read.defaultAccess = this._defaultAccess;
     }
     if (!this.acls.create.defaultAccess) {
-      this.acls.create.defaultAccess = this._defaultAccess;
+      this.acls.create.defaultAccess = this._defaultCreate;
     }
     if (!this.acls.update.defaultAccess) {
       this.acls.update.defaultAccess = this._defaultAccess;
@@ -77,6 +77,14 @@ export default class ConnectorsApiBase<Connectors, Payload> {
         }
       }
     }
+    return result;
+  };
+
+  protected _defaultCreate(context: ConnectorsApiBase<Connectors, Payload>, obj: {
+    source?: any,
+    payload?: Payload;
+  }) {
+    let result = obj.payload;
     return result;
   };
 
