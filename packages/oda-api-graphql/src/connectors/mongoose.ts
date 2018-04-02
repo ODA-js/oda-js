@@ -9,7 +9,7 @@ import ConnectorsApiBase from './api';
 
 import { forward } from './listIterator';
 
-export default class MongooseApi<RegisterConnectors, Payload> extends ConnectorsApiBase<RegisterConnectors, Payload> {
+export default class MongooseApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload> {
 
   public mongoose: any;
 
@@ -142,7 +142,7 @@ export default class MongooseApi<RegisterConnectors, Payload> extends Connectors
 
     for await (let source of iterator) {
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-        if (this.can('read', { source })) {
+        if (this.secure('read', { source })) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(this.toJSON(source))) {
               result.push(source);

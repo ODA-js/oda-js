@@ -1,5 +1,5 @@
 import { PREFIX } from './consts';
-import base64 from './base64';
+import { base64 } from 'oda-isomorfic';
 
 export default (id) => {
   let result;

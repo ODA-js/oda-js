@@ -5,7 +5,7 @@ export type ACLCheck = (context, obj: {
   payload?: any;
 }) => object
 
-export default class ConnectorsApiBase<Connectors, Payload> {
+export default class ConnectorsApiBase<Connectors, Payload extends object> {
   protected user;
   protected userGroup;
   protected _viewer: {
@@ -58,7 +58,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
     }, {}) as Payload;
   }
 
-  public can(action: 'create' | 'read' | 'update' | 'remove', obj: {
+  public secure(action: 'create' | 'read' | 'update' | 'remove', obj: {
     source?: any,
     payload?: Payload;
   }) {
@@ -68,7 +68,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   protected _defaultAccess(context: ConnectorsApiBase<Connectors, Payload>, obj: {
     source?: any,
     payload?: Payload;
-  }) {
+  }): object {
     let result = obj.source;
     if (context.user && !context.user.isSystem) {
       if (typeof result === 'object' && result !== null && result !== undefined) {
@@ -83,7 +83,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   protected _defaultCreate(context: ConnectorsApiBase<Connectors, Payload>, obj: {
     source?: any,
     payload?: Payload;
-  }) {
+  }): object {
     let result = obj.payload;
     return result;
   };
@@ -100,7 +100,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   }
 
   public async createSecure(payload: Payload) {
-    if (this.can('create', { payload })) {
+    if (this.secure('create', { payload })) {
       return this._create(payload);
     }
   }
@@ -110,7 +110,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   }
 
   public async updateSecure(source, payload: Payload) {
-    if (this.can('update', { source, payload })) {
+    if (this.secure('update', { source, payload })) {
       return this._update(source, payload);
     }
   }
@@ -120,7 +120,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
   }
 
   public async removeSecure(source) {
-    if (this.can('remove', { source })) {
+    if (this.secure('remove', { source })) {
       return this._remove(source);
     }
   }
@@ -183,7 +183,7 @@ export default class ConnectorsApiBase<Connectors, Payload> {
           }
         }
       }
-      return items.map(source => this.can.call(this, 'read', { source }));
+      return items.map(source => this.secure.call(this, 'read', { source }));
     };
   }
 

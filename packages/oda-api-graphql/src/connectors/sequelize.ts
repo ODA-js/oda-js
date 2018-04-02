@@ -11,7 +11,7 @@ import ConnectorsApiBase from './api';
 
 import { forward } from './listIterator';
 
-export default class SequelizeApi<RegisterConnectors, Payload> extends ConnectorsApiBase<RegisterConnectors, Payload>{
+export default class SequelizeApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload>{
 
   public sequelize: Sequelize.Sequelize;
 
@@ -138,7 +138,7 @@ export default class SequelizeApi<RegisterConnectors, Payload> extends Connector
 
     for await (let source of iterator) {
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-        if (this.can('read', { source })) {
+        if (this.secure('read', { source })) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(source)) {
               result.push(source);

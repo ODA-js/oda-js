@@ -13,7 +13,7 @@ function filterIt(payload, queryCheck) {
 export const subscriptions = {
   #{entity.name}: {
     subscribe: Filter.withContext(withFilter(() => pubsub.asyncIterator('#{entity.name}'), ({ #{entity.name} }, args, context, info) => {
-      let allow = context.connectors.#{entity.name}.can('read', { source: #{entity.name}.node });
+      let allow = context.connectors.#{entity.name}.secure('read', { source: #{entity.name}.node });
       if (allow) {
         return filterIt(#{entity.name}, context.queryCheck);
       } else {
