@@ -22,6 +22,20 @@ export function getValue(value) {
     }
 }
 
+export async function fixCount(length: number, cursor: { skip?: number, limit?: number; }, getCount: () => Promise<Number>) {
+  const count = await getCount();
+  if (count > 0) {
+    if (length == cursor.limit) {
+      return count
+    }
+    if (length < cursor.limit) {
+      return cursor.skip + length;
+    }
+  } else {
+    return count;
+  }
+}
+
 export const query: { [key: string]: any } = {
   #{entity.plural}: async (
     owner,
@@ -74,10 +88,10 @@ export const query: { [key: string]: any } = {
             ? edges[edges.length - 1].cursor : undefined,
           hasPreviousPage: get(selectionSet, 'pageInfo.hasPreviousPage') ? (direction === consts.DIRECTION.BACKWARD ? list.length === cursor.limit : false) : undefined,
           hasNextPage: get(selectionSet, 'pageInfo.hasNextPage') ? (direction === consts.DIRECTION.FORWARD ? list.length === cursor.limit : false) : undefined,
-          count: get(selectionSet, 'pageInfo.count') ? await context.connectors.#{entity.name}.getCount({
+          count: get(selectionSet, 'pageInfo.count') ?  await fixCount(list.length, cursor, () => context.connectors.ToDoItem.getCount({
               ...args,
               idMap,
-            }) : 0,
+            })) : 0,
         } : null;
 
       result = {
