@@ -101,7 +101,7 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     }
   }
 
-  protected async _create(payload: Payload) {
+  protected async _create(payload: Payload): Promise<any> {
     throw new Error('not implemented');
   }
 
@@ -115,7 +115,7 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     }
   }
 
-  protected async _update(source, payload: Payload) {
+  protected async _update(source, payload: Payload): Promise<any> {
     throw new Error('not implemented');
   }
 
@@ -129,7 +129,7 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     }
   }
 
-  protected async _remove(record) {
+  protected async _remove(record): Promise<any> {
     throw new Error('not implemented');
   }
 
