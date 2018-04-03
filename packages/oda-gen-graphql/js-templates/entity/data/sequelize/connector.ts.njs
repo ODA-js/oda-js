@@ -46,16 +46,16 @@ import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
 
-import { I#{ entity.name } } from '../types/model';
+import { Partial#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
-export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
+export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
   constructor(
     { sequelize, connectors, securityContext }:
       { sequelize: any, connectors: RegisterConnectors, securityContext: SecurityContext<RegisterConnectors> }
   ) {
     logger.trace('constructor');
-    super({ name: '#{ entity.name }', sequelize, securityContext});
+    super({ name: '#{ entity.name }', sequelize, connectors, securityContext});
     this.initSchema('#{entity.name}', #{ entity.name }Schema);
 
     this.loaderKeys = {
@@ -138,10 +138,10 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     };
   }
 
-  public async create(payload: I#{entity.name}) {
+  public async create(payload: Partial#{entity.name}) {
     logger.trace('create');
     let entity = this.getPayload(payload);
-    let result = this.create(entity);
+    let result = await this.createSecure(entity);
     this.storeToCache([result]);
     return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
@@ -155,7 +155,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if(result){
-      await this.update(result, entity);
+      await this.updateSecure(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -177,7 +177,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if(result){
-      await this.update(result, entity);
+      await this.updateSecure(result, entity);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -195,7 +195,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     logger.trace(`findOneBy#{f.cName}AndRemove`);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
     if( result ){
-      result = this.remove(result);
+      result = this.removeSecure(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -216,7 +216,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
     logger.trace(`findOneBy#{findBy}AndRemove with #{withArgs} `);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if( result ){
-      result = this.remove(result);
+      result = this.removeSecure(result);
       this.storeToCache([result]);
       return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
     } else {
@@ -353,7 +353,7 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I
 
 <#-});-#>
 
-  public getPayload(args: I#{entity.name}, update?: boolean) {
+  public getPayload(args: Partial#{entity.name}, update?: boolean) {
     let entity: any = {};
     <#- for (let f of entity.args.create) {#>
       if (args.#{f.name} !== undefined) {
