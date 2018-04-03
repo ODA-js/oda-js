@@ -85,7 +85,7 @@ export default class RegisterConnectors {
       userGQL?,
       systemGQL?,
     }) {
-    this.securityContext = {
+    this.securityContext = acls && {
       user,
       group: userGroup,
       acls: {
