@@ -1,18 +1,23 @@
 import { ACLCRUD } from '../acl/secureAny';
+import { CRUD } from './../connector';
 
 export type ACLCheck = (context, obj: {
   source?: any,
   payload?: any;
 }) => object
 
+export type SecurityContext<Connectors> = {
+  [key: string]: any;
+  acls: ACLCRUD<(context: SecurityContext<Connectors>, obj: {
+    source?: any,
+    payload?: object;
+  }) => object | Promise<any>>;
+  group: string;
+}
+
 export default class ConnectorsApiBase<Connectors, Payload extends object> {
-  protected user;
-  protected userGroup;
-  protected _viewer: {
-    id?: string;
-    owner?: string;
-    ids: object;
-  };
+  public name: string;
+  protected securityContext: SecurityContext<Connectors>;
   public schema: any;
   public model: any;
   public connectors: Connectors;
@@ -21,29 +26,15 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   public updaters: any;
   public loaderKeys: any;
   public storeToCache: any;
-  protected acls: ACLCRUD<(context: ConnectorsApiBase<Connectors, Payload>, obj: {
-    source?: any,
-    payload?: Payload;
-  }) => object>;
 
-  constructor({ connectors, user, owner, acls, userGroup }) {
+  constructor({ name, connectors, securityContext }: {
+    name: string;
+    connectors: Connectors;
+    securityContext: SecurityContext<Connectors>
+  }) {
+    this.name = name;
     this.connectors = connectors;
-    this.user = user;
-    this.userGroup = userGroup;
-    this.acls = acls;
-    if (!this.acls.read.defaultAccess) {
-      this.acls.read.defaultAccess = this._defaultAccess;
-    }
-    if (!this.acls.create.defaultAccess) {
-      this.acls.create.defaultAccess = this._defaultCreate;
-    }
-    if (!this.acls.update.defaultAccess) {
-      this.acls.update.defaultAccess = this._defaultAccess;
-    }
-    if (!this.acls.remove.defaultAccess) {
-      this.acls.remove.defaultAccess = this._defaultAccess;
-    }
-    this.setupViewer(owner);
+    this.securityContext = securityContext;
     this.storeToCache = this.updateLoaders('All Fields');
   }
 
@@ -58,11 +49,11 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     }, {}) as Payload;
   }
 
-  public secure(action: 'create' | 'read' | 'update' | 'remove', obj: {
+  public secure(action: CRUD, obj: {
     source?: any,
     payload?: Payload;
   }) {
-    return this.acls[action].allow(this.userGroup, this.constructor.name)(this, obj) as Payload;
+    return this.securityContext.acls[action].allow(this.securityContext.group, this.name)(this.securityContext, obj) as Payload;
   }
 
   protected _defaultAccess(context: ConnectorsApiBase<Connectors, Payload>, obj: {
@@ -70,13 +61,6 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     payload?: Payload;
   }): object {
     let result = obj.source;
-    if (context.user && !context.user.isSystem) {
-      if (typeof result === 'object' && result !== null && result !== undefined) {
-        if (result.owner) {
-          result = context._viewer && context._viewer.ids.hasOwnProperty(result.owner.toString()) ? result : null;
-        }
-      }
-    }
     return result;
   };
 
@@ -99,8 +83,20 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
       .map(r => this.ensureId(r));
   }
 
+  public async readSecure(source: Payload) {
+    if (this.securityContext) {
+      return this.secure('read', { source })
+    } else {
+      return source;
+    }
+  }
+
   public async createSecure(payload: Payload) {
-    if (this.secure('create', { payload })) {
+    if (this.securityContext) {
+      if (this.secure('create', { payload })) {
+        return this._create(payload);
+      }
+    } else {
       return this._create(payload);
     }
   }
@@ -110,7 +106,11 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   }
 
   public async updateSecure(source, payload: Payload) {
-    if (this.secure('update', { source, payload })) {
+    if (this.securityContext) {
+      if (this.secure('update', { source, payload })) {
+        return this._update(source, payload);
+      }
+    } else {
       return this._update(source, payload);
     }
   }
@@ -120,7 +120,11 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   }
 
   public async removeSecure(source) {
-    if (this.secure('remove', { source })) {
+    if (this.securityContext) {
+      if (this.secure('remove', { source })) {
+        return this._remove(source);
+      }
+    } else {
       return this._remove(source);
     }
   }
@@ -130,42 +134,6 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   }
 
   public getPayload(args) { return {} as Payload; };
-  public setupViewer(viewer?: {
-    id?: string,
-    owner?: string,
-    ownerIds?: object,
-  }) {
-    if (viewer) {
-      if (!this._viewer) {
-        this._viewer = {
-          ids: {},
-        };
-      }
-
-      if (viewer.id) {
-        this._viewer.id = viewer.id;
-        this._viewer.ids = {
-          ...this._viewer.ids,
-          [viewer.id]: 1,
-        };
-      }
-
-      if (viewer.owner) {
-        this._viewer.owner = viewer.owner;
-        this._viewer.ids = {
-          ...this._viewer.ids,
-          [viewer.owner]: 1,
-        };
-      }
-
-      if (viewer.ownerIds) {
-        this._viewer.ids = {
-          ...this._viewer.ids,
-          ...viewer.ownerIds,
-        };
-      }
-    }
-  }
 
   protected initSchema(name, schema) {
     throw new Error('not implemented');
@@ -183,7 +151,11 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
           }
         }
       }
-      return items.map(source => this.secure.call(this, 'read', { source }));
+      if (this.securityContext) {
+        return items.map(source => this.readSecure.call(this, source));
+      } else {
+        return items;
+      }
     };
   }
 
@@ -196,14 +168,6 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   }
 
   public async findOneById(id): Promise<Payload> {
-    throw new Error('not implemented');
-  }
-
-  protected logUser() {
-    throw new Error('not implemented');
-  }
-
-  protected initOwner() {
     throw new Error('not implemented');
   }
 

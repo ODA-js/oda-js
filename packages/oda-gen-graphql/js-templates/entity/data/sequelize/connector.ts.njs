@@ -41,7 +41,7 @@ export interface #{ entity.name }Connector extends Connector<Partial#{ entity.na
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
-import { SequelizeApi } from 'oda-api-graphql';
+import { SequelizeApi, SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
@@ -50,14 +50,12 @@ import { I#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, I#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({sequelize, connectors, user, owner, acls, userGroup , initOwner, logUser}) {
+  constructor(
+    { sequelize, connectors, securityContext }:
+      { sequelize: any, connectors: RegisterConnectors, securityContext: SecurityContext<RegisterConnectors> }
+  ) {
     logger.trace('constructor');
-    super({sequelize, connectors, user, acls, userGroup
-<#-if( entity.needOwner ){-#>
-, owner
-<#-} else {-#>
-, owner: false
-<#-}-#>, initOwner, logUser });
+    super({ name: '#{ entity.name }', sequelize, securityContext});
     this.initSchema('#{entity.name}', #{ entity.name }Schema);
 
     this.loaderKeys = {

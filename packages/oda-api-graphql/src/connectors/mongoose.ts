@@ -5,7 +5,7 @@ import { DIRECTION } from '../consts';
 
 import { fromGlobalId } from 'oda-isomorfic';
 
-import ConnectorsApiBase from './api';
+import ConnectorsApiBase, { SecurityContext } from './api';
 
 import { forward } from './listIterator';
 
@@ -13,21 +13,19 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
 
   public mongoose: any;
 
-  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
-    super({ connectors, user, owner, acls, userGroup });
+  constructor({ mongoose, connectors, name, securityContext }: {
+    mongoose: any;
+    name: string;
+    connectors: RegisterConnectors;
+    securityContext: SecurityContext<RegisterConnectors>
+  }) {
+    super({ connectors, securityContext, name });
     this.mongoose = mongoose;
   }
 
   protected initSchema(name, schema) {
     this.schema = schema;
     if (!this.mongoose.models[name]) {
-      // init once
-      if (this.user) {
-        this.schema.pre('save', this.logUser());
-      }
-      if (this._viewer) {
-        this.schema.pre('save', this.initOwner());
-      }
       this.model = this.mongoose.model(name, schema);
     } else {
       this.model = this.mongoose.model(name);
@@ -142,7 +140,7 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
 
     for await (let source of iterator) {
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-        if (this.secure('read', { source })) {
+        if (await this.readSecure(source)) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(this.toJSON(source))) {
               result.push(source);
@@ -176,36 +174,6 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
 
   protected async _remove(record) {
     return await record.remove();
-  }
-
-  protected logUser() {
-    let _user = () => this.user;
-    return function (next) {
-      let user = _user();
-      if (this.isNew) {
-        this.set('createdAt', new Date());
-        this.set('createdBy', fromGlobalId(user.id).id);
-      } else {
-        this.set('updatedAt', new Date());
-        this.set('updatedBy', fromGlobalId(user.id).id);
-      }
-      next();
-    };
-  }
-
-  protected initOwner() {
-    let _owner = () => this._viewer;
-    return function (next) {
-      if (this.isNew && !this.get('owner')) {
-        let owner = _owner();
-        if (owner.owner) {
-          this.set('owner', owner.owner);
-        } else {
-          this.set('owner', owner.id);
-        }
-      }
-      next();
-    };
   }
 
   public async sync({ force = false }: { force?: boolean }) { }
