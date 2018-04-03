@@ -1,9 +1,7 @@
+import { CRUD } from './../connector';
 
-export interface ACLCRUD<T> {
-  create?: Secure<T>;
-  read?: Secure<T>;
-  update?: Secure<T>;
-  remove?: Secure<T>;
+export type ACLCRUD<T> = {
+  [k in CRUD]: Secure<T>;
 }
 
 export interface Acl<T> {
@@ -27,7 +25,6 @@ export class Secure<T> {
   public rules: Rules;
   public defaultAccess: T;
 
-
   constructor({ acls = {} }: {
     acls: Acls<T>;
   }) {
@@ -40,16 +37,16 @@ export class Secure<T> {
     });
   }
 
-  public allow(group: string, mutation: string) {
-    if (this.acl[group]) {
-      let result = (this.acl[group] && this.acl[group]['*']) || this.defaultAccess;
+  public allow(accessGroup: string, accessObject: string): T {
+    if (this.acl[accessGroup]) {
+      let result = (this.acl[accessGroup] && this.acl[accessGroup]['*']) || this.defaultAccess;
       let last = '';
-      let found = this.rules[group].some(r => {
+      let found = this.rules[accessGroup].some(r => {
         last = r.key;
-        return !!mutation.match(r.match);
+        return !!accessObject.match(r.match);
       });
       if (found) {
-        result = this.acl[group][last];
+        result = this.acl[accessGroup][last];
       }
       return result;
     } else {

@@ -17,7 +17,6 @@ export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMa
 
 export interface MapperOutupt {
   name: string;
-  needOwner: boolean;
   description: string;
   unique: string[];
   complexUniqueIndex: any[]; /* {
@@ -85,20 +84,13 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
   const mapToTSTypes = typeMapper.typescript;
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   const persistentRelation = persistentRelations(pack);
-  let needOwner = true;
   let aclRead = get(entity.metadata, 'acl.read');
-  if (Array.isArray(aclRead)) {
-    needOwner = aclRead.indexOf('public') === -1;
-  } else {
-    needOwner = aclRead !== 'public';
-  }
   let singleUnique = oneUniqueInIndex(entity);
 
   let ids = getFields(entity).filter(idField);
 
   return {
     name: entity.name,
-    needOwner: get(entity.metadata, 'acl.read') !== 'public',
     unique: getUniqueFieldNames(entity),
     complexUniqueIndex: complexUniqueIndex(entity).map(i => {
       let fields = Object.keys(i.fields)

@@ -5,7 +5,7 @@ import { #{entity.name}Connector } from './#{entity.name}/adapter/interface';
 
 <#- }#>
 
-import { acl, ACLCheck } from 'oda-api-graphql';
+import { acl, ACLCheck, SecurityContext } from 'oda-api-graphql';
 
 export default class RegisterConnectors {
 <#- for(let entity of pack.entities){#>
@@ -15,7 +15,7 @@ export default class RegisterConnectors {
 
   public Init#{entity.name}(): #{entity.name}Connector {
     if (!this._#{entity.name}) {
-      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, user: this.user, owner: this.owner, acls: this.acls, userGroup: this.userGroup });
+      this._#{entity.name} = new #{entity.name}({ #{entity.adapter}: this.#{entity.adapter}, connectors: this, securityContext: this.securityContext });
     }
     return this._#{entity.name};
   }
@@ -28,12 +28,10 @@ export default class RegisterConnectors {
 
   public mongoose;
   public sequelize;
-  public user;
-  public owner;
-  public acls: acl.secureAny.ACLCRUD<ACLCheck>;
-  public userGroup;
   public userGQL;
   public systemGQL;
+
+  public securityContext: SecurityContext<RegisterConnectors>
 
   public initGQL({
     userGQL,
@@ -45,6 +43,22 @@ export default class RegisterConnectors {
     this.userGQL = userGQL ? userGQL : this.userGQL;
     this.systemGQL = systemGQL ? systemGQL : this.systemGQL;
   }
+
+  protected _defaultAccess(context, obj: {
+    source?: any,
+    payload?: any;
+  }): object {
+    let result = obj.source;
+    return result;
+  };
+
+  protected _defaultCreate(context, obj: {
+    source?: any,
+    payload?: any;
+  }): object {
+    let result = obj.payload;
+    return result;
+  };
 
   constructor({
     user,
@@ -71,17 +85,38 @@ export default class RegisterConnectors {
       userGQL?,
       systemGQL?,
     }) {
-    this.user = user;
-    this.owner = owner;
+    this.securityContext = acls && {
+      user,
+      group: userGroup,
+      acls: {
+        read: new acl.secureAny.Secure<ACLCheck>({
+          acls: acls ? {
+            "*": this._defaultAccess,
+            ...acls.read
+          } : undefined
+        }),
+        update: new acl.secureAny.Secure<ACLCheck>({
+          acls: acls ? {
+            "*": this._defaultAccess,
+            ...acls.update
+          } : undefined
+        }),
+        create: new acl.secureAny.Secure<ACLCheck>({
+          acls: acls ? {
+            "*": this._defaultCreate,
+            ...acls.create
+          } : undefined
+        }),
+        remove: new acl.secureAny.Secure<ACLCheck>({
+          acls: acls ? {
+            "*": this._defaultAccess,
+            ...acls.remove
+          } : undefined
+        }),
+      }
+    }
     this.mongoose = mongoose;
     this.sequelize = sequelize;
-    this.acls = {
-      read: new acl.secureAny.Secure<ACLCheck>({ acls: acls ? acls.read: undefined }),
-      update: new acl.secureAny.Secure<ACLCheck>({ acls: acls ? acls.update: undefined }),
-      create: new acl.secureAny.Secure<ACLCheck>({ acls: acls ? acls.create: undefined }),
-      remove: new acl.secureAny.Secure<ACLCheck>({ acls: acls ? acls.remove: undefined }),
-    };
-    this.userGroup = userGroup;
     this.initGQL({ userGQL, systemGQL });
   }
 

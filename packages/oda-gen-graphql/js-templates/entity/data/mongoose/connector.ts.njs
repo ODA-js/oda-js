@@ -41,7 +41,7 @@ export interface #{ entity.name }Connector extends Connector<Partial#{ entity.na
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
-import { MongooseApi } from 'oda-api-graphql';
+import { MongooseApi, SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
@@ -50,14 +50,12 @@ import { Partial#{ entity.name } } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
-  constructor({ mongoose, connectors, user, owner, acls, userGroup }) {
+  constructor(
+    { mongoose, connectors, securityContext }:
+      { mongoose: any, connectors: RegisterConnectors, securityContext: SecurityContext<RegisterConnectors> }
+  ) {
     logger.trace('constructor');
-    super({ mongoose, connectors, user, acls, userGroup
-<#-if (entity.needOwner) {-#>
-, owner
-<#-} else {-#>
-, owner: false
-<#-}-#> });
+    super({ name: '#{ entity.name }', mongoose, connectors, securityContext});
     this.initSchema('#{entity.name}', #{ entity.name }Schema());
 
     this.loaderKeys = {

@@ -7,7 +7,7 @@ import { DIRECTION } from '../consts';
 import { fromGlobalId } from 'oda-isomorfic';
 import * as Sequelize from 'sequelize';
 
-import ConnectorsApiBase from './api';
+import ConnectorsApiBase, { SecurityContext } from './api';
 
 import { forward } from './listIterator';
 
@@ -15,8 +15,13 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
 
   public sequelize: Sequelize.Sequelize;
 
-  constructor({ sequelize, connectors, user, owner, acls, userGroup }) {
-    super({ connectors, user, owner, acls, userGroup });
+  constructor({ sequelize, connectors, name, securityContext }: {
+    sequelize: any;
+    name: string;
+    connectors: RegisterConnectors;
+    securityContext: SecurityContext<RegisterConnectors>
+  }) {
+    super({ connectors, securityContext, name });
     this.sequelize = sequelize;
   }
 
@@ -24,13 +29,6 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
     this.schema = schema;
     if (!this.sequelize.isDefined(name)) {
       this.model = this.schema(this.sequelize, Sequelize);
-      // init once
-      if (this.user) {
-        this.model.hook('beforeSave', this.logUser());
-      }
-      if (this._viewer) {
-        this.model.hook('beforeSave', this.initOwner());
-      }
     } else {
       this.model = this.sequelize.model(name);
     }
@@ -138,7 +136,7 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
 
     for await (let source of iterator) {
       if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
-        if (this.secure('read', { source })) {
+        if (await this.readSecure(source)) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(source)) {
               result.push(source);
@@ -167,34 +165,6 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
 
   protected async _remove(record) {
     return await record.destroy();
-  }
-
-  protected logUser() {
-    let _user = () => this.user;
-    return function (object, options) {
-      let user = _user();
-      if (object.isNewRecord) {
-        object.set('createdAt', new Date());
-        object.set('createdBy', fromGlobalId(user.id).id);
-      } else {
-        object.set('updatedAt', new Date());
-        object.set('updatedBy', fromGlobalId(user.id).id);
-      }
-    };
-  }
-
-  protected initOwner() {
-    let _owner = () => this._viewer;
-    return function (object, options) {
-      if (object.isNewRecord && !object.get('owner')) {
-        let owner = _owner();
-        if (owner.owner) {
-          object.set('owner', owner.owner);
-        } else {
-          object.set('owner', owner.id);
-        }
-      }
-    };
   }
 
   public async sync({ force = false }: { force?: boolean }) {

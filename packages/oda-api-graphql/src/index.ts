@@ -12,7 +12,7 @@ import * as utils from './utils';
 import * as dataPump from './dataPump';
 import MongooseApi from './connectors/mongoose';
 import SequelizeApi from './connectors/sequelize';
-import ConnectorsApiBase, { ACLCheck } from './connectors/api';
+import ConnectorsApiBase, { ACLCheck, SecurityContext } from './connectors/api';
 import { Connector } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
@@ -46,4 +46,5 @@ export {
   toGlobalId,
   globalIdField,
   ACLCheck,
+  SecurityContext,
 };
