@@ -5,7 +5,6 @@ import { DateType } from './date';
 import { IdType } from './id';
 import { ImageSizeType } from './imageSize';
 import { JSONType } from './json';
-import { FileType } from './file';
 import { GQLModule } from './empty';
 import { MutationKindType } from './mutationType';
 import { WhereBoolean } from './whereBoolean';
@@ -26,7 +25,6 @@ export {
   IdType,
   ImageSizeType,
   JSONType,
-  FileType,
   WhereBoolean,
   WhereDate,
   WhereFloat,
@@ -47,7 +45,6 @@ export class DefaultTypes extends GQLModule {
     new IdType({}),
     new ImageSizeType({}),
     new JSONType({}),
-    new FileType({}),
     new MutationKindType({}),
     new WhereBoolean({}),
     new WhereDate({}),
