@@ -23,14 +23,15 @@ export default class extends ResourceOperation {
     }
 
     if (!this._shouldFakeExecute) {
-      this._shouldFakeExecute = (variables: { input: object }) => {
-        return (Object.keys(variables.input).length === 1) ? { data: variables.input } : false;
+      this._shouldFakeExecute = (variables: { input: object, files: any }) => {
+        return (Object.keys(variables.input).length === 1 && !variables.files) ? { data: variables.input } : false;
       }
     }
 
     if (!this._variables) {
       this._variables = (params) => {
         const { data, previousData } = params;
+        const result: { input?: any, files?: any } = {};
         let input = {
           id: data.id,
         };
@@ -61,7 +62,11 @@ export default class extends ResourceOperation {
             };
           }
         });
-        return { input };
+        if (data.files) {
+          result.files = data.files;
+        }
+        result.input = input;
+        return result;
       }
     }
   }

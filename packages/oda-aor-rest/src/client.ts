@@ -24,7 +24,7 @@ export default ({
   * @returns {Promise} the Promise for a REST response
   */
   return async (type, resourceName, params) => {
-    console.log('resource', resourceName, "type", type);
+    console.log('resource', resourceName, 'type', type, 'params', params);
     let resource: IResource;
     if (!role) {
       resource = resources.resource(resourceName)
