@@ -55,7 +55,7 @@ export const resolver: { [key: string]: any } = {
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
         let idMap = {
-          id: '_id',
+          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
@@ -135,7 +135,7 @@ export const resolver: { [key: string]: any } = {
           }
         }
         let idMap = {
-          id: '_id',
+          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
