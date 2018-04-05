@@ -181,15 +181,16 @@ export class FilterSequelize {
       if (typeof value !== 'string') {
         throw new Error('expected string type for match operation');
       }
-      return { $regexp: value };
+      return { $like: `${value}%` };
     },
     imatch(value, idMap, id) {
       if (typeof value !== 'string') {
         throw new Error('expected string type for imatch operation');
       }
-      return { $iRegexp: value };
+      return { $like: `${value}%` };
     },
   };
+
   public static parse(node, idMap = {}, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => FilterSequelize.parse(n, idMap, id));
