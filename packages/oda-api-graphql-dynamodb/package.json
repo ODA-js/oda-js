@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql-dynamodb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "mongoose": "^4.13.9",
-    "oda-api-graphql": "^0.4.38"
+    "oda-api-graphql": "^0.4.39"
   },
   "devDependencies": {
     "@types/graphql": "0.12.4",
