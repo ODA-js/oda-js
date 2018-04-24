@@ -1,4 +1,4 @@
-import { utils } from 'oda-api-graphql';
+import { lib } from 'oda-gen-common';
 import { MetaModel, ModelPackage } from 'oda-model';
 import * as path from 'path';
 
@@ -6,7 +6,7 @@ import { initPackages, pushToAppropriate } from './utils';
 import { expandConfig } from './utils';
 import AclDefault from '../acl';
 
-const { get } = utils;
+const { get } = lib;
 
 export default function ({
   pack,

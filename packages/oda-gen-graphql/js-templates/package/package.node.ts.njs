@@ -3,7 +3,7 @@ import { common } from 'oda-gen-graphql';
 
 import {
   fromGlobalId,
-} from 'oda-api-graphql';
+} from 'oda-isomorfic';
 
 let { fillDefaults } = common.lib;
 

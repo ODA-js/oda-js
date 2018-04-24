@@ -1,10 +1,10 @@
-import { utils } from 'oda-api-graphql';
+import { lib } from 'oda-gen-common';
 import { Factory } from 'fte.js';
 import * as template from '../../graphql-backend-template';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-const { get, deepMerge } = utils;
+const { get, deepMerge } = lib;
 
 export default function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow, typeMapper: { [key: string]: (string) => string }, defaultAdapter: 'mongoose' | 'sequelize',
   collection, cfg, type, route: string, ext: string, fileName?: string) {

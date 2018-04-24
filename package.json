@@ -4,6 +4,7 @@
   "devDependencies": {},
   "scripts": {
     "clean": "./tasks/clean.sh",
+    "link": "./tasks/link.sh",
     "compile": "./tasks/compile.sh",
     "install-it": "./tasks/install.sh",
     "run-publish": "lerna publish",

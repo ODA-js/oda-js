@@ -1,7 +1,7 @@
 import { Entity, ModelPackage } from 'oda-model';
 import { Factory } from 'fte.js';
-import { utils } from 'oda-api-graphql';
-let get = utils.get;
+import { lib } from 'oda-gen-common';
+let get = lib.get;
 
 export const template = {
   mongoose: 'entity/data/mongoose/schema.ts.njs',

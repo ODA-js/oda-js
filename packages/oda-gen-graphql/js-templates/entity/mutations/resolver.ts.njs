@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import {
   fromGlobalId,
   toGlobalId,
-} from 'oda-api-graphql';
+} from 'oda-isomorfic';
 
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';

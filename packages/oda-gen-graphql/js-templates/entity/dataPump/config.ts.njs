@@ -12,7 +12,7 @@ export default {
 
 <# chunkStart(`../../../dataPump/${entity.name}/import`); #>
 
-import { fromGlobalId } from 'oda-api-graphql';
+import { fromGlobalId } from 'oda-isomorfic';
 import { utils } from 'oda-api-graphql';
 
 const { validId } = utils;

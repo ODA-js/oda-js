@@ -2,8 +2,8 @@
 import { passport } from 'oda-api-common';
 import RegisterConnectors from '../../data/registerConnectors';
 import { common } from 'oda-gen-graphql';
+import { fromGlobalId } from 'oda-isomorfic';
 import {
-  fromGlobalId,
   globalIdField,
 } from 'oda-api-graphql';
 

@@ -1,9 +1,9 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
-import { utils } from 'oda-api-graphql';
+import { lib } from 'oda-gen-common';
 
-let get = utils.get;
+let get = lib.get;
 
 export const template = {
   mongoose: 'entity/data/mongoose/connector.ts.njs',

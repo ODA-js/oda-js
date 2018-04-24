@@ -5,10 +5,10 @@ import * as path from 'path';
 import * as template from '../graphql-backend-template';
 import AclDefault from '../acl';
 
-import { utils } from 'oda-api-graphql';
+import { lib } from 'oda-gen-common';
 import { BelongsTo } from 'oda-model';
 
-const { get, deepMerge } = utils;
+const { get, deepMerge } = lib;
 const { defaultTypeMapper, prepareMapper } = template.utils;
 
 import { GeneratorConfigPackage, GeneratorConfig, Generator } from './interfaces';

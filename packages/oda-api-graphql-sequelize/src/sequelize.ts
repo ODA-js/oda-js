@@ -1,15 +1,20 @@
-import { FilterSequelize } from '../filter';
-
-import pagination from '../pagination';
-import cursorDirection from '../direction';
-import { DIRECTION } from '../consts';
-
 import { fromGlobalId } from 'oda-isomorfic';
+
+import {
+  ConnectorsApiBase,
+  listIterator,
+  SecurityContext,
+  consts,
+  pagination,
+  detectCursorDirection,
+} from 'oda-api-graphql';
+
 import * as Sequelize from 'sequelize';
+import { FilterSequelize } from './filter';
 
-import ConnectorsApiBase, { SecurityContext } from './api';
 
-import { forward } from './listIterator';
+const { forward } = listIterator;
+const { DIRECTION } = consts;
 
 export default class SequelizeApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload>{
 
@@ -61,7 +66,7 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
   protected async _getList(args, checkExtraCriteria?) {
     let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
     let query: any = this.getFilter(args);
-    let sort = cursorDirection(args);
+    let sort = detectCursorDirection(args);
     let cursor = pagination(args);
 
     let result = [];

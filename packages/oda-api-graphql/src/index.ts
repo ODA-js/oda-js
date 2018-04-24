@@ -10,8 +10,7 @@ import * as projection from './projection';
 import * as acl from './acl';
 import * as utils from './utils';
 import * as dataPump from './dataPump';
-import MongooseApi from './connectors/mongoose';
-import SequelizeApi from './connectors/sequelize';
+import * as listIterator from './connectors/listIterator';
 import ConnectorsApiBase, { ACLCheck, SecurityContext } from './connectors/api';
 import { Connector } from './connector';
 import { CursorType } from './cursor';
@@ -38,8 +37,6 @@ export {
   pagination,
   projection,
   dataPump,
-  MongooseApi,
-  SequelizeApi,
   ConnectorsApiBase,
   Filter,
   fromGlobalId,
@@ -47,4 +44,5 @@ export {
   globalIdField,
   ACLCheck,
   SecurityContext,
+  listIterator,
 };

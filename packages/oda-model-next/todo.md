@@ -9,6 +9,3 @@
 оверрайд типов...
 
 сложные поля называть сложно...
-
-tsviz
-sudo ln -s /usr/bin/dot /usr/local/bin/dot

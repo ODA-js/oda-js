@@ -1,4 +1,4 @@
-import { utils } from 'oda-api-graphql';
+import { lib } from 'oda-gen-common';
 import { IValidationResult, ModelPackage, ValidationResultType, Validator } from 'oda-model';
 import * as path from 'path';
 
@@ -8,7 +8,7 @@ import initModel from './initModel';
 import { Generator } from './interfaces';
 import { MetaModel } from 'oda-model';
 
-const { get, deepMerge } = utils;
+const { get, deepMerge } = lib;
 const { defaultTypeMapper, prepareMapper } = template.utils;
 
 

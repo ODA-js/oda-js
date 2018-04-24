@@ -31,7 +31,7 @@ export const defaultTypeMapper = {
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
     Text: ['string', 'text', "*", 'richtext'],
-    ID: [, 'uuid', 'id', 'identity'],
+    ID: ['uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
   },

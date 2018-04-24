@@ -1,34 +1,39 @@
-import { Filter } from '../filter';
-import pagination from '../pagination';
-import cursorDirection from '../direction';
-import { DIRECTION } from '../consts';
-
 import { fromGlobalId } from 'oda-isomorfic';
 
-import ConnectorsApiBase, { SecurityContext } from './api';
+import {
+  ConnectorsApiBase,
+  listIterator,
+  SecurityContext,
+  consts,
+  pagination,
+  detectCursorDirection,
+  Filter,
+  } from 'oda-api-graphql';
 
-import { forward } from './listIterator';
+const { forward } = listIterator;
+const { DIRECTION } = consts;
+const FilterMongoose = Filter.Filter;
 
-export default class MongooseApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload> {
+export default class DynamoDbAPI<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload> {
 
-  public mongoose: any;
+  public dynamodb: any;
 
-  constructor({ mongoose, connectors, name, securityContext }: {
-    mongoose: any;
+  constructor({ dynamodb, connectors, name, securityContext }: {
+    dynamodb: any;
     name: string;
     connectors: RegisterConnectors;
     securityContext: SecurityContext<RegisterConnectors>
   }) {
     super({ connectors, securityContext, name });
-    this.mongoose = mongoose;
+    this.dynamodb = dynamodb;
   }
 
   protected initSchema(name, schema) {
     this.schema = schema;
-    if (!this.mongoose.models[name]) {
-      this.model = this.mongoose.model(name, schema);
+    if (!this.dynamodb.models[name]) {
+      this.model = this.dynamodb.model(name, schema);
     } else {
-      this.model = this.mongoose.model(name);
+      this.model = this.dynamodb.model(name);
     }
   }
   public async getCount(args) {
@@ -62,7 +67,7 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
   protected async _getList(args, checkExtraCriteria?) {
     let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
     let query: any = this.getFilter(args);
-    let sort = cursorDirection(args);
+    let sort = detectCursorDirection(args);
     let cursor = pagination(args);
 
     let result = [];
