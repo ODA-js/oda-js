@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql-sequelize",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,12 +13,12 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "oda-api-graphql": "^0.4.41"
+    "oda-api-graphql": "^0.4.42"
   },
   "peerDependencies": {
+    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
     "log4js": "^1.1.1",
-    "sequelize": "^4.35.2",
-    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
+    "sequelize": "^4.35.2"
   },
   "devDependencies": {
     "@types/graphql": "0.12.4",
