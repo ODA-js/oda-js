@@ -50,7 +50,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {
   List,
-} from "admin-on-rest";
+} from "react-admin";
 
 const ListView = (props, context) => {
   const { Grid, Filter} = context.uix['#{entity.role}/#{entity.name}'];
@@ -83,7 +83,7 @@ import {
   DeleteButton,
   ShowButton,
   ReferenceField,
-} from "admin-on-rest";
+} from "react-admin";
 
 const Grid = (props, context) => (
   <Datagrid {...props} >
@@ -126,10 +126,10 @@ import {
   DateInput,
   NumberInput,
   BooleanInput,
-  RichTextInput,
   NullableBooleanInput,
   Filter,
-} from "admin-on-rest";
+} from "react-admin";
+import RichTextInput from 'ra-input-rich-text';
 <#var filteredFields = entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>entity.UI.list[f.name]); #>
 const FilterPanel = (props, {translate}) => (
@@ -194,6 +194,8 @@ export default FilterPanel;
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
+  ArrayInput,
+  SimpleFormIterator,
   ReferenceInput,
   SelectInput,
   ReferenceArrayInput,
@@ -205,14 +207,13 @@ import {
   NumberInput,
   BooleanInput,
   required,
-} from "admin-on-rest";
-import RichTextInput from 'aor-rich-text-input';
+} from "react-admin";
+import RichTextInput from 'ra-input-rich-text';
 
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import compose from 'recompose/compose';
 import { ui } from 'oda-aor-rest';
-import { EmbeddedArrayInput } from 'aor-embedded-array';
 
 const {
   DependentInput,
@@ -294,42 +295,44 @@ class Form extends Component {
       } else {
   #>
 <# if(embedded){#>
-        <EmbeddedArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
-          <SelectInput
-            source="#{f.field}Type"
-            label="uix.actionType.ExpectedTo"
-            choices={manyRelAction}
-            defaultValue={actionType.USE}
-          />
-          <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
-            <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
-              <SelectInput optionText="#{f.ref.listLabel.source}" />
-            </ReferenceInput>
-          </DependentInput>
+        <ArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+          <SimpleFormIterator>
+            <SelectInput
+              source="#{f.field}Type"
+              label="uix.actionType.ExpectedTo"
+              choices={manyRelAction}
+              defaultValue={actionType.USE}
+            />
+            <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
+              <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+                <SelectInput optionText="#{f.ref.listLabel.source}" />
+              </ReferenceInput>
+            </DependentInput>
 <#-
   let current = entity.UI.embedded.names[f.field];
   let embededEntity = entity.UI.embedded.items[current].entity;
   let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
   const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
   if(fieldCount > 0) {#>
-          <DependentInput resolve={detailsFor('#{f.field}')} scoped >
+            <DependentInput resolve={detailsFor('#{f.field}')} scoped >
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
-            <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+              <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
         });
 -#>
 <#-
         if(verb === 'BelongsToMany') {
           f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{-#>
-            <#{fld.type}Input label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+              <#{fld.type}Input label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 <#
           });
         }
 -#>
-          </DependentInput>
+            </DependentInput>
 <#-  }#>
-        </EmbeddedArrayInput>
+          </SimpleFormIterator>
+        </ArrayInput>
 <#} else {#>
         <ReferenceArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#w{f.field}Ids" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
@@ -374,7 +377,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {
   Edit,
-} from "admin-on-rest";
+} from "react-admin";
 import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
@@ -415,7 +418,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {
   Create,
-} from "admin-on-rest";
+} from "react-admin";
 import { ui } from 'oda-aor-rest';
 const actionType = ui.consts.actionType;
 
@@ -468,7 +471,7 @@ import {
   SimpleShowLayout,
   required,
   RichTextField,
-} from "admin-on-rest";
+} from "react-admin";
 
 // import { EmbeddedArrayField } from 'aor-embedded-array';
 import { ui } from 'oda-aor-rest';

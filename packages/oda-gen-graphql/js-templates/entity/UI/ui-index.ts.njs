@@ -10,7 +10,7 @@ import #{entity.name}Resource, {extension as #{entity.name}Extension } from './#
 import #{entity.name}UIX from './#{entity.name}/uix';
 <#}-#>
 
-import { data } from 'oda-aor-rest';
+import { data } from 'oda-ra-data-provider';
 
 import Admin from './admin';
 
@@ -90,10 +90,10 @@ export default {
 <#- chunkStart(`./admin.js`); -#>
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { client } from 'oda-aor-rest';
+import { client } from 'oda-ra-data-provider';
 import Loading from 'react-loading-animation'
-import { Admin, Resource, Delete } from 'admin-on-rest';
-import { englishMessages } from 'admin-on-rest';
+import { Admin, Resource, Delete } from 'react-admin';
+import { englishMessages } from 'react-admin';
 import translation from './i18n';
 import merge from 'lodash/merge';
 
@@ -110,7 +110,7 @@ const messages = {
 class OdaClientApp extends Component {
   render() {
     const { restClient, authClient, uix } = this.context;
-    if (!restClient) {
+    if (restClient === null || restClient === undefined) {
       return <div className="loading-component"><Loading /></div>;
     }
 
@@ -119,8 +119,8 @@ class OdaClientApp extends Component {
         {...this.props}
         messages={messages}
         locale="en"
-        authClient={authClient}
-        restClient={restClient}>
+        authProvider={authClient}
+        dataProvider={restClient}>
         {role => Object.keys(uix)
           .filter(resource => uix[resource].role === role)
           .map(resource => <Resource

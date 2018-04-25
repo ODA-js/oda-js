@@ -1,0 +1,32 @@
+{
+  "name": "oda-ra-ui",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "./compile.sh"
+  },
+  "typescript": {
+    "definition": "dist/index.d.ts"
+  },
+  "typings": "dist/index.d.ts",
+  "dependencies": {
+    "ra-core": "^2.0.0-RC2",
+    "apollo-cache-inmemory": "^1.1.9",
+    "apollo-client": "^2.2.5",
+    "apollo-link": "^1.2.1",
+    "apollo-link-http": "^1.5.3",
+    "material-ui": "^0.20.0",
+    "prop-types": "^15.6.1",
+    "redux-form": "^7.3.0",
+    "redux-saga": "^0.16.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/graphql": "0.12.4",
+    "@types/node": "^8.0.20",
+    "@types/react": "^16.0.40",
+    "typescript": "~2.6.2"
+  }
+}
