@@ -7,6 +7,7 @@ export type OrderByFunction = (field) => string | undefined;
 export type FilterByFunction = (field) => object | undefined;
 export type RefetchQueriesFunction = (variables) => any;
 export type ShouldFakeExecuteFunction = ((variables: object) => boolean | object) | boolean;
+export type FetchPolicyFunction = (params: any) => any;
 
 export enum refType {
   HasMany = 'HasMany',
@@ -92,7 +93,7 @@ export interface IResourceOperationDefinition {
   parseResponse?: ResponseFunction;
   update?: UpdateFunction;
   variables?: VariablesFunction;
-  fetchPolicy?: string;
+  fetchPolicy?: string | FetchPolicyFunction;
   orderBy?: OrderByFunction;
   filterBy?: FilterByFunction;
   refetchQueries?: RefetchQueriesFunction;
@@ -125,7 +126,7 @@ export interface IResourceOperation extends IResourceOperationDefinition {
   update: UpdateFunction;
   variables: VariablesFunction;
   type: queries;
-  fetchPolicy: string;
+  fetchPolicy: string | FetchPolicyFunction;
   orderBy: OrderByFunction;
   filterBy: FilterByFunction;
   refetchQueries: RefetchQueriesFunction;

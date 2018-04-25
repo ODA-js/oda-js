@@ -286,8 +286,7 @@ class Form extends Component {
 <#
         } else {
 #>
-        <Label text="resources.#{entity.name}.fields.#{f.field}" />
-        <ReferenceInput label="" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
         </ReferenceInput>
 <#}#>
@@ -332,8 +331,7 @@ class Form extends Component {
 <#-  }#>
         </EmbeddedArrayInput>
 <#} else {#>
-        <Label text="resources.#{entity.name}.fields.#{f.field}" />
-        <ReferenceArrayInput label="" source="#{f.field}Ids" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
+        <ReferenceArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#w{f.field}Ids" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> >
           <SelectArrayInput options={{ fullWidth: true }} optionText="#{f.ref.listLabel.source}" optionValue="id" />
         </ReferenceArrayInput>
 <#}#>

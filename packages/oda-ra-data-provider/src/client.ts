@@ -2,11 +2,16 @@ import buildApolloClient from './apollo';
 import { QUERY_TYPES } from './constants';
 import { IResource, IResourceContainer, IResourceOperation } from './data/resource/interfaces';
 
-export default ({ client: clientOptions, resources, fetchPolicy = 'network-only' }: {
-  client: any,
-  resources: IResourceContainer,
-  fetchPolicy: string;
-}) => {
+export default ({
+  client: clientOptions,
+  resources,
+  role,
+  fetchPolicy = 'network-only' }: {
+    client: any,
+    role?: any,
+    resources: IResourceContainer,
+    fetchPolicy: string;
+  }) => {
 
   const client = clientOptions && (clientOptions.constructor === Object || clientOptions.__proto__ === {}.__proto__)
     ? buildApolloClient(clientOptions)
@@ -18,8 +23,22 @@ export default ({ client: clientOptions, resources, fetchPolicy = 'network-only'
   * @param {Object} payload Request parameters. Depends on the request type
   * @returns {Promise} the Promise for a REST response
   */
-  return (type, resourceName, params) => {
-    const resource: IResource = resources.resource(resourceName);
+  return async (type, resourceName, params) => {
+    console.log('resource', resourceName, 'type', type, 'params', params);
+    let resource: IResource;
+    if (!role) {
+      resource = resources.resource(resourceName)
+    } else if (typeof role === 'string' && resources.hasOwnProperty(role)) {
+      console.log('role->', role);
+      resource = resources[role].resource(resourceName)
+    } else if (typeof role === 'function') {
+      const currentRole = await role();
+      if (resources.hasOwnProperty(currentRole)) {
+        console.log('role->', currentRole);
+        resource = resources[currentRole].resource(resourceName);
+      }
+    }
+
     if (!resource) {
       throw new Error(`No matching resource found for name ${resourceName}`);
     }

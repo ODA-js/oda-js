@@ -24,6 +24,7 @@ export default class extends ResourceOperation {
     if (!this._variables) {
       this._variables = (params) => {
         const { data } = params;
+        const result: { input?: any, files?: any } = {};
         let input = {};
         Object.keys(this.resource.fields).forEach(f => {
           if (this.resource.fields[f].ref) {
@@ -53,7 +54,11 @@ export default class extends ResourceOperation {
             };
           }
         });
-        return { input };
+        if (data.files) {
+          result.files = data.files;
+        }
+        result.input = input;
+        return result;
       };
     }
   }
