@@ -2,7 +2,7 @@
 <#@ chunks '$$$main$$$' -#>
 
 <#- chunkStart(`../../../${entity.name}/queries/index`); -#>
-import { data } from 'oda-aor-rest';
+import { data } from 'oda-ra-data-provider';
 import { fragments, queries } from './queries';
 import set from 'lodash/set';
 

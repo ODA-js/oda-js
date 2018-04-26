@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react';
-import * as translate from 'admin-on-rest/lib/i18n/translate';
-import FieldTitle from 'admin-on-rest/lib/util/FieldTitle';
+import * as translate from 'ra-core/lib/i18n/translate';
+import FieldTitle from 'ra-core/lib/util/FieldTitle';
 import * as _ from 'lodash';
 import * as get from 'lodash/get';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -125,7 +125,7 @@ export class AutocompleteInput extends Component {
 
   render() {
     const {
-            choices,
+      choices,
       elStyle,
       filter,
       isRequired,
@@ -135,7 +135,7 @@ export class AutocompleteInput extends Component {
       optionValue,
       resource,
       source,
-        } = this.props;
+    } = this.props;
     if (typeof meta === 'undefined') {
       throw new Error(
         "The AutocompleteInput component wasn't called within a redux-form <Field>. Did you decorate it and forget to add the addField prop to your component? See https://marmelab.com/admin-on-rest/Inputs.html#writing-your-own-input-component for details."
