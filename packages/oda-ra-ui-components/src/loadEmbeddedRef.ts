@@ -1,4 +1,4 @@
-import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'admin-on-rest/lib/actions/accumulateActions';
+import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'ra-core/lib/actions/accumulateActions';
 import * as get from 'lodash/get';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';

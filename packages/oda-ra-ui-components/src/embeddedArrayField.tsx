@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { EmbeddedArrayField as Extendee } from 'aor-embedded-array';
+import { ArrayField as Extendee } from 'react-admin';
 import * as PropTypes from 'prop-types';
 
 import dataLoadWrapper from './loadEmbeddedArray';

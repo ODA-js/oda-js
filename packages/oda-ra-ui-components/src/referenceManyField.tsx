@@ -3,16 +3,16 @@ import { Component } from 'react';
 import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
-import { crudGetManyReference as crudGetManyReferenceAction } from 'admin-on-rest/lib/actions/dataActions';
+import { crudGetManyReference as crudGetManyReferenceAction } from 'ra-core/lib/actions/dataActions';
 import {
   getIds,
   getReferences,
   nameRelatedTo,
-} from 'admin-on-rest/lib/reducer/admin/references/oneToMany';
+} from 'ra-core/lib/reducer/admin/references/oneToMany';
 import {
   SORT_ASC,
   SORT_DESC,
-} from 'admin-on-rest/lib/reducer/admin/resource/list/queryReducer';
+} from 'ra-core/lib/reducer/admin/resource/list/queryReducer';
 
 export class ReferenceManyField extends Component {
   constructor(props) {

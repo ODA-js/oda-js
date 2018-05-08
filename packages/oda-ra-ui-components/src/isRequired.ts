@@ -1,4 +1,4 @@
-import { required } from 'admin-on-rest';
+import { required } from 'react-admin';
 
 const isRequired = validate => {
   if (validate === required) return true;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { translate } from 'admin-on-rest';
+import { translate } from 'react-admin';
 import * as inflection from 'inflection';
 import * as PropTypes from 'prop-types';
 import { Field } from 'redux-form';

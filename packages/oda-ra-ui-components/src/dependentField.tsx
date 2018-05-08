@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import FormField from 'admin-on-rest/lib/mui/form/FormField';
+import FormField from 'ra-core/lib/form/FormField';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import * as PropTypes from 'prop-types';

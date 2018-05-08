@@ -1,5 +1,5 @@
 import * as React from 'react';
-import FormField from 'admin-on-rest/lib/mui/form/FormField';
+import FormField from 'ra-core/lib/form/FormField';
 
 const FormInput = ({ input, ...rest }) => {
   if (input) {

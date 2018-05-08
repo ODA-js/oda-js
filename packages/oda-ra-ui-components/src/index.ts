@@ -9,6 +9,7 @@ import GrouppedInput from './grouppedInput';
 import GrouppedField from './grouppedField';
 import AutocompleteInput from './autocompleteInput';
 import EmbeddedArrayField from './embeddedArrayField';
+import EmbeddedArrayInput from './embeddedArrayInput';
 import ReferenceManyField from './referenceManyField';
 
 export {
@@ -24,4 +25,5 @@ export {
   GrouppedField,
   AutocompleteInput,
   ReferenceManyField,
+  EmbeddedArrayInput,
 }

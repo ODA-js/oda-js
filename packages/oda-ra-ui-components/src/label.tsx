@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as translate from 'admin-on-rest/lib/i18n/translate';
+import { translate } from 'react-admin';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextFieldLabel from 'material-ui/TextField/TextFieldLabel';

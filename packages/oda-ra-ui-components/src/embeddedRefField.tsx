@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { SimpleShowLayout } from 'admin-on-rest';
+import { SimpleShowLayout } from 'react-admin';
 import * as PropTypes from 'prop-types';
 
 import dataLoadWrapper from './loadEmbeddedRef';
