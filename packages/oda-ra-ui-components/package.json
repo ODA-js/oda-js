@@ -21,7 +21,7 @@
     "material-ui": "^1.0.0-beta.42",
     "oda-lodash": "^0.2.0-alpha.4f5ec828",
     "prop-types": "^15.6.1",
-    "react-admin": "^2.0.0-RC2",
+    "react-admin": "^2.0.0",
     "redux-form": "^7.3.0",
     "redux-saga": "^0.16.0"
   },
