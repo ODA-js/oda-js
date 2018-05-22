@@ -1,3 +1,0 @@
-#ODA graphql lodash
-
-tbd

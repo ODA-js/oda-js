@@ -17,7 +17,6 @@
     "apollo-client": "^2.2.5",
     "apollo-link": "^1.2.1",
     "apollo-link-http": "^1.5.3",
-    "material-ui": "^0.20.0",
     "prop-types": "^15.6.1",
     "redux-form": "^7.3.0",
     "redux-saga": "^0.16.0"
