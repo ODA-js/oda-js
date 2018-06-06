@@ -32,8 +32,8 @@ export class Entity extends EntityBase implements IEntity {
   public ensureImplementation(modelPackage: ModelPackage) {
     const newFields: Map<string, Field> = new Map<string, Field>();
     this.implements.forEach(intrf => {
-      if (modelPackage.interfaces.has(intrf)) {
-        const impl = modelPackage.interfaces.get(intrf);
+      if (modelPackage.mixins.has(intrf)) {
+        const impl = modelPackage.mixins.get(intrf);
         impl.fields.forEach(f => {
           if (!this.fields.has(f.name)) {
             newFields.set(f.name, f);
@@ -77,7 +77,7 @@ export class Entity extends EntityBase implements IEntity {
         let res = super.toObject();
         return clean({
           ...res,
-          implements: [...this.implements].filter(i => modelPackage.interfaces.has(i)),
+          implements: [...this.implements].filter(i => modelPackage.mixins.has(i)),
         });
       }
     }
@@ -96,7 +96,7 @@ export class Entity extends EntityBase implements IEntity {
         let res = super.toJSON();
         return clean({
           ...res,
-          implements: [...this.implements].filter(i => modelPackage.interfaces.has(i)),
+          implements: [...this.implements].filter(i => modelPackage.mixins.has(i)),
         });
       }
     }

@@ -34,7 +34,7 @@ export class ModelPackage implements IValidate, IPackage {
   public abstract: boolean = false;
   /** entity storage */
   public entities: Map<string, Entity> = new Map();
-  public interfaces: Map<string, Mixin> = new Map();
+  public mixins: Map<string, Mixin> = new Map();
   public unions: Map<string, Union> = new Map();
   public enums: Map<string, Enum> = new Map();
   /** Identity fields cache */
@@ -118,14 +118,14 @@ export class ModelPackage implements IValidate, IPackage {
     return enu;
   }
 
-  public addInterface(intrf: Mixin) {
-    if (intrf instanceof Query) {
-      this.interfaces.set(intrf.name, intrf);
+  public addMixin(mix: Mixin) {
+    if (mix instanceof Query) {
+      this.mixins.set(mix.name, mix);
       // no need to do this
       // intrf.ensureIds(this);
     }
-    this.ensureInterface(intrf);
-    return intrf;
+    this.ensureInterface(mix);
+    return mix;
   }
 
   /** get Entity by name */
@@ -174,7 +174,7 @@ export class ModelPackage implements IValidate, IPackage {
       queries: Array.from(this.queries.values()).map(f => f.name),
       enums: Array.from(this.enums.values()).map(f => f.name),
       unions: Array.from(this.unions.values()).map(f => f.name),
-      interfaces: Array.from(this.interfaces.values()).map(f => f.name),
+      mixins: Array.from(this.mixins.values()).map(f => f.name),
     });
   }
 
@@ -189,7 +189,7 @@ export class ModelPackage implements IValidate, IPackage {
       queries: Array.from(this.queries.values()).map(f => f.toObject()),
       enums: Array.from(this.enums.values()).map(f => f.toObject()),
       unions: Array.from(this.unions.values()).map(f => f.toObject()),
-      interfaces: Array.from(this.interfaces.values()).map(f => f.toObject(this)),
+      mixins: Array.from(this.mixins.values()).map(f => f.toObject(this)),
     });
   }
 
@@ -212,8 +212,8 @@ export class ModelPackage implements IValidate, IPackage {
   }
 
   private ensureInterface(intrf) {
-    if (!this.metaModel.interfaces.has(intrf.name)) {
-      this.metaModel.interfaces.set(intrf.name, intrf);
+    if (!this.metaModel.mixins.has(intrf.name)) {
+      this.metaModel.mixins.set(intrf.name, intrf);
     }
   }
 

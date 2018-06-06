@@ -329,7 +329,7 @@ export interface ModelPackageInput extends ModelBaseInput {
   mutations: any[];
   queries: any[];
   enums: any[];
-  interfaces: any[];
+  mixins: any[];
   unions: any[];
 }
 
@@ -343,7 +343,7 @@ export interface ModelPackageStore {
   queries: any[];
   enums: any[];
   unions: any[];
-  interfaces: any[];
+  mixins: any[];
 }
 
 export interface MetaModelStore {
@@ -353,7 +353,7 @@ export interface MetaModelStore {
   queries: QueryInput[];
   enums: EnumInput[];
   unions: UnionInput[];
-  interfaces: MixinInput[];
+  mixins: MixinInput[];
   name: string;
   title?: string;
   description?: string;

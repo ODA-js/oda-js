@@ -295,8 +295,8 @@ export class MetaModel extends ModelPackage implements IModel {
     this.reset();
 
     // must go first
-    store.interfaces.forEach(q => {
-      this.addInterface(new Mixin(q));
+    store.mixins.forEach(q => {
+      this.addMixin(new Mixin(q));
     });
 
     store.entities.forEach((ent) => {
