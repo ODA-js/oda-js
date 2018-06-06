@@ -9,9 +9,14 @@ import {
   IValidator,
   MetaModelType,
   ModelPackageInput,
+  IEntityBase,
 } from './interfaces';
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
+import { Query } from './query';
+import { Interface } from './interface';
+import { Union } from './union';
+import { Enum } from './enum';
 
 // tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */
@@ -29,11 +34,15 @@ export class ModelPackage implements IValidate, IPackage {
   public abstract: boolean = false;
   /** entity storage */
   public entities: Map<string, Entity> = new Map();
+  public interfaces: Map<string, Interface> = new Map();
+  public unions: Map<string, Union> = new Map();
+  public enums: Map<string, Enum> = new Map();
   /** Identity fields cache */
-  public identityFields: Map<string, Entity> = new Map();
+  public identityFields: Map<string, IEntityBase> = new Map();
   /** relation cache */
   public relations: Map<string, Map<string, Field>> = new Map();
   public mutations: Map<string, Mutation> = new Map();
+  public queries: Map<string, Query> = new Map();
 
   public metaModel: MetaModel;
 
@@ -85,6 +94,38 @@ export class ModelPackage implements IValidate, IPackage {
     return mutation;
   }
 
+  public addQuery(query: Query) {
+    if (query instanceof Query) {
+      this.queries.set(query.name, query);
+    }
+    this.ensureQuery(query);
+    return query;
+  }
+
+  public addUnion(uni: Union) {
+    if (uni instanceof Union) {
+      this.unions.set(uni.name, uni);
+    }
+    this.ensureUnion(uni);
+    return uni;
+  }
+
+  public addEnum(enu: Enum) {
+    if (enu instanceof Enum) {
+      this.enums.set(enu.name, enu);
+    }
+    this.ensureEnum(enu);
+    return enu;
+  }
+
+  public addInterface(intrf: Interface) {
+    if (intrf instanceof Query) {
+      this.interfaces.set(intrf.name, intrf);
+    }
+    this.ensureQuery(intrf);
+    return intrf;
+  }
+
   /** get Entity by name */
   public get(name: string) {
     return this.entities.get(name);
@@ -127,6 +168,10 @@ export class ModelPackage implements IValidate, IPackage {
       description: this.description,
       entities: Array.from(this.entities.values()).map(f => f.name),
       mutations: Array.from(this.mutations.values()).map(f => f.name),
+      queries: Array.from(this.queries.values()).map(f => f.name),
+      enums: Array.from(this.enums.values()).map(f => f.name),
+      unions: Array.from(this.unions.values()).map(f => f.name),
+      interfaces: Array.from(this.interfaces.values()).map(f => f.name),
     });
   }
 
@@ -138,6 +183,10 @@ export class ModelPackage implements IValidate, IPackage {
       abstract: this.abstract,
       entities: Array.from(this.entities.values()).map(f => f.toObject(this)),
       mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
+      queries: Array.from(this.queries.values()).map(f => f.toObject()),
+      enums: Array.from(this.enums.values()).map(f => f.toObject()),
+      unions: Array.from(this.unions.values()).map(f => f.toObject()),
+      interfaces: Array.from(this.interfaces.values()).map(f => f.toObject(this)),
     });
   }
 
@@ -146,9 +195,34 @@ export class ModelPackage implements IValidate, IPackage {
       this.metaModel.entities.set(entity.name, entity);
     }
   }
-  private ensureMutation(entity) {
-    if (!this.metaModel.mutations.has(entity.name)) {
-      this.metaModel.mutations.set(entity.name, entity);
+
+  private ensureMutation(mutation) {
+    if (!this.metaModel.mutations.has(mutation.name)) {
+      this.metaModel.mutations.set(mutation.name, mutation);
+    }
+  }
+
+  private ensureQuery(query) {
+    if (!this.metaModel.queries.has(query.name)) {
+      this.metaModel.queries.set(query.name, query);
+    }
+  }
+
+  private ensureInterface(intrf) {
+    if (!this.metaModel.interfaces.has(intrf.name)) {
+      this.metaModel.interfaces.set(intrf.name, intrf);
+    }
+  }
+
+  private ensureUnion(uni) {
+    if (!this.metaModel.unions.has(uni.name)) {
+      this.metaModel.unions.set(uni.name, uni);
+    }
+  }
+
+  private ensureEnum(enu) {
+    if (!this.metaModel.enums.has(enu.name)) {
+      this.metaModel.enums.set(enu.name, enu);
     }
   }
 }

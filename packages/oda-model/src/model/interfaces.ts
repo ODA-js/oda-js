@@ -8,6 +8,10 @@ export type MetaModelType =
   'model'
   | 'package'
   | 'entity'
+  | 'entitybase'
+  | 'interface'
+  | 'union'
+  | 'enum'
   | 'field'
   | 'relation'
   | 'ref'
@@ -32,10 +36,17 @@ export interface IPackage extends IModelType {
   entities: Map<string, IEntity>;
 }
 
-export interface IEntity extends IModelType {
+export interface IEntityBase extends IModelType {
   name: string;
   plural: string;
   fields: Map<string, Field>;
+}
+
+export interface IInterface extends IEntityBase {
+}
+
+export interface IEntity extends IEntityBase {
+  implements: Set<string>;
 }
 
 export interface IField extends IModelType {
@@ -187,23 +198,41 @@ export interface BelongsToManyStorage extends RelationBaseStorage {
   using_?: string;
 }
 
-export interface EntityInput extends ModelBaseInput {
+export interface EntityBaseInput extends ModelBaseInput {
   plural?: string;
   fields?: FieldInput[] | {
     [fName: string]: FieldInput;
   };
 }
 
-export interface EntityJSON extends ModelBaseInput {
+export interface EntityInput extends EntityBaseInput {
+  implements?: string[];
+}
+
+export interface InterfaceInput extends EntityBaseInput {
+}
+
+export interface InterfaceStorage extends EntityBaseStorage {
+}
+
+export interface EntityBaseJSON extends ModelBaseInput {
   fields?: FieldInput[];
 }
 
-export interface EntityStorage extends ModelBaseStorage {
+export interface EntityJSON extends EntityBaseJSON {
+  implements?: string[];
+}
+
+export interface EntityBaseStorage extends ModelBaseStorage {
   fields: Map<string, Field>;
   relations: Set<string>;
   identity: Set<string>;
   required: Set<string>;
   indexed: Set<string>;
+}
+
+export interface EntityStorage extends EntityBaseStorage {
+  implements: Set<string>;
 }
 
 export interface EntityReferenceInput {
@@ -261,6 +290,16 @@ export interface ModelBaseInput extends MetadataInput {
   description?: string;
 }
 
+export interface UnionInput extends ModelBaseInput {
+  items: string[];
+}
+
+export interface EnumItemInput extends ModelBaseInput { }
+
+export interface EnumInput extends ModelBaseInput {
+  items: (EnumItemInput | string)[];
+}
+
 export interface ModelBaseStorage {
   name: string;
   title: string;
@@ -268,6 +307,16 @@ export interface ModelBaseStorage {
   name_: string;
   title_: string;
   description_: string;
+}
+
+export interface UnionStorage extends ModelBaseStorage {
+  items: string[];
+  items_: string[];
+}
+
+export interface EnumStorage extends ModelBaseStorage {
+  items: EnumItemInput[];
+  items_: (EnumItemInput | string)[];
 }
 
 export interface ModelPackageInput extends ModelBaseInput {
@@ -278,6 +327,10 @@ export interface ModelPackageInput extends ModelBaseInput {
   abstract?: boolean;
   entities: string[];
   mutations: any[];
+  queries: any[];
+  enums: any[];
+  interfaces: any[];
+  unions: any[];
 }
 
 export interface ModelPackageStore {
@@ -287,12 +340,20 @@ export interface ModelPackageStore {
   description?: string;
   entities: string[];
   mutations: any[];
+  queries: any[];
+  enums: any[];
+  unions: any[];
+  interfaces: any[];
 }
 
 export interface MetaModelStore {
   entities: EntityInput[];
   packages: ModelPackageStore[];
   mutations: MutationInput[];
+  queries: QueryInput[];
+  enums: EnumInput[];
+  unions: UnionInput[];
+  interfaces: InterfaceInput[];
   name: string;
   title?: string;
   description?: string;
@@ -353,7 +414,19 @@ export interface MutationInput extends ModelBaseInput {
   payload: FieldArgs[];
 }
 
+export interface QueryInput extends ModelBaseInput {
+  args: FieldArgs[];
+  payload: FieldArgs[];
+}
+
 export interface MutationStorage extends ModelBaseStorage {
+  args: FieldArgs[];
+  args_: FieldArgs[];
+  payload: FieldArgs[];
+  payload_: FieldArgs[];
+}
+
+export interface QueryStorage extends ModelBaseStorage {
   args: FieldArgs[];
   args_: FieldArgs[];
   payload: FieldArgs[];
@@ -367,5 +440,8 @@ export interface ModelHook {
   };
   mutations?: {
     [mName: string]: MutationInput;
+  };
+  queries?: {
+    [qName: string]: QueryInput;
   };
 }

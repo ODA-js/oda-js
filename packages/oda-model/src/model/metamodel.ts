@@ -14,9 +14,14 @@ import {
   ModelHook,
   ModelPackageStore,
   MutationInput,
+  QueryInput,
 } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { Mutation } from './mutation';
+import { Query } from './query';
+import { Interface } from './interface';
+import { Union } from './union';
+import { Enum } from './enum';
 
 function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
   let result = {
@@ -161,6 +166,37 @@ export class MetaModel extends ModelPackage implements IModel {
     return new Mutation(result);
   }
 
+  protected applyQueryHook(mutation: Query, hook: QueryInput): Query {
+    let result = mutation.toJSON() as MutationInput;
+    let metadata;
+    if (hook.metadata) {
+      metadata = deepMerge(result.metadata || {}, hook.metadata);
+    }
+
+    let args = result.args, payload = result.payload;
+    if (hook.args) {
+      args = [
+        ...args,
+        ...hook.args,
+      ];
+    }
+
+    if (hook.payload) {
+      payload = [
+        ...payload,
+        ...hook.payload,
+      ];
+    }
+
+    result = {
+      ...result,
+      args,
+      payload,
+      metadata,
+    };
+    return new Query(result);
+  }
+
   public applyHooks(hooks?: ModelHook[]) {
     if (hooks && !Array.isArray(hooks)) {
       hooks = [hooks];
@@ -208,6 +244,27 @@ export class MetaModel extends ModelPackage implements IModel {
             }
           }
         }
+        if (hook.queries) {
+          let keys = Object.keys(hook.queries);
+          for (let i = 0, len = keys.length; i < len; i++) {
+            let key = keys[i];
+            let current = hook.queries[key];
+            current.args = current.args ? current.args : [];
+            current.payload = current.payload ? current.payload : [];
+            current.metadata = current.metadata ? current.metadata : {};
+
+            let prepare = getFilter(key);
+            let list = Array.from(this.queries.values()).filter(prepare.filter);
+            if (list.length > 0) {
+              list.forEach(e => {
+                let result = this.applyQueryHook(e, current);
+                this.queries.set(result.name, result);
+              });
+            } else if (prepare.fields.length > 0) {
+              throw new Error(`Quer${prepare.fields.length > 1 ? 'ies' : 'y'} ${prepare.fields} not found`);
+            }
+          }
+        }
       });
     }
   }
@@ -243,6 +300,22 @@ export class MetaModel extends ModelPackage implements IModel {
 
     store.mutations.forEach(mut => {
       this.addMutation(new Mutation(mut));
+    });
+
+    store.queries.forEach(q => {
+      this.addQuery(new Query(q));
+    });
+
+    store.enums.forEach(q => {
+      this.addEnum(new Enum(q));
+    });
+
+    store.unions.forEach(q => {
+      this.addUnion(new Union(q));
+    });
+
+    store.interfaces.forEach(q => {
+      this.addInterface(new Interface(q));
     });
 
     this.ensureDefaultPackage();
