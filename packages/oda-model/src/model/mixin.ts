@@ -6,7 +6,7 @@ import { DEFAULT_ID_FIELD } from './definitions';
 import { Field } from './field';
 import {
   EntityInput, EntityJSON, EntityStorage, FieldInput, IEntity, MetaModelType,
-  IInterface, InterfaceStorage, InterfaceInput,
+  IMixin, MixinStorage, MixinInput,
 } from './interfaces';
 import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';
@@ -19,11 +19,11 @@ import { EntityBase } from './entitybase';
  * 3. тип объекта который идет на выходе clone
  */
 
-export class Interface extends EntityBase implements IInterface {
-  public modelType: MetaModelType = 'interface';
-  protected $obj: InterfaceStorage;
+export class Mixin extends EntityBase implements IMixin {
+  public modelType: MetaModelType = 'mixin';
+  protected $obj: MixinStorage;
 
-  constructor(obj: InterfaceInput) {
+  constructor(obj: MixinInput) {
     super(obj);
   }
 }

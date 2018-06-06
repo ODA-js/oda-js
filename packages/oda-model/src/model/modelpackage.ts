@@ -14,7 +14,7 @@ import {
 import { MetaModel } from './metamodel';
 import { Mutation } from './mutation';
 import { Query } from './query';
-import { Interface } from './interface';
+import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
 
@@ -34,7 +34,7 @@ export class ModelPackage implements IValidate, IPackage {
   public abstract: boolean = false;
   /** entity storage */
   public entities: Map<string, Entity> = new Map();
-  public interfaces: Map<string, Interface> = new Map();
+  public interfaces: Map<string, Mixin> = new Map();
   public unions: Map<string, Union> = new Map();
   public enums: Map<string, Enum> = new Map();
   /** Identity fields cache */
@@ -118,11 +118,13 @@ export class ModelPackage implements IValidate, IPackage {
     return enu;
   }
 
-  public addInterface(intrf: Interface) {
+  public addInterface(intrf: Mixin) {
     if (intrf instanceof Query) {
       this.interfaces.set(intrf.name, intrf);
+      // no need to do this
+      // intrf.ensureIds(this);
     }
-    this.ensureQuery(intrf);
+    this.ensureInterface(intrf);
     return intrf;
   }
 
@@ -156,6 +158,7 @@ export class ModelPackage implements IValidate, IPackage {
   /** ensure all foreign keys */
   public ensureAll() {
     this.entities.forEach((e) => {
+      e.ensureImplementation(this);
       e.ensureFKs(this);
     });
   }

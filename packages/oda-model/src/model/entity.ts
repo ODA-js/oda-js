@@ -28,12 +28,37 @@ export class Entity extends EntityBase implements IEntity {
   get implements(): Set<string> {
     return this.$obj.implements;
   }
+
+  public ensureImplementation(modelPackage: ModelPackage) {
+    const newFields: Map<string, Field> = new Map<string, Field>();
+    this.implements.forEach(intrf => {
+      if (modelPackage.interfaces.has(intrf)) {
+        const impl = modelPackage.interfaces.get(intrf);
+        impl.fields.forEach(f => {
+          if (!this.fields.has(f.name)) {
+            newFields.set(f.name, f);
+          }
+        });
+      }
+    });
+
+    if (newFields.size > 0) {
+      const update = this.toJSON();
+      update.fields.push(...[
+        ...newFields.values(),
+      ].map(f => f.toJSON()));
+      this.updateWith(update);
+      this.ensureIds(modelPackage);
+    }
+  }
+
   public updateWith(obj: EntityInput) {
     if (obj) {
       super.updateWith(obj);
 
       const result = { ...this.$obj };
       const impl = new Set(obj.implements);
+
       result.implements = impl;
       this.$obj = result;
     }

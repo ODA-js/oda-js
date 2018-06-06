@@ -9,7 +9,7 @@ export type MetaModelType =
   | 'package'
   | 'entity'
   | 'entitybase'
-  | 'interface'
+  | 'mixin'
   | 'union'
   | 'enum'
   | 'field'
@@ -42,7 +42,7 @@ export interface IEntityBase extends IModelType {
   fields: Map<string, Field>;
 }
 
-export interface IInterface extends IEntityBase {
+export interface IMixin extends IEntityBase {
 }
 
 export interface IEntity extends IEntityBase {
@@ -209,10 +209,10 @@ export interface EntityInput extends EntityBaseInput {
   implements?: string[];
 }
 
-export interface InterfaceInput extends EntityBaseInput {
+export interface MixinInput extends EntityBaseInput {
 }
 
-export interface InterfaceStorage extends EntityBaseStorage {
+export interface MixinStorage extends EntityBaseStorage {
 }
 
 export interface EntityBaseJSON extends ModelBaseInput {
@@ -353,7 +353,7 @@ export interface MetaModelStore {
   queries: QueryInput[];
   enums: EnumInput[];
   unions: UnionInput[];
-  interfaces: InterfaceInput[];
+  interfaces: MixinInput[];
   name: string;
   title?: string;
   description?: string;

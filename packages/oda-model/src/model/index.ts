@@ -1,6 +1,6 @@
 import { Entity } from './entity';
 import { EntityBase } from './entitybase';
-import { Interface } from './interface';
+import { Mixin } from './mixin';
 import { Union } from './union';
 import { EntityReference } from './entityreference';
 import { Field } from './field';

@@ -19,7 +19,7 @@ import {
 import { ModelPackage } from './modelpackage';
 import { Mutation } from './mutation';
 import { Query } from './query';
-import { Interface } from './interface';
+import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
 
@@ -294,6 +294,11 @@ export class MetaModel extends ModelPackage implements IModel {
   public loadPackage(store: MetaModelStore, hooks?: any[]) {
     this.reset();
 
+    // must go first
+    store.interfaces.forEach(q => {
+      this.addInterface(new Mixin(q));
+    });
+
     store.entities.forEach((ent) => {
       this.addEntity(new Entity(ent));
     });
@@ -312,10 +317,6 @@ export class MetaModel extends ModelPackage implements IModel {
 
     store.unions.forEach(q => {
       this.addUnion(new Union(q));
-    });
-
-    store.interfaces.forEach(q => {
-      this.addInterface(new Interface(q));
     });
 
     this.ensureDefaultPackage();
