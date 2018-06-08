@@ -295,29 +295,39 @@ export class MetaModel extends ModelPackage implements IModel {
     this.reset();
 
     // must go first
-    store.mixins.forEach(q => {
-      this.addMixin(new Mixin(q));
-    });
+    if (store.mixins) {
+      store.mixins.forEach(q => {
+        this.addMixin(new Mixin(q));
+      });
+    }
 
     store.entities.forEach((ent) => {
       this.addEntity(new Entity(ent));
     });
 
-    store.mutations.forEach(mut => {
-      this.addMutation(new Mutation(mut));
-    });
+    if (store.mutations) {
+      store.mutations.forEach(mut => {
+        this.addMutation(new Mutation(mut));
+      });
+    }
 
-    store.queries.forEach(q => {
-      this.addQuery(new Query(q));
-    });
+    if (store.queries) {
+      store.queries.forEach(q => {
+        this.addQuery(new Query(q));
+      });
+    }
 
-    store.enums.forEach(q => {
-      this.addEnum(new Enum(q));
-    });
+    if (store.enums) {
+      store.enums.forEach(q => {
+        this.addEnum(new Enum(q));
+      });
+    }
 
-    store.unions.forEach(q => {
-      this.addUnion(new Union(q));
-    });
+    if (store.unions) {
+      store.unions.forEach(q => {
+        this.addUnion(new Union(q));
+      });
+    }
 
     this.ensureDefaultPackage();
 
@@ -331,6 +341,10 @@ export class MetaModel extends ModelPackage implements IModel {
       entities: Array.from(this.entities.values()).map(f => f.toJSON()),
       packages: Array.from(this.packages.values())/*.filter(p => p.name !== 'default')*/.map(f => f.toJSON()),
       mutations: Array.from(this.mutations.values()).map(f => f.toJSON()),
+      queries: Array.from(this.queries.values()).map(f => f.toJSON()),
+      enums: Array.from(this.enums.values()).map(f => f.toJSON()),
+      unions: Array.from(this.unions.values()).map(f => f.toJSON()),
+      mixins: Array.from(this.mixins.values()).map(f => f.toJSON()),
     }));
   }
 
@@ -339,6 +353,10 @@ export class MetaModel extends ModelPackage implements IModel {
       entities: Array.from(this.entities.values()).map(f => f.toObject()),
       packages: Array.from(this.packages.values())/*.filter(p => p.name !== 'default')*/.map(f => f.toObject()),
       mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
+      queries: Array.from(this.queries.values()).map(f => f.toObject()),
+      enums: Array.from(this.enums.values()).map(f => f.toObject()),
+      unions: Array.from(this.unions.values()).map(f => f.toObject()),
+      mixins: Array.from(this.mixins.values()).map(f => f.toObject()),
     }));
   }
 
@@ -346,6 +364,10 @@ export class MetaModel extends ModelPackage implements IModel {
     this.entities.clear();
     this.packages.clear();
     this.mutations.clear();
+    this.queries.clear();
+    this.enums.clear();
+    this.mixins.clear();
+    this.unions.clear();
   }
 
   public createPackage(name: string): ModelPackage {

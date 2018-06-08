@@ -1,4 +1,4 @@
-import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult, ValidationResultType } from '../interfaces';
+import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult } from '../interfaces';
 import {
   EntityContext,
   EntityLevel,

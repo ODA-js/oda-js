@@ -5,8 +5,7 @@ import deepMerge from './../lib/json/deepMerge';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { Field } from './field';
 import {
-  EntityInput, EntityJSON, EntityStorage,
-  FieldInput, IEntity, MetaModelType, EntityBaseStorage,
+  EntityInput, FieldInput, MetaModelType, EntityBaseStorage,
   EntityBaseInput,
   IEntityBase,
   EntityBaseJSON,

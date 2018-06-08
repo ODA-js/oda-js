@@ -1,10 +1,5 @@
 import { IValidationResult } from '../interfaces';
 import {
-  IEntityContext,
-  IFieldContext,
-  IModelContext,
-  IPackageContext,
-  IRelationContext,
   ValidationContext,
 } from './interfaces';
 

@@ -1,6 +1,9 @@
 import { EntityReference } from './entityreference';
 import { Field } from './field';
 import { RelationBase } from './relationbase';
+import { Mixin } from './mixin';
+import { Enum } from './enum';
+import { Union } from './union';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -34,6 +37,9 @@ export interface IPackage extends IModelType {
   name: string;
   metaModel: IModel;
   entities: Map<string, IEntity>;
+  mixins: Map<string, Mixin>;
+  enums: Map<string, Enum>;
+  unions: Map<string, Union>;
 }
 
 export interface IEntityBase extends IModelType {
@@ -349,11 +355,11 @@ export interface ModelPackageStore {
 export interface MetaModelStore {
   entities: EntityInput[];
   packages: ModelPackageStore[];
-  mutations: MutationInput[];
-  queries: QueryInput[];
-  enums: EnumInput[];
-  unions: UnionInput[];
-  mixins: MixinInput[];
+  mutations?: MutationInput[];
+  queries?: QueryInput[];
+  enums?: EnumInput[];
+  unions?: UnionInput[];
+  mixins?: MixinInput[];
   name: string;
   title?: string;
   description?: string;

@@ -1,8 +1,6 @@
 import clean from '../lib/json/clean';
 import {
-  FieldArgs, FieldBaseInput, FieldBaseStorage,
-  MetaModelType, UnionStorage,
-  UnionInput, EnumStorage, EnumItemInput, EnumInput,
+  MetaModelType, EnumStorage, EnumItemInput, EnumInput,
 } from './interfaces';
 import { ModelBase } from './modelbase';
 

@@ -1,5 +1,5 @@
 import clean from '../lib/json/clean';
-import { FieldArgs, FieldBaseInput, FieldBaseStorage, MetaModelType, UnionStorage, UnionInput } from './interfaces';
+import { MetaModelType, UnionStorage, UnionInput } from './interfaces';
 import { ModelBase } from './modelbase';
 
 export class Union extends ModelBase {

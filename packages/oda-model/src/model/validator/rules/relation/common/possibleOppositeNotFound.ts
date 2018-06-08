@@ -1,5 +1,5 @@
 import { BelongsToMany } from '../../../../belongstomany';
-import { IValidationResult, ValidationResultType } from '../../../../interfaces';
+import { IValidationResult } from '../../../../interfaces';
 import { IRelationContext } from '../../../interfaces';
 import { Rule } from '../../../rules';
 
@@ -45,20 +45,4 @@ export default class implements Rule<IRelationContext> {
     return result;
   }
 }
-
-const opposits = {
-  BelongsTo: {
-    HasOne: true,
-    HasMany: true,
-  },
-  BelongsToMany: {
-    BelongsToMany: true,
-  },
-  HasMany: {
-    BelongsTo: true,
-  },
-  HasOne: {
-    BelongsTo: true,
-  },
-};
 

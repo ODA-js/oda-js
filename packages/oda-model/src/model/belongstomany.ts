@@ -1,12 +1,9 @@
-import * as merge from 'lodash/merge';
 
 import clean from '../lib/json/clean';
 import capitalize from './../lib/capitalize';
 import decapitalize from './../lib/decapitalize';
-import { Entity } from './entity';
 import { EntityReference } from './entityreference';
-import { BelongsToManyInput, BelongsToManyStorage, EntityInput, FieldInput } from './interfaces';
-import { ModelPackage } from './modelpackage';
+import { BelongsToManyInput, BelongsToManyStorage } from './interfaces';
 import { RelationBase } from './relationbase';
 
 // http://ooad.asf.ru/standarts/UML/spr/Association_class.aspx

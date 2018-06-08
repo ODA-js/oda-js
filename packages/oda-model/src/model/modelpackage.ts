@@ -124,7 +124,7 @@ export class ModelPackage implements IValidate, IPackage {
       // no need to do this
       // intrf.ensureIds(this);
     }
-    this.ensureInterface(mix);
+    this.ensureMixin(mix);
     return mix;
   }
 
@@ -211,7 +211,7 @@ export class ModelPackage implements IValidate, IPackage {
     }
   }
 
-  private ensureInterface(intrf) {
+  private ensureMixin(intrf) {
     if (!this.metaModel.mixins.has(intrf.name)) {
       this.metaModel.mixins.set(intrf.name, intrf);
     }
