@@ -33,9 +33,8 @@ export async function fixCount(length: number, cursor: { skip?: number, limit?: 
     } else {
       return count;
     }
-  } else {
-    return count;
   }
+  return count;
 }
 
 export const query: { [key: string]: any } = {
