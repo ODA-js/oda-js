@@ -15,6 +15,7 @@ import { WhereInt } from './whereInt';
 import { WhereString } from './whereString';
 import { WhereListOfStrings } from './whereListOfStrings';
 import { WhereMutationKind } from './whereMutationKind';
+import { WhereJSON } from './whereJSON';
 
 export {
   GQLModule,
@@ -33,6 +34,7 @@ export {
   WhereString,
   WhereListOfStrings,
   WhereMutationKind,
+  WhereJSON,
 }
 
 export class DefaultTypes extends GQLModule {
@@ -54,5 +56,6 @@ export class DefaultTypes extends GQLModule {
     new WhereString({}),
     new WhereListOfStrings({}),
     new WhereMutationKind({}),
+    new WhereJSON({}),
   ];
 }

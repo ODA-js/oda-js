@@ -90,7 +90,14 @@ export class Filter {
       }
       return { $regex: new RegExp(value, 'i') };
     },
+    query(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return Filter.parse(value, idMap, id);
+    },
   };
+
   public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => Filter.parse(n, idMap, id));
