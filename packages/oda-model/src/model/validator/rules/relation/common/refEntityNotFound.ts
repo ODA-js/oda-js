@@ -11,7 +11,7 @@ export default class implements Rule<IRelationContext> {
     if (!entity) {
       result.push({
         message: this.description,
-        result: 'fixable',
+        result: 'error',
       });
     }
     return result;
