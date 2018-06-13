@@ -156,7 +156,7 @@ export class Entity extends ModelBase implements IEntity {
   protected mergeIndex(indexes: any, index: string, entry: any) {
     if (indexes.hasOwnProperty(index)) {
       indexes[index] = deepMerge(indexes[index], entry);
-      indexes[index].name = indexes[index].name[0];
+      indexes[index].name = Array.isArray(indexes[index].name) ? indexes[index].name[0]: indexes[index].name;
     } else {
       indexes[index] = entry;
     }
