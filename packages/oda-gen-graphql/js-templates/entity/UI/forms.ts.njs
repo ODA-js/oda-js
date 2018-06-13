@@ -207,7 +207,7 @@ import {
   NumberInput,
   BooleanInput,
   required,
-  // AutocompleteInput,
+  AutocompleteInput,
 } from "react-admin";
 import RichTextInput from 'ra-input-rich-text';
 
@@ -215,13 +215,14 @@ import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import compose from 'recompose/compose';
 import { consts, actions, show  } from 'oda-ra-ui';
-import {
-  DependentInput,
-  EmbeddedInput,
-  GrouppedInput,
-  Label,
-  AutocompleteInput
-} from 'oda-ra-ui-components';
+
+// const {
+  // DependentInput,
+  // EmbeddedInput,
+  // GrouppedInput,
+  // Label,
+  // AutocompleteInput
+// } = ui.components;
 
 const actionType = consts.actionType;
 const initForm = actions.initForm;
@@ -257,12 +258,12 @@ class Form extends Component {
 <#-   if ( f.single ) {
         if(embedded) {
 #>
-        <Label text="resources.#{entity.name}.fields.#{f.field}" />
-        <DependentInput resolve={selectorFor('#{f.field}')} scoped >
+        {/* <Label text="resources.#{entity.name}.fields.#{f.field}" /> */}
+        {/*<DependentInput resolve={selectorFor('#{f.field}')} scoped >*/}
           <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
             <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
           </ReferenceInput>
-        </DependentInput>
+        {/* </DependentInput> */}
         <SelectInput
           source="#{f.field}Type"
           label="uix.actionType.ExpectedTo"
@@ -272,8 +273,8 @@ class Form extends Component {
 <#
         let current = entity.UI.embedded.names[f.field];
 #>
-        <DependentInput resolve={detailsFor('#{f.field}')} >
-          <EmbeddedInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}" addLabel={false}>
+        {/* <DependentInput resolve={detailsFor('#{f.field}')} > */}
+          {/* <EmbeddedInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}" addLabel={false}> */}
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
@@ -282,8 +283,8 @@ class Form extends Component {
 <#
         });
 -#>
-          </EmbeddedInput>
-        </DependentInput>
+          {/* </EmbeddedInput> */}
+        {/* </DependentInput> */}
 <#
         } else {
 #>
@@ -296,24 +297,25 @@ class Form extends Component {
   #>
 <# if(embedded){#>
         <ArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+          <SimpleFormIterator>
             <SelectInput
               source="#{f.field}Type"
               label="uix.actionType.ExpectedTo"
               choices={manyRelAction}
               defaultValue={actionType.USE}
             />
-          <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped >
+            {/* <DependentInput resolve={selectorFor('#{f.field}'<#if(verb === 'BelongsToMany'){#>, true<#}#>)} scoped > */}
               <ReferenceInput label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
                 <SelectInput optionText="#{f.ref.listLabel.source}" />
               </ReferenceInput>
-          </DependentInput>
+            {/* </DependentInput> */}
 <#-
   let current = entity.UI.embedded.names[f.field];
   let embededEntity = entity.UI.embedded.items[current].entity;
   let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
   const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
   if(fieldCount > 0) {#>
-          <DependentInput resolve={detailsFor('#{f.field}')} scoped >
+            {/* <DependentInput resolve={detailsFor('#{f.field}')} scoped > */}
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
               <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
@@ -328,8 +330,9 @@ class Form extends Component {
           });
         }
 -#>
-          </DependentInput>
+            {/* </DependentInput> */}
 <#-  }#>
+          </SimpleFormIterator>
         </ArrayInput>
 <#} else {#>
         <ReferenceArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Ids" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
@@ -463,39 +466,42 @@ import {
   FunctionField,
   BooleanField,
   EditButton,
-  // ReferenceManyField,
+  ReferenceManyField,
   ReferenceField,
   Show,
   SimpleShowLayout,
   required,
   RichTextField,
+  ShowController,
+  ShowView,
+  ArrayField,
 } from "react-admin";
 
 // import { EmbeddedArrayField } from 'aor-embedded-array';
-import {
-  DependentField,
-  EmbeddedField,
-  GrouppedField,
-  EmbeddedArrayField,
-  EmbeddedRefArrayField,
-  EmbeddedRefField,
-  ReferenceManyField,
-} from 'oda-ra-ui-components';
+// import { ui } from 'oda-aor-rest';
 
 const LongTextField = TextField;
+
+// const {
+  // DependentField,
+  // EmbeddedArrayField,
+  // EmbeddedRefArrayField,
+  // EmbeddedRefField,
+  // ReferenceManyField,
+// } = ui.components;
 
 const showIfExists = field => root => !!root[field];
 
 const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
 
-const ShowView = (props, context) => {
+const ShowRecordView = (props, context) => {
   const { translate, uix } = context;
   const { Title } = uix['#{entity.role}/#{entity.name}'];
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
 if(manyRels.length > 0){#>
 <#
- const uniqueEntities = manyRels.filter(f=> !f.single && !entity.UI.embedded.names.hasOwnProperty(f.field))
+ const uniqueEntities = manyRels.filter(f=> !f.single/*  && !entity.UI.embedded.names.hasOwnProperty(f.field) */)
   .reduce((hash, curr)=> {
     hash[curr.ref.entity] = curr;
     return hash;
@@ -509,14 +515,16 @@ if(manyRels.length > 0){#>
 <#-}-#>
 
   return (
-    <Show title={<Title />} {...props} >
-      <SimpleShowLayout {...props}>
+    <ShowController title={<Title />} {...props}>
+      {controllerProps =>
+        <ShowView {...props} {...controllerProps}>
+          <SimpleShowLayout {...props}>
 <#entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
-        <DependentField resolve={showIfExists('#{f.name}')}>
-          <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
-        </DependentField>
+            { controllerProps.record && controllerProps.record.#{f.name} &&
+              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+            }
 <#})-#>
 <# entity.relations
 .filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
@@ -527,80 +535,56 @@ if(manyRels.length > 0){#>
 <#-if(embedded){
         let current = entity.UI.embedded.names[f.field];
 #>
-        <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}" >
-          <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}">
+            {controllerProps.record && controllerProps.record.#{f.field}Id &&
+              <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}">
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
 
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
-            <DependentField resolve={showIfExists('#{f.name}')} scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#}#> />
-            </DependentField>
+                {/* <DependentField resolve={showIfExists('#{f.name}')} scoped > */}
+                  <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+                {/* </DependentField> */}
 <#
         });
 -#>
-          </EmbeddedRefField>
-        </DependentField>
+            </EmbeddedRefField>
+          }
 <#} else {#>
-        <DependentField resolve={showIfNotEmptyRel('#{f.field}Id')} source="#{f.field}Id" >
-          <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
-            <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
-          </ReferenceField>
-        </DependentField>
+            { controllerProps.record && controllerProps.record.#{f.field}Id &&
+              <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+                <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+              </ReferenceField>
+            }
 <#}#>
 <#-} else {#>
 <#-if(embedded){
-        let current = entity.UI.embedded.names[f.field];
-        let embededEntity = entity.UI.embedded.items[current].entity;
-        let fields = entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id');
-        const fieldCount = fields.length + (verb === 'BelongsToMany' ? f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).length : 0);
-        if(fieldCount > 0) {;
 #>
-        <DependentField resolve={showIfNotEmptyRel('#{f.field}Values')} source="#{f.field}Values">
-          <EmbeddedArrayField reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
-            <ReferenceField label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})} source="id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
-              <TextField source="#{f.ref.listLabel.source}" />
-            </ReferenceField>
-<#
-        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
--#>
-            <DependentField resolve={showIfExists('#{f.name}')} source="#{f.name}" scoped >
-              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#}#> />
-            </DependentField>
-<#
-        });-#>
-<#
-        if(verb === 'BelongsToMany') {
-          f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{-#>
-            <DependentField resolve={showIfExists('#{fld.name}')} source="#{fld.name}" scoped >
-              <#{fld.type}Field label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#}#> />
-            </DependentField>
-<#
-          });
-        }
--#>
-<#      }
--#>
-          </EmbeddedArrayField>
-        </DependentField>
+            { controllerProps.record && controllerProps.record.#{f.field}Values &&
+            Array.isArray(controllerProps.record.#{f.field}Values) && controllerProps.record.#{f.field}Values.length > 0 &&
+              <ArrayField reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+                <#{f.ref.entity}.Grid />
+              </ArrayField>
+            }
 <#} else {#>
-        <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" idKey="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
-          <#{f.ref.entity}.Grid />
-        </ReferenceManyField>
+            <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" source="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
+              <#{f.ref.entity}.Grid />
+            </ReferenceManyField>
 <#}#>
 <#-}-#>
 <#-})#>
-      </SimpleShowLayout>
-    </Show>
+          </SimpleShowLayout>
+        </ShowView>
+      }
+    </ShowController>
   );
 };
 
-ShowView.contextTypes = {
+ShowRecordView.contextTypes = {
   uix: PropTypes.object.isRequired,
   translate: PropTypes.func.isRequired,
 }
 
-export default ShowView;
+export default ShowRecordView;
 
 <#- chunkStart(`../../../i18n/${entity.name}`); -#>
 export default {
