@@ -108,7 +108,20 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
         try {
           const rules = this.validator.getRules('entity');
           rules.forEach(rule => result.push(...rule.validate(context)));
-          item.fields.forEach(p => {
+          const fields = [...item.fields.values()];
+          fields.filter(f => {
+            let read = f.getMetadata('acl.read', []) as string[];
+            if(typeof read === 'string'){
+              read = [read];
+            }
+            if (read.length > 0) {
+              if (read.indexOf(context.package.name) > -1) {
+                return true;
+              } else {
+                return false;
+              }
+            } else return true;
+          }).forEach(p => {
             result.push(...this.validator.check(p, { entity: context }));
           });
           done = true;

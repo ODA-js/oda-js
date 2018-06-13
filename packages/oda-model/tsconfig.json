@@ -7,6 +7,7 @@
       "es2017",
       "esnext.asynciterable"
     ],
+    "downlevelIteration": true,
     "sourceMap": true,
     "declaration": true,
     "noImplicitAny": false,
