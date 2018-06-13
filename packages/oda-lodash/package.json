@@ -1,6 +1,6 @@
 {
   "name": "oda-lodash",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "graphql-tag": "^2.8.0",
     "graphql-tools": "^2.21.0",
     "lodash": "^4.17.5",
-    "oda-gen-common": "^0.1.19"
+    "oda-gen-common": "^0.1.20"
   },
   "peerDependencies": {
     "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
