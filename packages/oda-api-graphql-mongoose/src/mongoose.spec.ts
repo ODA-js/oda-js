@@ -27,5 +27,26 @@ describe('filter', () => {
       },
     });
     expect(result3).toMatchSnapshot();
+
+    const result4 = Filter.parse({
+      location: {
+        query: {
+          and: [
+            { type: { eq: 'Point' } },
+            { coordinates: { at_0: { gte: 4, lte: 50 } } },
+          ],
+        },
+      },
+    });
+    expect(result4).toMatchSnapshot();
+    debugger;
+    const result5 = Filter.parse({
+      location: {
+        query: {
+          coordinates: { all: [40, 5] },
+        },
+      },
+    });
+    expect(result5).toMatchSnapshot();
   });
 });

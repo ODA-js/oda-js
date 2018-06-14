@@ -61,3 +61,32 @@ Object {
   ],
 }
 `;
+
+exports[`filter unfold queries 4`] = `
+Object {
+  "$and": Array [
+    Object {
+      "location.type": Object {
+        "$eq": "Point",
+      },
+    },
+    Object {
+      "location.coordinates.0": Object {
+        "$gte": 4,
+        "$lte": 50,
+      },
+    },
+  ],
+}
+`;
+
+exports[`filter unfold queries 5`] = `
+Object {
+  "location.coordinates": Object {
+    "$all": Array [
+      40,
+      5,
+    ],
+  },
+}
+`;

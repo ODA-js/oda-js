@@ -27,15 +27,19 @@ function unfoldQuery(
     } else {
       if (!res) res = {};
       Object.keys(obj).forEach(key => {
+        let setKey = key;
+        let index = setKey.match(/^at_(\d*)$/);
+        if (index && index[1]) {
+          setKey = index[1];
+        }
         if (operations.hasOwnProperty(key)) {
           if (operations[key] === 'array') {
-            debugger;
             res[key] = unfoldQuery(obj[key], operations, parent);
           } else {
             res[parent.join('.')] = obj;
           }
         } else {
-          unfoldQuery(obj[key], operations, [...parent, key], res);
+          unfoldQuery(obj[key], operations, [...parent, setKey], res);
         }
       });
       return res;
