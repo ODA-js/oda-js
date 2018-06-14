@@ -6,7 +6,7 @@ export function getValue(value, idMap, id) {
   if (id) {
     if (Array.isArray(value)) {
       return value.map(v => getValue(v, idMap, id));
-    } if (typeof value === 'string') {
+    } else if (typeof value === 'string') {
       return validId(value) ? value : fromGlobalId(value).id;
     } else {
       return value;
@@ -17,7 +17,7 @@ export function getValue(value, idMap, id) {
 }
 
 export class Filter {
-  private static operations = {
+  public static operations = {
     eq(value, idMap, id) {
       return { $eq: getValue(value, idMap, id) };
     },
@@ -101,7 +101,11 @@ export class Filter {
   public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => Filter.parse(n, idMap, id));
-    } if (typeof node === 'object' && (node.constructor === Object || node.constructor === undefined)) {
+    }
+    if (
+      typeof node === 'object' &&
+      (node.constructor === Object || node.constructor === undefined)
+    ) {
       let result = {};
       let keys = Object.keys(node);
       keys.forEach((key, index) => {
@@ -112,7 +116,11 @@ export class Filter {
           };
         } else {
           let idKey = idMap.hasOwnProperty(key);
-          result[idKey ? idMap[key] : key] = Filter.parse(node[key], idMap, idKey);
+          result[idKey ? idMap[key] : key] = Filter.parse(
+            node[key],
+            idMap,
+            idKey,
+          );
         }
       });
       return result;
@@ -123,61 +131,81 @@ export class Filter {
 }
 
 export class Process {
-  private static operations = {
+  public static operations = {
     eq(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf == ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} == ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} == ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     gt(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf > ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} > ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} > ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     gte(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf >= ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} >= ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} >= ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     lt(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf < ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} < ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} < ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     lte(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf <= ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} <= ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} <= ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     ne(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf !== ${value.valueOf()}`;
       } else {
-        return `value${id ? '.toString()' : ''} !== ${JSON.stringify(getValue(value, idMap, id))}`;
+        return `value${id ? '.toString()' : ''} !== ${JSON.stringify(
+          getValue(value, idMap, id),
+        )}`;
       }
     },
     in(value, idMap, id) {
       if (value[0] instanceof Date) {
-        return `${JSON.stringify(value.map(v => v.valueOf()))}.indexOf(value) !== -1`;
+        return `${JSON.stringify(
+          value.map(v => v.valueOf()),
+        )}.indexOf(value) !== -1`;
       } else {
-        return `${JSON.stringify(value)}.indexOf(value${id ? '.toString()' : ''}) !== -1`;
+        return `${JSON.stringify(value)}.indexOf(value${
+          id ? '.toString()' : ''
+        }) !== -1`;
       }
     },
     nin(value, idMap, id) {
       if (value[0] instanceof Date) {
-        return `${JSON.stringify(value.map(v => v.valueOf()))}.indexOf(value) === -1`;
+        return `${JSON.stringify(
+          value.map(v => v.valueOf()),
+        )}.indexOf(value) === -1`;
       } else {
-        return `${JSON.stringify(id ? value.map(v => v.toString()) : value)}.indexOf(value${id ? '.toString()' : ''}) === -1`;
+        return `${JSON.stringify(
+          id ? value.map(v => v.toString()) : value,
+        )}.indexOf(value${id ? '.toString()' : ''}) === -1`;
       }
     },
     contains(value, idMap, id) {
@@ -189,14 +217,18 @@ export class Process {
     },
     some(value, idMap, id) {
       if (value[0] instanceof Date) {
-        return `value.some(i => (${JSON.stringify(value.map(v => v.valueOf()))}.indexOf(i) !== -1))`;
+        return `value.some(i => (${JSON.stringify(
+          value.map(v => v.valueOf()),
+        )}.indexOf(i) !== -1))`;
       } else {
         return `value.some(i => (${JSON.stringify(value)}.indexOf(i) !== -1))`;
       }
     },
     every(value, idMap, id) {
       if (value[0] instanceof Date) {
-        return `value.every(i => (${JSON.stringify(value.map(v => v.valueOf()))}.indexOf(i) !== -1))`;
+        return `value.every(i => (${JSON.stringify(
+          value.map(v => v.valueOf()),
+        )}.indexOf(i) !== -1))`;
       } else {
         return `value.every(i => (${JSON.stringify(value)}.indexOf(i) !== -1))`;
       }
@@ -210,7 +242,9 @@ export class Process {
     },
     none(value, idMap, id) {
       if (value[0] instanceof Date) {
-        return `value.every(i => (${JSON.stringify(value.map(v => v.valueOf()))}.indexOf(i) === -1))`;
+        return `value.every(i => (${JSON.stringify(
+          value.map(v => v.valueOf()),
+        )}.indexOf(i) === -1))`;
       } else {
         return `value.every(i => (${JSON.stringify(value)}.indexOf(i) === -1))`;
       }
@@ -228,7 +262,9 @@ export class Process {
       return '!(' + value.map(v => `(${Process.go(v)})`).join('&&') + ')';
     },
     exists(value, idMap, id) {
-      return `${value ? '' : '!'}(value !== undefined && value !== null && value !== '')`;
+      return `${
+        value ? '' : '!'
+      }(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
@@ -244,10 +280,18 @@ export class Process {
     return eval(`(value)=>${filter.join('&&') || 'true'}`);
   }
 
-  private static go(node: object[] | object, idMap: { [key: string]: any } = { id: '_id' }, id: boolean = false, result?) {
+  public static go(
+    node: object[] | object,
+    idMap: { [key: string]: any } = { id: '_id' },
+    id: boolean = false,
+    result?,
+  ) {
     if (Array.isArray(node)) {
       return node.map(n => Process.go(n, idMap, id, result));
-    } else if (typeof node === 'object' && (node.constructor === Object || node.constructor === undefined)) {
+    } else if (
+      typeof node === 'object' &&
+      (node.constructor === Object || node.constructor === undefined)
+    ) {
       if (!result) {
         result = [];
       }
@@ -257,7 +301,11 @@ export class Process {
           result.push(Process.operations[key](node[key], idMap, id));
         } else {
           let idKey = idMap.hasOwnProperty(key);
-          result.push(`((value)=>${Process.go(node[key], idMap, idKey)})(value.${idKey ? idMap[key] : key})`);
+          result.push(
+            `((value)=>${Process.go(node[key], idMap, idKey)})(value.${
+              idKey ? idMap[key] : key
+            })`,
+          );
         }
       });
       return result;
@@ -265,14 +313,21 @@ export class Process {
       return Process.operations.eq(node, idMap, id);
     }
   }
-
 }
 
-export function withContext(subscriptionHandler, idMap: { [key: string]: any } = { id: '_id' }) {
+export function withContext(
+  subscriptionHandler,
+  idMap: { [key: string]: any } = { id: '_id' },
+) {
   return (root, args, context, info) => {
-    return subscriptionHandler(root, args, {
-      queryCheck: Process.create(args.filter || {}, idMap),
-      ...context,
-    }, info);
+    return subscriptionHandler(
+      root,
+      args,
+      {
+        queryCheck: Process.create(args.filter || {}, idMap),
+        ...context,
+      },
+      info,
+    );
   };
 }

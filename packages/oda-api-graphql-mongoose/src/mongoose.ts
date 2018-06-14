@@ -7,12 +7,47 @@ import {
   consts,
   pagination,
   detectCursorDirection,
-  Filter,
-  } from 'oda-api-graphql';
+  Filter as FilterBase,
+} from 'oda-api-graphql';
 
 const { forward } = listIterator;
 const { DIRECTION } = consts;
-const FilterMongoose = Filter.Filter;
+const { Filter } = FilterBase;
+
+function unfoldQuery(obj: any | any[], operations: string[], parent: string) {
+  if (typeof obj === 'object') {
+    let result: object | object[];
+    if (Array.isArray(obj)) {
+      result = obj.map(item => unfoldQuery(item, operations, parent));
+    } else {
+      result = {};
+      Object.keys(obj).forEach(key => {
+        if (~operations.indexOf(key)) {
+
+        } else {
+          result[key] = unfoldQuery(obj[key], operations, key);
+        }
+      });
+    }
+    return result;
+  } else {
+    return obj;
+  }
+}
+
+export class FilterMongoose {
+  public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
+    let result = Filter.parse(node, idMap, id);
+    const operations = Object.keys(Filter.operations).map(o => `$${o}`);
+    if (typeof result === 'object') {
+      const res = {};
+
+
+
+    }
+    return result;
+  }
+}
 
 export default class MongooseApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload> {
 
