@@ -19,6 +19,7 @@ export function getValue(value, idMap, id) {
 export class Filter {
   public static types: {} = {
     $eq: 'scalar',
+    $all: 'scalar',
     $gt: 'scalar',
     $gtq: 'scalar',
     $lt: 'scalar',
@@ -36,6 +37,9 @@ export class Filter {
   public static operations = {
     eq(value, idMap, id) {
       return { $eq: getValue(value, idMap, id) };
+    },
+    all(value, idMap, id) {
+      return { $all: getValue(value, idMap, id) };
     },
     gt(value, idMap, id) {
       return { $gt: getValue(value, idMap, id) };
@@ -210,7 +214,7 @@ export class Process {
       } else {
         return `${JSON.stringify(value)}.indexOf(value${
           id ? '.toString()' : ''
-        }) !== -1`;
+          }) !== -1`;
       }
     },
     nin(value, idMap, id) {
@@ -280,7 +284,7 @@ export class Process {
     exists(value, idMap, id) {
       return `${
         value ? '' : '!'
-      }(value !== undefined && value !== null && value !== '')`;
+        }(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
@@ -319,7 +323,7 @@ export class Process {
           let idKey = idMap.hasOwnProperty(key);
           result.push(
             `((value)=>${Process.go(node[key], idMap, idKey)})(value.${
-              idKey ? idMap[key] : key
+            idKey ? idMap[key] : key
             })`,
           );
         }
