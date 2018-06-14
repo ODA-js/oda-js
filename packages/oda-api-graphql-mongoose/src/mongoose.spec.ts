@@ -48,5 +48,14 @@ describe('filter', () => {
       },
     });
     expect(result5).toMatchSnapshot();
+
+    const result6 = Filter.parse({
+      location: {
+        query: {
+          coordinates: { size: 2 },
+        },
+      },
+    });
+    expect(result6).toMatchSnapshot();
   });
 });

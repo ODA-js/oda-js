@@ -27,6 +27,7 @@ export class Filter {
     $ne: 'scalar',
     $in: 'scalar',
     $nin: 'scalar',
+    $size: 'scalar',
     $or: 'array',
     $and: 'array',
     $nor: 'array',
@@ -40,6 +41,9 @@ export class Filter {
     },
     all(value, idMap, id) {
       return { $all: getValue(value, idMap, id) };
+    },
+    size(value, idMap, id) {
+      return { $size: getValue(value, idMap, id) };
     },
     gt(value, idMap, id) {
       return { $gt: getValue(value, idMap, id) };
@@ -161,6 +165,11 @@ export class Process {
         )}`;
       }
     },
+    size(value, idMap, id) {
+      if (value) {
+        return `value.length === ${value}`;
+      }
+    },
     gt(value, idMap, id) {
       if (value instanceof Date) {
         return `value.valueOf > ${value.valueOf()}`;
@@ -214,7 +223,7 @@ export class Process {
       } else {
         return `${JSON.stringify(value)}.indexOf(value${
           id ? '.toString()' : ''
-          }) !== -1`;
+        }) !== -1`;
       }
     },
     nin(value, idMap, id) {
@@ -284,7 +293,7 @@ export class Process {
     exists(value, idMap, id) {
       return `${
         value ? '' : '!'
-        }(value !== undefined && value !== null && value !== '')`;
+      }(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
@@ -323,7 +332,7 @@ export class Process {
           let idKey = idMap.hasOwnProperty(key);
           result.push(
             `((value)=>${Process.go(node[key], idMap, idKey)})(value.${
-            idKey ? idMap[key] : key
+              idKey ? idMap[key] : key
             })`,
           );
         }

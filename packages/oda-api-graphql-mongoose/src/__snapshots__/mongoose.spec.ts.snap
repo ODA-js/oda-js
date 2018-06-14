@@ -90,3 +90,11 @@ Object {
   },
 }
 `;
+
+exports[`filter unfold queries 6`] = `
+Object {
+  "location.coordinates": Object {
+    "$size": 2,
+  },
+}
+`;
