@@ -17,6 +17,22 @@ export function getValue(value, idMap, id) {
 }
 
 export class Filter {
+  public static types: {} = {
+    $eq: 'scalar',
+    $gt: 'scalar',
+    $gtq: 'scalar',
+    $lt: 'scalar',
+    $lte: 'scalar',
+    $ne: 'scalar',
+    $in: 'scalar',
+    $nin: 'scalar',
+    $or: 'array',
+    $and: 'array',
+    $nor: 'array',
+    $not: 'array',
+    $regex: 'string',
+    $exists: 'boolean',
+  };
   public static operations = {
     eq(value, idMap, id) {
       return { $eq: getValue(value, idMap, id) };
