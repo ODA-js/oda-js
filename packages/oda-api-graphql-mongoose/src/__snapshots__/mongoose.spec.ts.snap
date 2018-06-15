@@ -98,3 +98,21 @@ Object {
   },
 }
 `;
+
+exports[`filter unfold queries 7`] = `
+Object {
+  "location": Object {
+    "$near": Object {
+      "$geometry": Object {
+        "coordinates": Array [
+          70,
+          5,
+        ],
+        "type": "Point",
+      },
+      "$maxDistance": 50,
+      "$minDistance": 0,
+    },
+  },
+}
+`;

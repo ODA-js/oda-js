@@ -3,7 +3,6 @@ import { FilterMongoose as Filter } from './mongoose';
 
 describe('filter', () => {
   it('unfold queries', () => {
-    debugger;
     const result = Filter.parse({ location: { query: { type: 'Point' } } });
     expect(result).toMatchSnapshot();
     const result2 = Filter.parse({
@@ -39,7 +38,7 @@ describe('filter', () => {
       },
     });
     expect(result4).toMatchSnapshot();
-    debugger;
+
     const result5 = Filter.parse({
       location: {
         query: {
@@ -57,5 +56,21 @@ describe('filter', () => {
       },
     });
     expect(result6).toMatchSnapshot();
+    debugger;
+    const result7 = Filter.parse({
+      location: {
+        query: {
+          near: {
+            geometry: {
+              type: 'Point',
+              coordinates: [70, 5],
+            },
+            maxDistance: 50,
+            minDistance: 0,
+          },
+        },
+      },
+    });
+    expect(result7).toMatchSnapshot();
   });
 });

@@ -34,6 +34,17 @@ export class Filter {
     $not: 'array',
     $regex: 'string',
     $exists: 'boolean',
+    $geometry: 'scalar',
+    $maxDistance: 'scalar',
+    $minDistance: 'scalar',
+    $geoIntersects: 'scalar',
+    $geoWithin: 'scalar',
+    $near: 'scalar',
+    $nearSphere: 'scalar',
+    $box: 'scalar',
+    $center: 'scalar',
+    $centerSphere: 'scalar',
+    $polygon: 'scalar',
   };
   public static operations = {
     eq(value, idMap, id) {
@@ -119,6 +130,75 @@ export class Filter {
         throw new Error('expected JSON type for exists operation');
       }
       return Filter.parse(value, idMap, id);
+    },
+    geometry(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      if (!value.type || !value.coordinates) {
+        throw new Error('expected GeoJSON type for exists operation');
+      }
+      return { $geometry: value };
+    },
+    maxDistance(value, idMap, id) {
+      if (typeof value !== 'number') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $maxDistance: value };
+    },
+    minDistance(value, idMap, id) {
+      if (typeof value !== 'number') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $minDistance: value };
+    },
+    geoIntersects(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $geoIntersects: Filter.parse(value, idMap, id) };
+    },
+    geoWithin(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $geoWithin: Filter.parse(value, idMap, id) };
+    },
+    near(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $near: Filter.parse(value, idMap, id) };
+    },
+    nearSphere(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $nearSphere: Filter.parse(value, idMap, id) };
+    },
+    box(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $box: Filter.parse(value, idMap, id) };
+    },
+    center(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $center: Filter.parse(value, idMap, id) };
+    },
+    centerSphere(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $centerSphere: Filter.parse(value, idMap, id) };
+    },
+    polygon(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return { $polygon: Filter.parse(value, idMap, id) };
     },
   };
 
@@ -223,7 +303,7 @@ export class Process {
       } else {
         return `${JSON.stringify(value)}.indexOf(value${
           id ? '.toString()' : ''
-        }) !== -1`;
+          }) !== -1`;
       }
     },
     nin(value, idMap, id) {
@@ -293,7 +373,7 @@ export class Process {
     exists(value, idMap, id) {
       return `${
         value ? '' : '!'
-      }(value !== undefined && value !== null && value !== '')`;
+        }(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
@@ -332,7 +412,7 @@ export class Process {
           let idKey = idMap.hasOwnProperty(key);
           result.push(
             `((value)=>${Process.go(node[key], idMap, idKey)})(value.${
-              idKey ? idMap[key] : key
+            idKey ? idMap[key] : key
             })`,
           );
         }
