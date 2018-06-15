@@ -1,6 +1,6 @@
 import {
   Filter,
-  } from 'oda-api-graphql';
+} from 'oda-api-graphql';
 
 const getValue = Filter.getValue;
 
@@ -77,6 +77,12 @@ export class FilterSequelize {
         throw new Error('expected string type for imatch operation');
       }
       return { $like: `${value}%` };
+    },
+    query(value, idMap, id) {
+      if (typeof value !== 'object') {
+        throw new Error('expected JSON type for exists operation');
+      }
+      return Filter.parse(value, idMap, id);
     },
   };
 

@@ -19,15 +19,14 @@ export interface MapperOutupt {
 
 import {
   getFields,
-  persistentFields,
-  singleStoredRelationsExistingIn,
+  relationFieldsExistsIn,
   mutableFields,
   idField,
 } from '../../../queries';
 
 export function mapper(entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
   const mapToTSTypes = typeMapper.typescript;
-  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
+  const relations = relationFieldsExistsIn(pack);
   let ids = getFields(entity).filter(idField);
 
   return {
@@ -37,7 +36,7 @@ export function mapper(entity: Entity, pack: ModelPackage, typeMapper: { [key: s
     fields: [
       ...ids,
       ...getFields(entity)
-        .filter(f => singleStoredRelations(f) || mutableFields(f))]
+        .filter(f => relations(f) || mutableFields(f))]
       .map(f => {
         return {
           name: f.name,

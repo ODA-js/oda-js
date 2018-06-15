@@ -1,4 +1,5 @@
 import { fromGlobalId } from 'oda-isomorfic';
+import { set, get } from 'lodash';
 
 import {
   ConnectorsApiBase,
@@ -7,22 +8,73 @@ import {
   consts,
   pagination,
   detectCursorDirection,
-  Filter,
-  } from 'oda-api-graphql';
+  Filter as FilterBase,
+} from 'oda-api-graphql';
 
 const { forward } = listIterator;
 const { DIRECTION } = consts;
-const FilterMongoose = Filter.Filter;
+const { Filter } = FilterBase;
 
-export default class MongooseApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload> {
+function unfoldQuery(
+  obj: any | any[],
+  operations: object,
+  parent: string[],
+  res?: object,
+) {
+  if (typeof obj === 'object') {
+    if (Array.isArray(obj)) {
+      return obj.map(item => unfoldQuery(item, operations, parent));
+    } else {
+      if (!res) res = {};
+      Object.keys(obj).forEach(key => {
+        let setKey = key;
+        let index = setKey.match(/^at_(\d*)$/);
+        if (index && index[1]) {
+          setKey = index[1];
+        }
+        if (operations.hasOwnProperty(key)) {
+          if (operations[key] === 'array') {
+            res[key] = unfoldQuery(obj[key], operations, parent);
+          } else {
+            res[parent.join('.')] = obj;
+          }
+        } else {
+          unfoldQuery(obj[key], operations, [...parent, setKey], res);
+        }
+      });
+      return res;
+    }
+  } else {
+    return obj;
+  }
+}
 
+export class FilterMongoose {
+  public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
+    let result = Filter.parse(node, idMap, id);
+    if (typeof result === 'object') {
+      return unfoldQuery(result, Filter.types, []);
+    }
+    return result;
+  }
+}
+
+export default class MongooseApi<
+  RegisterConnectors,
+  Payload extends object
+> extends ConnectorsApiBase<RegisterConnectors, Payload> {
   public mongoose: any;
 
-  constructor({ mongoose, connectors, name, securityContext }: {
+  constructor({
+    mongoose,
+    connectors,
+    name,
+    securityContext,
+  }: {
     mongoose: any;
     name: string;
     connectors: RegisterConnectors;
-    securityContext: SecurityContext<RegisterConnectors>
+    securityContext: SecurityContext<RegisterConnectors>;
   }) {
     super({ connectors, securityContext, name });
     this.mongoose = mongoose;
@@ -38,19 +90,19 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
   }
   public async getCount(args) {
     let query = this.getFilter(args);
-    return (await this.model.count(query));
+    return await this.model.count(query);
   }
 
-  public getFilter(args: { filter: any, idMap: any }) {
+  public getFilter(args: { filter: any; idMap: any }) {
     if (args.filter) {
       return FilterMongoose.parse(args.filter, args.idMap);
     } else {
       return {};
     }
-  };
+  }
 
   public toJSON(obj): Payload {
-    return super.toJSON((obj && obj.toObject) ? obj.toObject() : obj);
+    return super.toJSON(obj && obj.toObject ? obj.toObject() : obj);
   }
 
   public ensureId(obj) {
@@ -75,13 +127,12 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
     let move: any = {};
 
     if (cursor.after || cursor.before) {
-      const detect = (name: string, value: any) =>
-        ({
-          [name]: (sort[name] === DIRECTION.BACKWARD) ?
-            { [cursor.after ? '$lt' : '$gt']: value } :
-            { [cursor.before ? '$lt' : '$gt']: value },
-        });
-      ;
+      const detect = (name: string, value: any) => ({
+        [name]:
+          sort[name] === DIRECTION.BACKWARD
+            ? { [cursor.after ? '$lt' : '$gt']: value }
+            : { [cursor.before ? '$lt' : '$gt']: value },
+      });
       let sortKeys = Object.keys(sort);
       if (sortKeys.length > 1) {
         let current = await this.findOneById(cursor.after || cursor.before);
@@ -90,24 +141,30 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
         const or = [];
         while (find.length > 0) {
           const len = find.length;
-          or.push(find.reduce((prev, f, index) => {
-            const curr = index == len - 1 ?
-              detect(f, current[f]) :
-              {
-                [f]: { $eq: current[f] },
+          or.push(
+            find.reduce((prev, f, index) => {
+              const curr =
+                index == len - 1
+                  ? detect(f, current[f])
+                  : {
+                      [f]: { $eq: current[f] },
+                    };
+              prev = {
+                ...prev,
+                ...curr,
               };
-            prev = {
-              ...prev,
-              ...curr,
-            };
-            return prev;
-          }, {}));
+              return prev;
+            }, {}),
+          );
           find.pop();
         }
         move = { $or: or };
       } else {
         move = {
-          _id: { [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']: cursor.after || cursor.before },
+          _id: {
+            [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']:
+              cursor.after || cursor.before,
+          },
         };
       }
     }
@@ -115,10 +172,7 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
     if (Object.keys(query).length > 0) {
       if (Object.keys(move).length > 0) {
         query = {
-          $and: [
-            move,
-            query,
-          ],
+          $and: [move, query],
         };
       }
     } else {
@@ -130,7 +184,9 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
     let pageSize = 10;
     let iterator = forward(async (step: number) => {
       return await new Promise<any[]>((res, rej) => {
-        this.model.find(query).sort(sort)
+        this.model
+          .find(query)
+          .sort(sort)
           .skip(cursor.skip + step * pageSize)
           .limit(pageSize)
           .exec((err, data) => {
@@ -144,7 +200,10 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
     }, pageSize);
 
     for await (let source of iterator) {
-      if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
+      if (
+        (cursor.limit && result.length < cursor.limit) ||
+        (!cursor.limit || cursor.limit <= 0)
+      ) {
         if (await this.readSecure(source)) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(this.toJSON(source))) {
@@ -165,7 +224,7 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
   }
 
   protected async _create(obj: Payload) {
-    return await (new (this.model)(obj)).save();
+    return await new this.model(obj).save();
   }
 
   protected async _update(record, obj: Payload) {
@@ -181,5 +240,5 @@ export default class MongooseApi<RegisterConnectors, Payload extends object> ext
     return await record.remove();
   }
 
-  public async sync({ force = false }: { force?: boolean }) { }
+  public async sync({ force = false }: { force?: boolean }) {}
 }

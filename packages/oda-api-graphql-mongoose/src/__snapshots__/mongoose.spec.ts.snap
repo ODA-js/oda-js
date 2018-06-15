@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filter unfold queries 1`] = `
+Object {
+  "location.type": Object {
+    "$eq": "Point",
+  },
+}
+`;
+
+exports[`filter unfold queries 2`] = `
+Object {
+  "$or": Array [
+    Object {
+      "location.type": Object {
+        "$eq": "Point",
+      },
+    },
+    Object {
+      "location.type": Object {
+        "$eq": "Line",
+      },
+    },
+  ],
+}
+`;
+
+exports[`filter unfold queries 3`] = `
+Object {
+  "$or": Array [
+    Object {
+      "location.type": Object {
+        "$eq": "Point",
+      },
+    },
+    Object {
+      "location.type": Object {
+        "$eq": "Line",
+      },
+    },
+    Object {
+      "$and": Array [
+        Object {
+          "location.coordinates": Object {
+            "$in": Array [
+              40,
+              50,
+            ],
+          },
+        },
+        Object {
+          "location.coordinates": Object {
+            "$in": Array [
+              20,
+              30,
+            ],
+          },
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`filter unfold queries 4`] = `
+Object {
+  "$and": Array [
+    Object {
+      "location.type": Object {
+        "$eq": "Point",
+      },
+    },
+    Object {
+      "location.coordinates.0": Object {
+        "$gte": 4,
+        "$lte": 50,
+      },
+    },
+  ],
+}
+`;
+
+exports[`filter unfold queries 5`] = `
+Object {
+  "location.coordinates": Object {
+    "$all": Array [
+      40,
+      5,
+    ],
+  },
+}
+`;
+
+exports[`filter unfold queries 6`] = `
+Object {
+  "location.coordinates": Object {
+    "$size": 2,
+  },
+}
+`;
+
+exports[`filter unfold queries 7`] = `
+Object {
+  "location": Object {
+    "$near": Object {
+      "$geometry": Object {
+        "coordinates": Array [
+          70,
+          5,
+        ],
+        "type": "Point",
+      },
+      "$maxDistance": 50,
+      "$minDistance": 0,
+    },
+  },
+}
+`;
