@@ -214,15 +214,7 @@ import RichTextInput from 'ra-input-rich-text';
 import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 import compose from 'recompose/compose';
-import { consts, actions, show  } from 'oda-ra-ui';
-
-// const {
-  // DependentInput,
-  // EmbeddedInput,
-  // GrouppedInput,
-  // Label,
-  // AutocompleteInput
-// } = ui.components;
+import { consts, actions, show } from 'oda-ra-ui';
 
 const actionType = consts.actionType;
 const initForm = actions.initForm;
@@ -477,18 +469,11 @@ import {
   ArrayField,
 } from "react-admin";
 
-// import { EmbeddedArrayField } from 'aor-embedded-array';
-// import { ui } from 'oda-aor-rest';
+import { consts, actions, show, components } from 'oda-ra-ui';
 
 const LongTextField = TextField;
 
-// const {
-  // DependentField,
-  // EmbeddedArrayField,
-  // EmbeddedRefArrayField,
-  // EmbeddedRefField,
-  // ReferenceManyField,
-// } = ui.components;
+const { EmbeddedRefField } = components;
 
 const showIfExists = field => root => !!root[field];
 
@@ -523,7 +508,12 @@ if(manyRels.length > 0){#>
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
             { controllerProps.record && controllerProps.record.#{f.name} &&
-              <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+              <#{f.type=="Number" ? "Text" : f.type}Field 
+                label="resources.#{entity.name}.fields.#{f.name}" 
+                source="#{f.name}"
+                <#- if (!f.required){#>
+                allowEmpty<#}#>
+              />
             }
 <#})-#>
 <# entity.relations
@@ -533,10 +523,17 @@ if(manyRels.length > 0){#>
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 -#><#-if(f.single){#>
 <#-if(embedded){
+  // for future discussions
         let current = entity.UI.embedded.names[f.field];
 #>
-            {controllerProps.record && controllerProps.record.#{f.field}Id &&
-              <EmbeddedRefField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}">
+            {controllerProps.record &&
+              controllerProps.record.#{f.field}Id &&
+              <EmbeddedRefField 
+                label="resources.#{entity.name}.fields.#{f.field}"
+                source="#{f.field}Id"
+                reference="#{entity.role}/#{f.ref.entity}"
+                target="#{f.ref.opposite}"
+              >
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
 
@@ -557,7 +554,8 @@ if(manyRels.length > 0){#>
             }
 <#}#>
 <#-} else {#>
-<#-if(embedded){
+<#-if( false /* embedded */){
+  // for future discussions
 #>
             { controllerProps.record && controllerProps.record.#{f.field}Values &&
             Array.isArray(controllerProps.record.#{f.field}Values) && controllerProps.record.#{f.field}Values.length > 0 &&
