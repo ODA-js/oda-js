@@ -20,16 +20,17 @@ export interface UIResult {
 }
 
 export interface embeddedRel {
-  name: string,
-  type: string,
+  name: string;
+  type: string;
   required: boolean;
-};
+}
 
 export interface embedded {
   name: string;
-  entity: string,
-  single: boolean,
-  fields: embeddedRel[],
+  entity: string;
+  single: boolean;
+  fields: embeddedRel[];
+  UI?: UIView;
 }
 
 export interface UIView {
@@ -42,7 +43,7 @@ export interface UIView {
   embedded?: {
     names: { [key: string]: number };
     items: embedded[];
-  }
+  };
 }
 
 export interface MapperOutupt {
@@ -71,7 +72,7 @@ export interface MapperOutupt {
         type: string;
         source: any;
       };
-    }
+    };
   }[];
   fields: {
     name: string;
@@ -97,7 +98,14 @@ import {
 } from '../../queries';
 import { platform } from 'os';
 
-function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, first = false): UIView {
+function visibility(
+  pack: ModelPackage,
+  entity: Entity,
+  aclAllow,
+  role,
+  aor,
+  first = false,
+): UIView {
   const result: UIResult = {
     listName: guessListLabel(entity, aclAllow, role, aor).source,
     quickSearch: guessQuickSearch(entity, aclAllow, role, aor),
@@ -110,13 +118,15 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
   let allFields = getFieldsForAcl(aclAllow)(role)(entity);
   result.edit.push(...allFields.map(f => f.name));
   result.show.push(...result.edit);
-  result.list.push(...allFields.
-    filter(oneUniqueInIndex(entity))
-    .map(f => f.name));
-  result.list.push(...complexUniqueFields(entity)
-    .map(f => entity.fields.get(f))
-    .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
-    .map(f => f.name));
+  result.list.push(
+    ...allFields.filter(oneUniqueInIndex(entity)).map(f => f.name),
+  );
+  result.list.push(
+    ...complexUniqueFields(entity)
+      .map(f => entity.fields.get(f))
+      .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
+      .map(f => f.name),
+  );
 
   // придумать как вытаскивать реляции из модели...
   //
@@ -166,7 +176,19 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
     }, {}),
   };
 
-  res.list = result.list.filter(f => !res.hidden[f])
+  res.list = result.list.filter(f => !res.hidden[f]).reduce((r, c) => {
+    if (r[c] !== false) {
+      if (!/\^/.test(c)) {
+        r[c] = true;
+      } else {
+        r[c.slice(1)] = false;
+      }
+    }
+    return r;
+  }, {});
+
+  res.edit = result.edit
+    .filter(f => !res.hidden[f] && !res.list[f])
     .reduce((r, c) => {
       if (r[c] !== false) {
         if (!/\^/.test(c)) {
@@ -178,19 +200,8 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
       return r;
     }, {});
 
-  res.edit = result.edit.filter(f => !res.hidden[f] && !res.list[f])
-    .reduce((r, c) => {
-      if (r[c] !== false) {
-        if (!/\^/.test(c)) {
-          r[c] = true;
-        } else {
-          r[c.slice(1)] = false;
-        }
-      }
-      return r;
-    }, {});
-
-  res.show = result.show.filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f])
+  res.show = result.show
+    .filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f])
     .reduce((r, c) => {
       if (r[c] !== false) {
         if (!/\^/.test(c)) {
@@ -203,7 +214,8 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
     }, {});
 
   if (first) {
-    const embedItems = allFields.filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
+    const embedItems = allFields
+      .filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
       .map(f => {
         const lRes: embedded = {
           name: f.name,
@@ -215,7 +227,9 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
         const reUI = visibility(pack, re, aclAllow, role, aor);
         const fList = Array.from(re.fields.values())
           // потом беру все поля которые редактируются,
-          .filter(f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name])
+          .filter(
+            f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name],
+          )
           // проверяю что это не связи,
           .filter(f => !f.relation)
           // формирую список полей и возвращаю
@@ -225,10 +239,10 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
             label: humanize(f.name),
             type: aor(f.type),
             required: f.required,
-
           }));
 
         lRes.fields.push(...fList);
+        lRes.UI = reUI;
         return lRes;
       }, {});
 
@@ -238,7 +252,7 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
         r[f.name] = index;
         return r;
       }, {}),
-    }
+    };
   }
 
   return res;
@@ -253,7 +267,8 @@ function guessListLabel(entity, aclAllow, role, aor) {
   if (UI && UI.listName) {
     result.source = UI.listName;
   } else {
-    let res = getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
+    let res = getFieldsForAcl(aclAllow)(role)(entity)
+      .filter(identityFields)
       .filter(oneUniqueInIndex(entity))[0];
     if (res) {
       result.type = aor(res.type);
@@ -272,12 +287,22 @@ function guessQuickSearch(entity: Entity, aclAllow, role, aor) {
       result.push(UI.listName);
     }
   }
-  result.push(...getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
-    .filter(oneUniqueInIndex(entity)).map(i => i.name));
+  result.push(
+    ...getFieldsForAcl(aclAllow)(role)(entity)
+      .filter(identityFields)
+      .filter(oneUniqueInIndex(entity))
+      .map(i => i.name),
+  );
   return result;
 }
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -297,11 +322,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     type: mapAORTypes(f.type),
     resourceType: mapResourceTypes(f.type),
     filterType: mapAORFilterTypes(f.type),
-  })
+  });
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
-    .sort((a, b) => a.order > b.order ? 1 : -1)
+    .sort((a, b) => (a.order > b.order ? 1 : -1))
     .map(f => {
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
@@ -325,7 +350,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         },
       };
       if (verb === 'BelongsToMany') {
-        let current = (f.relation as BelongsToMany);
+        let current = f.relation as BelongsToMany;
         ref.using.entity = current.using.entity;
         ref.using.field = current.using.field;
         ref.backField = current.using.backField;
@@ -333,10 +358,17 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
 
         let opposite = getRelationNames(refe)
           // по одноименному классу ассоциации
-          .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
-            && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
+          .filter(
+            r =>
+              (current.opposite && current.opposite === r) ||
+              (refe.fields.get(r).relation instanceof BelongsToMany &&
+                (refe.fields.get(r).relation as BelongsToMany).using.entity ===
+                  (f.relation as BelongsToMany).using.entity),
+          )
           .map(r => refe.fields.get(r).relation)
-          .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
+          .filter(
+            r => r instanceof BelongsToMany && current !== r,
+          )[0] as BelongsToMany;
         /// тут нужно получить поле по которому opposite выставляет свое значение,
         // и значение
         if (opposite) {
@@ -355,7 +387,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         }
       }
       let sameEntity = entity.name === f.relation.ref.entity;
-      let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+      let refFieldName = `${f.relation.ref.entity}${
+        sameEntity ? capitalize(f.name) : ''
+      }`;
       return {
         required: f.required,
         derived: f.derived,
@@ -389,8 +423,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       ...ids,
       ...fieldsAcl
         .filter(f => fields(f) && !idField(f))
-        .sort((a, b) => a.order > b.order ? 1 : -1)
-    ]
-      .map(mapFields),
+        .sort((a, b) => (a.order > b.order ? 1 : -1)),
+    ].map(mapFields),
   };
 }

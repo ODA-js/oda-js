@@ -15,6 +15,8 @@ const Show = loadable(() => import('./show'));
 const Edit = loadable(() => import('./edit'));
 const List = loadable(() => import('./list'));
 const Grid = loadable(() => import('./grid'));
+const GridView = loadable(() => import('./gridView'));
+const CardView = loadable(() => import('./cardView'));
 
 export default {
   name: '#{entity.name}',
@@ -27,6 +29,8 @@ export default {
   Edit,
   List,
   Grid,
+  GridView,
+  CardView
 };
 
 <#- chunkStart(`../../../${entity.name}/uix/title`); -#>
@@ -53,7 +57,7 @@ import {
 } from "react-admin";
 
 const ListView = (props, context) => {
-  const { Grid, Filter} = context.uix['#{entity.role}/#{entity.name}'];
+  const { Grid, Filter } = context.uix['#{entity.role}/#{entity.name}'];
 
   return (
     <List {...props} filters={<Filter />} title={context.translate("resources.#{entity.name}.name", { smart_count:2 })}>
@@ -74,6 +78,30 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 import {
+  Responsive,
+} from "react-admin";
+
+const Grid = (props, context) => {
+  const { CardView, GridView } = context.uix['#{entity.role}/#{entity.name}'];
+  return (
+  <Responsive
+    small={<CardView {...props} />}
+    medium={<GridView {...props} />}
+  />
+);
+}
+
+Grid.contextTypes = {
+  uix: PropTypes.object.isRequired,
+  translate: PropTypes.func.isRequired,
+}
+
+export default Grid;
+<#- chunkStart(`../../../${entity.name}/uix/gridView`); -#>
+import React from "react";
+import PropTypes from 'prop-types';
+
+import {
   Datagrid,
   TextField,
   DateField,
@@ -83,9 +111,10 @@ import {
   DeleteButton,
   ShowButton,
   ReferenceField,
+  Responsive,
 } from "react-admin";
 
-const Grid = (props, context) => (
+const Grid = (props) => (
   <Datagrid {...props} >
 <# entity.fields.filter(f=>f.name!== "id")
 .filter(f=>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
@@ -101,9 +130,9 @@ const Grid = (props, context) => (
     </ReferenceField>
 <#-}-#>
 <#-})#>
-    <ShowButton />
-    <EditButton />
-    <DeleteButton />
+    <ShowButton label={false} />
+    <EditButton label={false} />
+    <DeleteButton label={false} />
   </Datagrid>
 );
 
@@ -446,6 +475,108 @@ CreateForm.contextTypes = {
 }
 
 export default CreateForm;
+<#- chunkStart(`../../../${entity.name}/uix/cardView`); -#>
+import React from 'react';
+import PropTypes from 'prop-types';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+
+import {
+  Datagrid,
+  TextField,
+  DateField,
+  NumberField,
+  BooleanField,
+  EditButton,
+  DeleteButton,
+  ShowButton,
+  ReferenceField,
+  FieldTitle,
+} from 'react-admin';
+
+const cardStyle = {
+  width: 240,
+  margin: '0.5rem',
+  display: 'inline-block',
+  verticalAlign: 'top',
+};
+
+const Label = ({ label }, { translate }) => (
+  <label>{translate(label)}:&nbsp;</label>
+);
+
+Label.contextTypes = {
+  translate: PropTypes.func.isRequired,
+};
+
+const CommentGrid = ({ ids, data, basePath }, { translate }) => (
+  <div>
+    { ids.length > 0 ? (
+      ids.map(id => (
+        <Card key={id} style={cardStyle}>
+          <CardHeader title={<TextField record={data[id]} source="#{entity.listLabel.source}" />} />
+          <CardContent>
+            <div>
+        <#- entity.fields.filter(f=>f.name!== "id")
+.filter(f=>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
+.forEach(f=>{#>
+              <div>
+                <Label label="resources.#{entity.name}.fields.#{f.name}" />
+                <#{f.type}Field record={data[id]} source="#{f.name}" />
+              </div>
+<#})-#>
+<# entity.relations
+.filter(f=>entity.UI.list[f.field])
+.forEach(f=>{
+-#><#-if(f.single){-#>
+              <div>
+                <Label label="resources.#{entity.name}.fields.#{f.name}" />
+                <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
+                  <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
+                </ReferenceField>
+              </div>
+<#-}-#>
+<#-})#>
+            </div>
+          </CardContent>
+          <CardActions style={{ textAlign: 'right' }}>
+            <EditButton
+              resource="#{entity.role}/#{entity.name}"
+              basePath={basePath}
+              record={data[id]}
+            />
+            <ShowButton
+              resource="#{entity.role}/#{entity.name}"
+              basePath={basePath}
+              record={data[id]}
+            />
+            <DeleteButton
+              resource="#{entity.role}/#{entity.name}"
+              basePath={basePath}
+              record={data[id]}
+            />
+          </CardActions>
+        </Card>
+      ))
+    ) : (
+      <div style={{ height: '10vh' }} />
+    )}
+  </div>
+);
+
+CommentGrid.defaultProps = {
+  data: {},
+  ids: [],
+};
+
+CommentGrid.contextTypes = {
+  uix: PropTypes.object.isRequired,
+  translate: PropTypes.func.isRequired,
+};
+
+export default CommentGrid;
 
 <#- chunkStart(`../../../${entity.name}/uix/show`); -#>
 import React from "react";
@@ -467,13 +598,15 @@ import {
   ShowController,
   ShowView,
   ArrayField,
+  TabbedShowLayout,
+  Tab,
 } from "react-admin";
 
 import { consts, actions, show, components } from 'oda-ra-ui';
 
 const LongTextField = TextField;
 
-const { EmbeddedRefField } = components;
+const { EmbeddedRefField, EmbeddedField } = components;
 
 const showIfExists = field => root => !!root[field];
 
@@ -500,80 +633,76 @@ if(manyRels.length > 0){#>
 <#-}-#>
 
   return (
-    <ShowController title={<Title />} {...props}>
-      {controllerProps =>
-        <ShowView {...props} {...controllerProps}>
-          <SimpleShowLayout {...props}>
+    <Show title={<Title />} {...props}>
+      <TabbedShowLayout {...props}>
+        <Tab label="resources.#{entity.name}.summary">
 <#entity.fields.filter(f=>f.name!== "id")
 .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
 .forEach(f=>{-#>
-            { controllerProps.record && controllerProps.record.#{f.name} &&
-              <#{f.type=="Number" ? "Text" : f.type}Field 
-                label="resources.#{entity.name}.fields.#{f.name}" 
-                source="#{f.name}"
-                <#- if (!f.required){#>
-                allowEmpty<#}#>
-              />
-            }
+          <#{f.type=="Number" ? "Text" : f.type}Field 
+            label="resources.#{entity.name}.fields.#{f.name}" 
+            source="#{f.name}"
+            <#- if (!f.required){#>
+            allowEmpty<#}#>
+          />
 <#})-#>
+        </Tab>
 <# entity.relations
 .filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
 .forEach(f=>{
   const verb = f.verb;
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
--#><#-if(f.single){#>
+-#>
+        <Tab label="resources.#{entity.name}.fields.#{f.field}">
+<#-if(f.single){#>
 <#-if(embedded){
   // for future discussions
         let current = entity.UI.embedded.names[f.field];
 #>
-            {controllerProps.record &&
-              controllerProps.record.#{f.field}Id &&
-              <EmbeddedRefField 
-                label="resources.#{entity.name}.fields.#{f.field}"
-                source="#{f.field}Id"
-                reference="#{entity.role}/#{f.ref.entity}"
-                target="#{f.ref.opposite}"
-              >
+          <EmbeddedField this
+            addLabel={false}
+            source="#{f.field}Value"
+          >
 <#
         let embededEntity = entity.UI.embedded.items[current].entity;
-
-        entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
-                {/* <DependentField resolve={showIfExists('#{f.name}')} scoped > */}
-                  <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
-                {/* </DependentField> */}
+        let reUI = entity.UI.embedded.items[current].UI;
+        entity.UI.embedded.items[current].fields
+        .filter(f=>
+          f.name !== 'id' &&
+          (reUI.edit[f.name] ||
+          reUI.list[f.name] ||
+          reUI.show[f.name]) && 
+          reUI.show[f.name] !== false)
+        .forEach(f=>{-#>
+            <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
 <#
         });
 -#>
-            </EmbeddedRefField>
-          }
+          </EmbeddedField>
 <#} else {#>
-            { controllerProps.record && controllerProps.record.#{f.field}Id &&
-              <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
-                <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
-              </ReferenceField>
-            }
+          <ReferenceField 
+          addLabel={false} 
+          source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#}#> linkType="show" >
+            <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+          </ReferenceField>
 <#}#>
 <#-} else {#>
-<#-if( false /* embedded */){
-  // for future discussions
+<#-if( embedded ){
 #>
-            { controllerProps.record && controllerProps.record.#{f.field}Values &&
-            Array.isArray(controllerProps.record.#{f.field}Values) && controllerProps.record.#{f.field}Values.length > 0 &&
-              <ArrayField reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
-                <#{f.ref.entity}.Grid />
-              </ArrayField>
-            }
+          <ArrayField addLabel={false} source="#{f.field}Values" >
+            <#{f.ref.entity}.Grid />
+          </ArrayField>
 <#} else {#>
-            <ReferenceManyField label="resources.#{entity.name}.fields.#{f.field}" reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" source="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
-              <#{f.ref.entity}.Grid />
-            </ReferenceManyField>
+          <ReferenceManyField addLabel={false} reference="#{entity.role}/#{f.ref.entity}" target="#{f.ref.opposite}" source="#{f.ref.backField}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
+            <#{f.ref.entity}.Grid />
+          </ReferenceManyField>
 <#}#>
 <#-}-#>
+        </Tab>
+
 <#-})#>
-          </SimpleShowLayout>
-        </ShowView>
-      }
-    </ShowController>
+      </TabbedShowLayout>
+    </Show>
   );
 };
 
@@ -588,6 +717,7 @@ export default ShowRecordView;
 export default {
   resources: {
     #{entity.name}: {
+      summary: 'Summary',
       name: '#{entity.name} |||| #{entity.plural}',
       listName: '#{entity.name} |||| #{entity.plural}',
       fields: {

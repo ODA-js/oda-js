@@ -79,9 +79,20 @@ export const fragments = {
 <#})-#>
 <# entity.relations.forEach(f => {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+  let current = embedded && entity.UI.embedded.names[f.field];
 -#><#-if(f.single) {#>
-    #{f.field}Id: #{f.field} @_(get:"id") {
+    #{f.field}<#if(embedded) {#>Value<#} else {#>Id<#}#>: #{f.field} <#if(!embedded) {#>@_(get:"id")<#}#>
+     {
       id
+<# if(embedded){
+  entity.UI.embedded.items[current].fields
+        .filter(f=> f.name !== 'id')
+        .forEach(f=>{-#>
+      #{f.name}
+<#
+        });
+  } 
+-#>      
     }
 <#-} else {#>
     #{f.field}<#if(embedded) {#>Values<#} else {#>Ids<#}#>: #{f.field} @_(get:"edges") {
@@ -91,6 +102,15 @@ export const fragments = {
 <#-})#>
         node <#if(!embedded) {#>@_(get:"id") <#}#> {
           id
+<# if(embedded){
+  entity.UI.embedded.items[current].fields
+        .filter(f=> f.name !== 'id')
+        .forEach(f=>{-#>
+          #{f.name}
+<#
+        });
+  } 
+-#>
         }
       }
     }
@@ -103,9 +123,19 @@ export const fragments = {
 <#})-#>
 <# entity.relations.forEach( f=> {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+  let current = embedded && entity.UI.embedded.names[f.field];
 -#>
     #{f.field} {<#if(f.single) {#>
       id
+<# if(embedded){
+  entity.UI.embedded.items[current].fields
+        .filter(f=> f.name !== 'id')
+        .forEach(f=>{-#>
+      #{f.name}
+<#
+        });
+  } 
+-#>  
     <#} else {#>
       edges {
 <#- embedded && f.ref.fields.forEach(fld=>{#>
@@ -113,6 +143,15 @@ export const fragments = {
 <#-})#>
         node {
           id
+<# if(embedded){
+  entity.UI.embedded.items[current].fields
+        .filter(f=> f.name !== 'id')
+        .forEach(f=>{-#>
+          #{f.name}
+<#
+        });
+  } 
+-#>
         }
       }
     <#}#>}

@@ -1,3 +1,4 @@
 import EmbeddedRefField from './embeddedRefField';
+import EmbeddedField from './embeddedField';
 
-export { EmbeddedRefField };
+export { EmbeddedRefField, EmbeddedField };
