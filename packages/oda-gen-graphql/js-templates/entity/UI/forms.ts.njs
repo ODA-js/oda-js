@@ -589,6 +589,8 @@ import {
   FunctionField,
   BooleanField,
   EditButton,
+  DeleteButton,
+  ShowButton,
   ReferenceManyField,
   ReferenceField,
   Show,
@@ -659,7 +661,7 @@ if(manyRels.length > 0){#>
   // for future discussions
         let current = entity.UI.embedded.names[f.field];
 #>
-          <EmbeddedField this
+          <EmbeddedField
             addLabel={false}
             source="#{f.field}Value"
           >
@@ -678,6 +680,9 @@ if(manyRels.length > 0){#>
 <#
         });
 -#>
+            <ShowButton resource="#{entity.role}/#{f.ref.entity}"/>
+            <EditButton resource="#{entity.role}/#{f.ref.entity}"/>
+            <DeleteButton resource="#{entity.role}/#{f.ref.entity}"/>
           </EmbeddedField>
 <#} else {#>
           <ReferenceField 

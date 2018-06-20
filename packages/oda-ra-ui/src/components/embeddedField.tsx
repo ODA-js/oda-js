@@ -30,6 +30,7 @@ export class EmbeddedField extends Component {
       <SimpleShowLayout {...layoutProps}>
         {React.Children.map(children, child =>
           React.cloneElement(child, {
+            record,
             source: `${source}.${child.props.source}`,
           }),
         )}
