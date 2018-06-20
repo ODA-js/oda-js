@@ -46,10 +46,11 @@ export interface UIView {
   };
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   packageName: string;
   role: string;
   name: string;
+  title: string;
   UI: UIView;
   plural: string;
   listLabel: {
@@ -76,6 +77,10 @@ export interface MapperOutupt {
   }[];
   fields: {
     name: string;
+    required: boolean;
+  }[];
+  props: {
+    order: string;
     required: boolean;
   }[];
 }
@@ -302,7 +307,11 @@ export function mapper(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
+<<<<<<< HEAD
 ): MapperOutupt {
+=======
+): MapperOutput {
+>>>>>>> origin/master
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -313,11 +322,12 @@ export function mapper(
   const mapAORFilterTypes = typeMapper.aor;
   const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
   const mapFields = f => ({
+    order: f.order,
     name: f.name,
     persistent: f.persistent,
     derived: f.derived,
     cName: capitalize(f.name),
-    label: humanize(f.name),
+    label: humanize(f.title || f.name),
     required: f.required,
     type: mapAORTypes(f.type),
     resourceType: mapResourceTypes(f.type),
@@ -339,7 +349,9 @@ export function mapper(
         field: f.relation.ref.field,
         type: refe.fields.get(f.relation.ref.field).type,
         cField: capitalize(f.relation.ref.field),
-        label: humanize(f.relation.ref.field),
+        label: humanize(
+          refe.fields.get(f.relation.ref.field).title || f.relation.ref.field,
+        ),
         fields: [],
         listName: '',
         using: {
@@ -391,6 +403,7 @@ export function mapper(
         sameEntity ? capitalize(f.name) : ''
       }`;
       return {
+        order: f.order,
         required: f.required,
         derived: f.derived,
         persistent: f.persistent,
@@ -398,7 +411,7 @@ export function mapper(
         name: f.relation.fullName,
         shortName: f.relation.shortName,
         cField: capitalize(f.name),
-        label: humanize(f.name),
+        label: humanize(f.title || f.name),
         verb,
         single: verb === 'BelongsTo' || verb === 'HasOne',
         ref: {
@@ -409,21 +422,35 @@ export function mapper(
       };
     });
 
+  const fields_ = [
+    ...ids,
+    ...fieldsAcl.filter(f => fields(f) && !idField(f)),
+    // .sort((a, b) => (a.order > b.order ? 1 : -1)),
+  ].map(mapFields);
+
   return {
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
+    title: entity.title,
     UI,
     plural: entity.plural,
     listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,
+<<<<<<< HEAD
     fields: [
       ...ids,
       ...fieldsAcl
         .filter(f => fields(f) && !idField(f))
         .sort((a, b) => (a.order > b.order ? 1 : -1)),
     ].map(mapFields),
+=======
+    fields: fields_,
+    props: [...relations, ...fields_].sort(
+      (a, b) => (a.order > b.order ? 1 : -1),
+    ),
+>>>>>>> origin/master
   };
 }

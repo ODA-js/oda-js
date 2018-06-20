@@ -39,7 +39,7 @@ import PropTypes from 'prop-types';
 
 const Title = ({ record },{translate}) => (
   <span>
-    {translate('resources.#{entity.name}.fields.#{entity.listLabel.source}', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
+    {translate('resources.#{entity.name}.listName', {smart_count : 1})} {record ? `"${record.#{entity.listLabel.source}}"` : ""}
   </span>
 );
 
@@ -116,15 +116,12 @@ import {
 
 const Grid = (props) => (
   <Datagrid {...props} >
-<# entity.fields.filter(f=>f.name!== "id")
-.filter(f=>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
-.forEach(f=>{-#>
+<# entity.props.filter(f=>f.name!== "id")
+.filter(f =>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
+.forEach(f => {
+  if (!f.ref) {#>
     <#{f.type}Field sortable={#{!f.derived}} label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
-<#})-#>
-<# entity.relations
-.filter(f=>entity.UI.list[f.field])
-.forEach(f=>{
--#><#-if(f.single){#>
+<#} else if(f.ref && f.single) {#>
     <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
       <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
@@ -273,8 +270,16 @@ class Form extends Component {
 <# entity.relations
 .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
 .forEach(f => {
-  const verb = f.verb;
-  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+  if (!f.ref) {
+    if(!f.derived && (entity.UI.quickSearch.indexOf(f.name)!== -1 || entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false) {#>
+        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+
+<#
+    }
+  } else if(f.ref) {
+    if((entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false) {
+    const verb = f.verb;
+    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
 <#-   if ( f.single ) {
         if(embedded) {
@@ -361,7 +366,10 @@ class Form extends Component {
         </ReferenceArrayInput>
 <#}#>
 <#-}-#>
-<#-})#>
+<#  }
+  }
+});
+#>
       </SimpleForm>);
   }
 }

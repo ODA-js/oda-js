@@ -10,6 +10,7 @@ export default {
   queries,
   fragments,
   name: '#{entity.role}/#{entity.name}',
+  title: '#{entity.title}',
   role: '#{entity.role}',
   fields: {
   <#- entity.fields.forEach(f => {#>
