@@ -20,16 +20,16 @@ export interface UIResult {
 }
 
 export interface embeddedRel {
-  name: string,
-  type: string,
+  name: string;
+  type: string;
   required: boolean;
-};
+}
 
 export interface embedded {
   name: string;
-  entity: string,
-  single: boolean,
-  fields: embeddedRel[],
+  entity: string;
+  single: boolean;
+  fields: embeddedRel[];
 }
 
 export interface UIView {
@@ -42,13 +42,14 @@ export interface UIView {
   embedded?: {
     names: { [key: string]: number };
     items: embedded[];
-  }
+  };
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   packageName: string;
   role: string;
   name: string;
+  title: string;
   UI: UIView;
   plural: string;
   listLabel: {
@@ -71,10 +72,14 @@ export interface MapperOutupt {
         type: string;
         source: any;
       };
-    }
+    };
   }[];
   fields: {
     name: string;
+    required: boolean;
+  }[];
+  props: {
+    order: string;
     required: boolean;
   }[];
 }
@@ -97,7 +102,14 @@ import {
 } from '../../queries';
 import { platform } from 'os';
 
-function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, first = false): UIView {
+function visibility(
+  pack: ModelPackage,
+  entity: Entity,
+  aclAllow,
+  role,
+  aor,
+  first = false,
+): UIView {
   const result: UIResult = {
     listName: guessListLabel(entity, aclAllow, role, aor).source,
     quickSearch: guessQuickSearch(entity, aclAllow, role, aor),
@@ -110,13 +122,15 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
   let allFields = getFieldsForAcl(aclAllow)(role)(entity);
   result.edit.push(...allFields.map(f => f.name));
   result.show.push(...result.edit);
-  result.list.push(...allFields.
-    filter(oneUniqueInIndex(entity))
-    .map(f => f.name));
-  result.list.push(...complexUniqueFields(entity)
-    .map(f => entity.fields.get(f))
-    .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
-    .map(f => f.name));
+  result.list.push(
+    ...allFields.filter(oneUniqueInIndex(entity)).map(f => f.name),
+  );
+  result.list.push(
+    ...complexUniqueFields(entity)
+      .map(f => entity.fields.get(f))
+      .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
+      .map(f => f.name),
+  );
 
   // придумать как вытаскивать реляции из модели...
   //
@@ -166,7 +180,19 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
     }, {}),
   };
 
-  res.list = result.list.filter(f => !res.hidden[f])
+  res.list = result.list.filter(f => !res.hidden[f]).reduce((r, c) => {
+    if (r[c] !== false) {
+      if (!/\^/.test(c)) {
+        r[c] = true;
+      } else {
+        r[c.slice(1)] = false;
+      }
+    }
+    return r;
+  }, {});
+
+  res.edit = result.edit
+    .filter(f => !res.hidden[f] && !res.list[f])
     .reduce((r, c) => {
       if (r[c] !== false) {
         if (!/\^/.test(c)) {
@@ -178,19 +204,8 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
       return r;
     }, {});
 
-  res.edit = result.edit.filter(f => !res.hidden[f] && !res.list[f])
-    .reduce((r, c) => {
-      if (r[c] !== false) {
-        if (!/\^/.test(c)) {
-          r[c] = true;
-        } else {
-          r[c.slice(1)] = false;
-        }
-      }
-      return r;
-    }, {});
-
-  res.show = result.show.filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f])
+  res.show = result.show
+    .filter(f => !res.hidden[f] && !res.edit[f] && !res.list[f])
     .reduce((r, c) => {
       if (r[c] !== false) {
         if (!/\^/.test(c)) {
@@ -203,7 +218,8 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
     }, {});
 
   if (first) {
-    const embedItems = allFields.filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
+    const embedItems = allFields
+      .filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
       .map(f => {
         const lRes: embedded = {
           name: f.name,
@@ -215,7 +231,9 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
         const reUI = visibility(pack, re, aclAllow, role, aor);
         const fList = Array.from(re.fields.values())
           // потом беру все поля которые редактируются,
-          .filter(f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name])
+          .filter(
+            f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name],
+          )
           // проверяю что это не связи,
           .filter(f => !f.relation)
           // формирую список полей и возвращаю
@@ -225,7 +243,6 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
             label: humanize(f.name),
             type: aor(f.type),
             required: f.required,
-
           }));
 
         lRes.fields.push(...fList);
@@ -238,7 +255,7 @@ function visibility(pack: ModelPackage, entity: Entity, aclAllow, role, aor, fir
         r[f.name] = index;
         return r;
       }, {}),
-    }
+    };
   }
 
   return res;
@@ -253,7 +270,8 @@ function guessListLabel(entity, aclAllow, role, aor) {
   if (UI && UI.listName) {
     result.source = UI.listName;
   } else {
-    let res = getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
+    let res = getFieldsForAcl(aclAllow)(role)(entity)
+      .filter(identityFields)
       .filter(oneUniqueInIndex(entity))[0];
     if (res) {
       result.type = aor(res.type);
@@ -272,12 +290,22 @@ function guessQuickSearch(entity: Entity, aclAllow, role, aor) {
       result.push(UI.listName);
     }
   }
-  result.push(...getFieldsForAcl(aclAllow)(role)(entity).filter(identityFields)
-    .filter(oneUniqueInIndex(entity)).map(i => i.name));
+  result.push(
+    ...getFieldsForAcl(aclAllow)(role)(entity)
+      .filter(identityFields)
+      .filter(oneUniqueInIndex(entity))
+      .map(i => i.name),
+  );
   return result;
 }
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -288,20 +316,21 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
   const mapAORFilterTypes = typeMapper.aor;
   const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
   const mapFields = f => ({
+    order: f.order,
     name: f.name,
     persistent: f.persistent,
     derived: f.derived,
     cName: capitalize(f.name),
-    label: humanize(f.name),
+    label: humanize(f.title || f.name),
     required: f.required,
     type: mapAORTypes(f.type),
     resourceType: mapResourceTypes(f.type),
     filterType: mapAORFilterTypes(f.type),
-  })
+  });
 
   const relations = fieldsAcl
     .filter(relationFieldsExistsIn(pack))
-    .sort((a, b) => a.order > b.order ? 1 : -1)
+    .sort((a, b) => (a.order > b.order ? 1 : -1))
     .map(f => {
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
@@ -314,7 +343,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         field: f.relation.ref.field,
         type: refe.fields.get(f.relation.ref.field).type,
         cField: capitalize(f.relation.ref.field),
-        label: humanize(f.relation.ref.field),
+        label: humanize(
+          refe.fields.get(f.relation.ref.field).title || f.relation.ref.field,
+        ),
         fields: [],
         listName: '',
         using: {
@@ -325,7 +356,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         },
       };
       if (verb === 'BelongsToMany') {
-        let current = (f.relation as BelongsToMany);
+        let current = f.relation as BelongsToMany;
         ref.using.entity = current.using.entity;
         ref.using.field = current.using.field;
         ref.backField = current.using.backField;
@@ -333,10 +364,17 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
 
         let opposite = getRelationNames(refe)
           // по одноименному классу ассоциации
-          .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
-            && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
+          .filter(
+            r =>
+              (current.opposite && current.opposite === r) ||
+              (refe.fields.get(r).relation instanceof BelongsToMany &&
+                (refe.fields.get(r).relation as BelongsToMany).using.entity ===
+                  (f.relation as BelongsToMany).using.entity),
+          )
           .map(r => refe.fields.get(r).relation)
-          .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
+          .filter(
+            r => r instanceof BelongsToMany && current !== r,
+          )[0] as BelongsToMany;
         /// тут нужно получить поле по которому opposite выставляет свое значение,
         // и значение
         if (opposite) {
@@ -355,8 +393,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         }
       }
       let sameEntity = entity.name === f.relation.ref.entity;
-      let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+      let refFieldName = `${f.relation.ref.entity}${
+        sameEntity ? capitalize(f.name) : ''
+      }`;
       return {
+        order: f.order,
         required: f.required,
         derived: f.derived,
         persistent: f.persistent,
@@ -364,7 +405,7 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         name: f.relation.fullName,
         shortName: f.relation.shortName,
         cField: capitalize(f.name),
-        label: humanize(f.name),
+        label: humanize(f.title || f.name),
         verb,
         single: verb === 'BelongsTo' || verb === 'HasOne',
         ref: {
@@ -375,22 +416,26 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       };
     });
 
+  const fields_ = [
+    ...ids,
+    ...fieldsAcl.filter(f => fields(f) && !idField(f)),
+    // .sort((a, b) => (a.order > b.order ? 1 : -1)),
+  ].map(mapFields);
+
   return {
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
+    title: entity.title,
     UI,
     plural: entity.plural,
     listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,
-    fields: [
-      ...ids,
-      ...fieldsAcl
-        .filter(f => fields(f) && !idField(f))
-        .sort((a, b) => a.order > b.order ? 1 : -1)
-    ]
-      .map(mapFields),
+    fields: fields_,
+    props: [...relations, ...fields_].sort(
+      (a, b) => (a.order > b.order ? 1 : -1),
+    ),
   };
 }

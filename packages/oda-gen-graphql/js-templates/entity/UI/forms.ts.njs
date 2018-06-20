@@ -87,20 +87,18 @@ import {
 
 const Grid = (props, context) => (
   <Datagrid {...props} >
-<# entity.fields.filter(f=>f.name!== "id")
-.filter(f=>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
-.forEach(f=>{-#>
+<# entity.props.filter(f=>f.name!== "id")
+.filter(f =>entity.UI.list[f.name] || entity.UI.quickSearch.indexOf(f.name)!== -1)
+.forEach(f => {
+  if (!f.ref) {#>
     <#{f.type}Field sortable={#{!f.derived}} label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
-<#})-#>
-<# entity.relations
-.filter(f=>entity.UI.list[f.field])
-.forEach(f=>{
--#><#-if(f.single){#>
+<#} else if(f.ref && f.single) {#>
     <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
       <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
     </ReferenceField>
-<#-}-#>
-<#-})#>
+<#}
+});
+#>
     <ShowButton />
     <EditButton />
     <DeleteButton />
@@ -242,16 +240,19 @@ class Form extends Component {
     const { translate } = this.context;
     return (
       <SimpleForm {...props} >
-<# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
-  .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
-  .forEach( f=> {-#>
-        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
-<#})-#>
-<# entity.relations
-.filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
+
+<# entity.props.filter(f=>f.name!== "id")
 .forEach(f => {
-  const verb = f.verb;
-  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+  if (!f.ref) {
+    if(!f.derived && (entity.UI.quickSearch.indexOf(f.name)!== -1 || entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false) {#>
+        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+
+<#
+    }
+  } else if(f.ref) {
+    if((entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false) {
+    const verb = f.verb;
+    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
 #>
 <#-   if ( f.single ) {
         if(embedded) {
@@ -336,7 +337,10 @@ class Form extends Component {
         </ReferenceArrayInput>
 <#}#>
 <#-}-#>
-<#-})#>
+<#  }
+  }
+});
+#>
       </SimpleForm>);
   }
 }
@@ -512,19 +516,20 @@ if(manyRels.length > 0){#>
   return (
     <Show title={<Title />} {...props} >
       <SimpleShowLayout {...props}>
-<#entity.fields.filter(f=>f.name!== "id")
-.filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false)
-.forEach(f=>{-#>
+
+<# entity.props.filter(f=>f.name!== "id")
+.forEach(f => {
+  if (!f.ref) {
+    if((entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.show[f.name] !== false){#>
         <DependentField resolve={showIfExists('#{f.name}')}>
           <#{f.type=="Number" ? "Text" : f.type}Field label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
         </DependentField>
-<#})-#>
-<# entity.relations
-.filter(f=>(entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false)
-.forEach(f=>{
+<#  }
+  } else if(f.ref) {
+    if((entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.show[f.field] !== false) {
   const verb = f.verb;
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
--#><#-if(f.single){#>
+#><#-if(f.single){#>
 <#-if(embedded){
         let current = entity.UI.embedded.names[f.field];
 #>
@@ -590,7 +595,10 @@ if(manyRels.length > 0){#>
         </ReferenceManyField>
 <#}#>
 <#-}-#>
-<#-})#>
+<#  }
+  }
+});
+#>
       </SimpleShowLayout>
     </Show>
   );
