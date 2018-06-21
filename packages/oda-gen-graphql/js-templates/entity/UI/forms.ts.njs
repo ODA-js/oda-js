@@ -265,14 +265,14 @@ class Form extends Component {
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")
   .filter(f=>(entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false )
   .forEach( f=> {-#>
-        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+        <#{f.type}Input<#if(f.defaultValue){#> defaultValue={#{f.defaultValue}}<#}#> label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
 <#})-#>
 <# entity.relations
 .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
 .forEach(f => {
   if (!f.ref) {
     if(!f.derived && (entity.UI.quickSearch.indexOf(f.name)!== -1 || entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false) {#>
-        <#{f.type}Input label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
+        <#{f.type}Input<#if(f.defaultValue){#> defaultValue={#{f.defaultValue}}<#}#>label="resources.#{entity.name}.fields.#{f.name}" source="#{f.name}" <# if (!f.required){#> allowEmpty<#} else {#> validate={required}<#}#> />
 
 <#
     }
@@ -305,7 +305,7 @@ class Form extends Component {
         let embededEntity = entity.UI.embedded.items[current].entity;
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-            <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+            <#{f.type}Input<#if(f.defaultValue){#> defaultValue={#{f.defaultValue}}<#}#> label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
 <#
         });
 -#>
@@ -344,14 +344,14 @@ class Form extends Component {
             {/* <DependentInput resolve={detailsFor('#{f.field}')} scoped > */}
 <#
         entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{-#>
-              <#{f.type}Input label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+              <#{f.type}Input<#if(f.defaultValue){#> defaultValue={#{f.defaultValue}}<#}#> label="resources.#{embededEntity}.fields.#{f.name}" source="#{f.name}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
 <#
         });
 -#>
 <#-
         if(verb === 'BelongsToMany') {
           f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(fld=>{-#>
-              <#{fld.type}Input label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
+              <#{fld.type}Input<#if(f.defaultValue){#> defaultValue={#{f.defaultValue}}<#}#> label="resources.#{f.ref.using.entity}.fields.#{fld.name}" source="#{fld.name}"<# if (!fld.required){#> allowEmpty<#} else {#> validate={required()}<#}#> />
 <#
           });
         }
@@ -731,15 +731,18 @@ export default {
   resources: {
     #{entity.name}: {
       summary: 'Summary',
-      name: '#{entity.name} |||| #{entity.plural}',
+      name: '#{entity.title} |||| #{ entity.titlePlural || entity.plural }',
       listName: '#{entity.name} |||| #{entity.plural}',
       fields: {
-<#entity.fields.forEach(f=>{-#>
+
+<#entity.props.forEach(f=>{
+  if(!f.ref){
+-#>
         #{f.name}: '#{f.label}',
-<#})-#>
-<#-entity.relations.forEach(f=>{-#>
+<#} else if(f.ref) {-#>
         #{f.field}: '#{f.label}',
-<#})-#>
+<#}
+})-#>
       },
     },
   },

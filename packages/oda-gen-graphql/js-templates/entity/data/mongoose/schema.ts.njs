@@ -9,6 +9,9 @@ export default () => {
       <#- if(field.required){#>
       required: true,
       <#-}#>
+      <#- if(field.defaultValue){#>
+      default: #{field.defaultValue},
+      <#-}#>
     },
   <#- })#>
   <#- entity.relations.forEach(rel=>{#>

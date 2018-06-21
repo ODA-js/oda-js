@@ -1,5 +1,10 @@
 import clean from '../lib/json/clean';
-import { FieldArgs, FieldBaseInput, FieldBaseStorage, MetaModelType } from './interfaces';
+import {
+  FieldArgs,
+  FieldBaseInput,
+  FieldBaseStorage,
+  MetaModelType,
+} from './interfaces';
 import { ModelBase } from './modelbase';
 
 export class FieldBase extends ModelBase {
@@ -24,6 +29,10 @@ export class FieldBase extends ModelBase {
     return this.getMetadata('storage.persistent');
   }
 
+  get defaultValue() {
+    return this.getMetadata('defaultValue');
+  }
+
   public updateWith(obj: FieldBaseInput) {
     if (obj) {
       super.updateWith(obj);
@@ -38,10 +47,25 @@ export class FieldBase extends ModelBase {
 
       // wheather it is explicitly defined or has arguments
 
-      this.setMetadata('storage.derived', obj.derived || (Array.isArray(obj.args) && obj.args.length > 0) ||
-        this.getMetadata('storage.derived'));
-      this.setMetadata('storage.persistent', obj.persistent || !((obj.derived || this.getMetadata('storage.derived')) ||
-        (Array.isArray(obj.args) && obj.args.length > 0)));
+      this.setMetadata(
+        'storage.derived',
+        obj.derived ||
+          (Array.isArray(obj.args) && obj.args.length > 0) ||
+          this.getMetadata('storage.derived'),
+      );
+      this.setMetadata(
+        'storage.persistent',
+        obj.persistent ||
+          !(
+            obj.derived ||
+            this.getMetadata('storage.derived') ||
+            (Array.isArray(obj.args) && obj.args.length > 0)
+          ),
+      );
+
+      if (obj.defaultValue && !this.derived) {
+        this.setMetadata('defaultValue', obj.defaultValue);
+      }
 
       result.entity = entity;
       result.entity_ = $entity;
@@ -60,6 +84,7 @@ export class FieldBase extends ModelBase {
     return clean({
       ...res,
       derived: this.derived,
+      defaultValue: this.defaultValue,
       persistent: this.persistent,
       entity: props.entity || props.entity_,
       args: props.args || props.args_,
@@ -73,6 +98,7 @@ export class FieldBase extends ModelBase {
     return clean({
       ...res,
       derived: this.derived,
+      defaultValue: this.defaultValue,
       persistent: this.persistent,
       args: props.args_,
     });

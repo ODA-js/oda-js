@@ -17,6 +17,9 @@ export default (sequelize, DataTypes: Sequelize.DataTypes) => {
       <#- if(field.primaryKey){#>
       primaryKey: true,
       <#-}#>
+      <#- if(field.defaultValue){#>
+      defaultValue: #{field.defaultValue},
+      <#-}#>
     },
   <#- })#>
   <#- entity.relations.forEach(rel=>{#>

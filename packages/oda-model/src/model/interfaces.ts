@@ -45,6 +45,7 @@ export interface IPackage extends IModelType {
 export interface IEntityBase extends IModelType {
   name: string;
   plural: string;
+  titlePlural: string;
   fields: Map<string, Field>;
 }
 
@@ -206,6 +207,7 @@ export interface BelongsToManyStorage extends RelationBaseStorage {
 
 export interface EntityBaseInput extends ModelBaseInput {
   plural?: string;
+  titlePlural?: string;
   fields?: FieldInput[] | {
     [fName: string]: FieldInput;
   };
@@ -249,9 +251,9 @@ export interface EntityReferenceInput {
 
 export interface FieldArgs {
   name: string;
-  type: string;
-  required: boolean;
-  defaultValue: string;
+  type?: string;
+  required?: boolean;
+  defaultValue?: string;
 }
 
 export interface FieldBaseInput extends ModelBaseInput {
@@ -259,6 +261,7 @@ export interface FieldBaseInput extends ModelBaseInput {
   derived?: boolean;
   persistent?: boolean;
   entity?: string;
+  defaultValue?: string;
 }
 
 export interface FieldBaseStorage extends ModelBaseStorage {

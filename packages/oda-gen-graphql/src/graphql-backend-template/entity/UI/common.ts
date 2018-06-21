@@ -51,6 +51,7 @@ export interface MapperOutput {
   role: string;
   name: string;
   title: string;
+  titlePlural: string;
   UI: UIView;
   plural: string;
   listLabel: {
@@ -307,11 +308,7 @@ export function mapper(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-<<<<<<< HEAD
-): MapperOutupt {
-=======
 ): MapperOutput {
->>>>>>> origin/master
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
   let ids = getFields(entity).filter(idField);
@@ -329,6 +326,7 @@ export function mapper(
     cName: capitalize(f.name),
     label: humanize(f.title || f.name),
     required: f.required,
+    defaultValue: f.defaultValue,
     type: mapAORTypes(f.type),
     resourceType: mapResourceTypes(f.type),
     filterType: mapAORFilterTypes(f.type),
@@ -420,37 +418,31 @@ export function mapper(
           listLabel: guessListLabel(refe, aclAllow, role, mapAORTypes),
         },
       };
-    });
+    })
+    .sort((a, b) => (a.order > b.order ? 1 : -1));
 
-  const fields_ = [
+  const fieldsList = [
     ...ids,
     ...fieldsAcl.filter(f => fields(f) && !idField(f)),
-    // .sort((a, b) => (a.order > b.order ? 1 : -1)),
-  ].map(mapFields);
+  ]
+    .map(mapFields)
+    .sort((a, b) => (a.order > b.order ? 1 : -1));
 
   return {
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
     title: entity.title,
+    titlePlural: entity.titlePlural,
     UI,
     plural: entity.plural,
     listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,
-<<<<<<< HEAD
-    fields: [
-      ...ids,
-      ...fieldsAcl
-        .filter(f => fields(f) && !idField(f))
-        .sort((a, b) => (a.order > b.order ? 1 : -1)),
-    ].map(mapFields),
-=======
-    fields: fields_,
-    props: [...relations, ...fields_].sort(
+    fields: fieldsList,
+    props: [...relations, ...fieldsList].sort(
       (a, b) => (a.order > b.order ? 1 : -1),
     ),
->>>>>>> origin/master
   };
 }

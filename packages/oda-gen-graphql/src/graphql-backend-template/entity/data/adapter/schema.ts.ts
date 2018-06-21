@@ -8,8 +8,17 @@ export const template = {
   sequelize: 'entity/data/sequelize/schema.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
-  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter?: string,
+) {
+  let adapter = entity.getMetadata(
+    'storage.adapter',
+    defaultAdapter || 'mongoose',
+  );
   return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 
@@ -31,10 +40,12 @@ export interface MapperOutupt {
     required?: boolean;
     primaryKey?: boolean;
   }[];
-  indexes?: {
-    fields: object;
-    options: object;
-  }[] | object;
+  indexes?:
+    | {
+        fields: object;
+        options: object;
+      }[]
+    | object;
 }
 
 import {
@@ -45,39 +56,51 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, adapter: string, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
-  let ids = getFields(entity).filter(idField).filter(f => f.type !== 'ID');
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  adapter: string,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
+  let ids = getFields(entity)
+    .filter(idField)
+    .filter(f => f.type !== 'ID');
   let useDefaultPK = ids.length === 0;
 
   return {
     name: entity.name,
     plural: entity.plural,
     strict: get(entity.metadata, 'storage.schema.strict'),
-    collectionName: get(entity.metadata, 'storage.collectionName') || entity.plural.toLowerCase(),
+    collectionName:
+      get(entity.metadata, 'storage.collectionName') ||
+      entity.plural.toLowerCase(),
     description: entity.description,
     useDefaultPK,
     fields: [
       ...ids.map(f => ({
-        name: (f.name === 'id' && adapter === 'mongoose') ? '_id' : f.name,
+        name: f.name === 'id' && adapter === 'mongoose' ? '_id' : f.name,
         type: adapter === 'sequelize' ? `${f.type}_pk` : f.type,
         required: true,
+        defaultValue: f.defaultValue,
         primaryKey: true,
       })),
-      ...getFields(entity)
-        .filter(mutableFields)]
-      .map(f => {
-        return {
-          name: f.name,
-          type: typeMapper[adapter](f.type),
-          required: f.required,
-          primaryKey: !!f['primaryKey'],
-        };
-      }),
+      ...getFields(entity).filter(mutableFields),
+    ].map(f => {
+      return {
+        name: f.name,
+        type: typeMapper[adapter](f.type),
+        required: f.required,
+        primaryKey: !!f['primaryKey'],
+        defaultValue: f.defaultValue,
+      };
+    }),
     relations: getFields(entity)
       .filter(singleStoredRelationsExistingIn(pack))
       .filter(r => r.relation.ref.backField !== r.name)
       .map(f => {
-        let retKeyType = pack.entities.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type;
+        let retKeyType = pack.entities
+          .get(f.relation.ref.entity)
+          .fields.get(f.relation.ref.field).type;
         return {
           name: f.name,
           type: typeMapper[adapter](retKeyType),
@@ -85,14 +108,19 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
           required: !!f.required,
         };
       }),
-    indexes: indexes(entity).map(i => adapter === 'mongoose' ? ({
-      fields: i.fields,
-      options: i.options,
-      name: i.name,
-    }) : ({
-      fields: i.fields,
-      options: i.options,
-      name: i.name,
-    })),
+    indexes: indexes(entity).map(
+      i =>
+        adapter === 'mongoose'
+          ? {
+              fields: i.fields,
+              options: i.options,
+              name: i.name,
+            }
+          : {
+              fields: i.fields,
+              options: i.options,
+              name: i.name,
+            },
+    ),
   };
 }

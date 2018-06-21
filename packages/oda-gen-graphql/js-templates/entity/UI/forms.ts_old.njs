@@ -606,7 +606,7 @@ export default ShowView;
 export default {
   resources: {
     #{entity.name}: {
-      name: '#{entity.name} |||| #{entity.plural}',
+      name: '#{entity.title} |||| #{entity.plural}',
       listName: '#{entity.name} |||| #{entity.plural}',
       fields: {
 <#entity.fields.forEach(f=>{-#>

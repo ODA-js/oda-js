@@ -80,10 +80,11 @@ export default
 <#- chunkStart(`./resources.js`); -#>
 import React from 'react';
 import ListIcon from 'material-ui/svg-icons/action/view-list';
+import { translate } from 'react-admin';
 
 export default {
 <# for(let entity of pack.entities){-#>
-  "#{pack.role}/#{entity.name}": { icon: <ListIcon />, visible: true, name: '#{entity.name}' },
+  "#{pack.role}/#{entity.name}": { icon: <ListIcon />, visible: true, name: translate('resources.#{entity.name}.name', { smart_count:2 }) },
 <#}-#>
 };
 

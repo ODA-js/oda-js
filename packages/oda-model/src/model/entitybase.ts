@@ -5,7 +5,10 @@ import deepMerge from './../lib/json/deepMerge';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { Field } from './field';
 import {
-  EntityInput, FieldInput, MetaModelType, EntityBaseStorage,
+  EntityInput,
+  FieldInput,
+  MetaModelType,
+  EntityBaseStorage,
   EntityBaseInput,
   IEntityBase,
   EntityBaseJSON,
@@ -30,7 +33,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
   }
 
   public ensureIds(modelPackage: ModelPackage) {
-    this.identity.forEach((value) => {
+    this.identity.forEach(value => {
       let ids = this.fields.get(value);
       if (ids) {
         modelPackage.identityFields.set(ids.idKey.toString(), this);
@@ -49,7 +52,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
       }
 
       if (modelRelations) {
-        this.relations.forEach((value) => {
+        this.relations.forEach(value => {
           let ref = this.fields.get(value);
           // must be different to apply fixup
           if (ref && modelRelations) {
@@ -61,7 +64,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
   }
 
   public removeIds(modelPackage: ModelPackage) {
-    this.identity.forEach((value) => {
+    this.identity.forEach(value => {
       let ids = this.fields.get(value);
       if (ids) {
         modelPackage.identityFields.delete(ids.idKey.toString());
@@ -71,6 +74,10 @@ export class EntityBase extends ModelBase implements IEntityBase {
 
   get plural(): string {
     return this.getMetadata('name.plural');
+  }
+
+  get titlePlural(): string {
+    return this.getMetadata('titlePlural');
   }
 
   get relations(): Set<string> {
@@ -172,17 +179,27 @@ export class EntityBase extends ModelBase implements IEntityBase {
       super.updateWith(obj);
 
       const result = { ...this.$obj };
-      result.name = this.getMetadata('name.singular') || inflected.classify(result.name);
+      result.name =
+        this.getMetadata('name.singular') || inflected.classify(result.name);
+
+      if (obj.titlePlural) {
+        this.setMetadata('titlePlural', obj.titlePlural);
+      }
 
       let $plural = obj.plural || this.getMetadata('name.plural');
       if (!$plural) {
         $plural = inflected.pluralize(result.name);
       }
 
+      if (!this.getMetadata('titlePlural')) {
+        this.setMetadata('titlePlural', $plural);
+      }
+
       this.setMetadata('name.singular', result.name);
       this.setMetadata('name.plural', $plural);
 
-      result.name = (result.name.slice(0, 1)).toUpperCase() + result.name.slice(1);
+      result.name =
+        result.name.slice(0, 1).toUpperCase() + result.name.slice(1);
 
       const fields = new Map<string, Field>();
       const relations = new Set();
@@ -201,7 +218,11 @@ export class EntityBase extends ModelBase implements IEntityBase {
         });
 
         if (fields.has(field.name)) {
-          throw new Error(`the same field ${field.name} is already exists in ${obj.name} entry`);
+          throw new Error(
+            `the same field ${field.name} is already exists in ${
+              obj.name
+            } entry`,
+          );
         }
 
         fields.set(field.name, field);
@@ -279,17 +300,19 @@ export class EntityBase extends ModelBase implements IEntityBase {
         let res = super.toObject();
         return clean({
           ...res,
-          fields: [...Array.from(props.fields.values())].map(f => {
-            let result;
-            if (this.relations.has(f.name)) {
-              if (modelRelations && modelRelations.has(f.name)) {
+          fields: [...Array.from(props.fields.values())]
+            .map(f => {
+              let result;
+              if (this.relations.has(f.name)) {
+                if (modelRelations && modelRelations.has(f.name)) {
+                  result = f.toObject(modelPackage);
+                }
+              } else {
                 result = f.toObject(modelPackage);
               }
-            } else {
-              result = f.toObject(modelPackage);
-            }
-            return result;
-          }).filter(f => f),
+              return result;
+            })
+            .filter(f => f),
         });
       }
     }
@@ -310,17 +333,19 @@ export class EntityBase extends ModelBase implements IEntityBase {
         let res = super.toJSON();
         return clean({
           ...res,
-          fields: [...Array.from(props.fields.values())].map(f => {
-            let result;
-            if (this.relations.has(f.name)) {
-              if (modelRelations && modelRelations.has(f.name)) {
+          fields: [...Array.from(props.fields.values())]
+            .map(f => {
+              let result;
+              if (this.relations.has(f.name)) {
+                if (modelRelations && modelRelations.has(f.name)) {
+                  result = f.toJSON(modelPackage);
+                }
+              } else {
                 result = f.toJSON(modelPackage);
               }
-            } else {
-              result = f.toJSON(modelPackage);
-            }
-            return result;
-          }).filter(f => f),
+              return result;
+            })
+            .filter(f => f),
         });
       }
     }

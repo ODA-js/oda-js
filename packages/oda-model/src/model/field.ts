@@ -40,7 +40,11 @@ export class Field extends FieldBase implements IField {
 
   // this is to make sure that if we internally set
   public makeIdentity() {
-    this.$obj.idKey = new EntityReference(this.$obj.entity, this.$obj.name, 'id');
+    this.$obj.idKey = new EntityReference(
+      this.$obj.entity,
+      this.$obj.name,
+      'id',
+    );
     this.setMetadata('storage.identity', true);
     this.setMetadata('storage.indexed', true);
     this.setMetadata('storage.required', true);
@@ -112,22 +116,43 @@ export class Field extends FieldBase implements IField {
       // identity can't have relation definition
       // why? because! we need to support existing code.
       const isIdentity = this.getMetadata('storage.identity', false);
-      if (obj.relation && !(isIdentity)) {
+
+      if (isIdentity || obj.relation)  {
+        this.setMetadata('defaultValue', undefined);
+      }
+
+      if (obj.relation && !isIdentity) {
         let $relation = obj.relation;
         let relation: RelationBase;
 
         switch (discoverFieldType($relation)) {
           case 'HasOne':
-            relation = new HasOne({ ...$relation as { hasOne: string }, entity: obj.entity, field: obj.name });
+            relation = new HasOne({
+              ...($relation as { hasOne: string }),
+              entity: obj.entity,
+              field: obj.name,
+            });
             break;
           case 'HasMany':
-            relation = new HasMany({ ...$relation as { hasMany: string }, entity: obj.entity, field: obj.name });
+            relation = new HasMany({
+              ...($relation as { hasMany: string }),
+              entity: obj.entity,
+              field: obj.name,
+            });
             break;
           case 'BelongsToMany':
-            relation = new BelongsToMany({ ...$relation as { belongsToMany: string; using: string }, entity: obj.entity, field: obj.name });
+            relation = new BelongsToMany({
+              ...($relation as { belongsToMany: string; using: string }),
+              entity: obj.entity,
+              field: obj.name,
+            });
             break;
           case 'BelongsTo':
-            relation = new BelongsTo({ ...$relation as { belongsTo: string }, entity: obj.entity, field: obj.name });
+            relation = new BelongsTo({
+              ...($relation as { belongsTo: string }),
+              entity: obj.entity,
+              field: obj.name,
+            });
             break;
           default:
             throw new Error('undefined type');
