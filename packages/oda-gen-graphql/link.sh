@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-npm link graphql;
+npm link graphql fte.js;

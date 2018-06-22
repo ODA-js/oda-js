@@ -9,7 +9,7 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "fte.js": "^0.6.0",
+    "fte.js": "^0.6.1",
     "inflected": "^2.0.4",
     "lodash": "^4.17.5",
     "oda-api-graphql": "^0.4.48",
