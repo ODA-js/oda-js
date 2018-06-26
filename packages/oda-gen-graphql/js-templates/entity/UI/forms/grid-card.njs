@@ -9,16 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 
 import {
-  Datagrid,
-  TextField,
-  DateField,
-  NumberField,
-  BooleanField,
-  EditButton,
-  DeleteButton,
-  ShowButton,
-  ReferenceField,
-  FieldTitle,
+  #{slot('import-from-react-admin-grid-card-view')}
 } from 'react-admin';
 
 const cardStyle = {
@@ -49,6 +40,7 @@ const CommentGrid = ({ ids, data, basePath }, { translate }) => (
 .forEach(f=>{#>
               <div>
                 <Label label="resources.#{entity.name}.fields.#{f.name}" />
+<#- slot('import-from-react-admin-grid-card-view', `${f.type}Field`)#>
                 <#{f.type}Field record={data[id]} source="#{f.name}" />
               </div>
 <#})-#>
@@ -58,6 +50,8 @@ const CommentGrid = ({ ids, data, basePath }, { translate }) => (
 -#><#-if(f.single){-#>
               <div>
                 <Label label="resources.#{entity.name}.fields.#{f.name}" />
+<#- slot('import-from-react-admin-grid-card-view', 'ReferenceField')#>
+<#- slot('import-from-react-admin-grid-card-view', `${f.ref.listLabel.type}Field`)#>
                 <ReferenceField label="resources.#{entity.name}.fields.#{f.field}" sortable={false} source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty <#}#>>
                   <#{f.ref.listLabel.type}Field source="#{f.ref.listLabel.source}"<# if (!f.required){#> allowEmpty <#}#>/>
                 </ReferenceField>
@@ -67,16 +61,19 @@ const CommentGrid = ({ ids, data, basePath }, { translate }) => (
             </div>
           </CardContent>
           <CardActions style={{ textAlign: 'right' }}>
+<#- slot('import-from-react-admin-grid-card-view', 'EditButton')#>
             <EditButton
               resource="#{entity.role}/#{entity.name}"
               basePath={basePath}
               record={data[id]}
             />
+<#- slot('import-from-react-admin-grid-card-view', 'ShowButton')#>
             <ShowButton
               resource="#{entity.role}/#{entity.name}"
               basePath={basePath}
               record={data[id]}
             />
+<#- slot('import-from-react-admin-grid-card-view', 'DeleteButton')#>
             <DeleteButton
               resource="#{entity.role}/#{entity.name}"
               basePath={basePath}

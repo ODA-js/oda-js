@@ -2,14 +2,24 @@
 <#@ alias 'forms-form-simple' -#>
 <#@ extend 'forms-form-base' -#>
 
+<# block 'import-from-react-admin' : -#>
+#{slot('import-from-react-admin-form-simple')}
+<#- end -#>
+
 <# block 'form' : -#>
-<SimpleForm {...props} >
+const { props } = this;
+    const singleRelActions = props.singleRelActions;
+    const manyRelAction = props.manyRelActions;
+    const { translate } = this.context;
+    return (
+<#- slot('import-from-react-admin-form-simple','SimpleForm')#>
+      <SimpleForm {...props} >
 <#- entity.props.filter(f=>f.name!== "id")
 .forEach(f => {
   const ctx = {entity, f};
   if (!f.ref) {
     if(!f.derived && (entity.UI.quickSearch.indexOf(f.name)!== -1 || entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false) {#>
-  #{partial(ctx, "edit-field")}
+        #{partial(ctx, "edit-field")}
 <#-
     }
   } else if(f.ref) {
@@ -19,17 +29,17 @@
 <#- if ( f.single ) {
       if(embedded) {
 #>
-  #{partial(ctx, "edit-rel-single-embed")}
+        #{partial(ctx, "edit-rel-single-embed")}
 <#    } else {#>
-  #{partial(ctx, "edit-rel-single-not-embed")}
+        #{partial(ctx, "edit-rel-single-not-embed")}
 <#    }#>
 <#-
     } else { #>
 <#    if(embedded){-#>
-  #{partial(ctx, "edit-rel-multiple-embed")}
+        #{partial(ctx, "edit-rel-multiple-embed")}
 <#-
         } else {-#>
-  #{partial(ctx, "edit-rel-multiple-not-embed")}
+        #{partial(ctx, "edit-rel-multiple-not-embed")}
 <#-
         }-#>
 <#- }-#>
@@ -38,5 +48,6 @@
   }
 });
 #>
-</SimpleForm>
+      </SimpleForm>
+    );
 <#- end -#>

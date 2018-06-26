@@ -2,12 +2,13 @@
 <#@ alias 'forms-show-tabbed' -#>
 <#@ extend 'forms-show-base' -#>
 
-<# block 'import-react-admin' : -#>
-TabbedShowLayout,
-Tab,
+<# block 'import-from-react-admin' : -#>
+#{slot('import-from-react-admin-show-tab')}
 <#- end -#>
 
 <# block 'view' : -#>
+<# slot('import-from-react-admin-show-tab', 'TabbedShowLayout,\n')#>
+<# slot('import-from-react-admin-show-tab', 'Tab,\n')#>
 <TabbedShowLayout>
   <Tab label="resources.#{entity.name}.summary">
 <#entity.fields.filter(f=>f.name!== "id")

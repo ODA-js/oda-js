@@ -1,36 +1,26 @@
 <#@ context "entity" -#>
 <#@ alias 'forms-form-base' -#>
-
+<#- block 'use-action-type-import' : -#>
+#{slot('use-action-type')}
+<#- end -#>
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  ArrayInput,
-  SimpleFormIterator,
-  ReferenceInput,
-  SelectInput,
-  ReferenceArrayInput,
-  SelectArrayInput,
-  SimpleForm,
-  TextInput,
-  LongTextInput,
-  DateInput,
-  NumberInput,
-  BooleanInput,
-  required,
-  AutocompleteInput,
-  #{content('import-react-admin')}
+  #{content('import-from-react-admin')}
+  #{slot('import-from-react-admin-form')}
 } from "react-admin";
-import RichTextInput from 'ra-input-rich-text';
 
 import { connect } from 'react-redux';
+<#- if(entity.UI.embedded.items.filter(f=>f.single).length > 0) {#>
 import { formValueSelector } from 'redux-form';
+<#}#>
 import compose from 'recompose/compose';
-import { consts, actions, show } from 'oda-ra-ui';
+import { consts#{content('use-action-type-import')} } from 'oda-ra-ui';
 
 const actionType = consts.actionType;
 const initForm = actions.initForm;
+
 const finalizeForm = actions.finalizeForm;
-const { selectorFor, detailsFor } = show;
 
 class Form extends Component {
   componentWillMount() {
@@ -41,18 +31,14 @@ class Form extends Component {
   }
 
   render() {
-    const { props } = this;
-    const singleRelActions = props.singleRelActions;
-    const manyRelAction = props.manyRelActions;
-    const { translate } = this.context;
-    return (
-      #{content('form')}
-    );
+    #{content('form')}
   }
 }
 
+<#- if(entity.UI.embedded.items.filter(f=>f.single).length > 0) {#>
 const formName = 'record-form';
 const selector = formValueSelector(formName);
+<#}#>
 
 Form.contextTypes = {
   translate: PropTypes.func.isRequired,

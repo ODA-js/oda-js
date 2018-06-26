@@ -3,6 +3,9 @@
 <#-
   const {entity, f} = ctx;
 -#>
+<#- slot('import-from-react-admin-form', 'ReferenceArrayInput,\n')#>
+<#- slot('import-from-react-admin-form', 'SelectArrayInput,\n')#>
+<#- slot('import-from-react-admin-form', 'required,\n')#>
 <ReferenceArrayInput 
   label="resources.#{entity.name}.fields.#{f.field}"
   source="#{f.field}Ids"

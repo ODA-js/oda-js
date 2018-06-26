@@ -3,6 +3,9 @@
 <#-
   const {entity, f} = ctx;
 -#>
+
+<#- slot('import-from-react-admin-show','ReferenceManyField,\n') #>
+
 <ReferenceManyField 
   addLabel={false}
   reference="#{entity.role}/#{f.ref.entity}"

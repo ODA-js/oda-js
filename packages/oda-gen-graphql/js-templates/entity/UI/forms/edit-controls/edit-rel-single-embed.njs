@@ -3,6 +3,11 @@
 <#-
   const {entity, f} = ctx;
 -#>
+<#- slot('import-from-react-admin-form', 'ReferenceInput,\n')#>
+<#- slot('import-from-react-admin-form', 'SelectInput,\n')#>
+<#- slot('import-from-react-admin-form', 'required,\n')#>
+<#- slot('import-from-react-admin-form', 'AutocompleteInput,\n')#>
+<#- slot('use-action-type', true)#>
 <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
   <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
 </ReferenceInput>
@@ -19,6 +24,7 @@
   let embededEntity = entity.UI.embedded.items[current].entity;
   entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
+<#- slot('import-from-react-admin-form', `${f.type}Input,\n`)#>
 <#{f.type}Input
   <#if(f.defaultValue){#>defaultValue={#{f.defaultValue}}<#}#>
   label="resources.#{embededEntity}.fields.#{f.name}"

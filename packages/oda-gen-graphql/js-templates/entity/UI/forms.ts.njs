@@ -1,7 +1,4 @@
 <#@ context "entity" -#>
-<#
-  const translation = {};
-#>
 <#@ chunks "$$$main$$$" -#>
 
 <#- chunkStart(`../../../${entity.name}/uix/index`); -#>
@@ -26,9 +23,9 @@
 #{partial(entity, 'forms-create')}
 <#- chunkStart(`../../../${entity.name}/uix/cardView`); -#>
 #{partial(entity, 'grid-card')}
-<#- chunkStart(`../../../${entity.name}/uix/showTabbed`); -#>
-#{partial(entity, 'forms-show-tabbed')}
 <#- chunkStart(`../../../${entity.name}/uix/show`); -#>
+#{partial(entity, 'forms-show-tabbed')}
+<#- chunkStart(`../../../${entity.name}/uix/showSimple`); -#>
 #{partial(entity, 'forms-show-simple')}
 <#- chunkStart(`../../../i18n/${entity.name}`); -#>
 #{partial(entity, 'forms-i18n')}

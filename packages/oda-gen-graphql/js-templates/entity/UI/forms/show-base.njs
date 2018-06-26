@@ -4,39 +4,14 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import {
-  Datagrid,
-  TextField,
-  DateField,
-  NumberField,
-  FunctionField,
-  BooleanField,
-  EditButton,
-  DeleteButton,
-  ShowButton,
-  ReferenceManyField,
-  ReferenceField,
-  Show,
-  SimpleShowLayout,
-  required,
-  RichTextField,
-  ShowController,
-  ShowView,
-  ArrayField,
-  #{content('import-react-admin')}
+  #{content('import-from-react-admin')}
+  #{slot('import-from-react-admin-show')}
 } from "react-admin";
 
-import { consts, actions, show, components } from 'oda-ra-ui';
-
-const LongTextField = TextField;
-
-const { EmbeddedRefField, EmbeddedField } = components;
-
-const showIfExists = field => root => !!root[field];
-
-const showIfNotEmptyRel = field => root => !!root[field] || (Array.isArray(root[field]) && root[field].length > 0);
+#{slot('import-from-ra-ui-components')}
 
 const ShowRecordView = (props, context) => {
-  const { translate, uix } = context;
+  const { uix } = context;
   const { Title } = uix['#{entity.role}/#{entity.name}'];
 <#-
 const manyRels = entity.relations.filter(f => !f.single);
@@ -56,6 +31,7 @@ if(manyRels.length > 0){#>
 <#-}-#>
 
   return (
+<#- slot('import-from-react-admin-show', 'Show,\n')#>
     <Show title={<Title />} {...props}>
       #{content('view')}
     </Show>

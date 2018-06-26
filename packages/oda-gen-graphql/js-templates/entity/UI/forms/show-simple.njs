@@ -2,12 +2,12 @@
 <#@ alias 'forms-show-simple' -#>
 <#@ extend 'forms-show-base' -#>
 
-<# block 'import-react-admin' : -#>
-TabbedForm,
-FormTab,
+<# block 'import-from-react-admin' : -#>
+#{slot('import-from-react-admin-show-simple')}
 <#- end -#>
 
 <# block 'view' : -#>
+<#- slot('import-from-react-admin-show-simple', 'SimpleShowLayout,\n')#>
 <SimpleShowLayout>
 <#- entity.props.filter(f=>f.name!== "id")
 .forEach(f => {
