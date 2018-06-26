@@ -6,20 +6,37 @@
 #{slot('import-from-react-admin-form-simple')}
 <#- end -#>
 
+<# block 'use-translate-block' : -#>
+#{slot('use-translate')}
+<#- end -#>
+
+<# block 'use-action-type-func-block' : -#>
+#{slot('use-action-type-func')}
+<#- end -#>
+
+<# block 'use-single-rel-block' : -#>
+#{slot('use-single-rel')}
+<#- end -#>
+
+<# block 'use-many-rel-block' : -#>
+#{slot('use-many-rel')}
+<#- end -#>
+
 <# block 'form' : -#>
-const { props } = this;
-    const singleRelActions = props.singleRelActions;
-    const manyRelAction = props.manyRelActions;
-    const { translate } = this.context;
-    return (
+  const { props } = this;
+  #{content('use-action-type-func-block')}
+  #{content('use-single-rel-block')}
+  #{content('use-many-rel-block')}
+  #{content('use-translate-block')}
+  return (
 <#- slot('import-from-react-admin-form-simple','SimpleForm')#>
-      <SimpleForm {...props} >
+    <SimpleForm {...props} >
 <#- entity.props.filter(f=>f.name!== "id")
 .forEach(f => {
   const ctx = {entity, f};
   if (!f.ref) {
     if(!f.derived && (entity.UI.quickSearch.indexOf(f.name)!== -1 || entity.UI.edit[f.name] || entity.UI.list[f.name] || entity.UI.show[f.name]) && entity.UI.edit[f.name]!== false) {#>
-        #{partial(ctx, "edit-field")}
+      #{partial(ctx, "edit-field")}
 <#-
     }
   } else if(f.ref) {
@@ -29,17 +46,17 @@ const { props } = this;
 <#- if ( f.single ) {
       if(embedded) {
 #>
-        #{partial(ctx, "edit-rel-single-embed")}
+      #{partial(ctx, "edit-rel-single-embed")}
 <#    } else {#>
-        #{partial(ctx, "edit-rel-single-not-embed")}
+      #{partial(ctx, "edit-rel-single-not-embed")}
 <#    }#>
 <#-
     } else { #>
 <#    if(embedded){-#>
-        #{partial(ctx, "edit-rel-multiple-embed")}
+      #{partial(ctx, "edit-rel-multiple-embed")}
 <#-
         } else {-#>
-        #{partial(ctx, "edit-rel-multiple-not-embed")}
+      #{partial(ctx, "edit-rel-multiple-not-embed")}
 <#-
         }-#>
 <#- }-#>
@@ -48,6 +65,6 @@ const { props } = this;
   }
 });
 #>
-      </SimpleForm>
-    );
+    </SimpleForm>
+  );
 <#- end -#>

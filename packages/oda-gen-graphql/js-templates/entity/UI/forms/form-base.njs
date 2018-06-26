@@ -15,9 +15,8 @@ import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 <#}#>
 import compose from 'recompose/compose';
-import { consts#{content('use-action-type-import')} } from 'oda-ra-ui';
+import { actions#{content('use-action-type-import')} } from 'oda-ra-ui';
 
-const actionType = consts.actionType;
 const initForm = actions.initForm;
 
 const finalizeForm = actions.finalizeForm;

@@ -7,7 +7,6 @@ import {
   #{content('form-type')}
 } from "react-admin";
 import { consts } from 'oda-ra-ui';
-<#- slot('use-action-type', true)#>
 const actionType = consts.actionType;
 
 const #{content('form-type')}Form = (props, context) => {

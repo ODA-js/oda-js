@@ -8,6 +8,8 @@
 <#- slot('import-from-react-admin-form', 'SelectInput,\n')-#>
 <#- slot('import-from-react-admin-form', 'ReferenceInput,\n')-#>
 <#- slot('use-action-type', true)-#>
+<#- slot('use-action-type-func', true)-#>
+<#- slot('use-many-rel',true) -#>
 <ArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
   <SimpleFormIterator>
     <SelectInput
@@ -17,6 +19,7 @@
       defaultValue={actionType.USE}
     />
       <ReferenceInput 
+<#- slot('use-translate', true)-#>
         label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})}
         source="id"
         reference="#{entity.role}/#{f.ref.entity}"
