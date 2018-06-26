@@ -3,14 +3,18 @@
 <#-
   const {entity, f} = ctx;
 -#>
-<#- slot('import-from-react-admin-form', 'ArrayInput,\n')-#>
-<#- slot('import-from-react-admin-form', 'SimpleFormIterator,\n')-#>
-<#- slot('import-from-react-admin-form', 'SelectInput,\n')-#>
-<#- slot('import-from-react-admin-form', 'ReferenceInput,\n')-#>
-<#- slot('use-action-type', true)-#>
-<#- slot('use-action-type-func', true)-#>
-<#- slot('use-many-rel',true) -#>
-<ArrayInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Values" allowEmpty >
+<#- slot('import-from-react-admin-form', 'ArrayInput,\n')#>
+<#- slot('import-from-react-admin-form', 'SimpleFormIterator,\n')#>
+<#- slot('import-from-react-admin-form', 'SelectInput,\n')#>
+<#- slot('import-from-react-admin-form', 'ReferenceInput,\n')#>
+<#- slot('use-action-type', true)#>
+<#- slot('use-action-type-func', true)#>
+<#- slot('use-many-rel',true) #>
+<ArrayInput 
+  label="resources.#{entity.name}.fields.#{f.field}"
+  source="#{f.field}Values"
+  allowEmpty 
+>
   <SimpleFormIterator>
     <SelectInput
       source="#{f.field}Type"
@@ -19,11 +23,14 @@
       defaultValue={actionType.USE}
     />
       <ReferenceInput 
-<#- slot('use-translate', true)-#>
+<#- slot('use-translate', true)#>
         label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})}
         source="id"
         reference="#{entity.role}/#{f.ref.entity}"
-        <# if (!f.required){#>allowEmpty<#} else {#>validate={required()}<#}#> 
+        <# if (!f.required){#>
+        allowEmpty<#} else {#>
+<#- slot('import-from-react-admin-form', 'required,\n')#>
+        validate={required()}<#}#> 
       >
         <SelectInput 
           optionText="#{f.ref.listLabel.source}" />
@@ -36,7 +43,7 @@
   if(fieldCount > 0) {-#>
 <#-entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id')
 .forEach(f=>{-#>
-<#-slot('import-from-react-admin-form', `${f.type}Input,\n`)-#>
+<#-slot('import-from-react-admin-form', `${f.type}Input,\n`)#>
       <#{f.type}Input
         <#-if(f.defaultValue){#>
         defaultValue={#{f.defaultValue}}<#}#>
@@ -53,7 +60,7 @@
     f.ref.fields
     .filter(fld => f.ref.using.UI.edit[fld.name])
     .forEach(fld=>{-#>
-<#- slot('import-from-react-admin-form', `${fld.type}Input,\n`)-#>
+<#- slot('import-from-react-admin-form', `${fld.type}Input,\n`)#>
       <#{fld.type}Input
         <#if(f.defaultValue){#>defaultValue={#{f.defaultValue}}<#}#>
         label="resources.#{f.ref.using.entity}.fields.#{fld.name}"

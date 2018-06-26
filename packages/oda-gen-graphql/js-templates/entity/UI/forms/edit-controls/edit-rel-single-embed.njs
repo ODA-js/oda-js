@@ -9,7 +9,7 @@
 <#- slot('import-from-react-admin-form', 'AutocompleteInput,\n')#>
 <#- slot('use-action-type', true)#>
 <#- slot('use-action-type-func', true)#>
-<#- slot('use-single-rel',true) -#>
+<#- slot('use-single-rel',true) #>
 <ReferenceInput label="resources.#{entity.name}.fields.#{f.field}" source="#{f.field}Id" reference="#{entity.role}/#{f.ref.entity}"<# if (!f.required){#> allowEmpty<#} else {#> validate={required()}<#}#> >
   <AutocompleteInput optionText="#{f.ref.listLabel.source}" />
 </ReferenceInput>
