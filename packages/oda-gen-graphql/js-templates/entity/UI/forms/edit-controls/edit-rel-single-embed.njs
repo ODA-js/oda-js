@@ -19,20 +19,16 @@
   choices={singleRelActions}
   defaultValue={actionType.USE}
 />
-<#
-  let current = entity.UI.embedded.names[f.field];
-#>
-<#
+<#- let current = entity.UI.embedded.names[f.field]; -#>
+<#-
   let embededEntity = entity.UI.embedded.items[current].entity;
   entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
 <#- slot('import-from-react-admin-form', `${f.type}Input`)#>
 <#{f.type}Input
-  <#if(f.defaultValue){#>defaultValue={#{f.defaultValue}}<#}#>
+  <#-if(f.defaultValue){#>defaultValue={#{f.defaultValue}}
+  <#}#>
   label="resources.#{embededEntity}.fields.#{f.name}"
   source="#{f.name}"
   <# if (!f.required){#>allowEmpty<#} else {#>validate={required()}<#}#> 
-/>
-<#
-  });
--#>
+/><#});#>

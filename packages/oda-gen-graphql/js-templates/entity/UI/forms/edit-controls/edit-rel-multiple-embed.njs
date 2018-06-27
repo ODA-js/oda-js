@@ -9,7 +9,7 @@
 <#- slot('import-from-react-admin-form', 'ReferenceInput')#>
 <#- slot('use-action-type', true)#>
 <#- slot('use-action-type-func', true)#>
-<#- slot('use-many-rel',true) #>
+<#- slot('use-many-rel',true) -#>
 <ArrayInput 
   label="resources.#{entity.name}.fields.#{f.field}"
   source="#{f.field}Values"
@@ -27,13 +27,12 @@
         label={translate("resources.#{f.ref.entity}.name", { smart_count: 1})}
         source="id"
         reference="#{entity.role}/#{f.ref.entity}"
-        <# if (!f.required){#>
+        <#- if (!f.required){#>
         allowEmpty<#} else {#>
 <#- slot('import-from-react-admin-form', 'required')#>
         validate={required()}<#}#> 
       >
-        <SelectInput 
-          optionText="#{f.ref.listLabel.source}" />
+        <SelectInput optionText="#{f.ref.listLabel.source}" />
       </ReferenceInput>
 <#-
   let current = entity.UI.embedded.names[f.field];
@@ -53,7 +52,7 @@
         allowEmpty<#} else {#>
         validate={required()}<#}#>
       />
-<#
+<#-
   });
 -#><#-
   if(f.verb === 'BelongsToMany') {
@@ -74,6 +73,6 @@
     });
   }
 -#>
-<#-}-#>
+<#-}#>
   </SimpleFormIterator>
 </ArrayInput>
