@@ -7,8 +7,8 @@
 <#- end -#>
 
 <# block 'view' : -#>
-<# slot('import-from-react-admin-show-tab', 'TabbedShowLayout,\n')#>
-<# slot('import-from-react-admin-show-tab', 'Tab,\n')#>
+<# slot('import-from-react-admin-show-tab', 'TabbedShowLayout')#>
+<# slot('import-from-react-admin-show-tab', 'Tab')#>
 <TabbedShowLayout>
   <Tab label="resources.#{entity.name}.summary">
 <#entity.fields.filter(f=>f.name!== "id")

@@ -3,7 +3,7 @@
 <#-
   const {entity, f, current} = ctx;
 -#>
-<#- slot('import-from-react-admin-show','ReferenceField,\n') #>
+<#- slot('import-from-react-admin-show','ReferenceField') #>
 <ReferenceField 
   addLabel={false} 
   source="#{f.field}Id" 

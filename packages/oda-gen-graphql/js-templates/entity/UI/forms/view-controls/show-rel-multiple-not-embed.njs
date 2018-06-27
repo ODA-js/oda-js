@@ -4,7 +4,7 @@
   const {entity, f} = ctx;
 -#>
 
-<#- slot('import-from-react-admin-show','ReferenceManyField,\n') #>
+<#- slot('import-from-react-admin-show','ReferenceManyField') #>
 
 <ReferenceManyField 
   addLabel={false}

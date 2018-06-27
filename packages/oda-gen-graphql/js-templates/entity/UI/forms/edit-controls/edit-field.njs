@@ -3,7 +3,7 @@
 <#-
   const {entity, f} = ctx;
 -#>
-<#- slot('import-from-react-admin-form', `${f.type}Input,\n`)#>
+<#- slot('import-from-react-admin-form', `${f.type}Input`)#>
 <#{f.type}Input
   <#-if(f.defaultValue){#> defaultValue={#{f.defaultValue}}
   <#}-#>

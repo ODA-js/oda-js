@@ -11,7 +11,8 @@
 'import-from-react-admin-grid-card-view'
 'import-from-react-admin-grid-view'
 -#>
-<#- const separatedItems = Object.keys(items
+<#- 
+const separatedItems = Object.keys(items
   .reduce((res, it) => {
     it.split(',')
       .map(i=>i.trim())

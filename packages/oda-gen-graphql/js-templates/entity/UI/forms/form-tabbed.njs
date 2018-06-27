@@ -6,31 +6,15 @@
 #{slot('import-from-react-admin-form-tab')}
 <#- end -#>
 
-<# block 'use-translate-block' : -#>
-#{slot('use-translate')}
-<#- end -#>
-
-<# block 'use-action-type-func-block' : -#>
-#{slot('use-action-type-func')}
-<#- end -#>
-
-<# block 'use-single-rel-block' : -#>
-#{slot('use-single-rel')}
-<#- end -#>
-
-<# block 'use-many-rel-block' : -#>
-#{slot('use-many-rel')}
-<#- end -#>
-
 <# block 'form' : -#>
   const { props } = this;
-  #{content('use-action-type-func-block')}
-  #{content('use-single-rel-block')}
-  #{content('use-many-rel-block')}
-  #{content('use-translate-block')}
+  #{slot('use-action-type-func')}
+  #{slot('use-single-rel')}
+  #{slot('use-many-rel')}
+  #{slot('use-translate')}
   return (
-<#- slot('import-from-react-admin-form-tab', 'TabbedForm,\n')#>
-<#- slot('import-from-react-admin-form-tab', 'FormTab,\n')#>
+<#- slot('import-from-react-admin-form-tab', 'TabbedForm')#>
+<#- slot('import-from-react-admin-form-tab', 'FormTab')#>
     <TabbedForm {...props} >
       <FormTab label="resources.#{entity.name}.summary">
 <# entity.fields.filter(f=>!f.derived ).filter(f=>f.name!== "id")

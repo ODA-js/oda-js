@@ -1,8 +1,6 @@
 <#@ context "entity" -#>
 <#@ alias 'forms-form-base' -#>
-<#- block 'use-action-type-import' : -#>
-#{slot('use-action-type')}
-<#- end -#>
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -15,7 +13,7 @@ import { connect } from 'react-redux';
 import { formValueSelector } from 'redux-form';
 <#}#>
 import compose from 'recompose/compose';
-import { actions#{content('use-action-type-import')} } from 'oda-ra-ui';
+import { actions#{slot('use-action-type')} } from 'oda-ra-ui';
 
 const initForm = actions.initForm;
 

@@ -3,10 +3,10 @@
 <#-
   const {entity, f} = ctx;
 -#>
-<#- slot('import-from-react-admin-form', 'ReferenceInput,\n')#>
-<#- slot('import-from-react-admin-form', 'SelectInput,\n')#>
-<#- slot('import-from-react-admin-form', 'required,\n')#>
-<#- slot('import-from-react-admin-form', 'AutocompleteInput,\n')#>
+<#- slot('import-from-react-admin-form', 'ReferenceInput')#>
+<#- slot('import-from-react-admin-form', 'SelectInput')#>
+<#- slot('import-from-react-admin-form', 'required')#>
+<#- slot('import-from-react-admin-form', 'AutocompleteInput')#>
 <#- slot('use-action-type', true)#>
 <#- slot('use-action-type-func', true)#>
 <#- slot('use-single-rel',true) #>
@@ -26,7 +26,7 @@
   let embededEntity = entity.UI.embedded.items[current].entity;
   entity.UI.embedded.items[current].fields.filter(f=>f.name !== 'id').forEach(f=>{
 -#>
-<#- slot('import-from-react-admin-form', `${f.type}Input,\n`)#>
+<#- slot('import-from-react-admin-form', `${f.type}Input`)#>
 <#{f.type}Input
   <#if(f.defaultValue){#>defaultValue={#{f.defaultValue}}<#}#>
   label="resources.#{embededEntity}.fields.#{f.name}"

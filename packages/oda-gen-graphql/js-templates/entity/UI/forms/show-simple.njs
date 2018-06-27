@@ -7,7 +7,7 @@
 <#- end -#>
 
 <# block 'view' : -#>
-<#- slot('import-from-react-admin-show-simple', 'SimpleShowLayout,\n')#>
+<#- slot('import-from-react-admin-show-simple', 'SimpleShowLayout')#>
 <SimpleShowLayout>
 <#- entity.props.filter(f=>f.name!== "id")
 .forEach(f => {

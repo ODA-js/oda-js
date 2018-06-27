@@ -31,7 +31,7 @@ if(manyRels.length > 0){#>
 <#-}-#>
 
   return (
-<#- slot('import-from-react-admin-show', 'Show,\n')#>
+<#- slot('import-from-react-admin-show', 'Show')#>
     <Show title={<Title />} {...props}>
       #{content('view')}
     </Show>

@@ -3,10 +3,10 @@
 <#-
   const {entity, f, current} = ctx;
 -#>
-<#- slot('import-from-ra-ui-components','EmbeddedField,\n') #>
-<#- slot('import-from-react-admin-show','ShowButton,\n') #>
-<#- slot('import-from-react-admin-show','EditButton,\n') #>
-<#- slot('import-from-react-admin-show','DeleteButton,\n') #>
+<#- slot('import-from-ra-ui-components','EmbeddedField') #>
+<#- slot('import-from-react-admin-show','ShowButton') #>
+<#- slot('import-from-react-admin-show','EditButton') #>
+<#- slot('import-from-react-admin-show','DeleteButton') #>
 <EmbeddedField
   addLabel={false}
   source="#{f.field}Value"

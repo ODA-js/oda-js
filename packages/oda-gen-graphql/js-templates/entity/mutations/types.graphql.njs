@@ -15,7 +15,6 @@ const refName = rel.fields.length > 0 ? `embed${rel.ref.entity}CreateInto${entit
 <#-}#>
 }
 
-
 input embed#{entity.name}Input {
   clientMutationId: String
 <#- for (let field of entity.update){#>
