@@ -7,9 +7,7 @@ import {
   #{content('import-from-react-admin')}
   #{slot('import-from-react-admin-show')}
 } from "react-admin";
-
 #{slot('import-from-ra-ui-components')}
-
 const ShowRecordView = (props, context) => {
   const { uix } = context;
   const { Title } = uix['#{entity.role}/#{entity.name}'];
@@ -28,8 +26,7 @@ if(manyRels.length > 0){#>
 -#>
   const #{f.ref.entity} = uix['#{entity.role}/#{f.ref.entity}'];
 <#})-#>
-<#-}-#>
-
+<#-}#>
   return (
 <#- slot('import-from-react-admin-show', 'Show')#>
     <Show title={<Title />} {...props}>

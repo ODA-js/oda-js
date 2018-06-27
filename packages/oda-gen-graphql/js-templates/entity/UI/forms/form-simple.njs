@@ -42,7 +42,7 @@ return (
 <#-    } else {-#>
     #{partial(ctx, "edit-rel-single-not-embed")}
 <#-    }-#>
-<#- } else { -#>
+<#- } else {#>
 <#-    if(embedded){-#>
     #{partial(ctx, "edit-rel-multiple-embed")}
 <#-   } else {-#>

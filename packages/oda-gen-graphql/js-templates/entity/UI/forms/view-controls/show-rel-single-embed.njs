@@ -6,7 +6,7 @@
 <#- slot('import-from-ra-ui-components','EmbeddedField') #>
 <#- slot('import-from-react-admin-show','ShowButton') #>
 <#- slot('import-from-react-admin-show','EditButton') #>
-<#- slot('import-from-react-admin-show','DeleteButton') #>
+<#- slot('import-from-react-admin-show','DeleteButton') -#>
 <EmbeddedField
   addLabel={false}
   source="#{f.field}Value"
@@ -24,7 +24,8 @@
   .forEach(f=>{-#>
   <#{f.type=="Number" ? "Text" : f.type}Field 
     label="resources.#{embededEntity}.fields.#{f.name}"
-    source="#{f.name}"<# if (!f.required){#> allowEmpty<#}#> />
+    source="#{f.name}"
+  />
 <#
         });
 -#>
