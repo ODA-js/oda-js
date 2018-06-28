@@ -1,6 +1,6 @@
 {
   "name": "oda-ra-ui",
-  "version": "0.0.0",
+  "version": "1.0.0-0",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -12,15 +12,15 @@
   },
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "ra-core": "^2.0.3",
     "@material-ui/core": "~1.0.0",
     "@material-ui/icons": "~1.0.0",
-    "recompose": "~0.26.0",
     "apollo-cache-inmemory": "^1.1.9",
     "apollo-client": "^2.2.5",
     "apollo-link": "^1.2.1",
     "apollo-link-http": "^1.5.3",
     "prop-types": "^15.6.1",
+    "ra-core": "^2.0.3",
+    "recompose": "~0.26.0",
     "redux-form": "^7.3.0",
     "redux-saga": "^0.16.0"
   },
