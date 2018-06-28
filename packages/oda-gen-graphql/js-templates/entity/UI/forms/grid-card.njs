@@ -32,6 +32,7 @@ const CommentGrid = ({ ids, data, basePath }, { translate }) => (
     { ids.length > 0 ? (
       ids.map(id => (
         <Card key={id} style={cardStyle}>
+<#- slot('import-from-react-admin-grid-card-view', 'TextField')#>
           <CardHeader title={<TextField record={data[id]} source="#{entity.listLabel.source}" />} />
           <CardContent>
             <div>
