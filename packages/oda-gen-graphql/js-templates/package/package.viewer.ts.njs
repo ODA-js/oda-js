@@ -23,7 +23,7 @@ export class ViewerEntity extends common.types.GQLModule {
     this._query = fillDefaults(this._query, {
       viewer: async (owner,
         args,
-        context: { connectors: RegisterConnectors, user: { id: string, userName: string }, db },
+        context: { connectors: RegisterConnectors, user, db },
         info) => {
         return {
           id: context.user ? fromGlobalId(context.user.id).id : null,
@@ -34,7 +34,7 @@ export class ViewerEntity extends common.types.GQLModule {
     this._viewer = fillDefaults(this._viewer, {
       Viewer: {
         _user: async (owner: { id: string }, args,
-          context: { connectors: RegisterConnectors, user: { id: string, userName: string } },
+          context: { connectors: RegisterConnectors, user },
           info) => {
           if (owner.id !== undefined && owner.id !== null) {
             let result = await context.connectors.User.findOneById(owner.id);
