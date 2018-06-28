@@ -28,9 +28,9 @@ const Grid = (props) => (
     </ReferenceField>
 <#-}-#>
 <#-})#>
-    <ShowButton label={false} />
-    <EditButton label={false} />
-    <DeleteButton label={false} />
+    <ShowButton label="" basePath="/#{entity.role}/#{entity.name}"/>
+    <EditButton label="" basePath="/#{entity.role}/#{entity.name}"/>
+    <DeleteButton label="" basePath="/#{entity.role}/#{entity.name}"/>
   </Datagrid>
 );
 

@@ -64,19 +64,19 @@ const CommentGrid = ({ ids, data, basePath }, { translate }) => (
 <#- slot('import-from-react-admin-grid-card-view', 'EditButton')#>
             <EditButton
               resource="#{entity.role}/#{entity.name}"
-              basePath={basePath}
+              basePath="/#{entity.role}/#{entity.name}"
               record={data[id]}
             />
 <#- slot('import-from-react-admin-grid-card-view', 'ShowButton')#>
             <ShowButton
               resource="#{entity.role}/#{entity.name}"
-              basePath={basePath}
+              basePath="/#{entity.role}/#{entity.name}"
               record={data[id]}
             />
 <#- slot('import-from-react-admin-grid-card-view', 'DeleteButton')#>
             <DeleteButton
-              resource="#{entity.role}/#{entity.name}"
-              basePath={basePath}
+              resource="#{entity.role}/#{entity.name}"            
+              basePath="/#{entity.role}/#{entity.name}"
               record={data[id]}
             />
           </CardActions>
