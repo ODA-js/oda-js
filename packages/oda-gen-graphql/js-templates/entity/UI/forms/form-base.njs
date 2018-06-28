@@ -39,6 +39,8 @@ const selector = formValueSelector(formName);
 
 Form.contextTypes = {
   translate: PropTypes.func.isRequired,
+  initForm: PropTypes.func.isRequired,
+  finalizeForm: PropTypes.func.isRequired,
 }
 
 export default compose(
