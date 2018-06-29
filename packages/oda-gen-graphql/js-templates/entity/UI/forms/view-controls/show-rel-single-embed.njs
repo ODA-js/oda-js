@@ -29,7 +29,5 @@
 <#
         });
 -#>
-  <ShowButton basePath="/#{entity.role}/#{f.ref.entity}"/>
-  <EditButton basePath="/#{entity.role}/#{f.ref.entity}"/>
   <DeleteButton basePath="/#{entity.role}/#{f.ref.entity}"/>
 </EmbeddedField>
