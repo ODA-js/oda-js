@@ -21,5 +21,12 @@ export default function deepMerge(...args: Object[]) {
 }
 
 function _deepMerge(src, dst) {
-  return mergeWith(dst, src, mergeAll);
+  if (typeof dst === 'object') {
+    if (dst !== null && typeof src === 'string') {
+      src = { src };
+    }
+    return mergeWith(dst, src, mergeAll);
+  } else {
+    return dst;
+  }
 }

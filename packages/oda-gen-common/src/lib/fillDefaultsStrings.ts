@@ -21,7 +21,13 @@ export default function override(...args: Object[]) {
 
 function _override(src, dst) {
   if (dst !== null) {
-    return mergeWith(src, dst, mergeAll);
+    if (typeof src === 'string') debugger;
+
+    if (typeof dst == 'object') {
+      return mergeWith(src, dst, mergeAll);
+    } else {
+      return dst;
+    }
   } else {
     return null;
   }

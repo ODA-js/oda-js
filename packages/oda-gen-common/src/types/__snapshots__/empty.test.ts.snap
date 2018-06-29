@@ -21,12 +21,13 @@ MainSchema {
               "RootMutation.updateUser": true,
             },
           ],
-          "_name": "User",
-          "_queryEntry": Object {
-            "queryEntry": Array [
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
               "override",
             ],
           },
+          "_name": "User",
+          "_queryEntry": "override",
           "_resolver": Object {
             "User": Object {
               "id": "User",
@@ -49,12 +50,13 @@ MainSchema {
               "RootMutation.updateUser": true,
             },
           ],
-          "_name": "User",
-          "_queryEntry": Object {
-            "queryEntry": Array [
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
               "override",
             ],
           },
+          "_name": "User",
+          "_queryEntry": "override",
           "_resolver": Object {
             "User": Object {
               "id": "User",
@@ -63,6 +65,24 @@ MainSchema {
             },
           },
           "_viewerEntry": null,
+        },
+        OtherEntity {
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
+              "override",
+              "originalOther",
+            ],
+          },
+          "_name": "OtherEntity",
+          "_queryEntry": Object {
+            "queryEntry": "originalOther",
+            "src": "override",
+          },
+          "_viewerEntry": Object {
+            "viewerEntry": Array [
+              "originalOther",
+            ],
+          },
         },
       ],
       "_name": "Second",
@@ -85,12 +105,13 @@ MainSchema {
           "RootMutation.updateUser": true,
         },
       ],
-      "_name": "User",
-      "_queryEntry": Object {
-        "queryEntry": Array [
+      "_mutationEntry": Object {
+        "mutationEntry": Array [
           "override",
         ],
       },
+      "_name": "User",
+      "_queryEntry": "override",
       "_resolver": Object {
         "User": Object {
           "id": "User",
@@ -119,12 +140,13 @@ MainSchema {
               "RootMutation.updateUser": true,
             },
           ],
-          "_name": "User",
-          "_queryEntry": Object {
-            "queryEntry": Array [
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
               "override",
             ],
           },
+          "_name": "User",
+          "_queryEntry": "override",
           "_resolver": Object {
             "User": Object {
               "id": "User",
@@ -138,6 +160,24 @@ MainSchema {
       ],
       "_name": "First",
     },
+    "OtherEntity": OtherEntity {
+      "_mutationEntry": Object {
+        "mutationEntry": Array [
+          "override",
+          "originalOther",
+        ],
+      },
+      "_name": "OtherEntity",
+      "_queryEntry": Object {
+        "queryEntry": "originalOther",
+        "src": "override",
+      },
+      "_viewerEntry": Object {
+        "viewerEntry": Array [
+          "originalOther",
+        ],
+      },
+    },
     "Second": SecondPackage {
       "_composite": Array [
         User {
@@ -147,12 +187,13 @@ MainSchema {
               "RootMutation.updateUser": true,
             },
           ],
-          "_name": "User",
-          "_queryEntry": Object {
-            "queryEntry": Array [
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
               "override",
             ],
           },
+          "_name": "User",
+          "_queryEntry": "override",
           "_resolver": Object {
             "User": Object {
               "id": "User",
@@ -161,6 +202,24 @@ MainSchema {
             },
           },
           "_viewerEntry": null,
+        },
+        OtherEntity {
+          "_mutationEntry": Object {
+            "mutationEntry": Array [
+              "override",
+              "originalOther",
+            ],
+          },
+          "_name": "OtherEntity",
+          "_queryEntry": Object {
+            "queryEntry": "originalOther",
+            "src": "override",
+          },
+          "_viewerEntry": Object {
+            "viewerEntry": Array [
+              "originalOther",
+            ],
+          },
         },
       ],
       "_name": "Second",
@@ -177,11 +236,16 @@ MainSchema {
       "RootMutation.updateUser": true,
     },
   ],
+  "_mutationEntry": Object {
+    "mutationEntry": Array [
+      "override",
+      "originalOther",
+    ],
+  },
   "_name": "Main",
   "_queryEntry": Object {
-    "queryEntry": Array [
-      "override",
-    ],
+    "queryEntry": "originalOther",
+    "src": "override",
   },
   "_resolver": Object {
     "User": Object {
@@ -191,7 +255,11 @@ MainSchema {
       "toBeRemoved": null,
     },
   },
-  "_viewerEntry": Object {},
+  "_viewerEntry": Object {
+    "viewerEntry": Array [
+      "originalOther",
+    ],
+  },
 }
 `;
 

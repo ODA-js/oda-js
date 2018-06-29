@@ -1,3 +1,5 @@
+import deepMergeStrings from './../lib/deepMergeStrings';
+import overrideStrings from './../lib/fillDefaultsStrings';
 import deepMerge from './../lib/deepMerge';
 import override from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
@@ -7,26 +9,68 @@ import { OrderedMap } from 'immutable';
 import { resolve } from 'dns';
 // let padding = 0;
 
-const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
-  if (curr) {
-    if (Array.isArray(entry[curr])) {
-      result.push(...entry[curr]);
-    } else {
-      result.push(...hashToString(entry[curr]));
-    }
+const hashToString = entry => {
+  if (typeof entry === 'string') {
+    return [entry];
+  } else if (typeof entry === 'object') {
+    return entry
+      ? Object.keys(entry).reduce((result, curr) => {
+          if (curr) {
+            if (Array.isArray(entry[curr])) {
+              result.push(...entry[curr]);
+            } else if (typeof entry[curr] == 'string') {
+              result.push(entry[curr]);
+            } else {
+              let res = hashToString(entry[curr]);
+              if (Array.isArray(res)) {
+                result.push(...res);
+              } else {
+                result.push(res);
+              }
+            }
+          }
+          return result;
+        }, [])
+      : [];
+  } else {
+    return entry ? [entry.toString()] : [];
   }
-  return result;
-}, []) : [];
+};
+
+type ModuleInput = {
+  name?: string;
+  resolver?: { [key: string]: any };
+  query?: { [key: string]: any };
+  viewer?: { [key: string]: any };
+  mutation?: { [key: string]: any };
+  subscription?: { [key: string]: any };
+  typeDef?: { [key: string]: string[] };
+  mutationEntry?: { [key: string]: string[] };
+  subscriptionEntry?: { [key: string]: string[] };
+  queryEntry?: { [key: string]: string[] };
+  viewerEntry?: { [key: string]: string[] };
+  hooks?: { [key: string]: any }[];
+  extend?: GQLModule[];
+  composite?: GQLModule[];
+};
 
 export class GQLModule {
   public get name(): string {
     if (!this._name && !(this.constructor && this.constructor.name)) {
-      invariant(this._name, 'module has no name neither _name nor constructor.name to be initialized');
+      invariant(
+        this._name,
+        'module has no name neither _name nor constructor.name to be initialized',
+      );
       //TODO: remove asap
       console.trace();
     }
     if (!this._name && this.constructor && this.constructor.name) {
-      warning(this._name, `module ${this.constructor.name} has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`);
+      warning(
+        this._name,
+        `module ${
+          this.constructor.name
+        } has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`,
+      );
       //TODO: remove asap
       console.trace();
     }
@@ -34,37 +78,37 @@ export class GQLModule {
   }
   public get resolver(): { [key: string]: any } {
     return this._resolver || {};
-  };
+  }
   public get query(): { [key: string]: any } {
     return this._query || {};
-  };
+  }
   public get viewer(): { [key: string]: any } {
     return this._viewer || {};
-  };
+  }
   public get mutation(): { [key: string]: any } {
     return this._mutation || {};
-  };
+  }
   public get subscription(): { [key: string]: any } {
     return this._subscription || {};
   }
   public get typeDef(): string[] {
     return hashToString(this._typeDef);
-  };
+  }
   public get mutationEntry(): string[] {
     return hashToString(this._mutationEntry);
-  };
+  }
   public get subscriptionEntry(): string[] {
     return hashToString(this._subscriptionEntry);
-  };
+  }
   public get queryEntry(): string[] {
     return hashToString(this._queryEntry);
-  };
+  }
   public get viewerEntry(): string[] {
     return hashToString(this._viewerEntry);
-  };
+  }
   public get hooks(): { [key: string]: any }[] {
     return this._hooks || [];
-  };
+  }
 
   protected _name: string;
   protected _resolver: { [key: string]: any };
@@ -72,11 +116,11 @@ export class GQLModule {
   protected _viewer: { [key: string]: any };
   protected _mutation: { [key: string]: any };
   protected _subscription: { [key: string]: any };
-  protected _typeDef: { [key: string]: string[] };
-  protected _mutationEntry: { [key: string]: string[] };
-  protected _subscriptionEntry: { [key: string]: string[] };
-  protected _queryEntry: { [key: string]: string[] };
-  protected _viewerEntry: { [key: string]: string[] };
+  protected _typeDef: { [key: string]: string[] | string } | string;
+  protected _mutationEntry: { [key: string]: string[] | string } | string;
+  protected _subscriptionEntry: { [key: string]: string[] | string } | string;
+  protected _queryEntry: { [key: string]: string[] | string } | string;
+  protected _viewerEntry: { [key: string]: string[] | string } | string;
   protected _hooks: { [key: string]: any }[];
 
   protected _extend: GQLModule[];
@@ -97,39 +141,26 @@ export class GQLModule {
       }
     }
     return obj;
-  };
+  }
 
-  constructor({
-    name,
-    resolver,
-    query,
-    viewer,
-    typeDef,
-    mutationEntry,
-    subscriptionEntry,
-    queryEntry,
-    viewerEntry,
-    mutation,
-    subscription,
-    hooks,
-    extend,
-    composite,
-  }: {
-      name?: string,
-      resolver?: { [key: string]: any };
-      query?: { [key: string]: any };
-      viewer?: { [key: string]: any };
-      mutation?: { [key: string]: any };
-      subscription?: { [key: string]: any };
-      typeDef?: { [key: string]: string[] };
-      mutationEntry?: { [key: string]: string[] };
-      subscriptionEntry?: { [key: string]: string[] };
-      queryEntry?: { [key: string]: string[] };
-      viewerEntry?: { [key: string]: string[] };
-      hooks?: { [key: string]: any }[];
-      extend?: GQLModule[],
-      composite?: GQLModule[],
-    }) {
+  constructor(arg?: ModuleInput) {
+    const {
+      name,
+      resolver,
+      query,
+      viewer,
+      typeDef,
+      mutationEntry,
+      subscriptionEntry,
+      queryEntry,
+      viewerEntry,
+      mutation,
+      subscription,
+      hooks,
+      extend,
+      composite,
+    } = arg ? arg : ({} as ModuleInput);
+
     if (name !== undefined) {
       this._name = name;
     }
@@ -252,19 +283,28 @@ export class GQLModule {
         this._subscription = deepMerge(this._subscription, obj._subscription);
       }
       if (obj._typeDef !== undefined) {
-        this._typeDef = deepMerge(this._typeDef, obj._typeDef);
+        this._typeDef = deepMergeStrings(this._typeDef, obj._typeDef);
       }
       if (obj._mutationEntry !== undefined) {
-        this._mutationEntry = deepMerge(this._mutationEntry, obj._mutationEntry);
+        this._mutationEntry = deepMergeStrings(
+          this._mutationEntry,
+          obj._mutationEntry,
+        );
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = deepMerge(this._subscriptionEntry, obj._subscriptionEntry);
+        this._subscriptionEntry = deepMergeStrings(
+          this._subscriptionEntry,
+          obj._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
-        this._queryEntry = deepMerge(this._queryEntry, obj._queryEntry);
+        this._queryEntry = deepMergeStrings(this._queryEntry, obj._queryEntry);
       }
       if (obj._viewerEntry !== undefined) {
-        this._viewerEntry = deepMerge(this._viewerEntry, obj._viewerEntry);
+        this._viewerEntry = deepMergeStrings(
+          this._viewerEntry,
+          obj._viewerEntry,
+        );
       }
       if (obj._hooks !== undefined) {
         this._hooks = [...(this._hooks || []), ...(obj._hooks || [])];
@@ -298,16 +338,25 @@ export class GQLModule {
         this._typeDef = override(obj._typeDef, this._typeDef);
       }
       if (obj._mutationEntry !== undefined) {
-        this._mutationEntry = override(obj._mutationEntry, this._mutationEntry);
+        this._mutationEntry = overrideStrings(
+          obj._mutationEntry,
+          this._mutationEntry,
+        );
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = override(obj._subscriptionEntry, this._subscriptionEntry);
+        this._subscriptionEntry = overrideStrings(
+          obj._subscriptionEntry,
+          this._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
-        this._queryEntry = override(obj._queryEntry, this._queryEntry);
+        this._queryEntry = overrideStrings(obj._queryEntry, this._queryEntry);
       }
       if (obj._viewerEntry !== undefined) {
-        this._viewerEntry = override(obj._viewerEntry, this._viewerEntry);
+        this._viewerEntry = overrideStrings(
+          obj._viewerEntry,
+          this._viewerEntry,
+        );
       }
       if (obj._hooks !== undefined) {
         this._hooks = override(obj._hooks, this._hooks);
@@ -337,19 +386,28 @@ export class GQLModule {
         this._subscription = override(this._subscription, obj._subscription);
       }
       if (obj._typeDef !== undefined) {
-        this._typeDef = override(this._typeDef, obj._typeDef);
+        this._typeDef = overrideStrings(this._typeDef, obj._typeDef);
       }
       if (obj._mutationEntry !== undefined) {
-        this._mutationEntry = override(this._mutationEntry, obj._mutationEntry);
+        this._mutationEntry = overrideStrings(
+          this._mutationEntry,
+          obj._mutationEntry,
+        );
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = override(this._subscriptionEntry, obj._subscriptionEntry);
+        this._subscriptionEntry = overrideStrings(
+          this._subscriptionEntry,
+          obj._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
-        this._queryEntry = override(this._queryEntry, obj._queryEntry);
+        this._queryEntry = overrideStrings(this._queryEntry, obj._queryEntry);
       }
       if (obj._viewerEntry !== undefined) {
-        this._viewerEntry = override(this._viewerEntry, obj._viewerEntry);
+        this._viewerEntry = overrideStrings(
+          this._viewerEntry,
+          obj._viewerEntry,
+        );
       }
       if (obj._hooks !== undefined) {
         this._hooks = override(this._hooks, obj._hooks);
