@@ -179,6 +179,8 @@ export abstract class GQLType<Resolver = any>
               return new Mutation(inp);
             } else if (typedef.name.value.match(/query/i)) {
               return new Query(inp);
+            } else {
+              return new Type(inp);
             }
           }
           default:

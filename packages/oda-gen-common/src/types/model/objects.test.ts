@@ -72,11 +72,12 @@ describe('GQLType', () => {
   });
   it('creates Type', () => {
     const item = GQLType.create(gql`
-      extend type RootMutation {
-        updateUser(id: String, payload: UserPayload): String
+      extend type Picture {
+        name: string
+        size: ImageSize
       }
     `);
-    expect(item.type).toBe('mutation');
-    expect(item.name).toBe('updateUser');
+    expect(item.type).toBe('type');
+    expect(item.name).toBe('Picture');
   });
 });
