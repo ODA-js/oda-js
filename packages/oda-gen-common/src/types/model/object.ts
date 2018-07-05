@@ -19,6 +19,16 @@ export type ResolverFunction = (
   info,
 ) => Promise<any> | any;
 
+export type ResolverHookFunction = (
+  target: ResolverFunction,
+) => ResolverFunction;
+
+export type ResolverHook = { [key: string]: ResolverHookFunction };
+
+function isResolverHook(inp): inp is ResolverHookFunction {
+  return inp instanceof Function && inp.length > 0;
+}
+
 export type UnionInterfaceResolverFunction = (
   owner,
   context,
@@ -458,6 +468,7 @@ function isValidSchemaInput(inp: any): inp is SchemaInput {
 export interface SchemaInput extends IGQLBaseInput<IResolvers> {
   name: string;
   items?: SchemaInit;
+  hooks?: ResolverHook[] | ResolverHook;
   rootQuery?: string;
   rootMutation?: string;
   rootSubscription?: string;
@@ -490,6 +501,10 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
     return this._items;
   }
 
+  protected _hooks: ResolverHook[] = [];
+  public get hooks(): ResolverHook[] {
+    return this._hooks;
+  }
   /**
    * initial resolvers
    */
@@ -575,7 +590,14 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
       this._name = args;
     }
     if (args && typeof args !== 'string') {
-      const { name, items, rootMutation, rootQuery, rootSubscription } = args;
+      const {
+        name,
+        items,
+        rootMutation,
+        rootQuery,
+        rootSubscription,
+        hooks,
+      } = args;
       if (name) {
         this._name = name;
       }
@@ -597,20 +619,16 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
           this.add(this.create(items));
         }
       }
+      if (hooks) {
+        if (Array.isArray(hooks)) {
+          this._hooks.push(...hooks);
+        } else if (isResolverHook(hooks)) {
+          this._hooks.push(hooks);
+        }
+      }
     }
   }
   public get valid(): boolean {
     return true;
-  }
-}
-
-export type ResolverHookFunction = (
-  target: ResolverFunction,
-) => ResolverFunction;
-
-export class ResolverHook extends GQLType implements Readonly<IGQLTypeDef> {
-  constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
-    super(args);
-    this._type = ModelType.hook;
   }
 }
