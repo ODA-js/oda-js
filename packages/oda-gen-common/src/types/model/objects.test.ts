@@ -122,6 +122,7 @@ describe('Schema', () => {
     expect(res.items.length).toBe(3);
   });
   it('created from one graphQl', () => {
+    debugger;
     const res = new Schema({
       name: 'Person',
       items: [
@@ -132,7 +133,7 @@ describe('Schema', () => {
           extend type RootMutation {
             deleteUser(id: String, payload: UserPayload): String
           }
-          type Picture {
+          type Image {
             name: string
             size: ImageSize
           }
@@ -148,10 +149,52 @@ describe('Schema', () => {
             viewer(user: String): Viewer
           }
         `,
+        new Schema({
+          name: 'Picture',
+          items: [
+            new Type({
+              schema: gql`
+                extend type Picture {
+                  name: string
+                  size: ImageSize
+                }
+              `,
+              resolver: {},
+            }),
+          ],
+          schema: gql`
+            extend type RootMutation {
+              createPicture: string
+            }
+          `,
+          resolver: {
+            RootMutation: {
+              createPicture: () => null,
+            },
+            Picture: () => null,
+          },
+        }),
       ],
+      resolver: {
+        RootMutation: {
+          login: () => null,
+          deleteUser: () => null,
+          updateUser: () => null,
+        },
+        RootQuery: {
+          viewer: () => null,
+        },
+        Viewer: () => ({
+          username: 'system',
+        }),
+      },
     });
     expect(res).not.toBeUndefined();
     expect(res.name).toBe('Person');
-    expect(res.items.length).toBe(6);
+    expect(res.items.length).toBe(7);
+    res.build();
+    debugger;
+    expect(res.isBuilt).toBeTruthy();
+    expect(res.resolvers).toMatchSnapshot();
   });
 });

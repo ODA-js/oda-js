@@ -1,4 +1,5 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
+import { merge } from 'lodash';
 
 import {
   parse,
@@ -9,7 +10,6 @@ import {
   TypeDefinitionNode,
   Kind,
   GraphQLScalarType,
-  ScalarTypeDefinitionNode,
 } from 'graphql';
 
 export type ResolverFunction = (
@@ -77,15 +77,21 @@ export type Resolver = {
   [entity: string]: ObjectResolver;
 };
 
-export function isIGQLInput(inp): inp is IGQLInput {
-  return inp && typeof inp === 'object' && inp.hasOwnProperty('schema');
+export function isIGQLInput(inp): inp is IGQLBaseInput {
+  return (
+    inp &&
+    typeof inp === 'object' &&
+    (inp.hasOwnProperty('schema') ||
+      inp.hasOwnProperty('type') ||
+      inp.hasOwnProperty('resolver'))
+  );
 }
 
 export function isValidInput(
   inp: any,
-): inp is IGQLInput | string | DocumentNode {
+): inp is IGQLBaseInput | IGQLInput | string | DocumentNode {
   if (isIGQLInput(inp)) {
-    return isValidSchema(inp.schema);
+    return isValidSchema(inp.schema) || inp.resolver || inp.type;
   } else if (typeof inp === 'object') {
     return isValidSchema(inp);
   } else if (typeof inp === 'string') {
@@ -242,7 +248,7 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   }
   protected _resolver?: Resolver;
   public get resolver(): null | IResolvers {
-    throw new Error('not implemented');
+    return this._resolver;
   }
   protected node: DefinitionNode[] | DefinitionNode;
   protected resolveName(schema: string | DocumentNode) {
@@ -252,6 +258,7 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   constructor(
     args: IGQLBaseInput<Resolver> | IGQLInput<Resolver> | string | DocumentNode,
   ) {
+    debugger;
     if (isValidInput(args)) {
       if (isValidSchema(args)) {
         this.attachSchema(args);
@@ -302,6 +309,9 @@ export class Fields<Resolver> extends GQLType<Resolver>
       [Kind.OBJECT_TYPE_DEFINITION](node) {
         rootName = node.name.value;
       },
+      [Kind.OBJECT_TYPE_EXTENSION](node) {
+        rootName = node.name.value;
+      },
     });
     return rootName;
   }
@@ -310,7 +320,9 @@ export class Fields<Resolver> extends GQLType<Resolver>
     this._rootName = this.resolveRootName(this._schemaAST);
   }
   public get resolver() {
-    return { [this._rootName]: this._resolver };
+    return this._rootName && this._resolver
+      ? { [this._rootName]: this._resolver }
+      : undefined;
   }
 }
 
@@ -352,7 +364,7 @@ export class Type extends GQLType<ResolverFunction | ObjectResolver>
     this._type = ModelType.type;
   }
   public get resolver() {
-    return { [this._name]: this._resolver };
+    return this.name ? { [this.name]: this._resolver } : undefined;
   }
 }
 
@@ -360,9 +372,6 @@ export class Input extends GQLType implements Readonly<IGQLTypeDef> {
   constructor(args: IGQLInput | string | DocumentNode) {
     super(args);
     this._type = ModelType.input;
-  }
-  public get resolver() {
-    return {};
   }
 }
 
@@ -437,14 +446,14 @@ export class Scalar extends GQLType<ScalarResolver>
     }
   }
   public get resolver() {
-    return { [this.name]: this._resolver };
+    return this.name ? { [this.name]: this._resolver } : undefined;
   }
 }
 
 export class Enum extends GQLType<IEnumResolver>
   implements Readonly<IGQLTypeDef> {
   public get resolver(): IResolvers {
-    return { [this.name]: this._resolver };
+    return this.name ? { [this.name]: this._resolver } : undefined;
   }
   constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
     super(args);
@@ -501,6 +510,7 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
     return this._items;
   }
 
+  protected _compiledHooks: ResolverHook[];
   protected _hooks: ResolverHook[] = [];
   public get hooks(): ResolverHook[] {
     return this._hooks;
@@ -508,6 +518,9 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
   /**
    * initial resolvers
    */
+  public get resolvers(): IResolvers {
+    return this._resolvers;
+  }
   protected _resolvers: IResolvers;
   /**
    * All entries for this schema
@@ -560,13 +573,29 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * check is schema build
    */
   protected _isBuilt: boolean = false;
+  public get isBuilt(): boolean {
+    return this._isBuilt;
+  }
 
   /**
    * build schema
    */
   public build() {
-    const schema = this._items.map(i => i.schema);
-    const resolvers = this._items.map(i => i.resolver);
+    this._schema = this._items.map(i => i.schema).join('\n');
+    debugger;
+    this._resolvers = merge(
+      {},
+      this._resolver,
+      ...this._items.map(i => i.resolver).filter(i => i),
+    );
+
+    this._compiledHooks = this._items
+      .filter(r => r.type === ModelType.schema)
+      .map(r => (r as Schema).hooks)
+      .reduce((res, curr) => {
+        res.push(...curr);
+        return res;
+      }, []);
     this._isBuilt = true;
   }
 

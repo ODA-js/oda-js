@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Schema created from one graphQl 1`] = `
+Object {
+  "Picture": [Function],
+  "RootMutation": Object {
+    "createPicture": [Function],
+    "deleteUser": [Function],
+    "login": [Function],
+    "updateUser": [Function],
+  },
+  "RootQuery": Object {
+    "viewer": [Function],
+  },
+  "Viewer": [Function],
+}
+`;
