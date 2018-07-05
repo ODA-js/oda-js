@@ -1,5 +1,5 @@
 import 'jest';
-import { Enum, Query, GQLType } from './object';
+import { Enum, Query, GQLType, Schema, Type } from './object';
 import gql from 'graphql-tag';
 import { debug } from 'util';
 
@@ -58,8 +58,8 @@ describe('GQLType', () => {
         user(id: String): String
       }
     `);
-    expect(item.type).toBe('query');
-    expect(item.name).toBe('user');
+    expect(item[0].type).toBe('query');
+    expect(item[0].name).toBe('user');
   });
   it('creates Mutation', () => {
     const item = GQLType.create(gql`
@@ -67,8 +67,8 @@ describe('GQLType', () => {
         updateUser(id: String, payload: UserPayload): String
       }
     `);
-    expect(item.type).toBe('mutation');
-    expect(item.name).toBe('updateUser');
+    expect(item[0].type).toBe('mutation');
+    expect(item[0].name).toBe('updateUser');
   });
   it('creates Type', () => {
     const item = GQLType.create(gql`
@@ -77,7 +77,81 @@ describe('GQLType', () => {
         size: ImageSize
       }
     `);
-    expect(item.type).toBe('type');
-    expect(item.name).toBe('Picture');
+    expect(item[0].type).toBe('type');
+    expect(item[0].name).toBe('Picture');
+  });
+});
+
+describe('Schema', () => {
+  it('created from string name', () => {
+    const res = new Schema('Person');
+    expect(res).not.toBeUndefined();
+    expect(res.name).toBe('Person');
+  });
+  it('created from string name', () => {
+    const res = new Schema({
+      name: 'Person',
+    });
+    expect(res).not.toBeUndefined();
+    expect(res.name).toBe('Person');
+  });
+  it('created from SchemaInput with items', () => {
+    const res = new Schema({
+      name: 'Person',
+      items: [
+        gql`
+          extend type RootMutation {
+            updateUser(id: String, payload: UserPayload): String
+          }
+        `,
+        `
+        extend type RootMutation {
+          deleteUser(id: String, payload: UserPayload): String
+        }
+      `,
+        new Type(gql`
+          extend type Picture {
+            name: string
+            size: ImageSize
+          }
+        `),
+      ],
+    });
+    expect(res).not.toBeUndefined();
+    expect(res.name).toBe('Person');
+    expect(res.items.length).toBe(3);
+  });
+  it('created from one graphQl', () => {
+    const res = new Schema({
+      name: 'Person',
+      items: [
+        gql`
+          extend type RootMutation {
+            updateUser(id: String, payload: UserPayload): String
+          }
+          extend type RootMutation {
+            deleteUser(id: String, payload: UserPayload): String
+          }
+          type Picture {
+            name: string
+            size: ImageSize
+          }
+
+          type Viewer {
+            username: string
+          }
+
+          type RootMutation {
+            login(user: String): String
+          }
+          type RootQuery {
+            viewer(user: String): Viewer
+          }
+        `,
+      ],
+    });
+    expect(res).not.toBeUndefined();
+    expect(res.name).toBe('Person');
+    expect(res.items.length).toBe(6);
   });
 });

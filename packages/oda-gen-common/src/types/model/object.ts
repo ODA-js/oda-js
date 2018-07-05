@@ -1,3 +1,5 @@
+import { IResolvers, IEnumResolver } from 'graphql-tools';
+
 import {
   parse,
   print,
@@ -6,6 +8,8 @@ import {
   visit,
   TypeDefinitionNode,
   Kind,
+  GraphQLScalarType,
+  ScalarTypeDefinitionNode,
 } from 'graphql';
 
 export type ResolverFunction = (
@@ -21,18 +25,15 @@ export type UnionInterfaceResolverFunction = (
   info,
 ) => Promise<any> | any;
 
-export type ScalarResolver = {
+export type ScalarResolver = ScalarResolverType | GraphQLScalarType;
+export type ScalarResolverType = {
   serialize: any;
   parseValue: any;
   parseLiteral: any;
 };
 
-export type EnumResolverInput = {
-  [key: string]: number | string;
-};
-
 export type EnumResolver = {
-  [key: string]: EnumResolverInput;
+  [key: string]: IEnumResolver;
 };
 
 export type FieldDefinition = {
@@ -45,12 +46,15 @@ export type FieldDefinition = {
 export enum ModelType {
   query = 'query',
   mutation = 'mutation',
+  subscription = 'subscription',
   type = 'type',
   input = 'input',
   union = 'union',
   interface = 'interface',
   scalar = 'scalar',
   enum = 'enum',
+  schema = 'schema',
+  hook = 'hook',
 }
 
 export type ModelTypes = keyof typeof ModelType;
@@ -101,7 +105,13 @@ export function isValidSchema(inp: any): inp is string | DocumentNode {
   }
 }
 
-export interface IGQLInput<Resolver = any> {
+export interface IGQLBaseInput<Resolver = any> {
+  type?: ModelTypes;
+  schema?: string | DocumentNode;
+  resolver?: Resolver;
+}
+
+export interface IGQLInput<Resolver = any> extends IGQLBaseInput<Resolver> {
   type?: ModelTypes;
   schema: string | DocumentNode;
   resolver?: Resolver;
@@ -115,16 +125,15 @@ export interface IGQLType {
   isExtend: boolean;
 }
 
-export interface IGQLTypeDef<Resolver = any> extends IGQLType {
+export interface IGQLTypeDef extends IGQLType {
   type: ModelTypes;
-  resolver?: Resolver;
+  resolver?: IResolvers;
 }
 
-export abstract class GQLType<Resolver = any>
-  implements Readonly<IGQLTypeDef<Resolver>> {
-  static create(inp: IGQLInput | string | DocumentNode) {
+export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
+  static create(inp: IGQLInput | string | DocumentNode): GQLType | GQLType[] {
     if (isValidInput(inp)) {
-      let schema, type;
+      let schema, type: ModelTypes;
       if (isIGQLInput(inp)) {
         schema = inp.schema;
         type = inp.type;
@@ -135,58 +144,68 @@ export abstract class GQLType<Resolver = any>
       }
 
       if (type) {
-        switch (type) {
-          case 'enum':
-            return new Enum(inp);
-          case 'input':
-            return new Input(inp);
-          case 'interface':
-            return new Interface(inp);
-          case 'scalar':
-            return new Scalar(inp);
-          case 'union':
-            return new Union(inp);
-          case 'type':
-            return new Type(inp);
-          case 'query':
-            return new Query(inp);
-          case 'mutation':
-            return new Mutation(inp);
-          default:
-            throw new Error('unknown type');
-        }
-      } else if (schema) {
-        const typedef = schema.definitions[0];
-        switch (typedef.kind) {
-          case Kind.ENUM_TYPE_DEFINITION:
-          case Kind.ENUM_TYPE_EXTENSION:
-            return new Enum(inp);
-          case Kind.INPUT_OBJECT_TYPE_DEFINITION:
-          case Kind.INPUT_OBJECT_TYPE_EXTENSION:
-            return new Input(inp);
-          case Kind.INTERFACE_TYPE_DEFINITION:
-          case Kind.INTERFACE_TYPE_EXTENSION:
-            return new Interface(inp);
-          case Kind.SCALAR_TYPE_DEFINITION:
-          case Kind.SCALAR_TYPE_EXTENSION:
-            return new Scalar(inp);
-          case Kind.UNION_TYPE_DEFINITION:
-          case Kind.UNION_TYPE_EXTENSION:
-            return new Union(inp);
-          case Kind.OBJECT_TYPE_DEFINITION:
-          case Kind.OBJECT_TYPE_EXTENSION: {
-            if (typedef.name.value.match(/mutation/i)) {
-              return new Mutation(inp);
-            } else if (typedef.name.value.match(/query/i)) {
-              return new Query(inp);
-            } else {
+        if (isValidInput(inp)) {
+          switch (type) {
+            case 'enum':
+              return new Enum(inp);
+            case 'input':
+              return new Input(inp);
+            case 'interface':
+              return new Interface(inp);
+            case 'scalar':
+              return new Scalar(inp);
+            case 'union':
+              return new Union(inp);
+            case 'type':
               return new Type(inp);
-            }
+            case 'query':
+              return new Query(inp);
+            case 'mutation':
+              return new Mutation(inp);
+            case 'subscription':
+              return new Subscription(inp);
+            case 'schema':
+            default:
+              throw new Error('unknown type');
           }
-          default:
-            throw new Error('unknown type');
         }
+      } else if (schema && isValidInput(inp)) {
+        return schema.definitions.map(typedef => {
+          switch (typedef.kind) {
+            case Kind.ENUM_TYPE_DEFINITION:
+            case Kind.ENUM_TYPE_EXTENSION:
+              return new Enum(inp);
+            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
+              return new Input(inp);
+            case Kind.INTERFACE_TYPE_DEFINITION:
+            case Kind.INTERFACE_TYPE_EXTENSION:
+              return new Interface(inp);
+            case Kind.SCALAR_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_EXTENSION:
+              return new Scalar(inp);
+            case Kind.UNION_TYPE_DEFINITION:
+            case Kind.UNION_TYPE_EXTENSION:
+              return new Union(inp);
+            case Kind.OBJECT_TYPE_DEFINITION:
+            case Kind.OBJECT_TYPE_EXTENSION: {
+              if (typedef.name.value.match(/mutation/i)) {
+                return new Mutation(inp);
+              } else if (typedef.name.value.match(/query/i)) {
+                return new Query(inp);
+              } else if (typedef.name.value.match(/subscription/i)) {
+                return new Subscription(inp);
+              } else {
+                return new Type(inp);
+              }
+            }
+            default:
+              throw new Error('unknown type');
+          }
+        });
       }
+    } else if (isValidSchemaInput(inp)) {
+      return new Schema(inp);
     } else {
       throw new Error('not valid input');
     }
@@ -212,15 +231,17 @@ export abstract class GQLType<Resolver = any>
     return this._schemaAST;
   }
   protected _resolver?: Resolver;
-  public get resolver(): null | Resolver {
-    return this._resolver;
+  public get resolver(): null | IResolvers {
+    throw new Error('not implemented');
   }
   protected node: DefinitionNode[] | DefinitionNode;
   protected resolveName(schema: string | DocumentNode) {
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
     return (parsed.definitions[0] as TypeDefinitionNode).name.value;
   }
-  constructor(args: IGQLInput<Resolver> | string | DocumentNode) {
+  constructor(
+    args: IGQLBaseInput<Resolver> | IGQLInput<Resolver> | string | DocumentNode,
+  ) {
     if (isValidInput(args)) {
       if (isValidSchema(args)) {
         this.attachSchema(args);
@@ -252,9 +273,9 @@ export abstract class GQLType<Resolver = any>
 }
 
 export class Fields<Resolver> extends GQLType<Resolver>
-  implements Readonly<IGQLTypeDef<Resolver>> {
+  implements Readonly<IGQLTypeDef> {
+  protected _rootName: string;
   protected resolveName(schema: string | DocumentNode) {
-    debugger;
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
     let name;
     visit(parsed, {
@@ -264,10 +285,27 @@ export class Fields<Resolver> extends GQLType<Resolver>
     });
     return name;
   }
+  protected resolveRootName(schema: string | DocumentNode) {
+    const parsed = typeof schema === 'string' ? parse(schema) : schema;
+    let rootName;
+    visit(parsed, {
+      [Kind.OBJECT_TYPE_DEFINITION](node) {
+        rootName = node.name.value;
+      },
+    });
+    return rootName;
+  }
+  constructor(args) {
+    super(args);
+    this._rootName = this.resolveRootName(this._schemaAST);
+  }
+  public get resolver() {
+    return { [this._rootName]: this._resolver };
+  }
 }
 
 export class Query extends Fields<ResolverFunction>
-  implements Readonly<IGQLTypeDef<ResolverFunction>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(args: IGQLInput<ResolverFunction> | string | DocumentNode) {
     super(args);
     this._type = ModelType.query;
@@ -275,66 +313,304 @@ export class Query extends Fields<ResolverFunction>
 }
 
 export class Mutation extends Fields<ResolverFunction>
-  implements Readonly<IGQLTypeDef<ResolverFunction>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(args: IGQLInput<ResolverFunction> | string | DocumentNode) {
     super(args);
     this._type = ModelType.mutation;
   }
 }
 
+export type SubscriptionResolver = {
+  subscribe: ResolverFunction;
+  resolve?: (payload) => any;
+};
+
+export class Subscription extends Fields<SubscriptionResolver>
+  implements Readonly<IGQLTypeDef> {
+  constructor(args: IGQLInput<SubscriptionResolver> | string | DocumentNode) {
+    super(args);
+    this._type = ModelType.subscription;
+  }
+}
+
 export class Type extends GQLType<ResolverFunction | ObjectResolver>
-  implements Readonly<IGQLTypeDef<ResolverFunction | ObjectResolver>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(
     args: IGQLInput<ResolverFunction | ObjectResolver> | string | DocumentNode,
   ) {
     super(args);
     this._type = ModelType.type;
   }
+  public get resolver() {
+    return { [this._name]: this._resolver };
+  }
 }
 
-export class Input extends GQLType<ResolverFunction>
-  implements Readonly<IGQLTypeDef<ResolverFunction>> {
-  constructor(args: IGQLInput<ResolverFunction> | string | DocumentNode) {
+export class Input extends GQLType implements Readonly<IGQLTypeDef> {
+  constructor(args: IGQLInput | string | DocumentNode) {
     super(args);
     this._type = ModelType.input;
+  }
+  public get resolver() {
+    return {};
   }
 }
 
 export class Union extends GQLType<UnionInterfaceResolverFunction>
-  implements Readonly<IGQLTypeDef<UnionInterfaceResolverFunction>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(
     args: IGQLInput<UnionInterfaceResolverFunction> | string | DocumentNode,
   ) {
     super(args);
     this._type = ModelType.union;
   }
+  public get resolver() {
+    return this._resolver
+      ? {
+          [this.name]: {
+            __resolveType: this._resolver,
+          },
+        }
+      : {
+          [this.name]: {
+            __resolveType: () => null,
+          },
+        };
+  }
 }
 
 export class Interface extends GQLType<UnionInterfaceResolverFunction>
-  implements Readonly<IGQLTypeDef<UnionInterfaceResolverFunction>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(
     args: IGQLInput<UnionInterfaceResolverFunction> | string | DocumentNode,
   ) {
     super(args);
     this._type = ModelType.interface;
   }
+  public get resolver() {
+    return this._resolver
+      ? {
+          [this.name]: {
+            __resolveType: this._resolver,
+          },
+        }
+      : {
+          [this.name]: {
+            __resolveType: () => null,
+          },
+        };
+  }
+}
+
+function isCustomScalar(inp): inp is ScalarResolverType {
+  return (
+    typeof inp === 'object' &&
+    (inp.hasOwnProperty('serialize') ||
+      inp.hasOwnProperty('parseValue') ||
+      inp.hasOwnProperty('parseLiteral'))
+  );
 }
 
 export class Scalar extends GQLType<ScalarResolver>
-  implements Readonly<IGQLTypeDef<ScalarResolver>> {
+  implements Readonly<IGQLTypeDef> {
   constructor(args: IGQLInput<ScalarResolver> | string | DocumentNode) {
     super(args);
     this._type = ModelType.scalar;
+    if (isCustomScalar(args)) {
+      this._resolver = new GraphQLScalarType({
+        name: this.name,
+        serialize: args.serialize,
+        parseLiteral: args.parseLiteral,
+        parseValue: args.parseLiteral,
+        astNode: this._schemaAST as any,
+      });
+    }
+  }
+  public get resolver() {
+    return { [this.name]: this._resolver };
   }
 }
 
-export class Enum extends GQLType
-  implements Readonly<IGQLTypeDef<EnumResolver>> {
-  public get resolver(): EnumResolver {
+export class Enum extends GQLType<IEnumResolver>
+  implements Readonly<IGQLTypeDef> {
+  public get resolver(): IResolvers {
     return { [this.name]: this._resolver };
   }
-  constructor(args: IGQLInput<EnumResolverInput> | string | DocumentNode) {
+  constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
     super(args);
     this._type = ModelType.enum;
+  }
+}
+
+type PossibleInitType = GQLType | IGQLInput | string | DocumentNode;
+
+export type SchemaInit = void | PossibleInitType | PossibleInitType[];
+
+function isValidSchemaInput(inp: any): inp is SchemaInput {
+  if (typeof inp === 'string') {
+    return true;
+  }
+  if (typeof inp === 'object' && inp.hasOwnProperty('name')) {
+    return true;
+  }
+}
+
+export interface SchemaInput extends IGQLBaseInput<IResolvers> {
+  name: string;
+  items?: SchemaInit;
+  rootQuery?: string;
+  rootMutation?: string;
+  rootSubscription?: string;
+}
+
+export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
+  /**
+   * store Query entries after build
+   */
+  public get queries(): Query[] {
+    return this._queries;
+  }
+  /**
+   * store Mutation entries after build
+   */
+  public get mutations(): Mutation[] {
+    return this._mutations;
+  }
+
+  /**
+   * store Subscription entries after build
+   */
+  public get subscriptions(): Subscription[] {
+    return this._subscriptions;
+  }
+  /**
+   * store all Items
+   */
+  public get items(): GQLType[] {
+    return this._items;
+  }
+
+  /**
+   * initial resolvers
+   */
+  protected _resolvers: IResolvers;
+  /**
+   * All entries for this schema
+   * note: available after schema is built
+   */
+  protected _items: GQLType[] = [];
+  /**
+   * All queries for schema
+   * note: available after schema is built
+   */
+  protected _queries: Query[];
+  /**
+   * All mutations for schema
+   * note: available after schema is built
+   */
+  protected _mutations: Mutation[];
+  /**
+   * All subscriptions for schema.
+   * note: available after schema is built
+   */
+  protected _subscriptions: Subscription[];
+  /**
+   * create item
+   * @param inp the item must be
+   */
+  public create(inp: PossibleInitType): GQLType | GQLType[] {
+    if (isValidInput(inp)) {
+      return GQLType.create(inp);
+    } else {
+      return inp;
+    }
+  }
+  /**
+   * add existing item to schema
+   * @param inp
+   */
+  public add(inp: GQLType | GQLType[]) {
+    if (Array.isArray(inp)) {
+      return inp.map(i => {
+        return this.add(i);
+      });
+    } else {
+      if (!~this._items.indexOf(inp)) {
+        this._items.push(inp);
+        return inp;
+      }
+    }
+  }
+  /**
+   * check is schema build
+   */
+  protected _isBuilt: boolean = false;
+
+  /**
+   * build schema
+   */
+  public build() {
+    const schema = this._items.map(i => i.schema);
+    const resolvers = this._items.map(i => i.resolver);
+    this._isBuilt = true;
+  }
+
+  public get schema(): string {
+    return this._isBuilt ? '' : '';
+  }
+
+  protected _rootQuery?: string = 'RootQuery';
+  protected _rootMutation?: string = 'RootMutation';
+  protected _rootSubscription?: string = 'RootSubscription';
+  /**
+   * override inherited
+   */
+  protected resolveName() {
+    return '';
+  }
+  constructor(args: SchemaInput | string) {
+    super(args);
+    this._type = ModelType.schema;
+    if (args && typeof args === 'string') {
+      this._name = args;
+    }
+    if (args && typeof args !== 'string') {
+      const { name, items, rootMutation, rootQuery, rootSubscription } = args;
+      if (name) {
+        this._name = name;
+      }
+      if (rootMutation) {
+        this._rootMutation = rootMutation;
+      }
+      if (rootQuery) {
+        this._rootQuery = rootQuery;
+      }
+      if (rootSubscription) {
+        this._rootSubscription = rootSubscription;
+      }
+      if (items) {
+        if (Array.isArray(items)) {
+          items.forEach(item => {
+            this.add(this.create(item));
+          });
+        } else {
+          this.add(this.create(items));
+        }
+      }
+    }
+  }
+  public get valid(): boolean {
+    return true;
+  }
+}
+
+export type ResolverHookFunction = (
+  target: ResolverFunction,
+) => ResolverFunction;
+
+export class ResolverHook extends GQLType implements Readonly<IGQLTypeDef> {
+  constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
+    super(args);
+    this._type = ModelType.hook;
   }
 }
