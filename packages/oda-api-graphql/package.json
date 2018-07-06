@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "1.0.0-1",
+  "version": "1.0.0-2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "inflected": "^2.0.4",
     "isomorphic-fetch": "^2.2.1",
     "iterall": "^1.2.2",
-    "oda-isomorfic": "^1.0.0-1"
+    "oda-isomorfic": "^1.0.0-2"
   },
   "peerDependencies": {
     "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
