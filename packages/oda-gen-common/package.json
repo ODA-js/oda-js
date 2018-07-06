@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "./compile.sh",
-    "test": "jest"
+    "test": "jest",
+    "test-inspect": "node --inspect-brk ./node_modules/.bin/jest"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -16,10 +17,13 @@
     "immutable": "^4.0.0-rc.9",
     "invariant": "^2.2.2",
     "lodash": "^4.17.5",
+    "merge-graphql-schemas": "^1.5.2",
     "warning": "^3.0.0"
   },
   "peerDependencies": {
-    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
+    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0",
+    "graphql-tag": "^2.9.2",
+    "graphql-tools": "^3.0.4"
   },
   "devDependencies": {
     "@types/express": "^4.11.1",

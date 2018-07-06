@@ -1,22 +1,24 @@
+import 'jest';
 import { GQLModule } from './empty';
 
-describe("override by name", () => {
-
+describe('override by name', () => {
   class UserHooks extends GQLModule {
     protected _name = 'UserHooks';
-    protected _hooks = [{
-      'RootMutation.createUser': 1,
-      'RootMutation.updateUser': 1,
-    }]
+    protected _hooks = [
+      {
+        'RootMutation.createUser': 1,
+        'RootMutation.updateUser': 1,
+      },
+    ];
   }
 
   class UserOriginal extends GQLModule {
     protected _name = 'User';
     protected _queryEntry = {
-      'queryEntry': [`original`],
+      queryEntry: [`original`],
     };
     protected _viewerEntry = {
-      'viewerEntry': [`original`],
+      viewerEntry: [`original`],
     };
     protected _resolver = {
       User: {
@@ -24,17 +26,19 @@ describe("override by name", () => {
         isAdmin: true,
         toBeRemoved: true,
       },
-    }
-    protected _hooks = [{
-      'RootMutation.createUser': false,
-      'RootMutation.updateUser': true,
-    }]
+    };
+    protected _hooks = [
+      {
+        'RootMutation.createUser': false,
+        'RootMutation.updateUser': true,
+      },
+    ];
   }
 
   class User extends GQLModule {
     protected _name = 'User';
     protected _queryEntry = {
-      'queryEntry': [`override`],
+      queryEntry: [`override`],
     };
     protected _viewerEntry = null;
     protected _resolver = {
@@ -43,34 +47,28 @@ describe("override by name", () => {
         isSystem: true,
         toBeRemoved: null,
       },
-    }
-    protected _hooks = [{
-      'RootMutation.createUser': true,
-      'RootMutation.updateUser': true,
-    }]
+    };
+    protected _hooks = [
+      {
+        'RootMutation.createUser': true,
+        'RootMutation.updateUser': true,
+      },
+    ];
   }
 
   class FirstPackage extends GQLModule {
     protected _name = 'First';
-    protected _composite = [
-      new UserHooks({}),
-      new UserOriginal({}),
-    ];
+    protected _composite = [new UserHooks({}), new UserOriginal({})];
   }
 
   class SecondPackage extends GQLModule {
     protected _name = 'Second';
-    protected _composite = [
-      new User({}),
-    ];
+    protected _composite = [new User({})];
   }
 
   class MainSchema extends GQLModule {
     protected _name = 'Main';
-    protected _composite = [
-      new FirstPackage({}),
-      new SecondPackage({}),
-    ];
+    protected _composite = [new FirstPackage({}), new SecondPackage({})];
   }
 
   it('override objects', () => {
@@ -87,7 +85,6 @@ describe("override by name", () => {
     expect(schema.queryEntry).not.toBeUndefined();
     expect(schema).toMatchSnapshot();
     expect(schema.hooks.length).toBe(2);
-
   });
 
   it('override strings', () => {
@@ -102,28 +99,30 @@ describe("override by name", () => {
     const schema = new MainSchema({});
     schema.build();
     expect(schema.resolver.User.toBeRemoved).toBeNull();
-  })
+  });
 
   it('remove any entiy if needed', () => {
     const schema = new MainSchema({});
     schema.build();
     expect(schema.viewerEntry.length).toBe(0);
-  })
+  });
 });
 
 describe('override in module', () => {
   class UserHooks extends GQLModule {
     protected _name = 'UserHooks';
-    protected _hooks = [{
-      'RootMutation.createUser': 1,
-      'RootMutation.updateUser': 1,
-    }]
+    protected _hooks = [
+      {
+        'RootMutation.createUser': 1,
+        'RootMutation.updateUser': 1,
+      },
+    ];
   }
 
   class UserOriginal extends GQLModule {
     protected _name = 'User';
     protected _queryEntry = {
-      'queryEntry': [`original`],
+      queryEntry: [`original`],
     };
     protected _resolver = {
       User: {
@@ -131,23 +130,21 @@ describe('override in module', () => {
         isAdmin: true,
         toBeRemoved: true,
       },
-    }
-    protected _hooks = [{
-      'RootMutation.createUser': true,
-      'RootMutation.updateUser': true,
-    }]
+    };
+    protected _hooks = [
+      {
+        'RootMutation.createUser': true,
+        'RootMutation.updateUser': true,
+      },
+    ];
   }
 
   class User extends GQLModule {
-    protected _extend = [
-      new UserOriginal({}),
-    ];
-    protected _composite = [
-      new UserHooks({}),
-    ];
+    protected _extend = [new UserOriginal({})];
+    protected _composite = [new UserHooks({})];
     protected _name = 'User';
     protected _queryEntry = {
-      'queryEntry': [`override`],
+      queryEntry: [`override`],
     };
     protected _resolver = {
       User: {
@@ -156,10 +153,12 @@ describe('override in module', () => {
         toBeRemoved: null,
       },
     };
-    protected _hooks = [{
-      'RootMutation.createUser': false,
-      'RootMutation.updateUser': true,
-    }]
+    protected _hooks = [
+      {
+        'RootMutation.createUser': false,
+        'RootMutation.updateUser': true,
+      },
+    ];
   }
 
   it('override objects', () => {
@@ -176,7 +175,7 @@ describe('override in module', () => {
     expect(schema.queryEntry).not.toBeNull();
     expect(schema.hooks.length).toBe(2);
     expect(schema).toMatchSnapshot();
-  })
+  });
 
   it('override strings', () => {
     const schema = new User({});
@@ -191,5 +190,5 @@ describe('override in module', () => {
     schema.build();
     // expect(schema.resolver.User).toBeNull();
     expect(schema.resolver.User.toBeRemoved).toBeNull();
-  })
+  });
 });

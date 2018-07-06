@@ -1,5 +1,6 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
 import { merge } from 'lodash';
+import { mergeResolvers, mergeTypes } from 'merge-graphql-schemas';
 
 import {
   parse,
@@ -258,7 +259,6 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   constructor(
     args: IGQLBaseInput<Resolver> | IGQLInput<Resolver> | string | DocumentNode,
   ) {
-    debugger;
     if (isValidInput(args)) {
       if (isValidSchema(args)) {
         this.attachSchema(args);
@@ -357,11 +357,22 @@ export class Subscription extends Fields<SubscriptionResolver>
 
 export class Type extends GQLType<ResolverFunction | ObjectResolver>
   implements Readonly<IGQLTypeDef> {
+  public resolveExtend(schema: string | DocumentNode) {
+    const parsed = typeof schema === 'string' ? parse(schema) : schema;
+    let extend = false;
+    visit(parsed, {
+      [Kind.OBJECT_TYPE_EXTENSION](node) {
+        extend = true;
+      },
+    });
+    return extend;
+  }
   constructor(
     args: IGQLInput<ResolverFunction | ObjectResolver> | string | DocumentNode,
   ) {
     super(args);
     this._type = ModelType.type;
+    this._isExtend = this.resolveExtend(this._schemaAST);
   }
   public get resolver() {
     return this.name ? { [this.name]: this._resolver } : undefined;
@@ -581,12 +592,25 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * build schema
    */
   public build() {
-    this._schema = this._items.map(i => i.schema).join('\n');
-    debugger;
+    this._items
+      .filter(i => i instanceof Schema)
+      .forEach(i => (i as Schema).build());
+    this._schema = [...this._items.map(i => i.schema), this._initialSchema]
+      .filter(i => i)
+      .join('\n');
+    this._schemaAST = parse(this._schema);
+
     this._resolvers = merge(
       {},
       this._resolver,
-      ...this._items.map(i => i.resolver).filter(i => i),
+      ...this._items
+        .filter(i => !(i instanceof Schema))
+        .map(i => i.resolver)
+        .filter(i => i),
+      ...this._items
+        .filter(i => i instanceof Schema)
+        .map(i => (i as Schema).resolvers)
+        .filter(i => i),
     );
 
     this._compiledHooks = this._items
@@ -599,8 +623,9 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
     this._isBuilt = true;
   }
 
+  protected _initialSchema: string;
   public get schema(): string {
-    return this._isBuilt ? '' : '';
+    return this._isBuilt ? this._schema : '';
   }
 
   protected _rootQuery?: string = 'RootQuery';
@@ -626,7 +651,11 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
         rootQuery,
         rootSubscription,
         hooks,
+        schema,
       } = args;
+      if (schema) {
+        this._initialSchema = this._schema;
+      }
       if (name) {
         this._name = name;
       }

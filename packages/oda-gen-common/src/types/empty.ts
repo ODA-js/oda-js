@@ -1,3 +1,4 @@
+import { IResolvers } from 'graphql-tools';
 import deepMerge from './../lib/deepMerge';
 import override from './../lib/fillDefaults';
 import * as jsonUtils from '../lib';
@@ -7,26 +8,39 @@ import { OrderedMap } from 'immutable';
 import { resolve } from 'dns';
 // let padding = 0;
 
-const hashToString = (entry) => entry ? Object.keys(entry).reduce((result, curr) => {
-  if (curr) {
-    if (Array.isArray(entry[curr])) {
-      result.push(...entry[curr]);
-    } else {
-      result.push(...hashToString(entry[curr]));
-    }
-  }
-  return result;
-}, []) : [];
+const hashToString = entry =>
+  entry
+    ? Object.keys(entry).reduce((result, curr) => {
+        if (curr) {
+          if (Array.isArray(entry[curr])) {
+            result.push(...entry[curr]);
+          } else if (typeof entry[curr] == 'string') {
+            result.push(entry[curr]);
+          } else {
+            result.push(...hashToString(entry[curr]));
+          }
+        }
+        return result;
+      }, [])
+    : [];
 
 export class GQLModule {
   public get name(): string {
     if (!this._name && !(this.constructor && this.constructor.name)) {
-      invariant(this._name, 'module has no name neither _name nor constructor.name to be initialized');
+      invariant(
+        this._name,
+        'module has no name neither _name nor constructor.name to be initialized',
+      );
       //TODO: remove asap
       console.trace();
     }
     if (!this._name && this.constructor && this.constructor.name) {
-      warning(this._name, `module ${this.constructor.name} has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`);
+      warning(
+        this._name,
+        `module ${
+          this.constructor.name
+        } has no name to be initialized, only constructor.name, it may drive to schema build fail in minified code`,
+      );
       //TODO: remove asap
       console.trace();
     }
@@ -34,37 +48,37 @@ export class GQLModule {
   }
   public get resolver(): { [key: string]: any } {
     return this._resolver || {};
-  };
+  }
   public get query(): { [key: string]: any } {
     return this._query || {};
-  };
+  }
   public get viewer(): { [key: string]: any } {
     return this._viewer || {};
-  };
+  }
   public get mutation(): { [key: string]: any } {
     return this._mutation || {};
-  };
+  }
   public get subscription(): { [key: string]: any } {
     return this._subscription || {};
   }
   public get typeDef(): string[] {
     return hashToString(this._typeDef);
-  };
+  }
   public get mutationEntry(): string[] {
     return hashToString(this._mutationEntry);
-  };
+  }
   public get subscriptionEntry(): string[] {
     return hashToString(this._subscriptionEntry);
-  };
+  }
   public get queryEntry(): string[] {
     return hashToString(this._queryEntry);
-  };
+  }
   public get viewerEntry(): string[] {
     return hashToString(this._viewerEntry);
-  };
+  }
   public get hooks(): { [key: string]: any }[] {
     return this._hooks || [];
-  };
+  }
 
   protected _name: string;
   protected _resolver: { [key: string]: any };
@@ -87,7 +101,7 @@ export class GQLModule {
   // собирать объекты по порядку, а затем
   // билдить.... их...
 
-  public applyHooks(obj) {
+  public applyHooks(obj: IResolvers): IResolvers {
     let modelHooks = this.hooks;
     for (let i = 0, len = modelHooks.length; i < len; i++) {
       let hookList = Object.keys(modelHooks[i]);
@@ -97,7 +111,7 @@ export class GQLModule {
       }
     }
     return obj;
-  };
+  }
 
   constructor({
     name,
@@ -115,21 +129,21 @@ export class GQLModule {
     extend,
     composite,
   }: {
-      name?: string,
-      resolver?: { [key: string]: any };
-      query?: { [key: string]: any };
-      viewer?: { [key: string]: any };
-      mutation?: { [key: string]: any };
-      subscription?: { [key: string]: any };
-      typeDef?: { [key: string]: string[] };
-      mutationEntry?: { [key: string]: string[] };
-      subscriptionEntry?: { [key: string]: string[] };
-      queryEntry?: { [key: string]: string[] };
-      viewerEntry?: { [key: string]: string[] };
-      hooks?: { [key: string]: any }[];
-      extend?: GQLModule[],
-      composite?: GQLModule[],
-    }) {
+    name?: string;
+    resolver?: { [key: string]: any };
+    query?: { [key: string]: any };
+    viewer?: { [key: string]: any };
+    mutation?: { [key: string]: any };
+    subscription?: { [key: string]: any };
+    typeDef?: { [key: string]: string[] };
+    mutationEntry?: { [key: string]: string[] };
+    subscriptionEntry?: { [key: string]: string[] };
+    queryEntry?: { [key: string]: string[] };
+    viewerEntry?: { [key: string]: string[] };
+    hooks?: { [key: string]: any }[];
+    extend?: GQLModule[];
+    composite?: GQLModule[];
+  }) {
     if (name !== undefined) {
       this._name = name;
     }
@@ -255,10 +269,16 @@ export class GQLModule {
         this._typeDef = deepMerge(this._typeDef, obj._typeDef);
       }
       if (obj._mutationEntry !== undefined) {
-        this._mutationEntry = deepMerge(this._mutationEntry, obj._mutationEntry);
+        this._mutationEntry = deepMerge(
+          this._mutationEntry,
+          obj._mutationEntry,
+        );
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = deepMerge(this._subscriptionEntry, obj._subscriptionEntry);
+        this._subscriptionEntry = deepMerge(
+          this._subscriptionEntry,
+          obj._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
         this._queryEntry = deepMerge(this._queryEntry, obj._queryEntry);
@@ -301,7 +321,10 @@ export class GQLModule {
         this._mutationEntry = override(obj._mutationEntry, this._mutationEntry);
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = override(obj._subscriptionEntry, this._subscriptionEntry);
+        this._subscriptionEntry = override(
+          obj._subscriptionEntry,
+          this._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
         this._queryEntry = override(obj._queryEntry, this._queryEntry);
@@ -343,7 +366,10 @@ export class GQLModule {
         this._mutationEntry = override(this._mutationEntry, obj._mutationEntry);
       }
       if (obj._subscriptionEntry !== undefined) {
-        this._subscriptionEntry = override(this._subscriptionEntry, obj._subscriptionEntry);
+        this._subscriptionEntry = override(
+          this._subscriptionEntry,
+          obj._subscriptionEntry,
+        );
       }
       if (obj._queryEntry !== undefined) {
         this._queryEntry = override(this._queryEntry, obj._queryEntry);

@@ -71,6 +71,7 @@ describe('GQLType', () => {
     expect(item[0].name).toBe('updateUser');
   });
   it('creates Type', () => {
+    debugger;
     const item = GQLType.create(gql`
       extend type Picture {
         name: string
@@ -79,6 +80,7 @@ describe('GQLType', () => {
     `);
     expect(item[0].type).toBe('type');
     expect(item[0].name).toBe('Picture');
+    expect(item[0].isExtend).toBeTruthy();
   });
 });
 
@@ -142,10 +144,10 @@ describe('Schema', () => {
             username: string
           }
 
-          type RootMutation {
+          extend type RootMutation {
             login(user: String): String
           }
-          type RootQuery {
+          extend type RootQuery {
             viewer(user: String): Viewer
           }
         `,
@@ -154,24 +156,31 @@ describe('Schema', () => {
           items: [
             new Type({
               schema: gql`
-                extend type Picture {
+                type Picture {
                   name: string
                   size: ImageSize
                 }
               `,
-              resolver: {},
+              resolver: {
+                size: () => null,
+              },
             }),
           ],
           schema: gql`
             extend type RootMutation {
               createPicture: string
             }
+            extend type Picture {
+              isJPG: ImageSize
+            }
           `,
           resolver: {
             RootMutation: {
               createPicture: () => null,
             },
-            Picture: () => null,
+            Picture: {
+              isJPG: () => true,
+            },
           },
         }),
       ],
@@ -193,8 +202,9 @@ describe('Schema', () => {
     expect(res.name).toBe('Person');
     expect(res.items.length).toBe(7);
     res.build();
-    debugger;
     expect(res.isBuilt).toBeTruthy();
     expect(res.resolvers).toMatchSnapshot();
+    expect(res.schema).toMatchSnapshot();
+    expect(res.schemaAST).toMatchSnapshot();
   });
 });
