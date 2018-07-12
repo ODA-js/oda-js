@@ -168,7 +168,11 @@ export class EntityBase extends ModelBase implements IEntityBase {
   protected mergeIndex(indexes: any, index: string, entry: any) {
     if (indexes.hasOwnProperty(index)) {
       indexes[index] = deepMerge(indexes[index], entry);
-      indexes[index].name = indexes[index].name[0];
+      if (Array.isArray(indexes[index].name)) {
+        indexes[index].name = indexes[index].name[0];
+      } else {
+        indexes[index].name = indexes[index].name;
+      }
     } else {
       indexes[index] = entry;
     }
@@ -220,7 +224,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
         if (fields.has(field.name)) {
           throw new Error(
             `the same field ${field.name} is already exists in ${
-              obj.name
+            obj.name
             } entry`,
           );
         }
