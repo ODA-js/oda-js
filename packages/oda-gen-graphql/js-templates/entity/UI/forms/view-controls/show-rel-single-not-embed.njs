@@ -10,6 +10,7 @@
   reference="#{entity.role}/#{f.ref.entity}"
   linkType="show"
 >
+<#- slot('import-from-react-admin-show',`${f.ref.listLabel.type}Field`) #>
   <#{f.ref.listLabel.type}Field 
     source="#{f.ref.listLabel.source}"
   />

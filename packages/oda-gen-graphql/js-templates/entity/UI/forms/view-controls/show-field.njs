@@ -4,7 +4,7 @@
   const {entity, f} = ctx;
 -#>
 <#-
-const type = f.type=="Number" ? "Text" : f.type + 'Field';
+const type = (f.type=="Number" ? "Text" : f.type) + 'Field';
 slot('import-from-react-admin-show',`${type}`);
 -#>
 <#{type} 
