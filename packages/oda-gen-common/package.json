@@ -1,6 +1,6 @@
 {
   "name": "oda-gen-common",
-  "version": "1.0.0-4",
+  "version": "1.0.0-5",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
