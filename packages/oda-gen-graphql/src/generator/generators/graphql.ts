@@ -2,12 +2,25 @@ import { lib } from 'oda-gen-common';
 import { Factory } from 'fte.js';
 import * as template from '../../graphql-backend-template';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import { writeFile } from './writeFile';
 
 const { get, deepMerge } = lib;
 
-export default function $generateGraphql(pkg, raw: Factory, rootDir: string, role: string, allow, typeMapper: { [key: string]: (string) => string }, defaultAdapter: 'mongoose' | 'sequelize',
-  collection, cfg, type, route: string, ext: string, fileName?: string) {
+export default function $generateGraphql(
+  pkg,
+  raw: Factory,
+  rootDir: string,
+  role: string,
+  allow,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter: 'mongoose' | 'sequelize',
+  collection,
+  cfg,
+  type,
+  route: string,
+  ext: string,
+  fileName?: string,
+) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
     let list;
@@ -19,7 +32,15 @@ export default function $generateGraphql(pkg, raw: Factory, rootDir: string, rol
 
     let parts = route.split('.');
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, role, allow, typeMapper, defaultAdapter);
+      let source = get(template, `${type}.${route}`).generate(
+        raw,
+        entity,
+        pkg,
+        role,
+        allow,
+        typeMapper,
+        defaultAdapter,
+      );
       if (typeof source === 'string') {
         let parts = route.split('.');
         if (!fileName) {
@@ -28,15 +49,19 @@ export default function $generateGraphql(pkg, raw: Factory, rootDir: string, rol
           parts[parts.length - 1] = fileName;
         }
         let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
-        fs.ensureFileSync(fn);
-        fs.writeFileSync(fn, source);
+        writeFile(fn, source);
       } else if (Array.isArray(source)) {
         let parts = route.split('.');
         source.forEach(f => {
           parts[parts.length - 1] = `${f.name}.${ext}`;
-          let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
-          fs.ensureFileSync(fn);
-          fs.writeFileSync(fn, f.content);
+          let fn = path.join(
+            rootDir,
+            pkg.name,
+            type,
+            `${entity.name}`,
+            ...parts,
+          );
+          writeFile(fn, f.content);
         });
       }
     }

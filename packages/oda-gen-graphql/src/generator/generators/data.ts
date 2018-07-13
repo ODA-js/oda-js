@@ -2,12 +2,23 @@ import { lib } from 'oda-gen-common';
 import { Factory } from 'fte.js';
 import * as template from '../../graphql-backend-template';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import { writeFile } from './writeFile';
 
 const { get, deepMerge } = lib;
 
-export default function $generateData(pkg, raw: Factory, rootDir: string, typeMapper: { [key: string]: (string) => string }, defaultAdapter: string,
-  collection, cfg, type, route: string, ext: string, fileName?: string) {
+export default function $generateData(
+  pkg,
+  raw: Factory,
+  rootDir: string,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter: string,
+  collection,
+  cfg,
+  type,
+  route: string,
+  ext: string,
+  fileName?: string,
+) {
   let runConfig = get(cfg[type], route) as boolean | string[];
   if (runConfig) {
     let list;
@@ -18,7 +29,13 @@ export default function $generateData(pkg, raw: Factory, rootDir: string, typeMa
     }
 
     for (let entity of list) {
-      let source = get(template, `${type}.${route}`).generate(raw, entity, pkg, typeMapper, defaultAdapter);
+      let source = get(template, `${type}.${route}`).generate(
+        raw,
+        entity,
+        pkg,
+        typeMapper,
+        defaultAdapter,
+      );
       if (typeof source === 'string') {
         let parts = route.split('.').slice(1); // it is always `data`, at least here
         if (!fileName) {
@@ -27,15 +44,13 @@ export default function $generateData(pkg, raw: Factory, rootDir: string, typeMa
           parts[parts.length - 1] = fileName;
         }
         let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
-        fs.ensureFileSync(fn);
-        fs.writeFileSync(fn, source);
+        writeFile(fn, source);
       } else if (Array.isArray(source)) {
         let parts = route.split('.').slice(1); // it is always `data`, at least here
         source.forEach(f => {
           parts[parts.length - 1] = `${f.name}.${ext}`;
           let fn = path.join(rootDir, 'data', `${entity.name}`, ...parts);
-          fs.ensureFileSync(fn);
-          fs.writeFileSync(fn, f.content);
+          writeFile(fn, f.content);
         });
       }
     }
