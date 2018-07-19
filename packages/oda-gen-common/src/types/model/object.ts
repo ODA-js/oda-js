@@ -1,6 +1,5 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
 import { merge } from 'lodash';
-import { mergeResolvers, mergeTypes } from 'merge-graphql-schemas';
 
 import {
   parse,
@@ -247,7 +246,7 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   public get schemaAST(): DocumentNode {
     return this._schemaAST;
   }
-  protected _resolver?: Resolver;
+  protected _resolver?: any;
   public get resolver(): null | IResolvers {
     return this._resolver;
   }
