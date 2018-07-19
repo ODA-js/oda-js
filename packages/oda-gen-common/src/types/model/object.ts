@@ -320,7 +320,7 @@ export class Fields<Resolver> extends GQLType<Resolver>
   }
   public get resolver() {
     return this._rootName && this._resolver
-      ? { [this._rootName]: this._resolver }
+      ? { [this._rootName]: { [this.name]: this._resolver } }
       : undefined;
   }
 }
@@ -374,7 +374,9 @@ export class Type extends GQLType<ResolverFunction | ObjectResolver>
     this._isExtend = this.resolveExtend(this._schemaAST);
   }
   public get resolver() {
-    return this.name ? { [this.name]: this._resolver } : undefined;
+    return this.name && this._resolver
+      ? { [this.name]: this._resolver }
+      : undefined;
   }
 }
 
@@ -456,7 +458,9 @@ export class Scalar extends GQLType<ScalarResolver>
     }
   }
   public get resolver() {
-    return this.name ? { [this.name]: this._resolver } : undefined;
+    return this.name && this._resolver
+      ? { [this.name]: this._resolver }
+      : undefined;
   }
 }
 
@@ -598,7 +602,6 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
       .filter(i => i)
       .join('\n');
     this._schemaAST = parse(this._schema);
-
     this._resolvers = merge(
       {},
       this._resolver,
