@@ -3,7 +3,7 @@
 <#-
   const {entity, f, current} = ctx;
 -#>
-<#- slot('import-from-ra-ui-components','EmbeddedField') #>
+<#- slot('import-from-ra-ui-components-show','EmbeddedField') #>
 <#- slot('import-from-react-admin-show','ShowButton') #>
 <#- slot('import-from-react-admin-show','EditButton') #>
 <#- slot('import-from-react-admin-show','DeleteButton') -#>

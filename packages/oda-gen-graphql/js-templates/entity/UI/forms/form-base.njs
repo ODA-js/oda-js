@@ -7,13 +7,13 @@ import {
   #{content('import-from-react-admin')}
   #{slot('import-from-react-admin-form')}
 } from "react-admin";
-
 import { connect } from 'react-redux';
 <#- if(entity.UI.embedded.items.filter(f=>f.single).length > 0) {#>
 import { formValueSelector } from 'redux-form';
 <#}#>
 import compose from 'recompose/compose';
 import { actions#{slot('use-action-type')} } from 'oda-ra-ui';
+#{slot('import-from-ra-ui-components-form')}
 
 const initForm = actions.initForm;
 

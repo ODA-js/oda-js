@@ -26,6 +26,7 @@ import templateEngine from './templateEngine';
 import initModel from './initModel';
 import { collectErrors, showLog, knownTypes, hasResult } from './validate';
 import { error } from 'util';
+import { commit } from './generators/writeFile';
 
 export default (args: Generator) => {
   let {
@@ -251,4 +252,5 @@ export default (args: Generator) => {
       }
     });
   }
+  commit().then(() => console.log('finish'));
 };
