@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-npm link graphql mongoose log4js muri;
+npm link graphql mongoose log4js muri graphql-tag

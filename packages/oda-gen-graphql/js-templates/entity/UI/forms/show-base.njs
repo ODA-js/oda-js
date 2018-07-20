@@ -7,7 +7,7 @@ import {
   #{content('import-from-react-admin')}
   #{slot('import-from-react-admin-show')}
 } from "react-admin";
-#{slot('import-from-ra-ui-components')}
+#{slot('import-from-ra-ui-components-show')}
 const ShowRecordView = (props, context) => {
   const { uix } = context;
   const { Title } = uix['#{entity.role}/#{entity.name}'];

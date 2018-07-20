@@ -31,8 +31,6 @@ export function writeFile(fn, data, format: boolean = true) {
   } else {
     fs.write(fn, data);
   }
-  // fs.ensureFileSync(fn);
-  // fs.writeFileSync(fn, data);
 }
 
 export async function commit() {
