@@ -74,11 +74,9 @@ export interface MapperOutupt {
 
 import {
   getFieldsForAcl,
-  singleStoredRelationsExistingIn,
   mutableFields,
   persistentFields,
   identityFields,
-  getRelationNames,
   relationFieldsExistsIn,
   oneUniqueInIndex,
   complexUniqueIndex,
@@ -94,13 +92,13 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutupt {
-  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  const relsInPackage = relationFieldsExistsIn(pack);
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
 
-  const relations = fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
+  const relations = fieldsAcl.filter(relsInPackage).map(f => {
     let verb = f.relation.verb;
     let sameEntity = entity.name === f.relation.ref.entity;
     let refFieldName = `${f.relation.ref.entity}${
@@ -141,7 +139,7 @@ export function mapper(
       }, [])
       .map(entity => pack.get(entity))
       .map(entity => {
-        let fieldsEntityAcl = getFieldsForAcl(aclAllow)(role)(entity);
+        let fieldsEntityAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
         return {
           name: entity.name,
           findQuery: decapitalize(entity.name),

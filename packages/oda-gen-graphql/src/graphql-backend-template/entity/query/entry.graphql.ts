@@ -4,7 +4,14 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/query/entry.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -24,7 +31,13 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   let ids = getFields(entity).filter(idField);
 
   let unique = [
@@ -32,13 +45,14 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
       name: f.name,
       type: 'ID',
     })),
-    ...getFieldsForAcl(aclAllow)(role)(entity)
-      .filter(identityFields)]
+    ...getFieldsForAcl(aclAllow, role, pack)(entity).filter(identityFields),
+  ]
     .map(f => ({
       name: f.name,
       type: typeMapper.graphql(f.type),
     }))
-    .map(i => `${i.name}: ${i.type}`).join(', ');
+    .map(i => `${i.name}: ${i.type}`)
+    .join(', ');
 
   return {
     name: entity.name,

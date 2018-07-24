@@ -5,7 +5,14 @@ import { persistentRelations, getFieldsForAcl } from '../../../queries';
 
 export const template = 'entity/connections/mutations/types.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -23,12 +30,18 @@ export interface MapperOutput {
   }[];
 }
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   return {
     name: entity.name,
     plural: entity.plural,
     ownerFieldName: decapitalize(entity.name),
-    connections: getFieldsForAcl(aclAllow)(role)(entity)
+    connections: getFieldsForAcl(aclAllow, role, pack)(entity)
       .filter(persistentRelations(pack))
       .map(f => {
         let relFields = [];
@@ -41,14 +54,15 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           });
         }
         let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        let refFieldName = `${f.relation.ref.entity}${
+          sameEntity ? capitalize(f.name) : ''
+        }`;
         return {
           refFieldName: decapitalize(refFieldName),
           name: f.relation.fullName,
           fields: relFields,
           single: f.relation.single,
         };
-      },
-    ),
+      }),
   };
 }

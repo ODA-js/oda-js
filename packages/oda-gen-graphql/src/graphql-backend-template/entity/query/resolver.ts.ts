@@ -6,9 +6,23 @@ import { capitalize, decapitalize } from '../../utils';
 
 export const template = 'entity/query/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }, defaultAdapter: 'mongoose' | 'sequelize') {
-  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
-  return te.run(mapper(entity, pack, role, aclAllow, typeMapper, adapter), template);
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter: 'mongoose' | 'sequelize',
+) {
+  let adapter = entity.getMetadata(
+    'storage.adapter',
+    defaultAdapter || 'mongoose',
+  );
+  return te.run(
+    mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+    template,
+  );
 }
 
 export interface MapperOutupt {
@@ -16,15 +30,16 @@ export interface MapperOutupt {
   singular: string;
   plural: string;
   unique: {
-    args: { name: string, type: string }[];
-    find: { name: string, type: string, cName: string }[];
+    args: { name: string; type: string }[];
+    find: { name: string; type: string; cName: string }[];
     complex: {
-      name: string, fields: {
-        name: string,
-        uName: string,
-        type: string,
-        gqlType?: string,
-      }[]
+      name: string;
+      fields: {
+        name: string;
+        uName: string;
+        type: string;
+        gqlType?: string;
+      }[];
     }[];
   };
   adapter: 'mongoose' | 'sequelize';
@@ -34,7 +49,7 @@ export interface MapperOutupt {
     field: string;
     refFieldName: string;
     name: string;
-    verb: string,
+    verb: string;
     ref: {
       backField: string;
       usingField: string;
@@ -47,8 +62,8 @@ export interface MapperOutupt {
         backField: string;
         entity: string;
         field: string;
-      }
-    }
+      };
+    };
   }[];
 }
 
@@ -64,66 +79,81 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }, adapter: 'mongoose' | 'sequelize'): MapperOutupt {
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+  adapter: 'mongoose' | 'sequelize',
+): MapperOutupt {
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
-  const relations = fieldsAcl
-    .filter(relationFieldsExistsIn(pack))
-    .map(f => {
-      let verb = f.relation.verb;
-      let ref = {
-        usingField: '',
-        backField: f.relation.ref.backField,
-        entity: f.relation.ref.entity,
-        field: f.relation.ref.field,
-        type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type,
-        cField: capitalize(f.relation.ref.field),
-        fields: [],
-        using: {
-          backField: '',
-          entity: '',
-          field: '',
-        },
-      };
-      if (verb === 'BelongsToMany') {
-        let current = (f.relation as BelongsToMany);
-        ref.using.entity = current.using.entity;
-        ref.using.field = current.using.field;
-        ref.backField = current.using.backField;
-        //from oda-model/model/belongstomany.ts ensure relation class
-        let refe = pack.entities.get(ref.entity);
-        let opposite = getRelationNames(refe)
-          // по одноименному классу ассоциации
-          .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
-            && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
-          .map(r => refe.fields.get(r).relation)
-          .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
-        /// тут нужно получить поле по которому opposite выставляет свое значение,
-        // и значение
-        if (opposite) {
-          ref.usingField = opposite.using.field;
-          ref.backField = opposite.ref.field;
-        } else {
-          ref.usingField = decapitalize(ref.entity);
-        }
-        if (f.relation.fields && f.relation.fields.size > 0) {
-          f.relation.fields.forEach(field => {
-            ref.fields.push(field.name);
-          });
-        }
+  const relations = fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
+    let verb = f.relation.verb;
+    let ref = {
+      usingField: '',
+      backField: f.relation.ref.backField,
+      entity: f.relation.ref.entity,
+      field: f.relation.ref.field,
+      type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field)
+        .type,
+      cField: capitalize(f.relation.ref.field),
+      fields: [],
+      using: {
+        backField: '',
+        entity: '',
+        field: '',
+      },
+    };
+    if (verb === 'BelongsToMany') {
+      let current = f.relation as BelongsToMany;
+      ref.using.entity = current.using.entity;
+      ref.using.field = current.using.field;
+      ref.backField = current.using.backField;
+      //from oda-model/model/belongstomany.ts ensure relation class
+      let refe = pack.entities.get(ref.entity);
+      let opposite = getRelationNames(refe)
+        // по одноименному классу ассоциации
+        .filter(
+          r =>
+            (current.opposite && current.opposite === r) ||
+            (refe.fields.get(r).relation instanceof BelongsToMany &&
+              (refe.fields.get(r).relation as BelongsToMany).using.entity ===
+                (f.relation as BelongsToMany).using.entity),
+        )
+        .map(r => refe.fields.get(r).relation)
+        .filter(
+          r => r instanceof BelongsToMany && current !== r,
+        )[0] as BelongsToMany;
+      /// тут нужно получить поле по которому opposite выставляет свое значение,
+      // и значение
+      if (opposite) {
+        ref.usingField = opposite.using.field;
+        ref.backField = opposite.ref.field;
+      } else {
+        ref.usingField = decapitalize(ref.entity);
       }
-      let sameEntity = entity.name === f.relation.ref.entity;
-      let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-      return {
-        derived: f.derived,
-        field: f.name,
-        name: capitalize(f.name),
-        refFieldName: decapitalize(refFieldName),
-        verb,
-        ref,
-      };
-    });
+      if (f.relation.fields && f.relation.fields.size > 0) {
+        f.relation.fields.forEach(field => {
+          ref.fields.push(field.name);
+        });
+      }
+    }
+    let sameEntity = entity.name === f.relation.ref.entity;
+    let refFieldName = `${f.relation.ref.entity}${
+      sameEntity ? capitalize(f.name) : ''
+    }`;
+    return {
+      derived: f.derived,
+      field: f.name,
+      name: capitalize(f.name),
+      refFieldName: decapitalize(refFieldName),
+      verb,
+      ref,
+    };
+  });
 
   return {
     name: entity.name,
@@ -132,13 +162,11 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     unique: {
       args: [
         ...ids,
-        ...fieldsAcl
-          .filter(identityFields)
-          .filter(oneUniqueInIndex(entity))]
-        .map(f => ({
-          name: f.name,
-          type: mapToTSTypes(f.type),
-        })),
+        ...fieldsAcl.filter(identityFields).filter(oneUniqueInIndex(entity)),
+      ].map(f => ({
+        name: f.name,
+        type: mapToTSTypes(f.type),
+      })),
       find: [
         ...fieldsAcl
           .filter(identityFields)
@@ -157,8 +185,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
             uName: capitalize(f.name),
             type: mapToTSTypes(f.type),
             gqlType: typeMapper.graphql(f.type),
-          })).sort((a, b) => {
-            if (a.name > b.name) return 1
+          }))
+          .sort((a, b) => {
+            if (a.name > b.name) return 1;
             else if (a.name < b.name) return -1;
             else return 0;
           });
@@ -170,7 +199,8 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
     },
     relations,
     adapter,
-    idMap: relations.filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
+    idMap: relations
+      .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
       .map(f => f.field),
   };
 }
