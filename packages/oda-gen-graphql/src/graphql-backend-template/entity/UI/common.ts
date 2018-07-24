@@ -91,7 +91,6 @@ export interface MapperOutput {
 
 import {
   getFieldsForAcl,
-  singleStoredRelationsExistingIn,
   fields,
   identityFields,
   getRelationNames,
@@ -113,15 +112,15 @@ function visibility(
   first = false,
 ): UIView {
   const result: UIResult = {
-    listName: guessListLabel(entity, aclAllow, role, aor).source,
-    quickSearch: guessQuickSearch(entity, aclAllow, role, aor),
+    listName: guessListLabel(entity, aclAllow, role, pack, aor).source,
+    quickSearch: guessQuickSearch(entity, aclAllow, role, pack, aor),
     hidden: [],
     edit: [],
     show: [],
     list: [],
     embedded: [],
   };
-  let allFields = getFieldsForAcl(aclAllow)(role)(entity);
+  let allFields = getFieldsForAcl(aclAllow, role, pack)(entity);
   result.edit.push(...allFields.map(f => f.name));
   result.show.push(...result.edit);
   result.list.push(
@@ -264,7 +263,7 @@ function visibility(
   return res;
 }
 
-function guessListLabel(entity, aclAllow, role, aor) {
+function guessListLabel(entity, aclAllow, role, pack, aor) {
   let UI = entity.getMetadata('UI');
   let result = {
     type: 'Text',
@@ -273,7 +272,7 @@ function guessListLabel(entity, aclAllow, role, aor) {
   if (UI && UI.listName) {
     result.source = UI.listName;
   } else {
-    let res = getFieldsForAcl(aclAllow)(role)(entity)
+    let res = getFieldsForAcl(aclAllow, role, pack)(entity)
       .filter(identityFields)
       .filter(oneUniqueInIndex(entity))[0];
     if (res) {
@@ -284,7 +283,7 @@ function guessListLabel(entity, aclAllow, role, aor) {
   return result;
 }
 
-function guessQuickSearch(entity: Entity, aclAllow, role, aor) {
+function guessQuickSearch(entity: Entity, aclAllow, role, pack, aor) {
   let UI = entity.getMetadata('UI');
   let result = [];
   if (UI && UI.listName) {
@@ -294,7 +293,7 @@ function guessQuickSearch(entity: Entity, aclAllow, role, aor) {
     }
   }
   result.push(
-    ...getFieldsForAcl(aclAllow)(role)(entity)
+    ...getFieldsForAcl(aclAllow, role, pack)(entity)
       .filter(identityFields)
       .filter(oneUniqueInIndex(entity))
       .map(i => i.name),
@@ -309,8 +308,7 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutput {
-  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
@@ -415,7 +413,7 @@ export function mapper(
         ref: {
           ...ref,
           fieldName: decapitalize(refFieldName),
-          listLabel: guessListLabel(refe, aclAllow, role, mapAORTypes),
+          listLabel: guessListLabel(refe, aclAllow, role, pack, mapAORTypes),
         },
       };
     })
@@ -436,7 +434,7 @@ export function mapper(
     titlePlural: entity.titlePlural,
     UI,
     plural: entity.plural,
-    listLabel: guessListLabel(entity, aclAllow, role, mapAORTypes),
+    listLabel: guessListLabel(entity, aclAllow, role, pack, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,

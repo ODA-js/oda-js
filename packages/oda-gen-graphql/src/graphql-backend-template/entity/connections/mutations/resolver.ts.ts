@@ -5,7 +5,14 @@ import { persistentRelations, getFieldsForAcl } from '../../../queries';
 
 export const template = 'entity/connections/mutations/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -14,25 +21,31 @@ export interface MapperOutupt {
   ownerFieldName: string;
   connections: {
     opposite: string;
-    relationName: string,
+    relationName: string;
     name: string;
     refEntity: string;
-    addArgs: { name: string; type: string; }[];
-    removeArgs: { name: string; type: string; }[];
+    addArgs: { name: string; type: string }[];
+    removeArgs: { name: string; type: string }[];
     ref: {
       fields: string[];
-    }
+    };
   }[];
 }
 
 // для каждой операции свои параметры с типами должны быть.
 // специальный маппер типов для ts где ID === string
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
-    connections: getFieldsForAcl(aclAllow)(role)(entity)
+    connections: getFieldsForAcl(aclAllow, role, pack)(entity)
       .filter(persistentRelations(pack))
       .map(f => {
         let verb = f.relation.verb;
@@ -40,7 +53,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           fields: [],
         };
         let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        let refFieldName = `${f.relation.ref.entity}${
+          sameEntity ? capitalize(f.name) : ''
+        }`;
         let refEntity = f.relation.ref.entity;
         let addArgs = [
           {

@@ -4,7 +4,14 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/subscriptions/resolver.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -20,7 +27,7 @@ export interface MapperOutupt {
       type: string;
     }[];
   }[];
-  relations: any
+  relations: any;
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -28,11 +35,7 @@ export interface MapperOutupt {
 
 import {
   getFieldsForAcl,
-  singleStoredRelationsExistingIn,
   mutableFields,
-  identityFields,
-  oneUniqueInIndex,
-  complexUniqueIndex,
   persistentRelations,
   relationFieldsExistsIn,
   getRelationNames,
@@ -40,9 +43,14 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
-  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
 
   return {
@@ -54,88 +62,92 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         type: 'ID',
         required: false,
       })),
-      ...fieldsAcl
-        .filter(mutableFields)]
-      .map(f => f.name),
-    connections: fieldsAcl
-      .filter(persistentRelations(pack))
-      .map(f => {
-        let relFields = [];
+      ...fieldsAcl.filter(mutableFields),
+    ].map(f => f.name),
+    connections: fieldsAcl.filter(persistentRelations(pack)).map(f => {
+      let relFields = [];
+      if (f.relation.fields && f.relation.fields.size > 0) {
+        f.relation.fields.forEach(field => {
+          relFields.push({
+            name: field.name,
+            type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
+          });
+        });
+      }
+      let sameEntity = entity.name === f.relation.ref.entity;
+      let refFieldName = `${f.relation.ref.entity}${
+        sameEntity ? capitalize(f.name) : ''
+      }`;
+      return {
+        refFieldName: decapitalize(refFieldName),
+        name: f.relation.fullName,
+        fields: relFields,
+        single: f.relation.single,
+      };
+    }),
+    relations: fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
+      let verb = f.relation.verb;
+      let ref = {
+        usingField: '',
+        backField: f.relation.ref.backField,
+        entity: f.relation.ref.entity,
+        field: f.relation.ref.field,
+        type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field)
+          .type,
+        cField: capitalize(f.relation.ref.field),
+        fields: [],
+        using: {
+          backField: '',
+          entity: '',
+          field: '',
+        },
+      };
+      if (verb === 'BelongsToMany') {
+        let current = f.relation as BelongsToMany;
+        ref.using.entity = current.using.entity;
+        ref.using.field = current.using.field;
+        ref.backField = current.using.backField;
+        //from oda-model/model/belongstomany.ts ensure relation class
+        let refe = pack.entities.get(ref.entity);
+        let opposite = getRelationNames(refe)
+          // по одноименному классу ассоциации
+          .filter(
+            r =>
+              (current.opposite && current.opposite === r) ||
+              (refe.fields.get(r).relation instanceof BelongsToMany &&
+                (refe.fields.get(r).relation as BelongsToMany).using.entity ===
+                  (f.relation as BelongsToMany).using.entity),
+          )
+          .map(r => refe.fields.get(r).relation)
+          .filter(
+            r => r instanceof BelongsToMany && current !== r,
+          )[0] as BelongsToMany;
+        /// тут нужно получить поле по которому opposite выставляет свое значение,
+        // и значение
+        if (opposite) {
+          ref.usingField = opposite.using.field;
+          ref.backField = opposite.ref.field;
+        } else {
+          ref.usingField = decapitalize(ref.entity);
+        }
         if (f.relation.fields && f.relation.fields.size > 0) {
           f.relation.fields.forEach(field => {
-            relFields.push({
-              name: field.name,
-              type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
-            });
+            ref.fields.push(field.name);
           });
         }
-        let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-        return {
-          refFieldName: decapitalize(refFieldName),
-          name: f.relation.fullName,
-          fields: relFields,
-          single: f.relation.single,
-        };
-      },
-    ),
-    relations: fieldsAcl
-      .filter(relationFieldsExistsIn(pack))
-      .map(f => {
-        let verb = f.relation.verb;
-        let ref = {
-          usingField: '',
-          backField: f.relation.ref.backField,
-          entity: f.relation.ref.entity,
-          field: f.relation.ref.field,
-          type: pack.get(f.relation.ref.entity).fields.get(f.relation.ref.field).type,
-          cField: capitalize(f.relation.ref.field),
-          fields: [],
-          using: {
-            backField: '',
-            entity: '',
-            field: '',
-          },
-        };
-        if (verb === 'BelongsToMany') {
-          let current = (f.relation as BelongsToMany);
-          ref.using.entity = current.using.entity;
-          ref.using.field = current.using.field;
-          ref.backField = current.using.backField;
-          //from oda-model/model/belongstomany.ts ensure relation class
-          let refe = pack.entities.get(ref.entity);
-          let opposite = getRelationNames(refe)
-            // по одноименному классу ассоциации
-            .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
-              && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
-            .map(r => refe.fields.get(r).relation)
-            .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
-          /// тут нужно получить поле по которому opposite выставляет свое значение,
-          // и значение
-          if (opposite) {
-            ref.usingField = opposite.using.field;
-            ref.backField = opposite.ref.field;
-          } else {
-            ref.usingField = decapitalize(ref.entity);
-          }
-          if (f.relation.fields && f.relation.fields.size > 0) {
-            f.relation.fields.forEach(field => {
-              ref.fields.push(field.name);
-            });
-          }
-        }
-        let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-        return {
-          derived: f.derived,
-          field: f.name,
-          name: capitalize(f.name),
-          refFieldName: decapitalize(refFieldName),
-          verb,
-          ref,
-        };
-      }),
-
-
+      }
+      let sameEntity = entity.name === f.relation.ref.entity;
+      let refFieldName = `${f.relation.ref.entity}${
+        sameEntity ? capitalize(f.name) : ''
+      }`;
+      return {
+        derived: f.derived,
+        field: f.name,
+        name: capitalize(f.name),
+        refFieldName: decapitalize(refFieldName),
+        verb,
+        ref,
+      };
+    }),
   };
 }

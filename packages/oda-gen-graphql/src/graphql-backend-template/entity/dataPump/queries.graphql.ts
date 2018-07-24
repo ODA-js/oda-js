@@ -4,7 +4,14 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/dataPump/queries.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -18,9 +25,12 @@ export interface MapperOutupt {
   //   find: { name: string, type: string, cName: string }[];
   //   complex: { name: string, fields: { name: string, uName: string, type: string }[] }[];
   // }
-  complexUnique: { name: string, fields: { name: string, uName: string; type: string }[] }[];
-  unique: { name: string, cName: string; type: string; }[];
-  fields: { name: string }[]
+  complexUnique: {
+    name: string;
+    fields: { name: string; uName: string; type: string }[];
+  }[];
+  unique: { name: string; cName: string; type: string }[];
+  fields: { name: string }[];
   relations: {
     derived: boolean;
     persistent: boolean;
@@ -29,7 +39,7 @@ export interface MapperOutupt {
     name: string;
     ref: {
       entity: string;
-    }
+    };
   }[];
 }
 
@@ -38,10 +48,8 @@ export interface MapperOutupt {
 
 import {
   getFieldsForAcl,
-  singleStoredRelationsExistingIn,
   mutableFields,
   identityFields,
-  getRelationNames,
   relationFieldsExistsIn,
   oneUniqueInIndex,
   complexUniqueIndex,
@@ -49,9 +57,14 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
-  const singleStoredRelations = singleStoredRelationsExistingIn(pack);
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
   return {
     name: entity.name,
@@ -65,8 +78,9 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           name: f.name,
           type: typeMapper.graphql(f.type),
           uName: capitalize(f.name),
-        })).sort((a, b) => {
-          if (a.name > b.name) return 1
+        }))
+        .sort((a, b) => {
+          if (a.name > b.name) return 1;
           else if (a.name < b.name) return -1;
           else return 0;
         });
@@ -80,21 +94,15 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         name: f.name,
         type: 'ID',
       })),
-      ...fieldsAcl
-        .filter(identityFields)
-        .filter(oneUniqueInIndex(entity))]
-      .map(f => ({
-        name: f.name,
-        type: typeMapper.graphql(f.type),
-        cName: capitalize(f.name),
-      })),
-    fields: [
-      ...ids,
-      ...fieldsAcl
-        .filter(f => mutableFields(f))]
-      .map(f => ({
-        name: f.name,
-      })),
+      ...fieldsAcl.filter(identityFields).filter(oneUniqueInIndex(entity)),
+    ].map(f => ({
+      name: f.name,
+      type: typeMapper.graphql(f.type),
+      cName: capitalize(f.name),
+    })),
+    fields: [...ids, ...fieldsAcl.filter(f => mutableFields(f))].map(f => ({
+      name: f.name,
+    })),
     relations: fieldsAcl
       .filter(relationFieldsExistsIn(pack))
       .map(f => {
@@ -105,12 +113,13 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
           field: f.name,
           name: f.relation.fullName,
           cField: capitalize(f.name),
-          single: (verb === 'BelongsTo' || verb === 'HasOne'),
+          single: verb === 'BelongsTo' || verb === 'HasOne',
           ref: {
             entity: f.relation.ref.entity,
             fieldName: decapitalize(f.relation.ref.entity),
           },
         };
-      }).filter(f => f.persistent),
+      })
+      .filter(f => f.persistent),
   };
 }

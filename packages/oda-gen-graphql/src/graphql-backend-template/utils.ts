@@ -8,7 +8,7 @@ export function capitalize(name: string): string {
   return name[0].toUpperCase() + name.slice(1);
 }
 
-export function printRequired(field: { required: boolean }): string {
+export function printRequired(field: { required?: boolean }): string {
   return field.required ? '!' : '';
 }
 
@@ -16,7 +16,7 @@ export function printRequired(field: { required: boolean }): string {
 export const defaultTypeMapper = {
   aor: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
-    Text: ['string', "*", 'uuid', 'id', 'identity'],
+    Text: ['string', '*', 'uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
@@ -24,13 +24,13 @@ export const defaultTypeMapper = {
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
-    string: ['string', 'text', "*", 'uuid', 'id', 'identity', 'richtext'],
+    string: ['string', 'text', '*', 'uuid', 'id', 'identity', 'richtext'],
     date: ['date', 'time', 'datetime'],
     boolean: ['bool', 'boolean'],
   },
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
-    Text: ['string', 'text', "*", 'richtext'],
+    Text: ['string', 'text', '*', 'richtext'],
     ID: ['uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
@@ -38,7 +38,7 @@ export const defaultTypeMapper = {
   graphql: {
     Int: ['int', 'integer'],
     Float: ['number', 'float', 'double'],
-    String: ['string', 'text', "*", 'uuid', 'richtext'],
+    String: ['string', 'text', '*', 'uuid', 'richtext'],
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
@@ -62,7 +62,9 @@ export const defaultTypeMapper = {
     'DataTypes.INTEGER, autoIncrement: true': ['identity_pk'],
     'DataTypes.UUID': ['uuid'],
     'DataTypes.UUID, defaultValue: Sequelize.UUIDV4': ['uuid_pk'],
-    'DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId()': ['id_pk'],
+    'DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId()': [
+      'id_pk',
+    ],
   },
   typescript: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -70,8 +72,8 @@ export const defaultTypeMapper = {
     boolean: ['bool', 'boolean'],
     Date: ['date'],
     object: ['json', 'object'],
-  }
-}
+  },
+};
 
 export function prepareMapper(mapper: { [key: string]: string[] }) {
   const specificMapper = Object.keys(mapper).reduce((hash, current) => {
@@ -81,23 +83,26 @@ export function prepareMapper(mapper: { [key: string]: string[] }) {
     return hash;
   }, {});
   return (type: string | void) => {
-    let result = specificMapper['*']
+    let result = specificMapper['*'];
     if (type) {
       result = specificMapper[type.toUpperCase()];
       return result || type;
     }
     return result;
-  }
+  };
 }
 
-export function printArguments(field: { args: any }, typeMapper: (string) => string) {
+export function printArguments(
+  field: { args: any },
+  typeMapper: (string) => string,
+) {
   let result = '';
   if (field.args) {
     for (let arg of field.args) {
       let type = typeMapper(arg.type);
       result += `${arg.name}: ${type}${arg.required ? '1' : ''}`;
       if (arg.defaultValue) {
-        if (type in { 'Int': 1, 'Float': 1, 'Boolean': 1 }) {
+        if (type in { Int: 1, Float: 1, Boolean: 1 }) {
           result += ` = ${arg.defaultValue}`;
         } else {
           result += ` = "${arg.defaultValue}"`;
@@ -108,6 +113,10 @@ export function printArguments(field: { args: any }, typeMapper: (string) => str
   return result;
 }
 
-export function connectionName(entity: Entity, fieldName: string, rel: RelationBase) {
+export function connectionName(
+  entity: Entity,
+  fieldName: string,
+  rel: RelationBase,
+) {
   return `${rel.ref.entity}To${entity.name}As_${fieldName}`;
 }

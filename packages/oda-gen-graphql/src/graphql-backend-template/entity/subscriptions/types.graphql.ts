@@ -5,7 +5,14 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/subscriptions/types.graphql.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
@@ -36,8 +43,14 @@ import {
   idField,
 } from '../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }): MapperOutput {
-  let fieldsAcl = getFieldsForAcl(aclAllow)(role)(entity);
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
+  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
   let ids = getFields(entity).filter(idField);
 
   return {
@@ -50,35 +63,31 @@ export function mapper(entity: Entity, pack: ModelPackage, role: string, aclAllo
         type: 'ID',
         required: false,
       })),
-      ...fieldsAcl
-        .filter(mutableFields)]
-      .map(f => ({
-        name: f.name,
-        type: `${typeMapper.graphql(f.type)}`,
-      })),
-    connections: fieldsAcl
-      .filter(persistentRelations(pack))
-      .map(f => {
-        let relFields = [];
-        if (f.relation.fields && f.relation.fields.size > 0) {
-          f.relation.fields.forEach(field => {
-            relFields.push({
-              name: field.name,
-              type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
-            });
+      ...fieldsAcl.filter(mutableFields),
+    ].map(f => ({
+      name: f.name,
+      type: `${typeMapper.graphql(f.type)}`,
+    })),
+    connections: fieldsAcl.filter(persistentRelations(pack)).map(f => {
+      let relFields = [];
+      if (f.relation.fields && f.relation.fields.size > 0) {
+        f.relation.fields.forEach(field => {
+          relFields.push({
+            name: field.name,
+            type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
           });
-        }
-        let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
-        return {
-          refFieldName: decapitalize(refFieldName),
-          name: f.relation.fullName,
-          fields: relFields,
-          single: f.relation.single,
-        };
-      },
-    ),
+        });
+      }
+      let sameEntity = entity.name === f.relation.ref.entity;
+      let refFieldName = `${f.relation.ref.entity}${
+        sameEntity ? capitalize(f.name) : ''
+      }`;
+      return {
+        refFieldName: decapitalize(refFieldName),
+        name: f.relation.fullName,
+        fields: relFields,
+        single: f.relation.single,
+      };
+    }),
   };
 }
-
-
