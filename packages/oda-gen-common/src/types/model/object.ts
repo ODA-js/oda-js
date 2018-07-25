@@ -37,9 +37,9 @@ export type UnionInterfaceResolverFunction = (
 
 export type ScalarResolver = ScalarResolverType | GraphQLScalarType;
 export type ScalarResolverType = {
-  serialize: any;
-  parseValue: any;
-  parseLiteral: any;
+  serialize?: any;
+  parseValue?: any;
+  parseLiteral?: any;
 };
 
 export type EnumResolver = {
