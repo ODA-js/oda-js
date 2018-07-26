@@ -54,7 +54,7 @@ input #{entity.name}FilterSubscriptions {
   updatedFields: WhereListOfStrings
 }
 
-type #{entity.name} implements Node{
+type #{entity.name} implements Node {
 <#- entity.fields.forEach(field => { -#>
 <# if(field.description){#>
   # #{field.description}

@@ -1,6 +1,6 @@
 import { IResolvers } from 'graphql-tools';
-import deepMerge from './../lib/deepMerge';
-import override from './../lib/fillDefaults';
+import deepMerge from '../lib/deepMerge';
+import override from '../lib/fillDefaults';
 import * as jsonUtils from '../lib';
 import * as invariant from 'invariant';
 import * as warning from 'warning';

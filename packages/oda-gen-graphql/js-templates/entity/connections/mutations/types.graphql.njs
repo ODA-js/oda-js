@@ -14,17 +14,17 @@ type addTo#{connection.name}Payload {
   clientMutationId: String
   viewer: Viewer
   #{entity.ownerFieldName}: #{entity.name}
- }
+}
 
 input removeFrom#{connection.name}Input {
   clientMutationId: String
   #{connection.refFieldName}:ID!
   #{entity.ownerFieldName}:ID!
- }
+}
 
 type removeFrom#{connection.name}Payload {
   clientMutationId: String
   viewer: Viewer
   #{entity.ownerFieldName}: #{entity.name}
- }
+}
 <# }-#>

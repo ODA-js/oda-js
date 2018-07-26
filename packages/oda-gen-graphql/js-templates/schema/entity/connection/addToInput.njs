@@ -1,0 +1,25 @@
+<#@ chunks "$$$main$$$" -#>
+<#@ alias 'connection-mutations-addTo-input'#>
+<#@ context 'ctx'#>
+
+<#- 
+const {entity, connection} = ctx;
+chunkStart(`../../../gql/${entity.name}/connection/addTo${connection.name}Input.ts`); -#>
+<# slot('import-connection-index-slot',`addTo${connection.name}Input`) #>
+<# slot('export-connection-index-slot',`addTo${connection.name}Input`) #>
+import { ModelType, Input } from '../../common';
+import gql from 'graphql-tag';
+
+export default new Input({
+  schema: gql`
+    input addTo#{connection.name}Input {
+      clientMutationId: String
+      #{entity.ownerFieldName}:ID!
+      #{connection.refFieldName}:ID!
+      #additional Edge fields
+    <# connection.fields.forEach(f=>{-#>
+      #{f.name}: #{f.type}
+    <# });-#>
+    }
+  `,
+});

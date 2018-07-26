@@ -1,5 +1,5 @@
 import 'jest';
-import { Enum, Query, GQLType, Schema, Type } from './object';
+import { Enum, Query, GQLType, Schema, Type } from '.';
 import gql from 'graphql-tag';
 import { debug } from 'util';
 
