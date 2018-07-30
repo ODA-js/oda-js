@@ -11,7 +11,6 @@ import { idToCursor, emptyConnection, pagination, detectCursorDirection, consts,
 <#}-#>
 <#}-#>
 import {
-  ModelType,
   Type,
   globalIdField,
   traverse,

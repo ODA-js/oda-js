@@ -8,7 +8,6 @@ chunkStart(`../../../gql/${entity.name}/connections/addTo${connection.relationNa
 <# slot('import-connection-index-slot',`addTo${connection.relationName}`) #>
 <# slot('export-connection-index-slot',`addTo${connection.relationName}`) #>
 import {
-  ModelType,
   logger,
   RegisterConnectors,
   mutateAndGetPayload,
@@ -19,7 +18,6 @@ import {
 import gql from 'graphql-tag';
 
 export default new Mutation({
-  type: ModelType.mutation,
   schema: gql`
     extend type RootMutation {
       addTo#{connection.relationName}(

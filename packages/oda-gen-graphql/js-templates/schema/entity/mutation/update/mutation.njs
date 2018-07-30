@@ -5,7 +5,6 @@
 <#-chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}.ts`); -#>
 
 import {
-  ModelType,
   logger,
   RegisterConnectors,
   mutateAndGetPayload,
@@ -18,7 +17,6 @@ import {
 import gql from 'graphql-tag';
 
 export default new Mutation({
-  type: ModelType.mutation,
   schema: gql`
     extend type RootMutation {
       update#{entity.name}(input: update#{entity.name}Input!): update#{entity.name}Payload

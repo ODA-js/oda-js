@@ -8,7 +8,6 @@ chunkStart(`../../../gql/${entity.name}/connections/removeFrom${connection.relat
 <# slot('import-connection-index-slot',`removeFrom${connection.relationName}`) #>
 <# slot('export-connection-index-slot',`removeFrom${connection.relationName}`) #>
 import {
-  ModelType,
   logger,
   RegisterConnectors,
   mutateAndGetPayload,
@@ -19,7 +18,6 @@ import {
 import gql from 'graphql-tag';
 
 export default new Mutation({
-  type: ModelType.mutation,
   schema: gql`
     extend type RootMutation {
       removeFrom#{connection.relationName}(

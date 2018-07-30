@@ -8,4 +8,5 @@
 #{partial(entity.ensure, 'entity-helpers-ensure-entity')}
 #{partial(entity.ensure, 'entity-helpers-index')}
 #{partial(entity.mutations.resolver, 'entity-helpers-unlink-from-all')}
+#{partial(entity.query, 'query-index')}
 

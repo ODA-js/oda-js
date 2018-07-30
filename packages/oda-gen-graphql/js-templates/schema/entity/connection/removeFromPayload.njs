@@ -7,7 +7,7 @@ const {entity, connection} = ctx;
 chunkStart(`../../../gql/${entity.name}/connections/removeFrom${connection.name}Payload.ts`); -#>
 <# slot('import-connection-index-slot',`removeFrom${connection.name}Payload`) #>
 <# slot('export-connection-index-slot',`removeFrom${connection.name}Payload`) #>
-import { ModelType, Type } from '../../common';
+import { Type } from '../../common';
 import gql from 'graphql-tag';
 
 export default new Type({

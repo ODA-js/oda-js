@@ -3,9 +3,7 @@
 <#@ context 'entity'#>
 
 <#-chunkStart(`../../../gql/${entity.name}/mutations/create/create${entity.name}.ts`); -#>
-
 import {
-  ModelType,
   logger,
   RegisterConnectors,
   mutateAndGetPayload,
@@ -18,7 +16,6 @@ import {
 import gql from 'graphql-tag';
 
 export default new Mutation({
-  type: ModelType.mutation,
   schema: gql`
     extend type RootMutation {
       create#{entity.name}(input: create#{entity.name}Input!): create#{entity.name}Payload

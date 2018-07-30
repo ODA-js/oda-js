@@ -7,7 +7,7 @@ const {entity, connection} = ctx;
 chunkStart(`../../../gql/${entity.name}/connections/addTo${connection.name}Input.ts`); -#>
 <# slot('import-connection-index-slot',`addTo${connection.name}Input`) #>
 <# slot('export-connection-index-slot',`addTo${connection.name}Input`) #>
-import { ModelType, Input } from '../../common';
+import { Input } from '../../common';
 import gql from 'graphql-tag';
 
 export default new Input({

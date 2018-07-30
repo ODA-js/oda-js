@@ -148,6 +148,7 @@ export default (args: Generator) => {
         pkg.name,
         aclAllow,
         typeMapper,
+        defaultAdapter,
       );
 
       let generate = $generateGraphql.bind(

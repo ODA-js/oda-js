@@ -14,8 +14,16 @@ export function generate(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
+  defaultAdapter: 'mongoose' | 'sequelize',
 ): { name: string; content: string }[] {
-  return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
+  let adapter = entity.getMetadata(
+    'storage.adapter',
+    defaultAdapter || 'mongoose',
+  );
+  return te.run(
+    mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+    template,
+  );
 }
 
 export function mapper(
@@ -24,8 +32,10 @@ export function mapper(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
+  adapter: 'mongoose' | 'sequelize',
 ): MapperOutput {
   console.log('done');
+
   return {
     name: entity.name,
     type: {
@@ -78,6 +88,30 @@ export function mapper(
         typeMapper,
       ),
       types: entityMappers.mutations.types.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+      ),
+    },
+    query: {
+      resolver: entityMappers.query.resolver.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+      entry: entityMappers.query.entry.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+      ),
+      sortOrder: entityMappers.type.enums.mapper(
         entity,
         pack,
         role,

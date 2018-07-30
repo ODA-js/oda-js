@@ -13,6 +13,7 @@ export default function $generate(
   role: string,
   allow,
   typeMapper: { [key: string]: (string) => string },
+  adapter: 'mongoose' | 'sequelize',
   list,
 ) {
   let source = templatePkg.generate(raw, pkg, typeMapper);
@@ -21,7 +22,15 @@ export default function $generate(
     writeFile(fn, f.content);
   });
   for (let entity of list) {
-    let source = template.generate(raw, entity, pkg, role, allow, typeMapper);
+    let source = template.generate(
+      raw,
+      entity,
+      pkg,
+      role,
+      allow,
+      typeMapper,
+      adapter,
+    );
     source.forEach(f => {
       let fn = path.join(rootDir, pkg.name, entity.name, f.name);
       writeFile(fn, f.content);

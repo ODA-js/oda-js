@@ -1,11 +1,12 @@
+<#@ chunks "$$$main$$$" -#>
 <#@ alias 'mutations-embed'#>
 <#@ context 'entity'#>
 
-import { ModelType, Input, Type } from '../../common';
+<#- chunkStart(`../../../gql/${entity.name}/mutations/embed${entity.name}Input.ts`); -#>
+import { Input } from '../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
-  type: ModelType.input,
   schema: gql`
     input embed#{entity.name}Input {
       clientMutationId: String

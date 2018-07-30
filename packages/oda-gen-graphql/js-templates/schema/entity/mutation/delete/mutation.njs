@@ -5,7 +5,6 @@
 <#-chunkStart(`../../../gql/${entity.name}/mutations/delete/delete${entity.name}.ts`); -#>
 
 import {
-  ModelType,
   logger,
   RegisterConnectors,
   mutateAndGetPayload,
@@ -19,7 +18,6 @@ import {
 import gql from 'graphql-tag';
 
 export default new Mutation({
-  type: ModelType.mutation,
   schema: gql`
     extend type RootMutation {
       delete#{entity.name}(input: delete#{entity.name}Input!): delete#{entity.name}Payload

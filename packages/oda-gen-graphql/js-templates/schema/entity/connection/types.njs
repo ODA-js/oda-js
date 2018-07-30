@@ -3,11 +3,10 @@
 <#@ context 'entity'#>
 
 <#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Edge.ts`); -#>
-import { ModelType, Input, Type } from '../../../common';
+import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
-  type: ModelType.type,
   schema: gql`
     type #{entity.plural}Edge {
       node: #{entity.name}
@@ -18,11 +17,10 @@ export default new Type({
 });
 
 <#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Connection.ts`); -#>
-import { ModelType, Input, Type } from '../../../common';
+import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
-  type: ModelType.type,
   schema: gql`
     type #{entity.plural}Connection {
       pageInfo: PageInfo!
@@ -39,11 +37,10 @@ if(entity.connections.length > 0){
 #>
 
 <#- chunkStart(`../../../gql/${entity.name}/query/list/${connection.connectionName}Connection.ts`); -#>
-import { ModelType, Input, Type } from '../../../common';
+import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
-  type: ModelType.type,
   schema: gql`
     type #{connection.connectionName}Connection {
       pageInfo: PageInfo!
@@ -54,11 +51,10 @@ export default new Type({
 });
 
 <#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Edge.ts`); -#>
-import { ModelType, Input, Type } from '../../../common';
+import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
-  type: ModelType.type,
   schema: gql`
     type #{connection.connectionName}Edge {
       node: #{connection.refType}

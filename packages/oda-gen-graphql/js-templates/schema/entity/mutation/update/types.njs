@@ -3,11 +3,10 @@
 <#@ context 'entity'#>
 
 <#- chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}Input.ts`); -#>
-import { ModelType, Input, Type } from '../../../common';
+import { Input } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
-  type: ModelType.input,
   schema: gql`
     input update#{entity.name}Input {
       clientMutationId: String
@@ -29,11 +28,10 @@ export default new Input({
 
 <#- chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}Payload.ts`); -#>
 
-import { ModelType, Input, Type } from '../../../common';
+import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
-  type: ModelType.type,
   schema: gql`
     type update#{entity.name}Payload {
       clientMutationId: String
