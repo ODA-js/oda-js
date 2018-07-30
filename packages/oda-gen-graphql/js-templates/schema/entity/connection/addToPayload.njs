@@ -4,7 +4,7 @@
 
 <#- 
 const {entity, connection} = ctx;
-chunkStart(`../../../gql/${entity.name}/connection/addTo${connection.name}Payload.ts`); -#>
+chunkStart(`../../../gql/${entity.name}/connections/addTo${connection.name}Payload.ts`); -#>
 <# slot('import-connection-index-slot',`addTo${connection.name}Payload`) #>
 <# slot('export-connection-index-slot',`addTo${connection.name}Payload`) #>
 import { ModelType, Type } from '../../common';

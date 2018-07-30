@@ -1,7 +1,11 @@
 <#@ context 'items' #>
 <#@ alias 
   'export-connection-index-slot'
--#>
+  'export-helpers-index-slot'
+  'import-common-mutation-create-slot'
+  'import-common-mutation-update-slot'
+  'import-common-mutation-delete-slot'
+#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {
     it.split(',')

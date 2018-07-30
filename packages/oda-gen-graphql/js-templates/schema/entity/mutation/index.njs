@@ -19,6 +19,8 @@ export default new Schema({
 #{partial(ctx.types, 'mutations-embed')}
 <#- chunkEnd(); -#>
 #{partial(ctx, 'mutations-create-index')}
+#{partial(ctx, 'mutations-delete-index')}
+#{partial(ctx, 'mutations-update-index')}
 
 
 

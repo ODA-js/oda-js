@@ -6,10 +6,11 @@
 <#-chunkStart(`../../../gql/${entity.name}/helpers/link${entity.name}To${r.cField}.ts`); -#>
 import {
   toGlobalId
-} from '../../../common';
+} from '../../common';
 import gql from 'graphql-tag';
-
-export default async function linkTo#{r.cField}({
+<# slot('import-helpers-index-slot',`link${entity.name}To${r.cField}`) #>
+<# slot('export-helpers-index-slot',`link${entity.name}To${r.cField}`) #>
+export default async function link#{entity.name}To#{r.cField}({
   context,
   #{r.field},
   #{entity.ownerFieldName},
@@ -42,10 +43,11 @@ export default async function linkTo#{r.cField}({
 <#-chunkStart(`../../../gql/${entity.name}/helpers/unlink${entity.name}From${r.cField}.ts`); -#>
 import {
   toGlobalId
-} from '../../../common';
+} from '../../common';
 import gql from 'graphql-tag';
-
-export default async function unlinkFrom#{r.cField}({
+<# slot('import-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
+<# slot('export-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
+export default async function unlink#{entity.name}From#{r.cField}({
   context, #{r.field},  #{entity.ownerFieldName},
 }) {
   if (#{r.field}) {
@@ -69,9 +71,12 @@ export default async function unlinkFrom#{r.cField}({
 <#-}#>
 
 <#-chunkStart(`../../../gql/${entity.name}/helpers/unlink${entity.name}FromAll.ts`); -#>
-import * as log4js from 'log4js';
-let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
+import {
+  logger,
+} from '../../common';
 import gql from 'graphql-tag';
+<# slot('import-helpers-index-slot',`unlink${entity.name}FromAll`) #>
+<# slot('export-helpers-index-slot',`unlink${entity.name}FromAll`) #>
 
 export default async function unlink#{entity.name}FromAll(args:{
   key,

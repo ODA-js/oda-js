@@ -3,8 +3,6 @@
 <#@ context 'entity'#>
 
 <#-chunkStart(`../../../gql/${entity.name}/mutations/create/create${entity.name}.ts`); -#>
-import * as log4js from 'log4js';
-let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 
 import {
   ModelType,
@@ -14,9 +12,8 @@ import {
   PubSubEngine,
   Mutation,
   fromGlobalId,
-  linkToUser,
   idToCursor,
-  ensureUser,
+  #{slot('import-common-mutation-create-slot')}
 } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -76,13 +73,14 @@ export default new Mutation({
     <#}#>
       let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
+<#- slot('import-common-mutation-create-slot',`ensure${r.ref.entity}`) -#>
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
           context,
           create: true,
         });
-
-        await linkTo#{r.cField}({
+<#- slot('import-common-mutation-create-slot',`link${entity.name}To${r.cField}`) -#>
+        await link#{entity.name}To#{r.cField}({
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,

@@ -4,7 +4,7 @@
 
 <#- 
 const {entity, connection} = ctx;
-chunkStart(`../../../gql/${entity.name}/connection/addTo${connection.relationName}.ts`); -#>
+chunkStart(`../../../gql/${entity.name}/connections/addTo${connection.relationName}.ts`); -#>
 <# slot('import-connection-index-slot',`addTo${connection.relationName}`) #>
 <# slot('export-connection-index-slot',`addTo${connection.relationName}`) #>
 import {

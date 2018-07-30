@@ -1,6 +1,7 @@
 <#@ context 'items' #>
 <#@ alias 
   'import-connection-index-slot'
+  'import-helpers-index-slot'
 -#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {
