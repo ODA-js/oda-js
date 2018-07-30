@@ -3,7 +3,13 @@ import { Factory } from 'fte.js';
 
 export const template = 'entity/data/types/model.ts.njs';
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter?: string,
+) {
   return te.run(mapper(entity, pack, typeMapper), template);
 }
 
@@ -24,7 +30,11 @@ import {
   idField,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutupt {
   const mapToTSTypes = typeMapper.typescript;
   const relations = relationFieldsExistsIn(pack);
   let ids = getFields(entity).filter(idField);
@@ -35,14 +45,15 @@ export function mapper(entity: Entity, pack: ModelPackage, typeMapper: { [key: s
     description: entity.description,
     fields: [
       ...ids,
-      ...getFields(entity)
-        .filter(f => relations(f) || mutableFields(f))]
-      .map(f => {
-        return {
-          name: f.name,
-          type: mapToTSTypes(f.type),
-          required: f.required,
-        };
-      }),
+      ...getFields(entity).filter(f => relations(f) || mutableFields(f)),
+    ].map(f => {
+      return {
+        name: f.name,
+        type: `${mapToTSTypes(f.type)}${
+          f.relation && !f.relation.single ? '[]' : ''
+        }`,
+        required: f.required,
+      };
+    }),
   };
 }
