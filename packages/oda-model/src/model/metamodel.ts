@@ -204,7 +204,7 @@ export class MetaModel extends ModelPackage implements IModel {
     if (hooks) {
       hooks = hooks.filter(f => f);
       hooks.forEach(hook => {
-        if (hook.entities) {
+        if (hook.entities && this.entities.size > 0) {
           let keys = Object.keys(hook.entities);
           for (let i = 0, len = keys.length; i < len; i++) {
             let key = keys[i];
@@ -223,7 +223,7 @@ export class MetaModel extends ModelPackage implements IModel {
             }
           }
         }
-        if (hook.mutations) {
+        if (hook.mutations && this.mutations.size > 0) {
           let keys = Object.keys(hook.mutations);
           for (let i = 0, len = keys.length; i < len; i++) {
             let key = keys[i];
@@ -244,7 +244,7 @@ export class MetaModel extends ModelPackage implements IModel {
             }
           }
         }
-        if (hook.queries) {
+        if (hook.queries && this.queries.size > 0) {
           let keys = Object.keys(hook.queries);
           for (let i = 0, len = keys.length; i < len; i++) {
             let key = keys[i];
