@@ -6,7 +6,7 @@
 #{ partial(ctx.mutations.resolver, 'connection-mutations') }
 #{ partial(ctx.mutations.types, 'connection-mutations-input-payload') }
 
-<#-chunkStart(`../../../gql/${ctx.mutations.types.name}/connections/index.ts`); -#>
+<#-chunkStart(`./connections/index.ts`); -#>
 import { Schema } from '../../common';
 #{slot('import-connection-index-slot')}
 

@@ -17,7 +17,7 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ) {
-  let fieldsEntityAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   return {
     name: entity.name,
     findQuery: decapitalize(entity.name),

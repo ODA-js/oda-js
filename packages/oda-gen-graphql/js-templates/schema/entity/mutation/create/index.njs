@@ -2,7 +2,7 @@
 <#@ alias 'mutations-create-index'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.types.name}/mutations/create/index.ts`); -#>
+<#-chunkStart(`./mutations/create/index.ts`); -#>
 import { Schema } from '../../../common';
 import create#{ctx.types.name} from './create#{ctx.types.name}';
 import create#{ctx.types.name}Input from './create#{ctx.types.name}Input';

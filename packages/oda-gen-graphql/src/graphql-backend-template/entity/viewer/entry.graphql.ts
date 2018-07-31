@@ -44,7 +44,7 @@ export function mapper(
       name: f.name,
       type: 'ID',
     })),
-    ...getFieldsForAcl(aclAllow, role, pack)(entity).filter(identityFields),
+    ...getFieldsForAcl(role, pack)(aclAllow, entity).filter(identityFields),
   ]
     .map(f => ({
       name: f.name,

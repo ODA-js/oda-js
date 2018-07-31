@@ -50,7 +50,7 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutput {
-  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
 
   return {

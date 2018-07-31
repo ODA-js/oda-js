@@ -30,7 +30,7 @@ export function mapper(
 ): MapperOutput {
   return {
     name: entity.name,
-    connections: getFieldsForAcl(aclAllow, role, pack)(entity)
+    connections: getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(persistentRelations(pack))
       .map(f => ({
         relationName: f.relation.fullName,

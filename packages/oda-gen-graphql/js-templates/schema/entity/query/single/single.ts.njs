@@ -2,7 +2,7 @@
 <#@ alias 'query-single'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.entry.name}/query/item/${ctx.entry.singularEntry}.ts`); -#>
+<#-chunkStart(`./query/item/${ctx.entry.singularEntry}.ts`); -#>
 import {
   Query,
   logger,

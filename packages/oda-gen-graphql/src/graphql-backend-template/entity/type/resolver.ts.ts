@@ -61,8 +61,8 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutupt {
-  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
-  const fieldMap = getFieldsForAcl(aclAllow, role, pack);
+  let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
+  const fieldMap = getFieldsForAcl(role, pack);
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -130,7 +130,7 @@ export function mapper(
         refFieldName: decapitalize(refFieldName),
         verb,
         ref,
-        idMap: fieldMap(pack.entities.get(ref.entity))
+        idMap: fieldMap(aclAllow, pack.entities.get(ref.entity))
           .filter(relationFieldsExistsIn(pack))
           .map(f => ({
             verb: f.relation.verb,

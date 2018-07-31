@@ -2,7 +2,7 @@
 <#@ context 'entity'#>
 <#@ alias 'entity-helpers-ensure-entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/helpers/ensure${entity.name}.ts`); -#>
+<#- chunkStart(`./helpers/ensure${entity.name}.ts`); -#>
 import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`ensure${entity.name}`) #>
 <# slot('export-helpers-index-slot',`ensure${entity.name}`) #>

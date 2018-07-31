@@ -2,7 +2,7 @@
 <#@ context 'entity' #>
 <#@ alias 'type-index'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/type/index.ts`); -#>
+<#- chunkStart(`./type/index.ts`); -#>
 #{partial(entity.type.resolver, 'type-resolver-imports')}
 export default new Type({
   schema: gql`

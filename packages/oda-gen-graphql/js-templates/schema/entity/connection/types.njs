@@ -2,7 +2,7 @@
 <#@ alias 'connection-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Edge.ts`); -#>
+<#- chunkStart(`./query/list/${entity.name}Edge.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -16,7 +16,7 @@ export default new Type({
   `,
 });
 
-<#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Connection.ts`); -#>
+<#- chunkStart(`./query/list/${entity.name}Connection.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -36,7 +36,7 @@ if(entity.connections.length > 0){
   entity.connections.forEach(connection => {
 #>
 
-<#- chunkStart(`../../../gql/${entity.name}/query/list/${connection.connectionName}Connection.ts`); -#>
+<#- chunkStart(`./query/list/${connection.connectionName}Connection.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -50,7 +50,7 @@ export default new Type({
   `,
 });
 
-<#- chunkStart(`../../../gql/${entity.name}/query/list/${entity.name}Edge.ts`); -#>
+<#- chunkStart(`./query/list/${entity.name}Edge.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 

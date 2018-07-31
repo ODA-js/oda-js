@@ -2,7 +2,7 @@
 <#@ alias 'mutations-delete-mutation'#>
 <#@ context 'entity'#>
 
-<#-chunkStart(`../../../gql/${entity.name}/mutations/delete/delete${entity.name}.ts`); -#>
+<#-chunkStart(`./mutations/delete/delete${entity.name}.ts`); -#>
 
 import {
   logger,

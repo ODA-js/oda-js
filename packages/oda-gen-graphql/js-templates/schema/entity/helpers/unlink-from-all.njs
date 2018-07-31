@@ -3,7 +3,7 @@
 <#@ context 'entity'#>
 
 <#- for (let r of entity.relations) {#>
-<#-chunkStart(`../../../gql/${entity.name}/helpers/link${entity.name}To${r.cField}.ts`); -#>
+<#-chunkStart(`./helpers/link${entity.name}To${r.cField}.ts`); -#>
 import {
   toGlobalId
 } from '../../common';
@@ -40,7 +40,7 @@ export default async function link#{entity.name}To#{r.cField}({
   }
 }
 
-<#-chunkStart(`../../../gql/${entity.name}/helpers/unlink${entity.name}From${r.cField}.ts`); -#>
+<#-chunkStart(`./helpers/unlink${entity.name}From${r.cField}.ts`); -#>
 import {
   toGlobalId
 } from '../../common';
@@ -70,7 +70,7 @@ export default async function unlink#{entity.name}From#{r.cField}({
 }
 <#-}#>
 
-<#-chunkStart(`../../../gql/${entity.name}/helpers/unlink${entity.name}FromAll.ts`); -#>
+<#-chunkStart(`./helpers/unlink${entity.name}FromAll.ts`); -#>
 import {
   logger,
 } from '../../common';

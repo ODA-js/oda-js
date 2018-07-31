@@ -93,7 +93,7 @@ export function mapper(
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutupt {
   const relsInPackage = relationFieldsExistsIn(pack);
-  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;
@@ -139,7 +139,7 @@ export function mapper(
       }, [])
       .map(entity => pack.get(entity))
       .map(entity => {
-        let fieldsEntityAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+        let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
         return {
           name: entity.name,
           findQuery: decapitalize(entity.name),

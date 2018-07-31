@@ -2,7 +2,7 @@
 <#@ alias 'mutations-create-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/create/create${entity.name}Input.ts`); -#>
+<#- chunkStart(`./mutations/create/create${entity.name}Input.ts`); -#>
 import { Input } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -22,7 +22,7 @@ const refName = rel.fields.length > 0 ? `embed${rel.ref.entity}CreateInto${entit
   `,
 });
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/create/create${entity.name}Payload.ts`); -#>
+<#- chunkStart(`./mutations/create/create${entity.name}Payload.ts`); -#>
 
 import { Type } from '../../../common';
 import gql from 'graphql-tag';

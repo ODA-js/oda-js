@@ -2,7 +2,7 @@
 <#@ alias 'mutations-update-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}Input.ts`); -#>
+<#- chunkStart(`./mutations/update/update${entity.name}Input.ts`); -#>
 import { Input } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -26,7 +26,7 @@ export default new Input({
   `,
 });
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}Payload.ts`); -#>
+<#- chunkStart(`./mutations/update/update${entity.name}Payload.ts`); -#>
 
 import { Type } from '../../../common';
 import gql from 'graphql-tag';

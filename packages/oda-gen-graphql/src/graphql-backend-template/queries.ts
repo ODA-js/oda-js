@@ -1,4 +1,5 @@
 //common queries that is used in code generation
+// const memoizeCache: any = {};
 import { Entity, Field, ModelPackage, MetaModel, Mutation } from 'oda-model';
 
 export const getPackages = (model: MetaModel) =>
@@ -14,23 +15,26 @@ export const relations = (f: Field): boolean => !!f.relation;
 export const getMutations = (pack: ModelPackage): Mutation[] =>
   Array.from(pack.mutations.values());
 
-export const oneUniqueInIndex = (entity: Entity) => (f: Field) => {
+const falseFilter = () => false;
+export const oneUniqueInIndex = (entity: Entity) => {
   let indexes = entity.getMetadata('storage.indexes');
-  let result = false;
   if (indexes !== null && typeof indexes === 'object') {
-    let iNames = Object.keys(indexes);
-    for (let i = 0, len = iNames.length; i < len; i++) {
-      let iName = iNames[i];
-      if (indexes[iName].options.unique && indexes[iName].fields[f.name]) {
-        // only one in unique index
-        result = Object.keys(indexes[iName].fields).length === 1;
-        if (result) {
-          break;
+    return (f: Field) => {
+      let result = false;
+      let iNames = Object.keys(indexes);
+      for (let i = 0, len = iNames.length; i < len; i++) {
+        let iName = iNames[i];
+        if (indexes[iName].options.unique && indexes[iName].fields[f.name]) {
+          // only one in unique index
+          result = Object.keys(indexes[iName].fields).length === 1;
+          if (result) {
+            break;
+          }
         }
       }
-    }
-  }
-  return result;
+      return result;
+    };
+  } else return falseFilter;
 };
 
 export const complexUniqueIndex = (entity: Entity) => {
@@ -65,15 +69,19 @@ export const complexUniqueFields = (entity: Entity) =>
 export const getFieldNames = (entity: Entity) =>
   Array.from(entity.fields.values()).map((f: { name: string }) => f.name);
 
-export const getOrderBy = (allow, role: string, pack: ModelPackage) => (
+export const getOrderBy = (role: string, pack: ModelPackage) => (
+  allow,
   entity: Entity,
 ) =>
-  searchParamsForAcl(allow, role, pack)(entity).filter(f => {
+  searchParamsForAcl(allow, role, pack, entity).filter(f => {
     const field = entity.fields.get(f);
     return field.persistent && !field.relation;
   });
 
-export const searchParamsForAcl = (allow, role: string, pack: ModelPackage) => (
+export const searchParamsForAcl = (
+  allow,
+  role: string,
+  pack: ModelPackage,
   entity: Entity,
 ) =>
   getFieldNames(entity)
@@ -119,16 +127,40 @@ export const derivedFieldsAndRelations = (f: Field): boolean => f.derived;
 export const getFields = (entity: Entity): Field[] =>
   Array.from(entity.fields.values());
 
+// export const getFields = (entity: Entity): Field[] => {
+//   if (!memoizeCache.hasOwnProperty('getFields')) {
+//     memoizeCache.getFields = {};
+//   }
+//   const cache = memoizeCache.getFields;
+//   if (!cache.hasOwnProperty(entity.name)) {
+//     cache[entity.name] = _getFields(entity);
+//   }
+//   return cache[entity.name];
+// };
+
 export const idField = (f: Field): boolean =>
   fields(f) && (f.name === 'id' || f.name === '_id');
 
-export const getFieldsForAcl = (allow, role: string, pack: ModelPackage) => {
+export const getFieldsForAcl = (role: string, pack: ModelPackage) => {
   const existingRel = relationFieldsExistsIn(pack);
-  return (entity: Entity): Field[] =>
+  return (allow, entity: Entity): Field[] =>
     getFields(entity)
       .filter(f => !relations(f) || existingRel(f))
       .filter(f => allow(role, f.getMetadata('acl.read', role)));
 };
+
+// export const getFieldsForAcl = function(role: string, pack: ModelPackage) {
+//   const cv = role + pack.name;
+//   if (!memoizeCache.hasOwnProperty('getFieldsForAcl')) {
+//     memoizeCache.getFieldsForAcl = {};
+//   }
+//   const cache = memoizeCache.getFieldsForAcl;
+//   if (!cache.hasOwnProperty(cv)) {
+//     cache[cv] = _getFieldsForAcl(role, pack);
+//   }
+//   return cache[cv];
+// };
+
 export const relationFieldsExistsIn = (pack: ModelPackage) => (
   f: Field,
 ): boolean => relations(f) && pack.entities.has(f.relation.ref.entity);

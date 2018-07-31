@@ -2,7 +2,7 @@
 <#@ alias 'mutation-index'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.types.name}/mutations/index.ts`); -#>
+<#-chunkStart(`./mutations/index.ts`); -#>
 import create from './create';
 import _delete from './delete';
 import update from './update';

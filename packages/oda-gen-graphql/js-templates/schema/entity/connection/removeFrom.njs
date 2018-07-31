@@ -4,7 +4,7 @@
 
 <#- 
 const {entity, connection} = ctx;
-chunkStart(`../../../gql/${entity.name}/connections/removeFrom${connection.relationName}.ts`); -#>
+chunkStart(`./connections/removeFrom${connection.relationName}.ts`); -#>
 <# slot('import-connection-index-slot',`removeFrom${connection.relationName}`) #>
 <# slot('export-connection-index-slot',`removeFrom${connection.relationName}`) #>
 import {

@@ -2,7 +2,7 @@
 <#@ alias 'mutations-update-index'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.types.name}/mutations/update/index.ts`); -#>
+<#-chunkStart(`./mutations/update/index.ts`); -#>
 import { Schema } from '../../../common';
 import update#{ctx.types.name} from './update#{ctx.types.name}';
 import update#{ctx.types.name}Input from './update#{ctx.types.name}Input';

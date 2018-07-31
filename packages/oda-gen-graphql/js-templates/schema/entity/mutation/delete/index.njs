@@ -2,7 +2,7 @@
 <#@ alias 'mutations-delete-index'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.types.name}/mutations/delete/index.ts`); -#>
+<#-chunkStart(`./mutations/delete/index.ts`); -#>
 import { Schema } from '../../../common';
 import delete#{ctx.types.name} from './delete#{ctx.types.name}';
 import delete#{ctx.types.name}Input from './delete#{ctx.types.name}Input';

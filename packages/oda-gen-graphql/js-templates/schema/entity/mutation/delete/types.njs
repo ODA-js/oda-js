@@ -2,7 +2,7 @@
 <#@ alias 'mutations-delete-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/delete/delete${entity.name}Input.ts`); -#>
+<#- chunkStart(`./mutations/delete/delete${entity.name}Input.ts`); -#>
 import { Input } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -17,7 +17,7 @@ export default new Input({
   `,
 });
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/delete/delete${entity.name}Payload.ts`); -#>
+<#- chunkStart(`./mutations/delete/delete${entity.name}Payload.ts`); -#>
 
 import { Type } from '../../../common';
 import gql from 'graphql-tag';

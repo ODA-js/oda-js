@@ -2,7 +2,7 @@
 <#@ alias 'mutations-create-mutation'#>
 <#@ context 'entity'#>
 
-<#-chunkStart(`../../../gql/${entity.name}/mutations/create/create${entity.name}.ts`); -#>
+<#-chunkStart(`./mutations/create/create${entity.name}.ts`); -#>
 import {
   logger,
   RegisterConnectors,

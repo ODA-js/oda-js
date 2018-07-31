@@ -2,7 +2,7 @@
 <#@ alias 'query-list-sort-order'#>
 <#@ context 'entity'#>
 
-<#-chunkStart(`../../../gql/${ctx.entry.name}/query/list/${entity.name}SortOrder.ts`); -#>
+<#-chunkStart(`./query/list/${entity.name}SortOrder.ts`); -#>
 import { Input } from '../../../common';
 import gql from 'graphql-tag';
 

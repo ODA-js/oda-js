@@ -4,12 +4,11 @@ import { capitalize } from '../utils';
 
 export const template = 'schema/package.ts.njs';
 
-export function generate(
-  te: Factory,
+export function prepare(
   pack: ModelPackage,
   typeMapper: { [key: string]: (string) => string },
 ) {
-  return te.run(mapper(pack, typeMapper), template);
+  return { ctx: mapper(pack, typeMapper), template };
 }
 
 export interface MapperOutupt {

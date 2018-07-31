@@ -41,7 +41,7 @@ export function mapper(
     name: entity.name,
     plural: entity.plural,
     ownerFieldName: decapitalize(entity.name),
-    connections: getFieldsForAcl(aclAllow, role, pack)(entity)
+    connections: getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(persistentRelations(pack))
       .map(f => {
         let relFields = [];

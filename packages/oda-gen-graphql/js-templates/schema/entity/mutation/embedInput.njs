@@ -2,7 +2,7 @@
 <#@ alias 'mutations-embed'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`../../../gql/${entity.name}/mutations/embed${entity.name}Input.ts`); -#>
+<#- chunkStart(`./mutations/embed${entity.name}Input.ts`); -#>
 import { Input } from '../../common';
 import gql from 'graphql-tag';
 

@@ -2,7 +2,7 @@
 <#@ alias 'entity-index' #>
 <#@ context 'entity' #>
 
-<#- chunkStart(`../../../gql/${entity.name}/index.ts`); -#>
+<#- chunkStart(`./index.ts`); -#>
 import connections from './connections';
 import * as helpers from './helpers';
 import mutations from './mutations';

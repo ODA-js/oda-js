@@ -7,23 +7,22 @@ import * as ensure from './ensure';
 
 type MapperOutput = {};
 
-export function generate(
-  te: Factory,
+export function prepare(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
   defaultAdapter: 'mongoose' | 'sequelize',
-): { name: string; content: string }[] {
+) {
   let adapter = entity.getMetadata(
     'storage.adapter',
     defaultAdapter || 'mongoose',
   );
-  return te.run(
-    mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+  return {
+    ctx: mapper(entity, pack, role, aclAllow, typeMapper, adapter),
     template,
-  );
+  };
 }
 
 export function mapper(
@@ -34,8 +33,6 @@ export function mapper(
   typeMapper: { [key: string]: (string) => string },
   adapter: 'mongoose' | 'sequelize',
 ): MapperOutput {
-  console.log('done');
-
   return {
     name: entity.name,
     type: {

@@ -87,7 +87,7 @@ export function mapper(
   typeMapper: { [key: string]: (string) => string },
   adapter: 'mongoose' | 'sequelize',
 ): MapperOutupt {
-  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const relations = fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {

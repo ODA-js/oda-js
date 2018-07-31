@@ -139,7 +139,7 @@ export default (args: Generator) => {
     // generate per package
     packages.forEach(pkg => {
       // new schema generated
-      debugger;
+      // debugger;
       const generateGQL = $genNewSchema.bind(
         null,
         pkg,
@@ -170,7 +170,9 @@ export default (args: Generator) => {
       // entity/connections
 
       if (!pkg.abstract) {
+        console.time('ngql');
         generateGQL(entities);
+        console.timeEnd('ngql');
         if (config.graphql) {
           generate(
             entities,

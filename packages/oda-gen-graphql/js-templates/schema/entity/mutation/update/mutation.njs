@@ -2,7 +2,7 @@
 <#@ alias 'mutations-update-mutation'#>
 <#@ context 'entity'#>
 
-<#-chunkStart(`../../../gql/${entity.name}/mutations/update/update${entity.name}.ts`); -#>
+<#-chunkStart(`./mutations/update/update${entity.name}.ts`); -#>
 
 import {
   logger,

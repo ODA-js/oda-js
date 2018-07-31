@@ -2,7 +2,7 @@
 <#@ alias 'query-list'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`../../../gql/${ctx.entry.name}/query/list/${ctx.entry.pluralEntry}.ts`); -#>
+<#-chunkStart(`./query/list/${ctx.entry.pluralEntry}.ts`); -#>
 import {
   Query,
   logger,

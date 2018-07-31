@@ -120,7 +120,7 @@ function visibility(
     list: [],
     embedded: [],
   };
-  let allFields = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let allFields = getFieldsForAcl(role, pack)(aclAllow, entity);
   result.edit.push(...allFields.map(f => f.name));
   result.show.push(...result.edit);
   result.list.push(
@@ -272,7 +272,7 @@ function guessListLabel(entity, aclAllow, role, pack, aor) {
   if (UI && UI.listName) {
     result.source = UI.listName;
   } else {
-    let res = getFieldsForAcl(aclAllow, role, pack)(entity)
+    let res = getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(identityFields)
       .filter(oneUniqueInIndex(entity))[0];
     if (res) {
@@ -293,7 +293,7 @@ function guessQuickSearch(entity: Entity, aclAllow, role, pack, aor) {
     }
   }
   result.push(
-    ...getFieldsForAcl(aclAllow, role, pack)(entity)
+    ...getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(identityFields)
       .filter(oneUniqueInIndex(entity))
       .map(i => i.name),
@@ -308,7 +308,7 @@ export function mapper(
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutput {
-  let fieldsAcl = getFieldsForAcl(aclAllow, role, pack)(entity);
+  let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
   const mapToGQLTypes = typeMapper.graphql;

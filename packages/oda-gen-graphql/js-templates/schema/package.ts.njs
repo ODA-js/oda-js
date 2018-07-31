@@ -1,7 +1,7 @@
 <#@ chunks "$$$main$$$" -#>
 <#@ context 'pkg' #>
 
-<#- chunkStart(`../../gql/common.ts`); -#>
+<#- chunkStart(`./common.ts`); -#>
 
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
@@ -25,7 +25,7 @@ import { PubSubEngine } from 'graphql-subscriptions';
 const { selectionTree: traverse } = lib;
 
 import { utils } from 'oda-api-graphql';
-import RegisterConnectors from '../graphql-gen/data/registerConnectors';
+import RegisterConnectors from '../../graphql-gen/data/registerConnectors';
 
 const { validId } = utils;
 
@@ -53,7 +53,7 @@ import {
   Union,
   Schema,
   UnionInterfaceResolverFunction,
-} from './typedef';
+} from '../typedef';
 
 export {
   Enum,
