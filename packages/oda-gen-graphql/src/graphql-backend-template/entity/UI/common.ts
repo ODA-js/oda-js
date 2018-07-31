@@ -96,10 +96,10 @@ import {
   getRelationNames,
   relationFieldsExistsIn,
   oneUniqueInIndex,
-  complexUniqueIndex,
   complexUniqueFields,
   getFields,
   idField,
+  memoizeEntityMapper,
 } from '../../queries';
 import { platform } from 'os';
 
@@ -301,7 +301,9 @@ function guessQuickSearch(entity: Entity, aclAllow, role, pack, aor) {
   return result;
 }
 
-export function mapper(
+export const mapper = memoizeEntityMapper('ui/common', _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
@@ -310,8 +312,6 @@ export function mapper(
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
-  const mapToTSTypes = typeMapper.typescript;
-  const mapToGQLTypes = typeMapper.graphql;
   const mapAORTypes = typeMapper.aor;
   const mapResourceTypes = typeMapper.resource;
   const mapAORFilterTypes = typeMapper.aor;

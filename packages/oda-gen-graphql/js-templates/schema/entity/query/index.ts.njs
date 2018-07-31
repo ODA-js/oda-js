@@ -12,11 +12,21 @@ export default new Schema({
 });
 <#-chunkStart(`./query/list/index.ts`); -#>
 import #{ctx.entry.pluralEntry} from './#{ctx.entry.pluralEntry}';
-import { Schema } from '../../../common';
+import #{ctx.entry.name}ComplexFilter from './#{ctx.entry.name}ComplexFilter';
+import #{ctx.entry.name}SortOrder from './#{ctx.entry.name}SortOrder';
+import #{ctx.entry.plural}Connection from './#{ctx.entry.plural}Connection';
+import #{ctx.entry.plural}Edge from './#{ctx.entry.plural}Edge';
 
+import { Schema } from '../../../common';
 export default new Schema({
   name: '#{ctx.entry.name}.queries.list',
-  items: [#{ctx.entry.pluralEntry}],
+  items: [
+    #{ctx.entry.pluralEntry},
+    #{ctx.entry.name}ComplexFilter,
+    #{ctx.entry.name}SortOrder,
+    #{ctx.entry.plural}Connection,
+    #{ctx.entry.plural}Edge,
+  ],
 });
 <#-chunkStart(`./query/index.ts`); -#>
 
@@ -36,3 +46,4 @@ export default new Schema({
 #{partial(ctx,'query-single')}
 #{partial(ctx,'query-list')}
 #{partial(ctx.sortOrder,'query-list-sort-order')}
+#{partial(ctx.filter,'query-list-complex-filter')}

@@ -1,5 +1,6 @@
 import { Entity, ModelPackage } from 'oda-model';
 import { Factory } from 'fte.js';
+import { memoizeEntityMapper } from '../../queries';
 
 export const template = 'entity/type/enums.graphql.njs';
 
@@ -21,7 +22,9 @@ export interface MapperOutput {
 
 import { getOrderBy } from '../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,

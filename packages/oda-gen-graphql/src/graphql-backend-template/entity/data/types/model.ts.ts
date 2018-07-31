@@ -7,13 +7,18 @@ export function generate(
   te: Factory,
   entity: Entity,
   pack: ModelPackage,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
   defaultAdapter?: string,
 ) {
-  return te.run(mapper(entity, pack, typeMapper), template);
+  return te.run(
+    mapper(entity, pack, role, aclAllow, typeMapper, defaultAdapter),
+    template,
+  );
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   plural: string;
   description: string;
@@ -28,13 +33,19 @@ import {
   relationFieldsExistsIn,
   mutableFields,
   idField,
+  memoizeEntityMapper,
 } from '../../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+  adapter?: string,
+): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
   const relations = relationFieldsExistsIn(pack);
   let ids = getFields(entity).filter(idField);

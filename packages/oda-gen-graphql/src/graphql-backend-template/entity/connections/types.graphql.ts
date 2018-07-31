@@ -3,7 +3,11 @@ import { printRequired, printArguments } from '../../utils';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/connections/types.graphql.njs';
-import { persistentRelations, getFieldsForAcl } from '../../queries';
+import {
+  persistentRelations,
+  getFieldsForAcl,
+  memoizeEntityMapper,
+} from '../../queries';
 
 export function generate(
   te: Factory,
@@ -31,7 +35,9 @@ export interface MapperOutput {
   }[];
 }
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,

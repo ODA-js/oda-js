@@ -8,7 +8,7 @@ export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: st
   return te.run(mapper(pack, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   mutations: {
     name: string;
@@ -20,7 +20,7 @@ import {
   getMutations,
 } from '../queries';
 
-export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   return {
     name: capitalize(pack.name),
     mutations: getMutations(pack)

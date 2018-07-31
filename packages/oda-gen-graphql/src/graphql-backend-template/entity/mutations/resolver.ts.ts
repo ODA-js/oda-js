@@ -15,7 +15,7 @@ export function generate(
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   ownerFieldName: string;
   // unique: {
@@ -83,15 +83,18 @@ import {
   getFields,
   idField,
   relations as filterRels,
+  memoizeEntityMapper,
 } from '../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   const relsInPackage = relationFieldsExistsIn(pack);
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);

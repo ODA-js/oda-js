@@ -1,7 +1,11 @@
 import { Entity, ModelPackage } from 'oda-model';
 import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
-import { persistentRelations, getFieldsForAcl } from '../../../queries';
+import {
+  persistentRelations,
+  getFieldsForAcl,
+  memoizeEntityMapper,
+} from '../../../queries';
 
 export const template = 'entity/connections/mutations/resolver.ts.njs';
 
@@ -16,7 +20,7 @@ export function generate(
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   ownerFieldName: string;
   connections: {
@@ -35,13 +39,15 @@ export interface MapperOutupt {
 // для каждой операции свои параметры с типами должны быть.
 // специальный маппер типов для ts где ID === string
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),

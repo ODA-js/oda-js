@@ -8,14 +8,18 @@ import {
   oneUniqueInIndex,
   complexUniqueIndex,
   relations,
+  memoizeEntityMapper,
 } from '../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper('schema/common', _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
+  adapter: string,
 ) {
   let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   return {

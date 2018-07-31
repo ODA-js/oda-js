@@ -16,7 +16,7 @@ export function generate(
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   partials: {
     entry: schema.entry.MapperOutput;
@@ -28,7 +28,7 @@ export function mapper(
   mutation: Mutation,
   pack: ModelPackage,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   return {
     name: capitalize(mutation.name),
     partials: {

@@ -28,9 +28,12 @@ import {
   identityFields,
   getFields,
   idField,
+  memoizeEntityMapper,
 } from '../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,

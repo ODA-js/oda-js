@@ -7,7 +7,7 @@ export function generate(te: Factory, pack: MetaModel, typeMapper: { [key: strin
   return te.run(mapper(pack, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   packageList: {
     name: string;
     entry: string;
@@ -18,7 +18,7 @@ import {
   getPackages,
 } from '../queries';
 
-export function mapper(model: MetaModel, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(model: MetaModel, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   return {
     packageList: getPackages(model)
       .filter(p => !p.abstract)

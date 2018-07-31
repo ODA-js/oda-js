@@ -10,16 +10,26 @@ export const template = {
   sequelize: 'entity/data/sequelize/connector.ts.njs',
 };
 
-export function generate(te: Factory, entity: Entity, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }, defaultAdapter?: string) {
-  let adapter = entity.getMetadata('storage.adapter', defaultAdapter || 'mongoose');
-  return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
+export function generate(
+  te: Factory,
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+  adapter?: string,
+) {
+  return te.run(
+    mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+    template[adapter],
+  );
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   description: string;
   unique: string[];
-  complexUniqueIndex: any[]; /* {
+  complexUniqueIndex: any[] /* {
     fields: {
       [key: string]: number,
     };
@@ -27,29 +37,35 @@ export interface MapperOutupt {
       sparse?: boolean,
       unique: boolean,
     };
-  };*/
+  };*/;
   loaders: any[];
   fields: string[];
-  filterAndSort: { type: string, name: string, gqlType: string }[];
-  search: { type: string, name: string, gqlType: string, rel: boolean, _name?: string }[];
+  filterAndSort: { type: string; name: string; gqlType: string }[];
+  search: {
+    type: string;
+    name: string;
+    gqlType: string;
+    rel: boolean;
+    _name?: string;
+  }[];
   updatableRels: string[];
   ownerFieldName: string;
   cOwnerFieldName: string;
   args: {
-    create: { name: string; type: string; }[];
+    create: { name: string; type: string }[];
     update: {
-      find: { name: string; type: string; cName: string; }[];
-      payload: { name: string; type: string; }[];
+      find: { name: string; type: string; cName: string }[];
+      payload: { name: string; type: string }[];
     };
-    remove: { name: string; type: string; cName: string; }[];
-    getOne: { name: string; type: string; cName: string; }[];
+    remove: { name: string; type: string; cName: string }[];
+    getOne: { name: string; type: string; cName: string }[];
   };
   relations: {
     field: string;
     relationName: string;
-    verb: string,
-    addArgs: { name: string; type: string; }[];
-    removeArgs: { name: string; type: string; }[];
+    verb: string;
+    addArgs: { name: string; type: string }[];
+    removeArgs: { name: string; type: string }[];
     ref: {
       backField: string;
       usingField: string;
@@ -60,8 +76,8 @@ export interface MapperOutupt {
         backField: string;
         entity: string;
         field: string;
-      }
-    }
+      };
+    };
   }[];
 }
 
@@ -78,9 +94,19 @@ import {
   getRelationNames,
   complexUniqueIndex,
   idField,
+  memoizeEntityMapper,
 } from '../../../queries';
 
-export function mapper(entity: Entity, pack: ModelPackage, adapter: string, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+  adapter?: string,
+): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   const persistentRelation = persistentRelations(pack);
@@ -99,7 +125,8 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
           name: f.name,
           uName: capitalize(f.name),
           type: mapToTSTypes(f.type),
-        })).sort((a, b) => {
+        }))
+        .sort((a, b) => {
           if (a.name > b.name) return 1;
           else if (a.name < b.name) return -1;
           else return 0;
@@ -117,12 +144,23 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
       .map(f => f.name),
     filterAndSort: getFields(entity)
       .filter(f => persistentFields(f) && indexedFields(f))
-      .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type })),
+      .map(f => ({
+        name: f.name,
+        type: mapToTSTypes(f.type),
+        gqlType: f.type,
+      })),
     search: [
       ...ids,
-      ...getFields(entity)
-        .filter(f => indexedFields(f) || singleStoredRelations(f))]
-      .map(f => ({ name: f.name, type: mapToTSTypes(f.type), gqlType: f.type, rel: !!f.relation, _name: (f['_name'] || f.name) })),
+      ...getFields(entity).filter(
+        f => indexedFields(f) || singleStoredRelations(f),
+      ),
+    ].map(f => ({
+      name: f.name,
+      type: mapToTSTypes(f.type),
+      gqlType: f.type,
+      rel: !!f.relation,
+      _name: f['_name'] || f.name,
+    })),
     ownerFieldName: decapitalize(entity.name),
     cOwnerFieldName: capitalize(entity.name),
     description: entity.description,
@@ -133,24 +171,27 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
       create: [
         ...[
           ...ids,
-          ...getFields(entity)
-            .filter(f => singleStoredRelations(f) || mutableFields(f))]
-          .map(f => ({
-            name: f.name,
-            type: mapToTSTypes(f.type),
-          }))],
+          ...getFields(entity).filter(
+            f => singleStoredRelations(f) || mutableFields(f),
+          ),
+        ].map(f => ({
+          name: f.name,
+          type: mapToTSTypes(f.type),
+        })),
+      ],
       update: {
         find: [
           ...[
             ...ids,
             ...getFields(entity)
               .filter(identityFields)
-              .filter(singleUnique)]
-            .map(f => ({
-              name: f.name,
-              type: mapToTSTypes(f.type),
-              cName: capitalize(f.name),
-            }))],
+              .filter(singleUnique),
+          ].map(f => ({
+            name: f.name,
+            type: mapToTSTypes(f.type),
+            cName: capitalize(f.name),
+          })),
+        ],
         payload: getFields(entity)
           .filter(f => singleStoredRelations(f) || mutableFields(f))
           .map(f => ({
@@ -162,21 +203,17 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
         ...ids,
         ...getFields(entity)
           .filter(identityFields)
-          .filter(singleUnique)]
-        .map(f => ({
-          name: f.name,
-          type: mapToTSTypes(f.type),
-          cName: capitalize(f.name),
-        })),
-      getOne: [
-        ...ids,
-        ...getFields(entity)
-          .filter(identityFields)]
-        .map(f => ({
-          name: f.name,
-          type: mapToTSTypes(f.type),
-          cName: capitalize(f.name),
-        })),
+          .filter(singleUnique),
+      ].map(f => ({
+        name: f.name,
+        type: mapToTSTypes(f.type),
+        cName: capitalize(f.name),
+      })),
+      getOne: [...ids, ...getFields(entity).filter(identityFields)].map(f => ({
+        name: f.name,
+        type: mapToTSTypes(f.type),
+        cName: capitalize(f.name),
+      })),
     },
     relations: getFields(entity)
       .filter(persistentRelation)
@@ -195,13 +232,15 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
           },
         };
         let sameEntity = entity.name === f.relation.ref.entity;
-        let refFieldName = `${f.relation.ref.entity}${sameEntity ? capitalize(f.name) : ''}`;
+        let refFieldName = `${f.relation.ref.entity}${
+          sameEntity ? capitalize(f.name) : ''
+        }`;
         let refe = pack.entities.get(ref.entity);
 
         let addArgs = [
           {
             name: decapitalize(entity.name),
-            type: mapToTSTypes(ids[0].type)
+            type: mapToTSTypes(ids[0].type),
           },
           {
             name: decapitalize(refFieldName),
@@ -211,7 +250,7 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
         let removeArgs = [...addArgs];
 
         if (verb === 'BelongsToMany') {
-          let current = (f.relation as BelongsToMany);
+          let current = f.relation as BelongsToMany;
           ref.using.entity = current.using.entity;
           ref.using.field = current.using.field;
           ref.backField = current.using.backField;
@@ -219,10 +258,17 @@ export function mapper(entity: Entity, pack: ModelPackage, adapter: string, type
           // let refe = pack.entities.get(ref.entity);
           let opposite = getRelationNames(refe)
             // по одноименному классу ассоциации
-            .filter(r => (current.opposite && current.opposite === r) || ((refe.fields.get(r).relation instanceof BelongsToMany)
-              && (refe.fields.get(r).relation as BelongsToMany).using.entity === (f.relation as BelongsToMany).using.entity))
+            .filter(
+              r =>
+                (current.opposite && current.opposite === r) ||
+                (refe.fields.get(r).relation instanceof BelongsToMany &&
+                  (refe.fields.get(r).relation as BelongsToMany).using
+                    .entity === (f.relation as BelongsToMany).using.entity),
+            )
             .map(r => refe.fields.get(r).relation)
-            .filter(r => r instanceof BelongsToMany && (current !== r))[0] as BelongsToMany;
+            .filter(
+              r => r instanceof BelongsToMany && current !== r,
+            )[0] as BelongsToMany;
           /// тут нужно получить поле по которому opposite выставляет свое значение,
           // и значение
           if (opposite) {

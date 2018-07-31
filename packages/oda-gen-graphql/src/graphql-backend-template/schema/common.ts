@@ -13,12 +13,8 @@ export function prepare(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-  defaultAdapter: 'mongoose' | 'sequelize',
+  adapter: string,
 ) {
-  let adapter = entity.getMetadata(
-    'storage.adapter',
-    defaultAdapter || 'mongoose',
-  );
   return {
     ctx: mapper(entity, pack, role, aclAllow, typeMapper, adapter),
     template,
@@ -31,7 +27,7 @@ export function mapper(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-  adapter: 'mongoose' | 'sequelize',
+  adapter: string,
 ): MapperOutput {
   return {
     name: entity.name,
@@ -109,6 +105,13 @@ export function mapper(
         typeMapper,
       ),
       sortOrder: entityMappers.type.enums.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+      ),
+      filter: entityMappers.type.entry.mapper(
         entity,
         pack,
         role,

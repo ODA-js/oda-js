@@ -50,7 +50,7 @@ export default new Type({
   `,
 });
 
-<#- chunkStart(`./query/list/${entity.name}Edge.ts`); -#>
+<#- chunkStart(`./query/list/${connection.connectionName}Edge.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 

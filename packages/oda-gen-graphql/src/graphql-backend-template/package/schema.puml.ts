@@ -17,7 +17,7 @@ export interface RelationsList {
   using?: string;
 };
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   relations: RelationsList[];
   entities: {
@@ -43,7 +43,7 @@ import {
   persistentFields,
 } from '../queries';
 
-export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutupt {
+export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {
     rels.forEach((rel, fiedls) => {

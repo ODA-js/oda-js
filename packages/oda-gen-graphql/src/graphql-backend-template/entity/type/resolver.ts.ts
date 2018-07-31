@@ -1,6 +1,7 @@
 import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 import { Factory } from 'fte.js';
+import { memoizeEntityMapper } from '../../queries';
 
 export const template = 'entity/type/resolver.ts.njs';
 
@@ -15,7 +16,7 @@ export function generate(
   return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   description: string;
   ownerFieldName: string;
@@ -54,13 +55,15 @@ import {
   derivedFields,
 } from '../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   const fieldMap = getFieldsForAcl(role, pack);
   return {

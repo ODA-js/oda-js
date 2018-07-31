@@ -1,8 +1,11 @@
 import { Entity, ModelPackage } from 'oda-model';
 import { Factory } from 'fte.js';
-import { persistentRelations, getFieldsForAcl } from '../../../queries';
+import {
+  persistentRelations,
+  getFieldsForAcl,
+  memoizeEntityMapper,
+} from '../../../queries';
 export const template = 'entity/connections/mutations/entry.graphql.njs';
-
 export function generate(
   te: Factory,
   entity: Entity,
@@ -21,7 +24,9 @@ export interface MapperOutput {
   }[];
 }
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,

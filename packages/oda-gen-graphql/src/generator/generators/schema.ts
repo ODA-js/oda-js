@@ -13,7 +13,7 @@ export default function $generate(
   role: string,
   allow,
   typeMapper: { [key: string]: (string) => string },
-  adapter: 'mongoose' | 'sequelize',
+  adapter: string,
   list,
 ) {
   const sources = [];

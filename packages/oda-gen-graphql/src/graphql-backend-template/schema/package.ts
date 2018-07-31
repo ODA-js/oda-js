@@ -11,7 +11,7 @@ export function prepare(
   return { ctx: mapper(pack, typeMapper), template };
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   entities: { name: string }[];
 }
@@ -21,7 +21,7 @@ import { getEntities } from '../queries';
 export function mapper(
   pack: ModelPackage,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   return {
     name: capitalize(pack.name),
     entities: getEntities(pack).map(e => ({

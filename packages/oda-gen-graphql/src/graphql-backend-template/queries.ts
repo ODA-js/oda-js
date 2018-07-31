@@ -1,5 +1,6 @@
 //common queries that is used in code generation
 import { Entity, Field, ModelPackage, MetaModel, Mutation } from 'oda-model';
+import { type } from './entity';
 
 let memoizeCache: any = {};
 
@@ -228,3 +229,27 @@ export const storedRelationsExistingIn = (pack: ModelPackage) => (
 // get persistent fields with relations of entity in package
 export const persistentRelations = (pack: ModelPackage) => f =>
   relationFieldsExistsIn(pack)(f) && f.persistent;
+
+export const memoizeEntityMapper = (name, mapper) => (
+  entity: Entity,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+  defaultAdapter?: string,
+) => {
+  let adapter = entity.getMetadata(
+    'storage.adapter',
+    defaultAdapter || 'mongoose',
+  );
+  if (!memoizeCache.hasOwnProperty(name)) {
+    memoizeCache[name] = {};
+  }
+  const cv =
+    (role || 'system') + (pack.name || 'system') + entity.name + adapter;
+  const cache = memoizeCache[name];
+  if (!cache.hasOwnProperty(cv)) {
+    cache[cv] = mapper(entity, pack, role, aclAllow, typeMapper, adapter);
+  }
+  return cache[cv];
+};

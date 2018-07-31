@@ -12,17 +12,18 @@ export function generate(
   te: Factory,
   entity: Entity,
   pack: ModelPackage,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
-  defaultAdapter?: string,
+  adapter?: string,
 ) {
-  let adapter = entity.getMetadata(
-    'storage.adapter',
-    defaultAdapter || 'mongoose',
+  return te.run(
+    mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+    template[adapter],
   );
-  return te.run(mapper(entity, pack, adapter, typeMapper), template[adapter]);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   plural?: string;
   strict: boolean | undefined;
@@ -54,14 +55,19 @@ import {
   singleStoredRelationsExistingIn,
   indexes,
   idField,
+  memoizeEntityMapper,
 } from '../../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
-  adapter: string,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+  adapter: string,
+): MapperOutput {
   let ids = getFields(entity)
     .filter(idField)
     .filter(f => f.type !== 'ID');

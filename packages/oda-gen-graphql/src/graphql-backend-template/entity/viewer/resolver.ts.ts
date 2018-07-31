@@ -16,7 +16,7 @@ export function generate(
   return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
 
-export interface MapperOutupt {
+export interface MapperOutput {
   name: string;
   singular: string;
   plural: string;
@@ -30,15 +30,18 @@ import {
   identityFields,
   idField,
   getFields,
+  memoizeEntityMapper,
 } from '../../queries';
 
-export function mapper(
+export const mapper = memoizeEntityMapper(template, _mapper);
+
+export function _mapper(
   entity: Entity,
   pack: ModelPackage,
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-): MapperOutupt {
+): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
