@@ -1,6 +1,11 @@
 //common queries that is used in code generation
-// const memoizeCache: any = {};
 import { Entity, Field, ModelPackage, MetaModel, Mutation } from 'oda-model';
+
+let memoizeCache: any = {};
+
+export const resetCache = () => {
+  memoizeCache = {};
+};
 
 export const getPackages = (model: MetaModel) =>
   Array.from(model.packages.values());
@@ -16,6 +21,7 @@ export const getMutations = (pack: ModelPackage): Mutation[] =>
   Array.from(pack.mutations.values());
 
 const falseFilter = () => false;
+
 export const oneUniqueInIndex = (entity: Entity) => {
   let indexes = entity.getMetadata('storage.indexes');
   if (indexes !== null && typeof indexes === 'object') {
@@ -38,85 +44,90 @@ export const oneUniqueInIndex = (entity: Entity) => {
 };
 
 export const complexUniqueIndex = (entity: Entity) => {
-  let indexList = entity.getMetadata('storage.indexes') || {};
-  return Object.keys(indexList)
-    .filter(
-      i =>
-        indexList[i].options.unique &&
-        Object.keys(indexList[i].fields).length > 1,
-    )
-    .map(i => {
-      return {
-        name: i,
-        ...indexList[i],
-      };
-    });
+  let indexList = entity.getMetadata('storage.indexes');
+  if (indexList) {
+    return Object.keys(indexList)
+      .filter(
+        i =>
+          indexList[i].options.unique &&
+          Object.keys(indexList[i].fields).length > 1,
+      )
+      .map(i => {
+        return {
+          name: i,
+          ...indexList[i],
+        };
+      });
+  } else {
+    return [];
+  }
 };
 
 export const complexUniqueFields = (entity: Entity) =>
   complexUniqueIndex(entity).reduce((result, cur) => {
-    return [...result, ...Object.keys(cur.fields)];
+    result.push(...Object.keys(cur.fields));
+    return result;
   }, []);
 
-// Array.from(entity.identity).filter(trulyUnique(entity));
-
-// export const uniqueSearchParamsForAcl = (role: string) => (entity: Entity) => [
-//   ...getUniqueFieldNames(entity),
-//   ...complexUniqueFields(entity),
-// ]
-//   .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
-
-export const getFieldNames = (entity: Entity) =>
+export const _getFieldNames = (entity: Entity) =>
   Array.from(entity.fields.values()).map((f: { name: string }) => f.name);
 
-export const getOrderBy = (role: string, pack: ModelPackage) => (
-  allow,
-  entity: Entity,
-) =>
-  searchParamsForAcl(allow, role, pack, entity).filter(f => {
+export const getFieldNames = (entity: Entity) => {
+  if (!memoizeCache.hasOwnProperty('getFieldNames')) {
+    memoizeCache.getFieldNames = {};
+  }
+  const cache = memoizeCache.getFieldNames;
+  if (!cache.hasOwnProperty(entity.name)) {
+    cache[entity.name] = _getFieldNames(entity);
+  }
+  return cache[entity.name];
+};
+
+export const getOrderBy = (role: string) => (allow, entity: Entity) =>
+  searchParamsForAcl(allow, role, entity).filter(f => {
     const field = entity.fields.get(f);
     return field.persistent && !field.relation;
   });
 
-export const searchParamsForAcl = (
-  allow,
-  role: string,
-  pack: ModelPackage,
-  entity: Entity,
-) =>
+export const searchParamsForAcl = (allow, role: string, entity: Entity) =>
   getFieldNames(entity)
     // .filter(i => i !== 'id')
     .filter(i =>
       allow(role, entity.fields.get(i).getMetadata('acl.read', role)),
     );
 
-export const filterForAcl = (allow, role: string, pack: ModelPackage) => (
-  entity: Entity,
-) => {
+export const _filterForAcl = (role: string, pack: ModelPackage) => {
   const existingRel = relationFieldsExistsIn(pack);
-  return Object.keys(
-    getFieldNames(entity)
-      .concat(Array.from(entity.relations))
-      .reduce((res, cur) => {
-        res[cur] = 1;
-        return res;
-      }, {}),
-  ).filter(f => {
-    const field = entity.fields.get(f);
-    return (
-      (!relations(field) || existingRel(field)) &&
-      allow(role, field.getMetadata('acl.read', role))
-    );
-  });
+  return (allow, entity: Entity) => {
+    return Object.keys(
+      getFieldNames(entity)
+        .concat(getRelationNames(entity))
+        .reduce((res, cur) => {
+          res[cur] = 1;
+          return res;
+        }, {}),
+    ).filter(f => {
+      const field = entity.fields.get(f);
+      return (
+        (!relations(field) || existingRel(field)) &&
+        allow(role, field.getMetadata('acl.read', role))
+      );
+    });
+  };
 };
 
-/*
-export const filterSubscriptionsForAcl = (allow) => (role: string) => (entity: Entity) =>
-  Array.from(entity.fields.values())
-    .filter(f => !f.relation)
-    .map(f => f.name)
-    .filter(i => allow(role, entity.fields.get(i).getMetadata('acl.read', role)));
-*/
+export const filterForAcl = (role: string, pack: ModelPackage) => {
+  if (!memoizeCache.hasOwnProperty('filterForAcl')) {
+    memoizeCache.filterForAcl = {};
+  }
+  const cv = role + pack.name;
+  const cache = memoizeCache.filterForAcl;
+  if (!cache.hasOwnProperty(cv)) {
+    cache[cv] = _filterForAcl(role, pack);
+  }
+  return cache[cv];
+};
+
 export const getRelationNames = (entity: Entity) =>
   Array.from(entity.relations);
 
@@ -124,24 +135,24 @@ export const derivedFields = (f: Field): boolean => fields(f) && f.derived;
 
 export const derivedFieldsAndRelations = (f: Field): boolean => f.derived;
 
-export const getFields = (entity: Entity): Field[] =>
+export const _getFields = (entity: Entity): Field[] =>
   Array.from(entity.fields.values());
 
-// export const getFields = (entity: Entity): Field[] => {
-//   if (!memoizeCache.hasOwnProperty('getFields')) {
-//     memoizeCache.getFields = {};
-//   }
-//   const cache = memoizeCache.getFields;
-//   if (!cache.hasOwnProperty(entity.name)) {
-//     cache[entity.name] = _getFields(entity);
-//   }
-//   return cache[entity.name];
-// };
+export const getFields = (entity: Entity): Field[] => {
+  if (!memoizeCache.hasOwnProperty('getFields')) {
+    memoizeCache.getFields = {};
+  }
+  const cache = memoizeCache.getFields;
+  if (!cache.hasOwnProperty(entity.name)) {
+    cache[entity.name] = _getFields(entity);
+  }
+  return cache[entity.name];
+};
 
 export const idField = (f: Field): boolean =>
   fields(f) && (f.name === 'id' || f.name === '_id');
 
-export const getFieldsForAcl = (role: string, pack: ModelPackage) => {
+export const _getFieldsForAcl = (role: string, pack: ModelPackage) => {
   const existingRel = relationFieldsExistsIn(pack);
   return (allow, entity: Entity): Field[] =>
     getFields(entity)
@@ -149,17 +160,17 @@ export const getFieldsForAcl = (role: string, pack: ModelPackage) => {
       .filter(f => allow(role, f.getMetadata('acl.read', role)));
 };
 
-// export const getFieldsForAcl = function(role: string, pack: ModelPackage) {
-//   const cv = role + pack.name;
-//   if (!memoizeCache.hasOwnProperty('getFieldsForAcl')) {
-//     memoizeCache.getFieldsForAcl = {};
-//   }
-//   const cache = memoizeCache.getFieldsForAcl;
-//   if (!cache.hasOwnProperty(cv)) {
-//     cache[cv] = _getFieldsForAcl(role, pack);
-//   }
-//   return cache[cv];
-// };
+export const getFieldsForAcl = function(role: string, pack: ModelPackage) {
+  const cv = role + pack.name;
+  if (!memoizeCache.hasOwnProperty('getFieldsForAcl')) {
+    memoizeCache.getFieldsForAcl = {};
+  }
+  const cache = memoizeCache.getFieldsForAcl;
+  if (!cache.hasOwnProperty(cv)) {
+    cache[cv] = _getFieldsForAcl(role, pack);
+  }
+  return cache[cv];
+};
 
 export const relationFieldsExistsIn = (pack: ModelPackage) => (
   f: Field,

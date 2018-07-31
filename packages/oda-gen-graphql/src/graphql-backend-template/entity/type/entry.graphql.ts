@@ -56,7 +56,7 @@ export function mapper(
   typeMapper: { [key: string]: (string) => string },
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
-  let filter = filterForAcl(aclAllow, role, pack)(entity)
+  let filter = filterForAcl(role, pack)(aclAllow, entity)
     .filter(k => {
       let f = entity.fields.get(k);
       if (!f.relation) {
@@ -90,7 +90,7 @@ export function mapper(
     .map(i => `${i.name}: ${i.type}`);
 
   // не используем до лучших времен!!! поиск по вложенным объекта только.... для mongo и для sequelize
-  let filterEmbed = filterForAcl(aclAllow, role, pack)(entity)
+  let filterEmbed = filterForAcl(role, pack)(aclAllow, entity)
     .filter(k => {
       let f = entity.fields.get(k);
       if (!f.relation) {
@@ -121,7 +121,7 @@ export function mapper(
     })
     .map(i => `${i.name}: ${i.type}`);
 
-  let filterSubscriptions = filterForAcl(aclAllow, role, pack)(entity)
+  let filterSubscriptions = filterForAcl(role, pack)(aclAllow, entity)
     .map(k => {
       // если что можно восстановить поиск по встроенным полям от реляций
       // нужно продумать.

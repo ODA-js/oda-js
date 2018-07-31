@@ -30,6 +30,6 @@ export function mapper(
 ): MapperOutput {
   return {
     name: entity.name,
-    fields: getOrderBy(role, pack)(allowAcl, entity),
+    fields: getOrderBy(role)(allowAcl, entity),
   };
 }

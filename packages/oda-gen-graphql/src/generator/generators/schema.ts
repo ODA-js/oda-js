@@ -45,7 +45,6 @@ export default function $generate(
       return result;
     }, sources);
   console.timeEnd('generate');
-  console.log(sources.length);
   sources.forEach(f => {
     let fn = path.join(
       ...[rootDir, '../gql', pkg.name, f.entity, f.name].filter(f => f),
