@@ -9,10 +9,17 @@ export interface ResolvedGlobalId {
 export function fromGlobalId(globalId: string): ResolvedGlobalId {
   const unbasedGlobalId = unbase64(globalId);
   const delimiterPos = unbasedGlobalId.indexOf(':');
-  return {
-    type: unbasedGlobalId.substring(0, delimiterPos),
-    id: unbasedGlobalId.substring(delimiterPos + 1),
-  };
+  if (delimiterPos > -1) {
+    return {
+      type: unbasedGlobalId.substring(0, delimiterPos),
+      id: unbasedGlobalId.substring(delimiterPos + 1),
+    };
+  } else {
+    return {
+      type: '',
+      id: globalId,
+    };
+  }
 }
 
 export function toGlobalId(type: string, id: string): string {

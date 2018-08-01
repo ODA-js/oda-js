@@ -4,9 +4,15 @@ import base64 from './base64';
 import unbase64 from './unbase64';
 
 describe('globalId', () => {
-  it('convert id from global id', () => {
+  it('convert global id from global id', () => {
     const id = toGlobalId('user', '1');
     const id2 = toGlobalId('user', id);
+    expect(id).toEqual(id2);
+  });
+  it('convert global id from id', () => {
+    const id = fromGlobalId('1').id;
+    const id1 = toGlobalId('user', '1');
+    const id2 = fromGlobalId(id1).id;
     expect(id).toEqual(id2);
   });
 });
