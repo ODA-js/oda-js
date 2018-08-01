@@ -17,7 +17,7 @@ export function fromGlobalId(globalId: string): ResolvedGlobalId {
 
 export function toGlobalId(type: string, id: string): string {
   const ub = unbase64(id);
-  if (~ub.indexOf(':')) {
+  if (ub.indexOf(':') !== -1) {
     id = fromGlobalId(id).id;
   }
   return base64([type, id].join(':'));
