@@ -1,6 +1,25 @@
 <#@ chunks "$$$main$$$" -#>
 <#@ context 'pkg' #>
 
+<#- chunkStart(`./index.ts`); -#>
+<#- pkg.entities.forEach( ent => {#>
+import #{ent.name} from './#{ent.name}';
+<#-})#>
+import { Schema } from 'oda-gen-common';
+
+export {
+<#- pkg.entities.forEach( ent => {#>
+  #{ent.name},
+<#-})#>
+}
+
+export default new Schema({
+  name: '#{pkg.name}',
+  items: [<#- pkg.entities.forEach( ent => {#>
+    #{ent.name},
+<#-})#>],
+})
+
 <#- chunkStart(`./common.ts`); -#>
 
 import * as log4js from 'log4js';
@@ -60,7 +79,8 @@ import {
   Union,
   Schema,
   UnionInterfaceResolverFunction,
-} from '../typedef';
+// } from '../typedef';
+} from 'oda-gen-common';
 
 export {
   Enum,
