@@ -343,10 +343,10 @@ export class Mutation extends Fields<ResolverFunction>
 
 export type SubscriptionResolver = {
   [key: string]:
-    | {
-        resolve?: (payload) => any;
-      }
-    | ResolverFunction;
+  | {
+    resolve?: (payload) => any;
+  }
+  | ResolverFunction;
   subscribe: ResolverFunction;
 };
 
@@ -402,15 +402,15 @@ export class Union extends GQLType<UnionInterfaceResolverFunction>
   public get resolver() {
     return this._resolver
       ? {
-          [this.name]: {
-            __resolveType: this._resolver,
-          },
-        }
+        [this.name]: {
+          __resolveType: this._resolver,
+        },
+      }
       : {
-          [this.name]: {
-            __resolveType: () => null,
-          },
-        };
+        [this.name]: {
+          __resolveType: () => null,
+        },
+      };
   }
 }
 
@@ -425,15 +425,15 @@ export class Interface extends GQLType<UnionInterfaceResolverFunction>
   public get resolver() {
     return this._resolver
       ? {
-          [this.name]: {
-            __resolveType: this._resolver,
-          },
-        }
+        [this.name]: {
+          __resolveType: this._resolver,
+        },
+      }
       : {
-          [this.name]: {
-            __resolveType: () => null,
-          },
-        };
+        [this.name]: {
+          __resolveType: () => null,
+        },
+      };
   }
 }
 
@@ -599,34 +599,36 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * build schema
    */
   public build() {
-    this._items
-      .filter(i => i instanceof Schema)
-      .forEach(i => (i as Schema).build());
-    this._schema = [...this._items.map(i => i.schema), this._initialSchema]
-      .filter(i => i)
-      .join('\n');
-    this._schemaAST = parse(this._schema);
-    this._resolvers = merge(
-      {},
-      this._resolver,
-      ...this._items
-        .filter(i => !(i instanceof Schema))
-        .map(i => i.resolver)
-        .filter(i => i),
-      ...this._items
+    if (Array.isArray(this._items) && this._items.length > 0) {
+      this._items
         .filter(i => i instanceof Schema)
-        .map(i => (i as Schema).resolvers)
-        .filter(i => i),
-    );
+        .forEach(i => (i as Schema).build());
+      this._schema = [...this._items.map(i => i.schema), this._initialSchema]
+        .filter(i => i)
+        .join('\n');
+      this._schemaAST = parse(this._schema);
+      this._resolvers = merge(
+        {},
+        this._resolver,
+        ...this._items
+          .filter(i => !(i instanceof Schema))
+          .map(i => i.resolver)
+          .filter(i => i),
+        ...this._items
+          .filter(i => i instanceof Schema)
+          .map(i => (i as Schema).resolvers)
+          .filter(i => i),
+      );
 
-    this._compiledHooks = this._items
-      .filter(r => r.type === ModelType.schema)
-      .map(r => (r as Schema).hooks)
-      .reduce((res, curr) => {
-        res.push(...curr);
-        return res;
-      }, []);
-    this._isBuilt = true;
+      this._compiledHooks = this._items
+        .filter(r => r.type === ModelType.schema)
+        .map(r => (r as Schema).hooks)
+        .reduce((res, curr) => {
+          res.push(...curr);
+          return res;
+        }, []);
+      this._isBuilt = true;
+    }
   }
 
   protected _initialSchema: string;

@@ -11,7 +11,7 @@ import { Schema } from '../../common';
 #{slot('import-connection-index-slot')}
 
 export default new Schema({
-  name: 'ToDo.connections',
+  name: '#{ctx.types.name}.connections',
   items: [
     #{slot('export-connection-index-slot')}
   ],
