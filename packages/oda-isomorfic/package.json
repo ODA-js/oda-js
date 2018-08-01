@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepublish": "./compile.sh"
+    "prepublish": "./compile.sh",
+    "test": "jest"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -18,6 +19,27 @@
   "devDependencies": {
     "@types/graphql": "0.12.4",
     "@types/node": "^8.0.20",
-    "typescript": "~2.8.3"
+    "@types/jest": "^22.2.2",
+    "jest": "^23.4.2",
+    "ts-jest": "^23.0.1",
+    "tslint": "^5.8.0",
+    "typescript": "^3.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   }
 }
