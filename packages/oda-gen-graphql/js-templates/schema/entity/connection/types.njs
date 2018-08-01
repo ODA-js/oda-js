@@ -2,7 +2,7 @@
 <#@ alias 'connection-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`./query/list/${entity.name}Edge.ts`); -#>
+<#- chunkStart(`./query/list/${entity.plural}Edge.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 
@@ -16,7 +16,7 @@ export default new Type({
   `,
 });
 
-<#- chunkStart(`./query/list/${entity.name}Connection.ts`); -#>
+<#- chunkStart(`./query/list/${entity.plural}Connection.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 

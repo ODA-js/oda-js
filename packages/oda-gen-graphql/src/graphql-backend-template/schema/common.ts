@@ -38,6 +38,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
       entry: entityMappers.type.entry.mapper(
         entity,
@@ -45,6 +46,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
     },
     connections: {
@@ -54,6 +56,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
       mutations: {
         resolver: entityMappers.connections.mutations.resolver.mapper(
@@ -62,6 +65,7 @@ export function mapper(
           role,
           aclAllow,
           typeMapper,
+          adapter,
         ),
         types: entityMappers.connections.mutations.types.mapper(
           entity,
@@ -69,6 +73,7 @@ export function mapper(
           role,
           aclAllow,
           typeMapper,
+          adapter,
         ),
       },
     },
@@ -79,6 +84,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
       types: entityMappers.mutations.types.mapper(
         entity,
@@ -86,6 +92,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
     },
     query: {
@@ -103,6 +110,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
       sortOrder: entityMappers.type.enums.mapper(
         entity,
@@ -110,6 +118,7 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
       filter: entityMappers.type.entry.mapper(
         entity,
@@ -117,8 +126,27 @@ export function mapper(
         role,
         aclAllow,
         typeMapper,
+        adapter,
       ),
     },
-    ensure: ensure.mapper(entity, pack, role, aclAllow, typeMapper),
+    subscriptions: {
+      ...entityMappers.subscriptions.resolver.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+      ...entityMappers.subscriptions.types.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+    },
+    ensure: ensure.mapper(entity, pack, role, aclAllow, typeMapper, adapter),
   };
 }

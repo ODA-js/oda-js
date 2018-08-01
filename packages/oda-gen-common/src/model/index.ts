@@ -342,8 +342,12 @@ export class Mutation extends Fields<ResolverFunction>
 }
 
 export type SubscriptionResolver = {
+  [key: string]:
+    | {
+        resolve?: (payload) => any;
+      }
+    | ResolverFunction;
   subscribe: ResolverFunction;
-  resolve?: (payload) => any;
 };
 
 export class Subscription extends Fields<SubscriptionResolver>

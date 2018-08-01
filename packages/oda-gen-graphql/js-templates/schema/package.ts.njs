@@ -7,6 +7,12 @@ import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
 import * as get from 'lodash/get';
 
+import { pubsub } from '../../model/pubsub';
+
+export function filterIt(payload, queryCheck) {
+  return queryCheck(payload);
+}
+
 import {
   globalIdField,
   emptyConnection,
@@ -15,12 +21,13 @@ import {
   detectCursorDirection,
   consts,
   mutateAndGetPayload,
+  Filter,
 } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';
 
 import { fromGlobalId, toGlobalId } from 'oda-isomorfic';
 
-import { PubSubEngine } from 'graphql-subscriptions';
+import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 
 const { selectionTree: traverse } = lib;
 
@@ -116,6 +123,9 @@ export {
   consts,
   emptyConnection,
   PubSubEngine,
+  withFilter,
+  Filter,
+  pubsub,
   mutateAndGetPayload,
   fromGlobalId,
   toGlobalId,

@@ -2,6 +2,7 @@
 <#@ alias 
   'import-connection-index-slot'
   'import-helpers-index-slot'
+  'import-subscriptions-slot'
 -#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {
