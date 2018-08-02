@@ -3,6 +3,7 @@
   'import-connection-index-slot'
   'import-helpers-index-slot'
   'import-subscriptions-slot'
+  'import-query-list-index-slot'
 -#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {

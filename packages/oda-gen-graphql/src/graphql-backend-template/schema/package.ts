@@ -2,7 +2,7 @@ import { ModelPackage } from 'oda-model';
 import { Factory } from 'fte.js';
 import { capitalize } from '../utils';
 
-export const template = 'schema/package.ts.njs';
+export const template = 'schema/package';
 
 export function prepare(
   pack: ModelPackage,

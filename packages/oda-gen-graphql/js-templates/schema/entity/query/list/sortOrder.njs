@@ -3,6 +3,9 @@
 <#@ context 'entity'#>
 
 <#-chunkStart(`./query/list/${entity.name}SortOrder.ts`); -#>
+<#- slot('import-query-list-index-slot',`${entity.name}SortOrder`)-#>
+<#- slot('item-query-list-index-slot',`${entity.name}SortOrder`)-#>
+
 import { Input } from '../../../common';
 import gql from 'graphql-tag';
 

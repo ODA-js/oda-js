@@ -343,10 +343,10 @@ export class Mutation extends Fields<ResolverFunction>
 
 export type SubscriptionResolver = {
   [key: string]:
-  | {
-    resolve?: (payload) => any;
-  }
-  | ResolverFunction;
+    | {
+        resolve?: (payload) => any;
+      }
+    | ResolverFunction;
   subscribe: ResolverFunction;
 };
 
@@ -355,6 +355,11 @@ export class Subscription extends Fields<SubscriptionResolver>
   constructor(args: IGQLInput<SubscriptionResolver> | string | DocumentNode) {
     super(args);
     this._type = ModelType.subscription;
+  }
+  public get resolver() {
+    return this._rootName && this._resolver
+      ? { [this._rootName]: { [this.name]: this._resolver } }
+      : undefined;
   }
 }
 
@@ -402,15 +407,15 @@ export class Union extends GQLType<UnionInterfaceResolverFunction>
   public get resolver() {
     return this._resolver
       ? {
-        [this.name]: {
-          __resolveType: this._resolver,
-        },
-      }
+          [this.name]: {
+            __resolveType: this._resolver,
+          },
+        }
       : {
-        [this.name]: {
-          __resolveType: () => null,
-        },
-      };
+          [this.name]: {
+            __resolveType: () => null,
+          },
+        };
   }
 }
 
@@ -425,15 +430,15 @@ export class Interface extends GQLType<UnionInterfaceResolverFunction>
   public get resolver() {
     return this._resolver
       ? {
-        [this.name]: {
-          __resolveType: this._resolver,
-        },
-      }
+          [this.name]: {
+            __resolveType: this._resolver,
+          },
+        }
       : {
-        [this.name]: {
-          __resolveType: () => null,
-        },
-      };
+          [this.name]: {
+            __resolveType: () => null,
+          },
+        };
   }
 }
 
@@ -471,7 +476,9 @@ export class Scalar extends GQLType<ScalarResolver>
 export class Enum extends GQLType<IEnumResolver>
   implements Readonly<IGQLTypeDef> {
   public get resolver(): IResolvers {
-    return this.name ? { [this.name]: this._resolver } : undefined;
+    return this._resolver && this.name
+      ? { [this.name]: this._resolver }
+      : undefined;
   }
   constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
     super(args);

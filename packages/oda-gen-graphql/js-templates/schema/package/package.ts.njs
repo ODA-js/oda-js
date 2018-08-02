@@ -1,13 +1,24 @@
 <#@ chunks "$$$main$$$" -#>
+<#@ alias 'schema/package' #>
 <#@ context 'pkg' #>
+
+#{partial(pkg, 'node-interface')}
+#{partial(pkg, 'viewer')}
 
 <#- chunkStart(`./index.ts`); -#>
 <#- pkg.entities.forEach( ent => {#>
 import #{ent.name} from './#{ent.name}';
 <#-})#>
+import Node from './node';
+import Viewer from './viewer';
+import Types from './_Types';
 import { Schema } from 'oda-gen-common';
+import gql from 'graphql-tag';
 
 export {
+  Node,
+  Viewer,
+  Types,
 <#- pkg.entities.forEach( ent => {#>
   #{ent.name},
 <#-})#>
@@ -15,7 +26,27 @@ export {
 
 export default new Schema({
   name: '#{pkg.name}',
-  items: [<#- pkg.entities.forEach( ent => {#>
+  schema: gql`
+    type RootSubscription {
+      empty: String
+    }
+    type RootQuery {
+      empty: String
+    }
+    type RootMutation {
+      empty: String
+    }
+    schema {
+      query: RootQuery
+      mutation: RootMutation
+      subscription: RootSubscription
+    }
+  `,
+  items: [
+    Node,
+    Viewer,
+    Types,
+<#- pkg.entities.forEach( ent => {#>
     #{ent.name},
 <#-})#>],
 })
@@ -50,7 +81,7 @@ import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 
 const { selectionTree: traverse } = lib;
 
-import { utils } from 'oda-api-graphql';
+import { utils, getWithType } from 'oda-api-graphql';
 import RegisterConnectors from '../../graphql-gen/data/registerConnectors';
 
 const { validId } = utils;
@@ -74,6 +105,7 @@ import {
   Resolver,
   ResolverFunction,
   Scalar,
+  Subscription,
   ScalarResolver,
   Type,
   Union,
@@ -98,10 +130,12 @@ export {
   ResolverFunction,
   Scalar,
   ScalarResolver,
+  Subscription,
   Type,
   Union,
   Schema,
   UnionInterfaceResolverFunction,
+  getWithType,
 };
 
 export function getValue(value) {

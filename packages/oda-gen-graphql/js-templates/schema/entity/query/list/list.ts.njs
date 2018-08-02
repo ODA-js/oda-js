@@ -3,6 +3,8 @@
 <#@ context 'ctx'#>
 
 <#-chunkStart(`./query/list/${ctx.entry.pluralEntry}.ts`); -#>
+<#- slot('import-query-list-index-slot',`${ctx.entry.pluralEntry}`)-#>
+<#- slot('item-query-list-index-slot',`${ctx.entry.pluralEntry}`)-#>
 import {
   Query,
   logger,

@@ -6,10 +6,10 @@
 <#- slot('export-subscriptions-slot',entity.name) #>
 <#- slot('import-subscriptions-slot',entity.name) #>
 
-import { ModelType, Type, Filter, filterIt, pubsub, withFilter } from '../../common';
+import { ModelType, Subscription, Filter, filterIt, pubsub, withFilter } from '../../common';
 import gql from 'graphql-tag';
 
-export default new Type({
+export default new Subscription({
   type: ModelType.type,
   schema: gql`
     extend type RootSubscription {

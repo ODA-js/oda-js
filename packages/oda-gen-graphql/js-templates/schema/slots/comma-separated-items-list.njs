@@ -6,6 +6,7 @@
   'import-common-mutation-update-slot'
   'import-common-mutation-delete-slot'
   'export-subscriptions-slot'
+  'item-query-list-index-slot'
 #>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {

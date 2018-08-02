@@ -1,30 +1,30 @@
 import { Factory } from 'fte.js';
 import {
-  common as template,
+  common as entities,
   pkg as templatePkg,
 } from '../../graphql-backend-template/schema';
 import * as path from 'path';
 import { writeFile } from './writeFile';
+import { ModelPackage } from '../../../node_modules/oda-model';
 
 export default function $generate(
-  pkg,
+  pkg: ModelPackage,
   raw: Factory,
   rootDir: string,
   role: string,
   allow,
   typeMapper: { [key: string]: (string) => string },
   adapter: string,
-  list,
 ) {
   const sources = [];
   const prepared = [];
   console.time('prepare');
   prepared.push(templatePkg.prepare(pkg, typeMapper));
   prepared.push(
-    ...list.map(entity => {
+    ...Array.from(pkg.entities.values()).map(entity => {
       return {
         entity: entity.name,
-        ...template.prepare(entity, pkg, role, allow, typeMapper, adapter),
+        ...entities.prepare(entity, pkg, role, allow, typeMapper, adapter),
       };
     }),
   );

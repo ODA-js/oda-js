@@ -24,7 +24,7 @@ import $generatePkg from './generators/package';
 import $generateModel from './generators/model';
 import templateEngine from './templateEngine';
 import initModel from './initModel';
-import $genNewSchema from './generators/schema';
+import generateGQL from './generators/schema';
 
 import { collectErrors, showLog, knownTypes, hasResult } from './validate';
 import { error } from 'util';
@@ -140,8 +140,8 @@ export default (args: Generator) => {
     packages.forEach(pkg => {
       // new schema generated
       // debugger;
-      const generateGQL = $genNewSchema.bind(
-        null,
+      console.time('ngql');
+      generateGQL(
         pkg,
         raw,
         rootDir,
@@ -150,6 +150,7 @@ export default (args: Generator) => {
         typeMapper,
         defaultAdapter,
       );
+      console.timeEnd('ngql');
 
       let generate = $generateGraphql.bind(
         null,
@@ -170,9 +171,6 @@ export default (args: Generator) => {
       // entity/connections
 
       if (!pkg.abstract) {
-        console.time('ngql');
-        generateGQL(entities);
-        console.timeEnd('ngql');
         if (config.graphql) {
           generate(
             entities,
