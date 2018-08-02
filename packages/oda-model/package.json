@@ -33,6 +33,7 @@
     "typescript": "~2.8.3"
   },
   "jest": {
+    "testEnvironment": "node",
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
