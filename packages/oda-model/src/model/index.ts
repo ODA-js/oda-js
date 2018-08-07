@@ -1,7 +1,10 @@
 import { Entity } from './entity';
 import { EntityBase } from './entitybase';
+import { Scalar } from './scalar';
+import { ObjectType } from './objecttype';
 import { Mixin } from './mixin';
 import { Union } from './union';
+import { Directive } from './directive';
 import { EntityReference } from './entityreference';
 import { Field } from './field';
 import { FieldBase } from './fieldbase';
@@ -16,8 +19,11 @@ import { DEFAULT_ID_FIELD } from './definitions';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
 import {
-  FieldArgs, MetaModelStore,
-  ModelHook, IValidationResult, ValidationResultType,
+  FieldArgs,
+  MetaModelStore,
+  ModelHook,
+  IValidationResult,
+  ValidationResultType,
 } from './interfaces';
 import { Metadata } from './metadata';
 import Validator from './validator/index';
@@ -44,4 +50,9 @@ export {
   IValidationResult,
   ValidationResultType,
   Validator,
+  Mixin,
+  Union,
+  Scalar,
+  ObjectType,
+  Directive,
 };

@@ -22,8 +22,11 @@ import { Query } from './query';
 import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
+import { ObjectType } from './objecttype';
+import { Scalar } from './scalar';
+import { Directive } from './directive';
 
-function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
+function getFilter(inp: string): { filter: (f) => boolean; fields: string[] } {
   let result = {
     filter: f => f.name === inp,
     fields: [inp],
@@ -32,7 +35,8 @@ function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
     result.filter = () => true;
   }
   if (inp.startsWith('^[')) {
-    let notFields = inp.slice(2, inp.length - 1)
+    let notFields = inp
+      .slice(2, inp.length - 1)
       .split(',')
       .map(f => f.trim())
       .reduce((res, cur) => {
@@ -43,7 +47,8 @@ function getFilter(inp: string): { filter: (f) => boolean, fields: string[] } {
     result.fields = [];
   }
   if (inp.startsWith('[')) {
-    let onlyFields = inp.slice(1, inp.length - 1)
+    let onlyFields = inp
+      .slice(1, inp.length - 1)
       .split(',')
       .map(f => f.trim())
       .reduce((res, cur) => {
@@ -104,8 +109,8 @@ export class MetaModel extends ModelPackage implements IModel {
     if (hook.fields) {
       if (Array.isArray(hook.fields)) {
         fields = this.dedupeFields([
-          ...result.fields as FieldInput[],
-          ...hook.fields as FieldInput[],
+          ...(result.fields as FieldInput[]),
+          ...(hook.fields as FieldInput[]),
         ]);
       } else {
         fields = this.dedupeFields(result.fields);
@@ -135,26 +140,24 @@ export class MetaModel extends ModelPackage implements IModel {
     });
   }
 
-  protected applyMutationHook(mutation: Mutation, hook: MutationInput): Mutation {
+  protected applyMutationHook(
+    mutation: Mutation,
+    hook: MutationInput,
+  ): Mutation {
     let result = mutation.toJSON() as MutationInput;
     let metadata;
     if (hook.metadata) {
       metadata = deepMerge(result.metadata || {}, hook.metadata);
     }
 
-    let args = result.args, payload = result.payload;
+    let args = result.args,
+      payload = result.payload;
     if (hook.args) {
-      args = [
-        ...args,
-        ...hook.args,
-      ];
+      args = [...args, ...hook.args];
     }
 
     if (hook.payload) {
-      payload = [
-        ...payload,
-        ...hook.payload,
-      ];
+      payload = [...payload, ...hook.payload];
     }
 
     result = {
@@ -173,19 +176,14 @@ export class MetaModel extends ModelPackage implements IModel {
       metadata = deepMerge(result.metadata || {}, hook.metadata);
     }
 
-    let args = result.args, payload = result.payload;
+    let args = result.args,
+      payload = result.payload;
     if (hook.args) {
-      args = [
-        ...args,
-        ...hook.args,
-      ];
+      args = [...args, ...hook.args];
     }
 
     if (hook.payload) {
-      payload = [
-        ...payload,
-        ...hook.payload,
-      ];
+      payload = [...payload, ...hook.payload];
     }
 
     result = {
@@ -212,14 +210,20 @@ export class MetaModel extends ModelPackage implements IModel {
             current.fields = current.fields ? current.fields : [];
             current.metadata = current.metadata ? current.metadata : {};
             let prepare = getFilter(key);
-            let list = Array.from(this.entities.values()).filter(prepare.filter);
+            let list = Array.from(this.entities.values()).filter(
+              prepare.filter,
+            );
             if (list.length > 0) {
               list.forEach(e => {
                 let result = this.applyEntityHook(e, current);
                 this.entities.set(result.name, result);
               });
             } else if (prepare.fields.length > 0) {
-              throw new Error(`Entit${prepare.fields.length === 1 ? 'y' : 'ies'} ${prepare.fields} not found`);
+              throw new Error(
+                `Entit${prepare.fields.length === 1 ? 'y' : 'ies'} ${
+                  prepare.fields
+                } not found`,
+              );
             }
           }
         }
@@ -233,14 +237,20 @@ export class MetaModel extends ModelPackage implements IModel {
             current.metadata = current.metadata ? current.metadata : {};
 
             let prepare = getFilter(key);
-            let list = Array.from(this.mutations.values()).filter(prepare.filter);
+            let list = Array.from(this.mutations.values()).filter(
+              prepare.filter,
+            );
             if (list.length > 0) {
               list.forEach(e => {
                 let result = this.applyMutationHook(e, current);
                 this.mutations.set(result.name, result);
               });
             } else if (prepare.fields.length > 0) {
-              throw new Error(`Mutation${prepare.fields.length > 1 ? 's' : ''} ${prepare.fields} not found`);
+              throw new Error(
+                `Mutation${prepare.fields.length > 1 ? 's' : ''} ${
+                  prepare.fields
+                } not found`,
+              );
             }
           }
         }
@@ -261,7 +271,11 @@ export class MetaModel extends ModelPackage implements IModel {
                 this.queries.set(result.name, result);
               });
             } else if (prepare.fields.length > 0) {
-              throw new Error(`Quer${prepare.fields.length > 1 ? 'ies' : 'y'} ${prepare.fields} not found`);
+              throw new Error(
+                `Quer${prepare.fields.length > 1 ? 'ies' : 'y'} ${
+                  prepare.fields
+                } not found`,
+              );
             }
           }
         }
@@ -301,10 +315,11 @@ export class MetaModel extends ModelPackage implements IModel {
       });
     }
 
-    store.entities.forEach((ent) => {
-      this.addEntity(new Entity(ent));
-    });
-
+    if (store.entities) {
+      store.entities.forEach(ent => {
+        this.addEntity(new Entity(ent));
+      });
+    }
     if (store.mutations) {
       store.mutations.forEach(mut => {
         this.addMutation(new Mutation(mut));
@@ -323,6 +338,24 @@ export class MetaModel extends ModelPackage implements IModel {
       });
     }
 
+    if (store.objects) {
+      store.objects.forEach(q => {
+        this.addObjectType(new ObjectType(q));
+      });
+    }
+
+    if (store.scalars) {
+      store.scalars.forEach(q => {
+        this.addScalar(new Scalar(q));
+      });
+    }
+
+    if (store.directives) {
+      store.directives.forEach(q => {
+        this.addDirective(new Directive(q));
+      });
+    }
+
     if (store.unions) {
       store.unions.forEach(q => {
         this.addUnion(new Union(q));
@@ -337,27 +370,45 @@ export class MetaModel extends ModelPackage implements IModel {
   }
 
   public saveModel(fileName: string = this.store) {
-    fs.writeFileSync(fileName, JSON.stringify({
-      entities: Array.from(this.entities.values()).map(f => f.toJSON()),
-      packages: Array.from(this.packages.values())/*.filter(p => p.name !== 'default')*/.map(f => f.toJSON()),
-      mutations: Array.from(this.mutations.values()).map(f => f.toJSON()),
-      queries: Array.from(this.queries.values()).map(f => f.toJSON()),
-      enums: Array.from(this.enums.values()).map(f => f.toJSON()),
-      unions: Array.from(this.unions.values()).map(f => f.toJSON()),
-      mixins: Array.from(this.mixins.values()).map(f => f.toJSON()),
-    }));
+    fs.writeFileSync(
+      fileName,
+      JSON.stringify({
+        entities: Array.from(this.entities.values()).map(f => f.toJSON()),
+        packages: Array.from(
+          this.packages.values(),
+        ) /*.filter(p => p.name !== 'default')*/
+          .map(f => f.toJSON()),
+        mutations: Array.from(this.mutations.values()).map(f => f.toJSON()),
+        queries: Array.from(this.queries.values()).map(f => f.toJSON()),
+        enums: Array.from(this.enums.values()).map(f => f.toJSON()),
+        unions: Array.from(this.unions.values()).map(f => f.toJSON()),
+        mixins: Array.from(this.mixins.values()).map(f => f.toJSON()),
+        scalars: Array.from(this.scalars.values()).map(f => f.toJSON()),
+        objects: Array.from(this.objects.values()).map(f => f.toJSON()),
+        directives: Array.from(this.directives.values()).map(f => f.toJSON()),
+      }),
+    );
   }
 
   public saveActualModel(fileName: string = this.store) {
-    fs.writeFileSync(fileName, JSON.stringify({
-      entities: Array.from(this.entities.values()).map(f => f.toObject()),
-      packages: Array.from(this.packages.values())/*.filter(p => p.name !== 'default')*/.map(f => f.toObject()),
-      mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
-      queries: Array.from(this.queries.values()).map(f => f.toObject()),
-      enums: Array.from(this.enums.values()).map(f => f.toObject()),
-      unions: Array.from(this.unions.values()).map(f => f.toObject()),
-      mixins: Array.from(this.mixins.values()).map(f => f.toObject()),
-    }));
+    fs.writeFileSync(
+      fileName,
+      JSON.stringify({
+        entities: Array.from(this.entities.values()).map(f => f.toObject()),
+        packages: Array.from(
+          this.packages.values(),
+        ) /*.filter(p => p.name !== 'default')*/
+          .map(f => f.toObject()),
+        mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
+        queries: Array.from(this.queries.values()).map(f => f.toObject()),
+        enums: Array.from(this.enums.values()).map(f => f.toObject()),
+        unions: Array.from(this.unions.values()).map(f => f.toObject()),
+        mixins: Array.from(this.mixins.values()).map(f => f.toObject()),
+        scalars: Array.from(this.scalars.values()).map(f => f.toJSON()),
+        objects: Array.from(this.objects.values()).map(f => f.toJSON()),
+        directives: Array.from(this.directives.values()).map(f => f.toJSON()),
+      }),
+    );
   }
 
   public reset() {
@@ -368,6 +419,9 @@ export class MetaModel extends ModelPackage implements IModel {
     this.enums.clear();
     this.mixins.clear();
     this.unions.clear();
+    this.scalars.clear();
+    this.objects.clear();
+    this.directives.clear();
   }
 
   public createPackage(name: string): ModelPackage {
@@ -380,7 +434,7 @@ export class MetaModel extends ModelPackage implements IModel {
     return pack;
   }
 
-  public assignEntityToPackage(input: { entity: string, package: string }) {
+  public assignEntityToPackage(input: { entity: string; package: string }) {
     let pack = this.packages.get(input.package);
     if (!pack) {
       throw new Error(`Package ${input.package} didn't exists`);

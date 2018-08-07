@@ -17,6 +17,9 @@ import { Query } from './query';
 import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
+import { ObjectType } from './objecttype';
+import { Scalar } from './scalar';
+import { Directive } from './directive';
 
 // tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */
@@ -34,6 +37,9 @@ export class ModelPackage implements IValidate, IPackage {
   public abstract: boolean = false;
   /** entity storage */
   public entities: Map<string, Entity> = new Map();
+  public objects: Map<string, ObjectType> = new Map();
+  public scalars: Map<string, Scalar> = new Map();
+  public directives: Map<string, Directive> = new Map();
   public mixins: Map<string, Mixin> = new Map();
   public unions: Map<string, Union> = new Map();
   public enums: Map<string, Enum> = new Map();
@@ -128,6 +134,30 @@ export class ModelPackage implements IValidate, IPackage {
     return mix;
   }
 
+  public addScalar(scalar: Scalar) {
+    if (scalar instanceof Scalar) {
+      this.scalars.set(scalar.name, scalar);
+    }
+    this.ensureScalar(scalar);
+    return scalar;
+  }
+
+  public addObjectType (obj: ObjectType) {
+    if (obj instanceof Scalar) {
+      this.objects.set(obj.name, obj);
+    }
+    this.ensureObjectType(obj);
+    return obj;
+  }
+
+  public addDirective(directive: Directive) {
+    if (directive instanceof Directive) {
+      this.directives.set(directive.name, directive);
+    }
+    this.ensureDirective(directive);
+    return directive;
+  }
+
   /** get Entity by name */
   public get(name: string) {
     return this.entities.get(name);
@@ -211,9 +241,27 @@ export class ModelPackage implements IValidate, IPackage {
     }
   }
 
-  private ensureMixin(intrf) {
-    if (!this.metaModel.mixins.has(intrf.name)) {
-      this.metaModel.mixins.set(intrf.name, intrf);
+  private ensureMixin(mixin) {
+    if (!this.metaModel.mixins.has(mixin.name)) {
+      this.metaModel.mixins.set(mixin.name, mixin);
+    }
+  }
+
+  private ensureScalar(scalar) {
+    if (!this.metaModel.scalars.has(scalar.name)) {
+      this.metaModel.scalars.set(scalar.name, scalar);
+    }
+  }
+
+  private ensureObjectType(obj) {
+    if (!this.metaModel.objects.has(obj.name)) {
+      this.metaModel.objects.set(obj.name, obj);
+    }
+  }
+
+  private ensureDirective(directive) {
+    if (!this.metaModel.directives.has(directive.name)) {
+      this.metaModel.directives.set(directive.name, directive);
     }
   }
 

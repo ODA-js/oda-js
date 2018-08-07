@@ -356,11 +356,6 @@ export class Subscription extends Fields<SubscriptionResolver>
     super(args);
     this._type = ModelType.subscription;
   }
-  public get resolver() {
-    return this._rootName && this._resolver
-      ? { [this._rootName]: { [this.name]: this._resolver } }
-      : undefined;
-  }
 }
 
 export class Type extends GQLType<ResolverFunction | ObjectResolver>

@@ -16,11 +16,7 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
-    "pretty": true,
-    "paths": {
-      "@validator/*":["src/model/validator/*"],
-      "@model/*":["src/model/*"]
-    }
+    "pretty": true
   },
   "exclude": [
     "node_modules",

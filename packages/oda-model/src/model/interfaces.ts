@@ -4,22 +4,24 @@ import { RelationBase } from './relationbase';
 import { Mixin } from './mixin';
 import { Enum } from './enum';
 import { Union } from './union';
+import { Scalar } from './scalar';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
 export type MetaModelType =
-  'model'
+  | 'model'
   | 'package'
   | 'entity'
   | 'entitybase'
+  | 'object-type'
+  | 'scalar'
   | 'mixin'
   | 'union'
   | 'enum'
   | 'field'
   | 'relation'
   | 'ref'
-  | RelationType
-  ;
+  | RelationType;
 
 export interface IModelType extends IValidate {
   modelType: MetaModelType;
@@ -37,10 +39,14 @@ export interface IPackage extends IModelType {
   name: string;
   metaModel: IModel;
   entities: Map<string, IEntity>;
+  objects: Map<string, IObjectType>;
+  scalars: Map<string, Scalar>;
   mixins: Map<string, Mixin>;
   enums: Map<string, Enum>;
   unions: Map<string, Union>;
 }
+
+export interface ScalarInput extends ModelBaseInput {}
 
 export interface IEntityBase extends IModelType {
   name: string;
@@ -49,8 +55,9 @@ export interface IEntityBase extends IModelType {
   fields: Map<string, Field>;
 }
 
-export interface IMixin extends IEntityBase {
-}
+export interface IMixin extends IEntityBase {}
+
+export interface IObjectType extends IEntityBase {}
 
 export interface IEntity extends IEntityBase {
   implements: Set<string>;
@@ -75,7 +82,6 @@ export interface IRelation extends IModelType {
 }
 
 export interface IBelongsToManyRelation extends IRelation {
-
   belongsToMany: IEntityRef;
 }
 
@@ -99,7 +105,11 @@ export interface IEntityRef {
 
 export type ModelItem = IModel | IPackage | IEntity | IField | IRelation;
 
-export type Relation = IHasManyRelation | IHasOneRelation | IBelongsToRelation | IBelongsToRelation;
+export type Relation =
+  | IHasManyRelation
+  | IHasOneRelation
+  | IBelongsToRelation
+  | IBelongsToRelation;
 
 export function isModel(item: ModelItem): item is IModel {
   return item.modelType === 'model';
@@ -119,10 +129,10 @@ export function isField(item: ModelItem): item is IField {
 
 export function isRelation(item: ModelItem): item is IRelation {
   return (
-    item.modelType === 'BelongsTo'
-    || item.modelType === 'BelongsToMany'
-    || item.modelType === 'HasOne'
-    || item.modelType === 'HasMany'
+    item.modelType === 'BelongsTo' ||
+    item.modelType === 'BelongsToMany' ||
+    item.modelType === 'HasOne' ||
+    item.modelType === 'HasMany'
   );
 }
 
@@ -163,14 +173,17 @@ export interface IValidate {
 
 export interface FieldInput extends FieldBaseInput {
   type?: string;
+  list?: boolean;
+  map?: boolean;
   identity?: boolean | string | string[];
   indexed?: boolean | string | string[];
   required?: boolean;
   arguments?: [FieldArgs];
-  relation?: ({ hasMany: string }
+  relation?: (
+    | { hasMany: string }
     | { hasOne: string }
     | { belongsTo: string }
-    | { belongsToMany: string, using: string }) & {
+    | { belongsToMany: string; using: string }) & {
     entity: string;
     field: string;
   };
@@ -178,6 +191,8 @@ export interface FieldInput extends FieldBaseInput {
 
 export interface FieldStorage extends FieldBaseStorage {
   type: string;
+  list?: boolean;
+  map?: boolean;
   arguments?: [FieldArgs];
   type_: string;
   idKey: EntityReference;
@@ -208,20 +223,24 @@ export interface BelongsToManyStorage extends RelationBaseStorage {
 export interface EntityBaseInput extends ModelBaseInput {
   plural?: string;
   titlePlural?: string;
-  fields?: FieldInput[] | {
-    [fName: string]: FieldInput;
-  };
+  fields?:
+    | FieldInput[]
+    | {
+        [fName: string]: FieldInput;
+      };
 }
 
 export interface EntityInput extends EntityBaseInput {
   implements?: string[];
 }
 
-export interface MixinInput extends EntityBaseInput {
-}
+export interface MixinInput extends EntityBaseInput {}
 
-export interface MixinStorage extends EntityBaseStorage {
-}
+export interface MixinStorage extends EntityBaseStorage {}
+
+export interface ObjectTypeInput extends EntityBaseInput {}
+
+export interface ObjectTypeStorage extends EntityBaseStorage {}
 
 export interface EntityBaseJSON extends ModelBaseInput {
   fields?: FieldInput[];
@@ -257,7 +276,7 @@ export interface FieldArgs {
 }
 
 export interface FieldBaseInput extends ModelBaseInput {
-  args?: [FieldArgs];
+  args?: FieldArgs[];
   derived?: boolean;
   persistent?: boolean;
   entity?: string;
@@ -265,8 +284,8 @@ export interface FieldBaseInput extends ModelBaseInput {
 }
 
 export interface FieldBaseStorage extends ModelBaseStorage {
-  args?: [FieldArgs];
-  args_?: [FieldArgs];
+  args?: FieldArgs[];
+  args_?: FieldArgs[];
   entity: string;
   entity_: string;
 }
@@ -293,6 +312,12 @@ export interface MetadataInput {
   metadata?: { [key: string]: any };
 }
 
+export interface IModelBase {
+  name: string;
+  title?: string;
+  description?: string;
+}
+
 export interface ModelBaseInput extends MetadataInput {
   name: string;
   title?: string;
@@ -303,7 +328,12 @@ export interface UnionInput extends ModelBaseInput {
   items: string[];
 }
 
-export interface EnumItemInput extends ModelBaseInput { }
+export interface DirectiveInput extends ModelBaseInput {
+  args?: FieldArgs[];
+  on?: string[];
+}
+
+export interface EnumItemInput extends ModelBaseInput {}
 
 export interface EnumInput extends ModelBaseInput {
   items: (EnumItemInput | string)[];
@@ -328,6 +358,11 @@ export interface EnumStorage extends ModelBaseStorage {
   items_: (EnumItemInput | string)[];
 }
 
+export interface DirectiveStorage extends ModelBaseStorage {
+  args?: FieldArgs[];
+  on?: string[];
+}
+
 export interface ModelPackageInput extends ModelBaseInput {
   name: string;
   title?: string;
@@ -350,6 +385,8 @@ export interface ModelPackageStore {
   entities: string[];
   mutations: any[];
   queries: any[];
+  objects: IObjectType[];
+  scalars: Scalar[];
   enums: any[];
   unions: any[];
   mixins: any[];
@@ -360,6 +397,9 @@ export interface MetaModelStore {
   packages: ModelPackageStore[];
   mutations?: MutationInput[];
   queries?: QueryInput[];
+  objects: ObjectTypeInput[];
+  scalars: ScalarInput[];
+  directives: DirectiveInput[];
   enums?: EnumInput[];
   unions?: UnionInput[];
   mixins?: MixinInput[];
@@ -367,7 +407,6 @@ export interface MetaModelStore {
   title?: string;
   description?: string;
 }
-
 
 export interface RelationBaseInput {
   /**
@@ -378,9 +417,11 @@ export interface RelationBaseInput {
   name?: string;
   entity: string;
   field: string;
-  fields?: FieldInput[] | {
-    [field: string]: FieldInput,
-  };
+  fields?:
+    | FieldInput[]
+    | {
+        [field: string]: FieldInput;
+      };
   opposite?: string;
 }
 
@@ -445,7 +486,7 @@ export interface QueryStorage extends ModelBaseStorage {
 export interface ModelHook {
   name: string;
   entities?: {
-    [eName: string]: EntityInput,
+    [eName: string]: EntityInput;
   };
   mutations?: {
     [mName: string]: MutationInput;

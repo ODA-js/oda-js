@@ -34,6 +34,14 @@ export class Field extends FieldBase implements IField {
     return this.$obj.type;
   }
 
+  get list(): boolean {
+    return this.$obj.list;
+  }
+
+  get map(): boolean {
+    return this.$obj.map;
+  }
+
   get identity(): boolean | string | string[] {
     return this.getMetadata('storage.identity');
   }
@@ -99,6 +107,9 @@ export class Field extends FieldBase implements IField {
       let $type = obj.type;
       let type = $type || 'String';
 
+      result.map = obj.map || result.map || false;
+      result.list = obj.list || result.list || false;
+
       this.setMetadata('storage.identity', obj.identity);
 
       this.setMetadata('storage.required', obj.required || obj.identity);
@@ -117,7 +128,7 @@ export class Field extends FieldBase implements IField {
       // why? because! we need to support existing code.
       const isIdentity = this.getMetadata('storage.identity', false);
 
-      if (isIdentity || obj.relation)  {
+      if (isIdentity || obj.relation) {
         this.setMetadata('defaultValue', undefined);
       }
 
@@ -157,6 +168,8 @@ export class Field extends FieldBase implements IField {
           default:
             throw new Error('undefined type');
         }
+        result.map = false;
+        result.list = false;
 
         result.relation = relation;
         delete result.type_;
@@ -175,6 +188,8 @@ export class Field extends FieldBase implements IField {
       ...res,
       entity: props.entity,
       type: props.type || props.type_,
+      list: props.list,
+      map: props.map,
       idKey: props.idKey ? props.idKey.toString() : undefined,
       relation: props.relation ? props.relation.toObject() : undefined,
     });
@@ -187,6 +202,8 @@ export class Field extends FieldBase implements IField {
     return clean({
       ...res,
       type: props.type_,
+      list: props.list,
+      map: props.map,
       relation: props.relation ? props.relation.toJSON() : undefined,
     });
   }
