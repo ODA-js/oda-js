@@ -1,5 +1,6 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
 import { merge } from 'lodash';
+import mergeTypes from './graphql-merge-schema';
 
 import {
   parse,
@@ -10,6 +11,8 @@ import {
   TypeDefinitionNode,
   Kind,
   GraphQLScalarType,
+  DirectiveDefinitionNode,
+  NamedTypeNode,
 } from 'graphql';
 
 export type ResolverFunction = (
@@ -55,6 +58,7 @@ export type FieldDefinition = {
 
 export enum ModelType {
   query = 'query',
+  directive = 'directive',
   mutation = 'mutation',
   subscription = 'subscription',
   type = 'type',
@@ -66,6 +70,23 @@ export enum ModelType {
   schema = 'schema',
   hook = 'hook',
 }
+
+const typeMap = {
+  [Kind.ENUM_TYPE_DEFINITION]: ModelType.enum,
+  [Kind.ENUM_TYPE_EXTENSION]: ModelType.enum,
+  [Kind.INPUT_OBJECT_TYPE_DEFINITION]: ModelType.input,
+  [Kind.INPUT_OBJECT_TYPE_EXTENSION]: ModelType.input,
+  [Kind.INTERFACE_TYPE_DEFINITION]: ModelType.interface,
+  [Kind.INTERFACE_TYPE_EXTENSION]: ModelType.interface,
+  [Kind.SCALAR_TYPE_DEFINITION]: ModelType.scalar,
+  [Kind.SCALAR_TYPE_EXTENSION]: ModelType.scalar,
+  [Kind.UNION_TYPE_DEFINITION]: ModelType.union,
+  [Kind.UNION_TYPE_EXTENSION]: ModelType.union,
+  [Kind.OBJECT_TYPE_DEFINITION]: ModelType.type,
+  [Kind.OBJECT_TYPE_EXTENSION]: ModelType.type,
+  [Kind.SCHEMA_DEFINITION]: ModelType.schema,
+  [Kind.DIRECTIVE_DEFINITION]: ModelType.directive,
+};
 
 export type ModelTypes = keyof typeof ModelType;
 
@@ -147,6 +168,7 @@ export interface IGQLTypeDef extends IGQLType {
 }
 
 export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
+  public complex: boolean = false;
   static create(inp: IGQLInput | string | DocumentNode): GQLType | GQLType[] {
     if (isValidInput(inp)) {
       let schema, type: ModelTypes;
@@ -186,39 +208,40 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
           }
         }
       } else if (schema && isValidInput(inp)) {
-        return schema.definitions.map(typedef => {
-          switch (typedef.kind) {
-            case Kind.ENUM_TYPE_DEFINITION:
-            case Kind.ENUM_TYPE_EXTENSION:
-              return new Enum(inp);
-            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
-            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
-              return new Input(inp);
-            case Kind.INTERFACE_TYPE_DEFINITION:
-            case Kind.INTERFACE_TYPE_EXTENSION:
-              return new Interface(inp);
-            case Kind.SCALAR_TYPE_DEFINITION:
-            case Kind.SCALAR_TYPE_EXTENSION:
-              return new Scalar(inp);
-            case Kind.UNION_TYPE_DEFINITION:
-            case Kind.UNION_TYPE_EXTENSION:
-              return new Union(inp);
-            case Kind.OBJECT_TYPE_DEFINITION:
-            case Kind.OBJECT_TYPE_EXTENSION: {
-              if (typedef.name.value.match(/mutation/i)) {
-                return new Mutation(inp);
-              } else if (typedef.name.value.match(/query/i)) {
-                return new Query(inp);
-              } else if (typedef.name.value.match(/subscription/i)) {
-                return new Subscription(inp);
-              } else {
-                return new Type(inp);
+        return schema.definitions
+          .map(typedef => {
+            switch (typeMap[typedef.kind]) {
+              case ModelType.enum:
+                return new Enum(typedef);
+              case ModelType.input:
+                return new Input(typedef);
+              case ModelType.interface:
+                return new Interface(typedef);
+              case ModelType.scalar:
+                return new Scalar(typedef);
+              case ModelType.union:
+                return new Union(typedef);
+              case ModelType.union:
+              case ModelType.type: {
+                if (typedef.name.value.match(/Mutation/i)) {
+                  return new Mutation(typedef);
+                } else if (typedef.name.value.match(/Query/i)) {
+                  return new Query(typedef);
+                } else if (typedef.name.value.match(/Subscription/i)) {
+                  return new Subscription(typedef);
+                } else {
+                  return new Type(typedef);
+                }
               }
+              case ModelType.schema:
+                return;
+              case ModelType.directive:
+                return new Directive(typedef);
+              default:
+                throw new Error('unknown type');
             }
-            default:
-              throw new Error('unknown type');
-          }
-        });
+          })
+          .filter(f => f);
       }
     } else if (isValidSchemaInput(inp)) {
       return new Schema(inp);
@@ -253,11 +276,19 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   protected node: DefinitionNode[] | DefinitionNode;
   protected resolveName(schema: string | DocumentNode) {
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
-    return (parsed.definitions[0] as TypeDefinitionNode).name.value;
+    if (parsed.definitions) {
+      return ((parsed.definitions[0] as any) as NamedTypeNode).name.value;
+    } else if (parsed.hasOwnProperty('name')) {
+      return ((parsed as any) as NamedTypeNode).name.value;
+    } else {
+      debugger;
+    }
   }
   constructor(
     args: IGQLBaseInput<Resolver> | IGQLInput<Resolver> | string | DocumentNode,
   ) {
+    if (this.complex) {
+    }
     if (isValidInput(args)) {
       if (isValidSchema(args)) {
         this.attachSchema(args);
@@ -272,6 +303,19 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   public attachResolver(resolver: Resolver) {
     this._resolver = resolver;
   }
+
+  public checkSchema() {
+    if (!this.complex) {
+      if (
+        this._schemaAST &&
+        this._schemaAST.definitions &&
+        this._schemaAST.definitions.length > 1
+      ) {
+        throw new Error('too many types definitions in simple type');
+      }
+    }
+  }
+
   public attachSchema(value: string | DocumentNode) {
     if (isValidSchema(value)) {
       if (typeof value === 'string') {
@@ -285,6 +329,14 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
   }
   public get valid(): boolean {
     return !!this._schema && !!this._name;
+  }
+}
+
+export class Directive extends GQLType {
+  constructor(args) {
+    super(args);
+    this._type = ModelType.directive;
+    this.checkSchema();
   }
 }
 
@@ -317,6 +369,7 @@ export class Fields<Resolver> extends GQLType<Resolver>
   constructor(args) {
     super(args);
     this._rootName = this.resolveRootName(this._schemaAST);
+    this.checkSchema();
   }
   public get resolver() {
     return this._rootName && this._resolver
@@ -330,6 +383,7 @@ export class Query extends Fields<ResolverFunction>
   constructor(args: IGQLInput<ResolverFunction> | string | DocumentNode) {
     super(args);
     this._type = ModelType.query;
+    this.checkSchema();
   }
 }
 
@@ -338,6 +392,7 @@ export class Mutation extends Fields<ResolverFunction>
   constructor(args: IGQLInput<ResolverFunction> | string | DocumentNode) {
     super(args);
     this._type = ModelType.mutation;
+    this.checkSchema();
   }
 }
 
@@ -355,6 +410,7 @@ export class Subscription extends Fields<SubscriptionResolver>
   constructor(args: IGQLInput<SubscriptionResolver> | string | DocumentNode) {
     super(args);
     this._type = ModelType.subscription;
+    this.checkSchema();
   }
 }
 
@@ -376,6 +432,7 @@ export class Type extends GQLType<ResolverFunction | ObjectResolver>
     super(args);
     this._type = ModelType.type;
     this._isExtend = this.resolveExtend(this._schemaAST);
+    this.checkSchema();
   }
   public get resolver() {
     return this.name && this._resolver
@@ -388,6 +445,7 @@ export class Input extends GQLType implements Readonly<IGQLTypeDef> {
   constructor(args: IGQLInput | string | DocumentNode) {
     super(args);
     this._type = ModelType.input;
+    this.checkSchema();
   }
 }
 
@@ -398,6 +456,7 @@ export class Union extends GQLType<UnionInterfaceResolverFunction>
   ) {
     super(args);
     this._type = ModelType.union;
+    this.checkSchema();
   }
   public get resolver() {
     return this._resolver
@@ -421,6 +480,7 @@ export class Interface extends GQLType<UnionInterfaceResolverFunction>
   ) {
     super(args);
     this._type = ModelType.interface;
+    this.checkSchema();
   }
   public get resolver() {
     return this._resolver
@@ -460,6 +520,7 @@ export class Scalar extends GQLType<ScalarResolver>
         astNode: this._schemaAST as any,
       });
     }
+    this.checkSchema();
   }
   public get resolver() {
     return this.name && this._resolver
@@ -478,6 +539,7 @@ export class Enum extends GQLType<IEnumResolver>
   constructor(args: IGQLInput<IEnumResolver> | string | DocumentNode) {
     super(args);
     this._type = ModelType.enum;
+    this.checkSchema();
   }
 }
 
@@ -504,6 +566,7 @@ export interface SchemaInput extends IGQLBaseInput<IResolvers> {
 }
 
 export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
+  public complex: boolean = true;
   /**
    * store Query entries after build
    */
@@ -605,10 +668,13 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
       this._items
         .filter(i => i instanceof Schema)
         .forEach(i => (i as Schema).build());
-      this._schema = [...this._items.map(i => i.schema), this._initialSchema]
-        .filter(i => i)
-        .join('\n');
+
+      this._schema = mergeTypes(
+        [...this._items.map(i => i.schema), this._initialSchema].filter(i => i),
+      );
+
       this._schemaAST = parse(this._schema);
+
       this._resolvers = merge(
         {},
         this._resolver,
@@ -638,9 +704,9 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
     return this._isBuilt ? this._schema : '';
   }
 
-  protected _rootQuery?: string = 'RootQuery';
-  protected _rootMutation?: string = 'RootMutation';
-  protected _rootSubscription?: string = 'RootSubscription';
+  protected _rootQuery?: string = 'Query';
+  protected _rootMutation?: string = 'Mutation';
+  protected _rootSubscription?: string = 'Subscription';
   /**
    * override inherited
    */
@@ -695,6 +761,7 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
         }
       }
     }
+    this.checkSchema();
   }
   public get valid(): boolean {
     return true;

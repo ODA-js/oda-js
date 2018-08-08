@@ -17,7 +17,6 @@
     "immutable": "^4.0.0-rc.9",
     "invariant": "^2.2.2",
     "lodash": "^4.17.5",
-    "merge-graphql-schemas": "^1.5.2",
     "warning": "^3.0.0"
   },
   "peerDependencies": {
@@ -35,6 +34,7 @@
     "typescript": "~2.8.3"
   },
   "jest": {
+    "testEnvironment": "node",
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },

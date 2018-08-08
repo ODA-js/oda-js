@@ -1,7 +1,6 @@
 import 'jest';
 import { Enum, Query, GQLType, Schema, Type } from '.';
 import gql from 'graphql-tag';
-import { debug } from 'util';
 
 describe('Enum', () => {
   it('parse name from schema as ast', () => {
@@ -71,7 +70,6 @@ describe('GQLType', () => {
     expect(item[0].name).toBe('updateUser');
   });
   it('creates Type', () => {
-    debugger;
     const item = GQLType.create(gql`
       extend type Picture {
         name: string
@@ -129,6 +127,10 @@ describe('Schema', () => {
       name: 'Person',
       items: [
         gql`
+          schema {
+            query: RootQuery
+            mutation: RootMutation
+          }
           extend type RootMutation {
             updateUser(id: String, payload: UserPayload): String
           }
@@ -206,5 +208,125 @@ describe('Schema', () => {
     expect(res.resolvers).toMatchSnapshot();
     expect(res.schema).toMatchSnapshot();
     expect(res.schemaAST).toMatchSnapshot();
+  });
+});
+
+describe('Merge', () => {
+  it('throws when too many types', () => {
+    expect(
+      () =>
+        new Type({
+          schema: gql`
+            directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
+            type Picture implements Node {
+              name: string @example
+              size(name: String @example): ImageSize
+            }
+          `,
+          resolver: {
+            size: () => null,
+          },
+        }),
+    ).toThrow();
+  });
+
+  it('merge-schema', () => {
+    debugger;
+    const res = new Schema({
+      name: 'Person',
+      items: [
+        gql`
+          schema {
+            query: RootQuery
+            mutation: RootMutation
+          }
+          directive @example on FIELD
+          interface Node {
+            id: ID!
+          }
+          extend type RootMutation {
+            updateUser(id: String, payload: UserPayload): String
+          }
+          extend type RootMutation {
+            deleteUser(id: String, payload: UserPayload): String
+          }
+          union Images = Image
+          type Image implements Node {
+            name: string
+            size: ImageSize
+          }
+
+          type Viewer {
+            username: string
+          }
+
+          extend type RootMutation {
+            login(user: String): String
+          }
+          extend type RootQuery {
+            viewer(user: String): Viewer
+          }
+        `,
+        new Schema({
+          name: 'Picture',
+          items: [
+            new Type({
+              schema: gql`
+                type Picture implements Node {
+                  name: string @example
+                  size(name: String @example): ImageSize
+                }
+              `,
+              resolver: {
+                size: () => null,
+              },
+            }),
+          ],
+          schema: gql`
+            directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
+            union Images = Picture
+            schema {
+              mutation: RootMutation
+            }
+            type Viewer {
+              username(short: Boolean): string
+            }
+            extend type RootMutation {
+              createPicture: string
+            }
+            interface INode {
+              id: ID!
+            }
+            extend type Picture implements INode {
+              isJPG: ImageSize
+            }
+          `,
+          resolver: {
+            RootMutation: {
+              createPicture: () => null,
+            },
+            Picture: {
+              isJPG: () => true,
+            },
+          },
+        }),
+      ],
+      resolver: {
+        RootMutation: {
+          login: () => null,
+          deleteUser: () => null,
+          updateUser: () => null,
+        },
+        RootQuery: {
+          viewer: () => null,
+        },
+        Viewer: () => ({
+          username: 'system',
+        }),
+      },
+    });
+    res.build();
+    debugger;
+    expect(res.schema).toMatchSnapshot();
   });
 });
