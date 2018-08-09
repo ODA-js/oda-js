@@ -10,4 +10,5 @@
 #{partial(entity.mutations.resolver, 'entity-helpers-unlink-from-all')}
 #{partial(entity.query, 'query-index')}
 #{partial(entity.subscriptions, 'subscriptions-index')}
+#{partial(entity.data, 'data-index')}
 

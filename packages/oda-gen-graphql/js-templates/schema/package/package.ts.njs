@@ -12,6 +12,11 @@ import #{ent.name} from './#{ent.name}';
 import Node from './node';
 import Viewer from './viewer';
 import Types from './_Types';
+import Scalars from './scalars';
+import Directives from './directives';
+import Enums from './enums';
+import Queries from './queries';
+import Mutations from './mutations';
 import { Schema } from 'oda-gen-common';
 import gql from 'graphql-tag';
 
@@ -19,6 +24,11 @@ export {
   Node,
   Viewer,
   Types,
+  Directives,
+  Scalars,
+  Enums,
+  Queries,
+  Mutations,
 <#- pkg.entities.forEach( ent => {#>
   #{ent.name},
 <#-})#>
@@ -27,15 +37,6 @@ export {
 export default new Schema({
   name: '#{pkg.name}',
   schema: gql`
-    type RootSubscription {
-      empty: String
-    }
-    type RootQuery {
-      empty: String
-    }
-    type RootMutation {
-      empty: String
-    }
     schema {
       query: RootQuery
       mutation: RootMutation
@@ -46,6 +47,11 @@ export default new Schema({
     Node,
     Viewer,
     Types,
+    Directives,
+    Scalars,
+    Enums,
+    Queries,
+    Mutations,
 <#- pkg.entities.forEach( ent => {#>
     #{ent.name},
 <#-})#>],
@@ -105,6 +111,7 @@ import {
   Resolver,
   ResolverFunction,
   Scalar,
+  Directive,
   Subscription,
   ScalarResolver,
   Type,
@@ -129,6 +136,7 @@ export {
   Resolver,
   ResolverFunction,
   Scalar,
+  Directive,
   ScalarResolver,
   Subscription,
   Type,
@@ -185,3 +193,11 @@ export {
   toGlobalId,
   globalIdField,
 };
+
+#{partial(pkg,'scalars/index')}
+#{partial(pkg,'directives/index')}
+#{partial(pkg,'enums/index')}
+#{partial(pkg,'queries/index')}
+#{partial(pkg,'mutations/index')}
+#{partial(pkg,'unions/index')}
+#{partial(pkg,'data-connectors/index')}

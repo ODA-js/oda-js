@@ -148,5 +148,33 @@ export function mapper(
       ),
     },
     ensure: ensure.mapper(entity, pack, role, aclAllow, typeMapper, adapter),
+    data: {
+      name: entity.name,
+      adapter,
+      schema: entityMappers.data.adapter.schema.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+      connector: entityMappers.data.adapter.connector.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+      model: entityMappers.data.types.model.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+    },
   };
 }

@@ -25,6 +25,7 @@ export class Enum extends ModelBase {
         name: i.name,
         title: i.title || i.name,
         description: i.description || i.title || i.name,
+        value: i.value,
         metadata: i.metadata,
       }));
 

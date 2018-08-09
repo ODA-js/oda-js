@@ -100,7 +100,7 @@ export function printArguments(
   if (field.args) {
     for (let arg of field.args) {
       let type = typeMapper(arg.type);
-      result += `${arg.name}: ${type}${arg.required ? '1' : ''}`;
+      result += `${arg.name}: ${type}${printRequired(arg)}`;
       if (arg.defaultValue) {
         if (type in { Int: 1, Float: 1, Boolean: 1 }) {
           result += ` = ${arg.defaultValue}`;

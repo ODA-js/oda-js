@@ -3,7 +3,11 @@ import { Factory } from 'fte.js';
 
 export const template = 'package/register.mongoose.connectors.ts.njs';
 
-export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(pack, typeMapper), template);
 }
 
@@ -14,16 +18,16 @@ export interface MapperOutput {
   }[];
 }
 
-import {
-  getEntities,
-} from '../queries';
+import { getEntities } from '../queries';
 
-export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   return {
-    entities: getEntities(pack)
-      .map(e => ({
-        name: e.name,
-        adapter: e.getMetadata('storage.adapter', 'mongoose'),
-      })),
+    entities: getEntities(pack).map(e => ({
+      name: e.name,
+      adapter: e.getMetadata('storage.adapter', 'mongoose'),
+    })),
   };
 }

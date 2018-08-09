@@ -1,5 +1,5 @@
 <#@ context 'entity' -#>
-
+<#@ alias 'data/model' #>
 export interface I#{entity.name} {
   <#- entity.fields.forEach(field => { #>
   #{field.name}<#- if(!field.required){#>?<#-}#>: #{field.type};

@@ -1,5 +1,12 @@
 //common queries that is used in code generation
-import { Entity, Field, ModelPackage, MetaModel, Mutation } from 'oda-model';
+import {
+  Entity,
+  Field,
+  ModelPackage,
+  MetaModel,
+  Mutation,
+  Query,
+} from 'oda-model';
 import { type } from './entity';
 
 let memoizeCache: any = {};
@@ -14,12 +21,25 @@ export const getPackages = (model: MetaModel) =>
 export const getEntities = (pack: ModelPackage) =>
   Array.from(pack.entities.values());
 
+export const getScalars = (pack: ModelPackage) =>
+  Array.from(pack.scalars.values());
+
+export const getDirvectives = (pack: ModelPackage) =>
+  Array.from(pack.directives.values());
+
+export const getEnums = (pack: ModelPackage) => Array.from(pack.enums.values());
+export const getUnions = (pack: ModelPackage) =>
+  Array.from(pack.unions.values());
+
 export const fields = (f: Field): boolean => !f.relation;
 
 export const relations = (f: Field): boolean => !!f.relation;
 
 export const getMutations = (pack: ModelPackage): Mutation[] =>
   Array.from(pack.mutations.values());
+
+export const getQueries = (pack: ModelPackage): Query[] =>
+  Array.from(pack.queries.values());
 
 const falseFilter = () => false;
 

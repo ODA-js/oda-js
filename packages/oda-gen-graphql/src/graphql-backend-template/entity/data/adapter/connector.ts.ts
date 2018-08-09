@@ -97,7 +97,7 @@ import {
   memoizeEntityMapper,
 } from '../../../queries';
 
-export const mapper = memoizeEntityMapper(template, _mapper);
+export const mapper = memoizeEntityMapper('data.adapter.connector', _mapper);
 
 export function _mapper(
   entity: Entity,

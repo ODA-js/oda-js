@@ -15,6 +15,7 @@ import { BelongsToMany } from './belongstomany';
 import { MetaModel } from './metamodel';
 import { ModelBase } from './modelbase';
 import { Mutation } from './mutation';
+import { Query } from './query';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
@@ -43,6 +44,7 @@ export {
   MetaModel,
   DEFAULT_ID_FIELD,
   Mutation,
+  Query,
   RelationBase,
   FieldBase,
   EntityReference,

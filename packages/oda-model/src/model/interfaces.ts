@@ -333,7 +333,9 @@ export interface DirectiveInput extends ModelBaseInput {
   on?: string[];
 }
 
-export interface EnumItemInput extends ModelBaseInput {}
+export interface EnumItemInput extends ModelBaseInput {
+  value?: string;
+}
 
 export interface EnumInput extends ModelBaseInput {
   items: (EnumItemInput | string)[];
