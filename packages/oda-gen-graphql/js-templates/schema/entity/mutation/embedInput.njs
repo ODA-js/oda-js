@@ -9,7 +9,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input embed#{entity.name}Input {
-      clientMutationId: String
 <#- for (let field of entity.update){#>
       #{field.name}: #{field.type}
 <#-}#>

@@ -7,14 +7,13 @@ import {
   Type,
   Schema,
   Query,
-  fromGlobalId,
   RegisterConnectors,
   getWithType,
 } from './common';
 
 export const Viewer = new Type({
   schema: gql`
-    type Viewer implements Node {
+    type Viewer {
       id: ID!
       _user: User
     }
@@ -33,7 +32,7 @@ export const Viewer = new Type({
           result = {
             ...context.user,
           };
-          result.id = fromGlobalId(result.id).id;
+          result.id = result.id;
         } else {
           result.id = result.id;
         }

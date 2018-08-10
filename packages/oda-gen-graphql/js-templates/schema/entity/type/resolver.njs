@@ -57,7 +57,7 @@
       let direction = detectCursorDirection(args)._id;
       let edges = list.map(l => {
         return {
-          cursor: idToCursor(l.id),
+          cursor: l.id,
           node: l,
         };
       });
@@ -157,7 +157,7 @@
           <#- for(let field of connection.ref.fields){#>
             #{field}: l.#{field},
           <#-}#>
-            cursor: idToCursor(l.id),
+            cursor: l.id,
             node: hItems[l.#{connection.ref.usingField}],
           };
         }).filter(l=>l.node);

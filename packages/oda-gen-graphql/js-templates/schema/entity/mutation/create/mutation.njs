@@ -9,7 +9,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  idToCursor,
   #{slot('import-common-mutation-create-slot')}
 } from '../../../common';
 import gql from 'graphql-tag';
@@ -57,7 +56,7 @@ export default new Mutation({
     }
 
     let #{entity.ownerFieldName}Edge = {
-      cursor: idToCursor(result.id),
+      cursor: result.id,
       node: result,
     };
 

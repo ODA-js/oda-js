@@ -70,7 +70,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input #{s.name}Input {
-      clientMutationId: String
     <# for(let arg of s.args){-#>
       #{arg.name}: #{arg.type.gql}
     <#}-#>
@@ -87,8 +86,6 @@ import gql from 'graphql-tag';
 export default new Type({
   schema: gql`
     type #{s.name}Payload {
-      clientMutationId: String
-      viewer: Viewer
     <# for(let arg of s.payload){-#>
       #{arg.name}: #{arg.type.gql}
     <#}-#>

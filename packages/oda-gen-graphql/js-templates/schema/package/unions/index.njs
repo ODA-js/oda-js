@@ -27,10 +27,9 @@ export default new Union({
 <#- s.items.forEach((item, index)=>{ -#>      
      <# if(index > 0){#>|<#}#> #{item}
 <#-})#>
-    
   `,
   resolver: (obj, context, info) => {
-    
+    return obj.__type;
   },
 })
 <#})#>

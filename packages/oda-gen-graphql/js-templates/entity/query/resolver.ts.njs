@@ -5,7 +5,7 @@ import * as get from 'lodash/get';
 
 import { fromGlobalId } from 'oda-isomorfic';
 import RegisterConnectors from '../../../../data/registerConnectors';
-import { emptyConnection, idToCursor, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
+import { emptyConnection, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';
 
 const { selectionTree: traverse } = lib;
@@ -76,7 +76,7 @@ export const query: { [key: string]: any } = {
       let edges = get(selectionSet, 'edges') ?
         list.map(l => {
           return {
-            cursor: idToCursor(l.id),
+            cursor: l.id,
             node: l,
           };
         }) : null;

@@ -13,7 +13,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input removeFrom#{connection.name}Input {
-      clientMutationId: String
       #{connection.refFieldName}:ID!
       #{entity.ownerFieldName}:ID!
     }

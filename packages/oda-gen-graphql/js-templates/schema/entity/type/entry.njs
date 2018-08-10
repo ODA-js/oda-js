@@ -1,7 +1,7 @@
 <#@ context 'entity'#>
 <#@ alias 'type-entry'#>
 
-type #{entity.name} implements Node {
+type #{entity.name} {
 <#- entity.fields.forEach(field => { -#>
 <# if(field.description){#>
   # #{field.description}

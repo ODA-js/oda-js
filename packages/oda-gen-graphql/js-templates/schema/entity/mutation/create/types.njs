@@ -9,7 +9,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input create#{entity.name}Input {
-      clientMutationId: String
 <#- for (let field of entity.create){#>
       #{field.name}: #{field.type}
 <#-}#>
@@ -30,8 +29,6 @@ import gql from 'graphql-tag';
 export default new Type({
   schema: gql`
     type create#{entity.name}Payload {
-      clientMutationId: String
-      viewer: Viewer
       #{entity.payloadName}: #{entity.plural}Edge
     }
   `,

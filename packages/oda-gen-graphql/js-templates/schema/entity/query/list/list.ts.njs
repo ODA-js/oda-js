@@ -2,7 +2,52 @@
 <#@ alias 'query-list'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`./query/list/${ctx.entry.pluralEntry}.ts`); -#>
+<#-chunkStart(`./query/list/all${ctx.entry.plural}.ts`); -#>
+<#- slot('import-query-list-index-slot',`all${ctx.entry.plural}`)-#>
+<#- slot('item-query-list-index-slot',`all${ctx.entry.plural}`)-#>
+import {
+  Query,
+  logger,
+  RegisterConnectors,
+} from '../../../common';
+import gql from 'graphql-tag';
+
+export default new Query({
+  schema: gql`
+    extend type RootQuery {
+      all#{ctx.entry.plural}( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
+    }
+  `,
+  resolver: async (
+    owner,
+    args: {
+      after: string,
+      first: number,
+      before: string,
+      last: number,
+      limit: number,
+      skip: number,
+      orderBy: string | string[],
+      filter: object,
+    },
+    context: { connectors: RegisterConnectors },
+    info
+  ) => {
+    logger.trace('#{ctx.resolver.plural}');
+    let idMap = {
+      id: '#{ctx.resolver.adapter == 'mongoose' ? '_id' : 'id'}',
+<# ctx.resolver.idMap.forEach(f=>{-#>
+      #{f}: '#{f}',
+<#})-#>
+    };
+    return await context.connectors.#{ctx.resolver.name}.getList({
+      ...args,
+      idMap,
+    });
+  },
+});
+
+<#- chunkStart(`./query/list/${ctx.entry.pluralEntry}.ts`); -#>
 <#- slot('import-query-list-index-slot',`${ctx.entry.pluralEntry}`)-#>
 <#- slot('item-query-list-index-slot',`${ctx.entry.pluralEntry}`)-#>
 import {
@@ -13,7 +58,6 @@ import {
   traverse,
   pagination,
   detectCursorDirection,
-  idToCursor,
   fixCount,
   consts,
   emptyConnection,
@@ -64,7 +108,7 @@ export default new Query({
       let edges = get(selectionSet, 'edges') ?
         list.map(l => {
           return {
-            cursor: idToCursor(l.id),
+            cursor: l.id,
             node: l,
           };
         }) : null;
@@ -93,5 +137,3 @@ export default new Query({
     return result;
   },
 });
-
-

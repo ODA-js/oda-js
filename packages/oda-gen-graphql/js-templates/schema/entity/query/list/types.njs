@@ -17,7 +17,7 @@ export default new Type({
   `,
 });
 
-<#- chunkStart(`./query/list/${entity.plural}Connection.ts`); -#>
+<#-chunkStart(`./query/list/${entity.plural}Connection.ts`); -#>
 import { Type } from '../../../common';
 import gql from 'graphql-tag';
 <#- slot('import-query-list-index-slot',`${entity.plural}Connection`)-#>

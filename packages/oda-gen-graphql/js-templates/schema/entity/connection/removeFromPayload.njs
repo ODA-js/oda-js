@@ -13,8 +13,6 @@ import gql from 'graphql-tag';
 export default new Type({
   schema: gql`
     type removeFrom#{connection.name}Payload {
-      clientMutationId: String
-      viewer: Viewer
       #{entity.ownerFieldName}: #{entity.name}
     }
   `,

@@ -8,7 +8,7 @@ import {
 } from 'oda-isomorfic';
 
 import RegisterConnectors from '../../../../data/registerConnectors';
-import { mutateAndGetPayload, idToCursor } from 'oda-api-graphql';
+import { mutateAndGetPayload } from 'oda-api-graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 
 <#- for (let relEntity of entity.relEntities){#>
@@ -273,7 +273,7 @@ export const mutation = {
     }
 
     let #{entity.ownerFieldName}Edge = {
-      cursor: idToCursor(result.id),
+      cursor: result.id,
       node: result,
     };
 

@@ -1,6 +1,6 @@
 <#@ context 'pack' -#>
 <#@ alias 'connectorIndex' #>
-<#- debugger; for(let entity of pack.entities){#>
+<#- for(let entity of pack.entities){#>
 import #{entity.name} from './#{entity.name}/adapter/connector';
 <#- }#>
 

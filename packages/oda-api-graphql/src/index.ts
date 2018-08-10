@@ -1,8 +1,6 @@
 import * as consts from './consts';
-import cursorToId from './cursorToId';
 import emptyConnection from './emptyConnection';
 import getWithType from './getWithType';
-import idToCursor from './idToCursor';
 import isType from './isType';
 import mutateAndGetPayload from './mutateAndGetPayload';
 import pagination from './pagination';
@@ -25,10 +23,8 @@ export {
   base64,
   unbase64,
   consts,
-  cursorToId,
   emptyConnection,
   getWithType,
-  idToCursor,
   CursorType,
   Connector,
   detectCursorDirection,

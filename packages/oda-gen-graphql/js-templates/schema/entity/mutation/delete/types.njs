@@ -9,7 +9,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input delete#{entity.name}Input {
-      clientMutationId: String
 <#- for (let field of entity.unique){#>
       #{field.name}: #{field.type}
 <#-}#>
@@ -25,8 +24,6 @@ import gql from 'graphql-tag';
 export default new Type({
   schema: gql`
     type delete#{entity.name}Payload {
-      clientMutationId: String
-      viewer: Viewer
       deletedItemId: ID
       #{entity.payloadName}: #{entity.name}
     }

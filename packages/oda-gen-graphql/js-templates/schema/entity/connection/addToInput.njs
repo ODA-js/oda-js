@@ -13,7 +13,6 @@ import gql from 'graphql-tag';
 export default new Input({
   schema: gql`
     input addTo#{connection.name}Input {
-      clientMutationId: String
       #{entity.ownerFieldName}:ID!
       #{connection.refFieldName}:ID!
       #additional Edge fields

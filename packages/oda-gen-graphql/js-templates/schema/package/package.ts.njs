@@ -2,15 +2,10 @@
 <#@ alias 'schema/package' #>
 <#@ context 'pkg' #>
 
-#{partial(pkg, 'node-interface')}
-#{partial(pkg, 'viewer')}
-
 <#- chunkStart(`./index.ts`); -#>
 <#- pkg.entities.forEach( ent => {#>
 import #{ent.name} from './#{ent.name}';
 <#-})#>
-import Node from './node';
-import Viewer from './viewer';
 import Types from './_Types';
 import Scalars from './scalars';
 import Directives from './directives';
@@ -21,8 +16,6 @@ import { Schema } from 'oda-gen-common';
 import gql from 'graphql-tag';
 
 export {
-  Node,
-  Viewer,
   Types,
   Directives,
   Scalars,
@@ -44,8 +37,6 @@ export default new Schema({
     }
   `,
   items: [
-    Node,
-    Viewer,
     Types,
     Directives,
     Scalars,
@@ -71,7 +62,6 @@ export function filterIt(payload, queryCheck) {
 
 import {
   emptyConnection,
-  idToCursor,
   pagination,
   detectCursorDirection,
   consts,
@@ -169,7 +159,6 @@ export {
   traverse,
   pagination,
   detectCursorDirection,
-  idToCursor,
   logger,
   consts,
   emptyConnection,
@@ -186,4 +175,5 @@ export {
 #{partial(pkg,'queries/index')}
 #{partial(pkg,'mutations/index')}
 #{partial(pkg,'unions/index')}
+#{partial(pkg,'types/index')}
 #{partial(pkg,'data-connectors/index')}

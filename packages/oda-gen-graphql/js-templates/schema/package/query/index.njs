@@ -86,7 +86,6 @@ import gql from 'graphql-tag';
 export default new Type({
   schema: gql`
     type #{s.name}Payload {
-      viewer: Viewer
     <# for(let arg of s.payload){-#>
       #{arg.name}: #{arg.type.gql}
     <#}-#>

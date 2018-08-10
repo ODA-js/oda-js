@@ -10,7 +10,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  idToCursor,
   #{slot('import-common-mutation-delete-slot')}
 } from '../../../common';
 import gql from 'graphql-tag';
