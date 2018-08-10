@@ -1,7 +1,10 @@
 <#@ context 'entity'#>
 <#@ alias 'type-entry'#>
 
-type #{entity.name} {
+type #{entity.name} <#-if(entity.implements.length > 0){#>
+implements #{entity.implements.join(' & ')}
+<#}-#>
+{
 <#- entity.fields.forEach(field => { -#>
 <# if(field.description){#>
   # #{field.description}

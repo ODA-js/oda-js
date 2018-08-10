@@ -31,6 +31,9 @@ export const getEnums = (pack: ModelPackage) => Array.from(pack.enums.values());
 export const getUnions = (pack: ModelPackage) =>
   Array.from(pack.unions.values());
 
+export const getMixins = (pack: ModelPackage) =>
+  Array.from(pack.mixins.values());
+
 export const fields = (f: Field): boolean => !f.relation;
 
 export const relations = (f: Field): boolean => !!f.relation;

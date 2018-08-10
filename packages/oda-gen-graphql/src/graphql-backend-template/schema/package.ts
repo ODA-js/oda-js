@@ -6,9 +6,12 @@ export const template = 'schema/package';
 
 export function prepare(
   pack: ModelPackage,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
+  adapter: string,
 ) {
-  return { ctx: mapper(pack, typeMapper), template };
+  return { ctx: mapper(pack, role, aclAllow, typeMapper, adapter), template };
 }
 
 export interface MapperOutput {
@@ -23,6 +26,10 @@ export interface MapperOutput {
     name: string;
     items: string[];
   }[];
+  mixins: {
+    name: string;
+    fields: any[];
+  }[];
 }
 
 import {
@@ -33,6 +40,7 @@ import {
   getMutations,
   getQueries,
   getUnions,
+  getMixins,
 } from '../queries';
 
 import {
@@ -40,9 +48,14 @@ import {
   MutationQueryOutput,
 } from './mutation-query';
 
+import { mapper as mixin__mapper } from './mixins';
+
 export function mapper(
   pack: ModelPackage,
+  role: string,
+  aclAllow,
   typeMapper: { [key: string]: (string) => string },
+  adapter: string,
 ): MapperOutput {
   return {
     name: capitalize(pack.name),
@@ -73,5 +86,8 @@ export function mapper(
       name: u.name,
       items: u.items,
     })),
+    mixins: getMixins(pack).map(u =>
+      mixin__mapper(u, pack, role, aclAllow, typeMapper, adapter),
+    ),
   };
 }

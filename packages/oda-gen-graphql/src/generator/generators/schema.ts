@@ -19,7 +19,7 @@ export default function $generate(
   const sources = [];
   const prepared = [];
   console.time('prepare');
-  prepared.push(templatePkg.prepare(pkg, typeMapper));
+  prepared.push(templatePkg.prepare(pkg, role, allow, typeMapper, adapter));
   prepared.push(
     ...Array.from(pkg.entities.values()).map(entity => {
       return {

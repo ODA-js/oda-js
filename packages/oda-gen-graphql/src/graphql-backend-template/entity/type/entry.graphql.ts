@@ -19,6 +19,7 @@ export function generate(
 export interface MapperOutput {
   name: string;
   description: string;
+  implements: string[];
   filter: string[];
   filterSubscriptions: string[];
   filterEmbed: string[];
@@ -141,6 +142,7 @@ export function _mapper(
 
   return {
     name: entity.name,
+    implements: Array.from(entity.implements),
     description: entity.description
       ? entity.description
           .split('\n')

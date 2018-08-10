@@ -10,6 +10,8 @@ import Types from './_Types';
 import Scalars from './scalars';
 import Directives from './directives';
 import Enums from './enums';
+import Unions from './unions';
+import Mixins from './mixins';
 import Queries from './queries';
 import Mutations from './mutations';
 import { Schema } from 'oda-gen-common';
@@ -20,6 +22,8 @@ export {
   Directives,
   Scalars,
   Enums,
+  Mixins,
+  Unions,
   Queries,
   Mutations,
 <#- pkg.entities.forEach( ent => {#>
@@ -41,6 +45,8 @@ export default new Schema({
     Directives,
     Scalars,
     Enums,
+    Mixins,
+    Unions,
     Queries,
     Mutations,
 <#- pkg.entities.forEach( ent => {#>
@@ -175,5 +181,6 @@ export {
 #{partial(pkg,'queries/index')}
 #{partial(pkg,'mutations/index')}
 #{partial(pkg,'unions/index')}
+#{partial(pkg,'mixins/index')}
 #{partial(pkg,'types/index')}
 #{partial(pkg,'data-connectors/index')}
