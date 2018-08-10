@@ -11,7 +11,7 @@ export class #{entity.name} implements I#{entity.name}{
   <#- entity.fields.forEach(field => { #>
   public #{field.name}<#- if(!field.required){#>?<#-}#>: #{field.type};
   <#- })#>
-  constructor(init: I#{entity.name}){
+  constructor(init: Partial#{entity.name}){
   <#- entity.fields.forEach(field => { #>
   this.#{field.name} = init.#{field.name};
   <#- })#>

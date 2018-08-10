@@ -4,9 +4,6 @@
 
 <#- for (let r of entity.relations) {#>
 <#-chunkStart(`./helpers/link${entity.name}To${r.cField}.ts`); -#>
-import {
-  toGlobalId
-} from '../../common';
 import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`link${entity.name}To${r.cField}`) #>
 <# slot('export-helpers-index-slot',`link${entity.name}To${r.cField}`) #>
@@ -29,7 +26,7 @@ export default async function link#{entity.name}To#{r.cField}({
         }`,
       variables: {
         input: {
-          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
           #{r.ref.fieldName}: #{r.field}.id,
 <#-r.fields.forEach(f=>{#>
           #{f.name},
@@ -41,9 +38,6 @@ export default async function link#{entity.name}To#{r.cField}({
 }
 
 <#-chunkStart(`./helpers/unlink${entity.name}From${r.cField}.ts`); -#>
-import {
-  toGlobalId
-} from '../../common';
 import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
 <# slot('export-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
@@ -61,7 +55,7 @@ export default async function unlink#{entity.name}From#{r.cField}({
         }`,
       variables: {
         input: {
-          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
           #{r.ref.fieldName}: #{r.field}.id,
         }
       }

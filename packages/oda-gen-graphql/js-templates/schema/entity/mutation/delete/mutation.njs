@@ -10,8 +10,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  fromGlobalId,
-  toGlobalId,
   idToCursor,
   #{slot('import-common-mutation-delete-slot')}
 } from '../../../common';
@@ -53,7 +51,7 @@ export default new Mutation({
           context,
         );
 
-        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(fromGlobalId(args.id).id);
+        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
       <#- for (let f of entity.args.remove.find) {#>
       } else if (args.#{f.name}) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
@@ -109,7 +107,7 @@ export default new Mutation({
     }
 
     return {
-      deletedItemId: toGlobalId('#{entity.name}', result.id),
+      deletedItemId: result.id,
       #{entity.ownerFieldName}: result,
     };
   }),

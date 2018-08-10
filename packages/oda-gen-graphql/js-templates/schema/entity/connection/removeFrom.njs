@@ -13,7 +13,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  fromGlobalId,
 } from '../../common';
 import gql from 'graphql-tag';
 
@@ -36,8 +35,8 @@ export default new Mutation({
       info
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
-      let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
-      let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
+      let { id: #{entity.ownerFieldName} } = args.#{entity.ownerFieldName};
+      let { id: #{connection.refFieldName} } = args.#{connection.refFieldName};
       let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},

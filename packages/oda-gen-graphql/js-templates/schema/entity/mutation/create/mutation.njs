@@ -9,7 +9,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  fromGlobalId,
   idToCursor,
   #{slot('import-common-mutation-create-slot')}
 } from '../../../common';
@@ -40,7 +39,7 @@ export default new Mutation({
     };
 
     if(args.id) {
-      create.id = fromGlobalId(args.id).id;
+      create.id = args.id;
     }
 
     let result = await context.connectors.#{entity.name}.create(create);

@@ -8,8 +8,7 @@ import { SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
 import * as Dataloader from 'dataloader';
-
-import { Partial#{ entity.name } } from '../types/model';
+import { Partial#{ entity.name }, #{ entity.name } as DTO } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
@@ -120,10 +119,8 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     if(result){
       await this.updateSecure(result, entity);
       this.storeToCache([result]);
-      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
-    } else {
-      return result;
     }
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 <#-}#>
 
@@ -142,10 +139,8 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     if(result){
       await this.updateSecure(result, entity);
       this.storeToCache([result]);
-      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
-    } else {
-      return result;
     }
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 <#-});#>
 
@@ -160,10 +155,8 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     if( result ){
       result = this.removeSecure(result);
       this.storeToCache([result]);
-      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
-    } else {
-      return result;
     }
+    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 <#-}#>
 
@@ -181,10 +174,8 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     if( result ){
       result = this.removeSecure(result);
       this.storeToCache([result]);
-      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
-    } else {
-      return result;
     }
+    result this.ensureId((result && result.toJSON) ? result.toJSON() : result);
   }
 <#-});#>
 
@@ -333,5 +324,10 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       }
     }
     return entity;
+  }
+
+  public ensureId(obj){
+    let result = super.ensureId(obj);
+    return new DTO(result);
   }
 };

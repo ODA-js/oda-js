@@ -10,7 +10,6 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-  fromGlobalId,
   idToCursor,
   #{slot('import-common-mutation-update-slot')}
 } from '../../../common';
@@ -46,8 +45,8 @@ export default new Mutation({
     let previous;
     try {
       if (args.id) {
-        previous = await context.connectors.#{entity.name}.findOneById(fromGlobalId(args.id).id);
-        result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(fromGlobalId(args.id).id, payload);
+        previous = await context.connectors.#{entity.name}.findOneById(args.id);
+        result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(args.id, payload);
       <#- for (let f of entity.args.update.find) {#>
       } else if (args.#{f.name}) {
         delete payload.#{f.name};

@@ -70,7 +70,6 @@ export function filterIt(payload, queryCheck) {
 }
 
 import {
-  globalIdField,
   emptyConnection,
   idToCursor,
   pagination,
@@ -80,8 +79,6 @@ import {
   Filter,
 } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';
-
-import { fromGlobalId, toGlobalId } from 'oda-isomorfic';
 
 import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 
@@ -146,14 +143,6 @@ export {
   getWithType,
 };
 
-export function getValue(value) {
-  if (typeof value === 'string') {
-    return validId(value) ? value : fromGlobalId(value).id;
-  } else {
-    return value;
-  }
-}
-
 export async function fixCount(
   length: number,
   cursor: { skip?: number; limit?: number },
@@ -189,9 +178,6 @@ export {
   Filter,
   pubsub,
   mutateAndGetPayload,
-  fromGlobalId,
-  toGlobalId,
-  globalIdField,
 };
 
 #{partial(pkg,'scalars/index')}

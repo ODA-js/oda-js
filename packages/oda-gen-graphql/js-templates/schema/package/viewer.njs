@@ -5,7 +5,6 @@
 import gql from 'graphql-tag';
 import {
   Type,
-  globalIdField,
   Schema,
   Query,
   fromGlobalId,
@@ -21,7 +20,7 @@ export const Viewer = new Type({
     }
   `,
   resolver: {
-    id: globalIdField('User', ({ _id, id }) => _id || id),
+    id: ({ _id, id }) => _id || id,
     _user: async (
       owner: { id: string },
       args,

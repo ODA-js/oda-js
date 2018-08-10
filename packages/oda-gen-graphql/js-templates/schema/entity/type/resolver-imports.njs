@@ -12,7 +12,6 @@ import { idToCursor, emptyConnection, pagination, detectCursorDirection, consts,
 <#}-#>
 import {
   Type,
-  globalIdField,
   traverse,
   logger,
 } from '../../common';
