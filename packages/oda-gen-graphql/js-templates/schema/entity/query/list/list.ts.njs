@@ -2,9 +2,9 @@
 <#@ alias 'query-list'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`./query/list/all${ctx.entry.plural}.ts`); -#>
-<#- slot('import-query-list-index-slot',`all${ctx.entry.plural}`)-#>
-<#- slot('item-query-list-index-slot',`all${ctx.entry.plural}`)-#>
+<#-chunkStart(`./query/list/${ctx.entry.name}Items.ts`); -#>
+<#- slot('import-query-list-index-slot',`${ctx.entry.name}Items`)-#>
+<#- slot('item-query-list-index-slot',`${ctx.entry.name}Items`)-#>
 import {
   Query,
   logger,
@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 export default new Query({
   schema: gql`
     extend type RootQuery {
-      all#{ctx.entry.plural}( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
+      #{ctx.entry.name}Items( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
     }
   `,
   resolver: async (
