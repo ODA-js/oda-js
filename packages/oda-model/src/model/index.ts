@@ -1,7 +1,6 @@
 import { Entity } from './entity';
 import { EntityBase } from './entitybase';
 import { Scalar } from './scalar';
-import { ObjectType } from './objecttype';
 import { Mixin } from './mixin';
 import { Union } from './union';
 import { Directive } from './directive';
@@ -55,6 +54,5 @@ export {
   Mixin,
   Union,
   Scalar,
-  ObjectType,
   Directive,
 };

@@ -39,7 +39,6 @@ export interface IPackage extends IModelType {
   name: string;
   metaModel: IModel;
   entities: Map<string, IEntity>;
-  objects: Map<string, IObjectType>;
   scalars: Map<string, Scalar>;
   mixins: Map<string, Mixin>;
   enums: Map<string, Enum>;
@@ -56,8 +55,6 @@ export interface IEntityBase extends IModelType {
 }
 
 export interface IMixin extends IEntityBase {}
-
-export interface IObjectType extends IEntityBase {}
 
 export interface IEntity extends IEntityBase {
   implements: Set<string>;
@@ -238,10 +235,6 @@ export interface MixinInput extends EntityBaseInput {}
 
 export interface MixinStorage extends EntityBaseStorage {}
 
-export interface ObjectTypeInput extends EntityBaseInput {}
-
-export interface ObjectTypeStorage extends EntityBaseStorage {}
-
 export interface EntityBaseJSON extends ModelBaseInput {
   fields?: FieldInput[];
 }
@@ -387,7 +380,6 @@ export interface ModelPackageStore {
   entities: string[];
   mutations: any[];
   queries: any[];
-  objects: IObjectType[];
   scalars: Scalar[];
   enums: any[];
   unions: any[];
@@ -399,7 +391,6 @@ export interface MetaModelStore {
   packages: ModelPackageStore[];
   mutations?: MutationInput[];
   queries?: QueryInput[];
-  objects: ObjectTypeInput[];
   scalars: ScalarInput[];
   directives: DirectiveInput[];
   enums?: EnumInput[];

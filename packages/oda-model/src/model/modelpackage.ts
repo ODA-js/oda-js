@@ -17,7 +17,6 @@ import { Query } from './query';
 import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
-import { ObjectType } from './objecttype';
 import { Scalar } from './scalar';
 import { Directive } from './directive';
 
@@ -37,7 +36,6 @@ export class ModelPackage implements IValidate, IPackage {
   public abstract: boolean = false;
   /** entity storage */
   public entities: Map<string, Entity> = new Map();
-  public objects: Map<string, ObjectType> = new Map();
   public scalars: Map<string, Scalar> = new Map();
   public directives: Map<string, Directive> = new Map();
   public mixins: Map<string, Mixin> = new Map();
@@ -142,14 +140,6 @@ export class ModelPackage implements IValidate, IPackage {
     return scalar;
   }
 
-  public addObjectType (obj: ObjectType) {
-    if (obj instanceof Scalar) {
-      this.objects.set(obj.name, obj);
-    }
-    this.ensureObjectType(obj);
-    return obj;
-  }
-
   public addDirective(directive: Directive) {
     if (directive instanceof Directive) {
       this.directives.set(directive.name, directive);
@@ -250,12 +240,6 @@ export class ModelPackage implements IValidate, IPackage {
   private ensureScalar(scalar) {
     if (!this.metaModel.scalars.has(scalar.name)) {
       this.metaModel.scalars.set(scalar.name, scalar);
-    }
-  }
-
-  private ensureObjectType(obj) {
-    if (!this.metaModel.objects.has(obj.name)) {
-      this.metaModel.objects.set(obj.name, obj);
     }
   }
 

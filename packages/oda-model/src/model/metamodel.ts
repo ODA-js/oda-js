@@ -22,7 +22,6 @@ import { Query } from './query';
 import { Mixin } from './mixin';
 import { Union } from './union';
 import { Enum } from './enum';
-import { ObjectType } from './objecttype';
 import { Scalar } from './scalar';
 import { Directive } from './directive';
 
@@ -338,12 +337,6 @@ export class MetaModel extends ModelPackage implements IModel {
       });
     }
 
-    if (store.objects) {
-      store.objects.forEach(q => {
-        this.addObjectType(new ObjectType(q));
-      });
-    }
-
     if (store.scalars) {
       store.scalars.forEach(q => {
         this.addScalar(new Scalar(q));
@@ -384,7 +377,6 @@ export class MetaModel extends ModelPackage implements IModel {
         unions: Array.from(this.unions.values()).map(f => f.toJSON()),
         mixins: Array.from(this.mixins.values()).map(f => f.toJSON()),
         scalars: Array.from(this.scalars.values()).map(f => f.toJSON()),
-        objects: Array.from(this.objects.values()).map(f => f.toJSON()),
         directives: Array.from(this.directives.values()).map(f => f.toJSON()),
       }),
     );
@@ -405,7 +397,6 @@ export class MetaModel extends ModelPackage implements IModel {
         unions: Array.from(this.unions.values()).map(f => f.toObject()),
         mixins: Array.from(this.mixins.values()).map(f => f.toObject()),
         scalars: Array.from(this.scalars.values()).map(f => f.toJSON()),
-        objects: Array.from(this.objects.values()).map(f => f.toJSON()),
         directives: Array.from(this.directives.values()).map(f => f.toJSON()),
       }),
     );
@@ -420,7 +411,6 @@ export class MetaModel extends ModelPackage implements IModel {
     this.mixins.clear();
     this.unions.clear();
     this.scalars.clear();
-    this.objects.clear();
     this.directives.clear();
   }
 
