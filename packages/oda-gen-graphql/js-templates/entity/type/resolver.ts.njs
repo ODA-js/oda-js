@@ -140,11 +140,12 @@ export const resolver: { [key: string]: any } = {
           #{f}: '#{f}',
 <#})-#>
         };
-
+<#if(connection.ref.fields.length > 0){#>
         const itemCheck = Filter.Process.create(args.filter || {}, idMap);
-
+<#}#>
         let links = await context.connectors.#{connection.ref.using.entity}.getList(
            _args,
+<#if(connection.ref.fields.length > 0){#>
           async (link) => {
             let result = await context.connectors.#{connection.ref.entity}.findOneById(link.#{connection.ref.usingField});
             if (result) {
@@ -158,31 +159,29 @@ export const resolver: { [key: string]: any } = {
               return false;
             }
           }
+<#}#>
         );
         if (links.length > 0) {
+          let linksHash = links.reduce((res, cur)=>{
+            res[cur.#{connection.ref.usingField}] = cur;
+            return res;
+          }, {});
 
           let res = await context.connectors.#{connection.ref.entity}.getList({
             filter: {
+              ...args.filter,
               #{connection.ref.backField}: { in: links.map(i => i.#{connection.ref.usingField}) }
             }
           });
 
           if (res.length > 0) {
-            let hItems = res.reduce((hash, item) => {
-              hash[item.#{connection.ref.field}] = item;
-              return hash;
-            }, {});
-
-            let edges = links.map(l => {
-              return {
+            let edges = res.map(r=>({
               <#- for(let field of connection.ref.fields){#>
                 #{field}: l.#{field},
               <#-}#>
-                cursor: idToCursor(l.id),
-                node: hItems[l.#{connection.ref.usingField}],
-              };
-            }).filter(l=>l.node);
-
+              cursor: idToCursor(linksHash[r.#{connection.ref.backField}].id),
+              node: r,
+            }));
             let pageInfo = get(selectionSet, 'pageInfo') ?
               {
                 startCursor: get(selectionSet, 'pageInfo.startCursor')
