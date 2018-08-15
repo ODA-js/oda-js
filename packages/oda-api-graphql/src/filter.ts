@@ -235,6 +235,20 @@ export class Filter {
 }
 
 export class Process {
+  public static skip = {
+    query: true,
+    geometry: true,
+    maxDistance: true,
+    minDistance: true,
+    geoIntersects: true,
+    geoWithin: true,
+    near: true,
+    nearSphere: true,
+    box: true,
+    center: true,
+    centerSphere: true,
+    polygon: true,
+  };
   public static operations = {
     eq(value, idMap, id) {
       if (value instanceof Date) {
@@ -303,7 +317,7 @@ export class Process {
       } else {
         return `${JSON.stringify(value)}.indexOf(value${
           id ? '.toString()' : ''
-          }) !== -1`;
+        }) !== -1`;
       }
     },
     nin(value, idMap, id) {
@@ -373,7 +387,7 @@ export class Process {
     exists(value, idMap, id) {
       return `${
         value ? '' : '!'
-        }(value !== undefined && value !== null && value !== '')`;
+      }(value !== undefined && value !== null && value !== '')`;
     },
     match(value, idMap, id) {
       return `(new RegExp("${value}")).test(value.toString())`;
@@ -386,7 +400,11 @@ export class Process {
   public static create(obj, idMap: { [key: string]: any } = { id: '_id' }) {
     let filter = Process.go(obj, idMap);
     // tslint:disable-next-line:no-eval
-    return eval(`(value)=>${filter.join('&&') || 'true'}`);
+    return eval(
+      `(value)=>${
+        filter && Array.isArray(filter) ? filter.join('&&') : 'true'
+      }`,
+    );
   }
 
   public static go(
@@ -396,7 +414,7 @@ export class Process {
     result?,
   ) {
     if (Array.isArray(node)) {
-      return node.map(n => Process.go(n, idMap, id, result));
+      return node.map(n => Process.go(n, idMap, id, result)).filter(n => n);
     } else if (
       typeof node === 'object' &&
       (node.constructor === Object || node.constructor === undefined)
@@ -408,16 +426,16 @@ export class Process {
       keys.forEach((key, index) => {
         if (Process.operations.hasOwnProperty(key)) {
           result.push(Process.operations[key](node[key], idMap, id));
-        } else {
+        } else if (!Process.skip[key]) {
           let idKey = idMap.hasOwnProperty(key);
           result.push(
-            `((value)=>${Process.go(node[key], idMap, idKey)})(value.${
-            idKey ? idMap[key] : key
+            `((value)=>${Process.go(node[key], idMap, idKey) || true})(value.${
+              idKey ? idMap[key] : key
             })`,
           );
         }
       });
-      return result;
+      return result.length > 0 ? result : undefined;
     } else {
       return Process.operations.eq(node, idMap, id);
     }

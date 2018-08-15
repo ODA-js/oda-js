@@ -1,7 +1,13 @@
 import { CursorType } from './cursor';
 import { DIRECTION } from './consts';
 
-export default function direction({ orderBy, last, before }: CursorType): { [key: string]: DIRECTION } {
+export default function direction({
+  orderBy,
+  last,
+  before,
+  first,
+  after,
+}: CursorType): { [key: string]: DIRECTION } {
   const result: { [key: string]: DIRECTION } = {};
   if (orderBy) {
     if (!Array.isArray(orderBy)) {
@@ -17,12 +23,13 @@ export default function direction({ orderBy, last, before }: CursorType): { [key
         result[fieldName] = DIRECTION.BACKWARD;
       }
     }
-
-    result._id = DIRECTION.FORWARD;
+    if (Object.keys(result).length > 0) {
+      result._id = DIRECTION.FORWARD;
+    }
   } else {
     if (last || before) {
       result._id = DIRECTION.BACKWARD;
-    } else {
+    } else if (first || after) {
       result._id = DIRECTION.FORWARD;
     }
   }
