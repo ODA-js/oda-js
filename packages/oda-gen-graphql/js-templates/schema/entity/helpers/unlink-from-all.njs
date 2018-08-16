@@ -123,7 +123,7 @@ export default async function unlink#{entity.name}FromAll(args:{
         ${unlinkFragment}
         `,
       variables,
-    }).then(r => r.data || r.data.input);
+    }).then(r => r.data && r.data.input);
 
     if(input){
       await context.userGQL({
@@ -137,7 +137,7 @@ export default async function unlink#{entity.name}FromAll(args:{
         }
         ${unlinkFragment}
         `,
-        variables: input
+        variables: {input}
       });
     }
   }

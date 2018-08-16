@@ -9,7 +9,7 @@ export default new Type({
     #{partial(entity.type.entry, 'type-entry')}
   `,
   resolver: {
-    id: ({ _id, id }) => _id || id,
+    id: ({ id }) => id,
     #{partial(entity.type.resolver, 'type-resolver')}
   }
 });

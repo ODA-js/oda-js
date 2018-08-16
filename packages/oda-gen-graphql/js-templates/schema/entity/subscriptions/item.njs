@@ -29,7 +29,7 @@ export default new Subscription({
   relations
   .filter(f => f.ref.type === 'ID' && f.verb === 'BelongsTo')
   .map(f=>f.field);-#>
-      id: '_id',
+      id: 'id',
 <# relFields.forEach(f=>{-#>
       #{f}: '#{f}',
 <#})-#>

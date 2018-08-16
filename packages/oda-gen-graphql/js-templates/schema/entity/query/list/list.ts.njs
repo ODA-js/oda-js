@@ -35,7 +35,7 @@ export default new Query({
   ) => {
     logger.trace('#{ctx.resolver.plural}');
     let idMap = {
-      id: '#{ctx.resolver.adapter == 'mongoose' ? '_id' : 'id'}',
+      id: 'id',
 <# ctx.resolver.idMap.forEach(f=>{-#>
       #{f}: '#{f}',
 <#})-#>
@@ -90,7 +90,7 @@ export default new Query({
     let selectionSet = traverse(info);
 
     let idMap = {
-      id: '#{ctx.resolver.adapter == 'mongoose' ? '_id' : 'id'}',
+      id: 'id',
 <# ctx.resolver.idMap.forEach(f=>{-#>
       #{f}: '#{f}',
 <#})-#>

@@ -19,7 +19,7 @@ export const Viewer = new Type({
     }
   `,
   resolver: {
-    id: ({ _id, id }) => _id || id,
+    id: ({ id }) => id,
     _user: async (
       owner: { id: string },
       args,

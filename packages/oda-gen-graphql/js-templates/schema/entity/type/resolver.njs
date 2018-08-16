@@ -3,7 +3,7 @@
 
 <# for (let connection of entity.relations) {-#>
     #{connection.field}: async (
-      {_id: id}, // owner id
+      {id}, // owner id
       args:{
         limit?: number;
         skip?: number;
@@ -35,7 +35,7 @@
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
         let idMap = {
-          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
+          id: 'id',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
@@ -115,7 +115,7 @@
           }
         }
         let idMap = {
-          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
+          id: 'id',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
@@ -200,7 +200,7 @@
 <#}-#>
 <# for (let connection of entity.fields) {-#>
     #{connection.field}: async (
-      {_id: id}, // owner id
+      {id}, // owner id
       args,
       context: { connectors: RegisterConnectors },
       info) => {
