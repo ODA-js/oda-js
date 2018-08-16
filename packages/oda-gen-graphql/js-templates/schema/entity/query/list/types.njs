@@ -3,7 +3,7 @@
 <#@ context 'entity'#>
 
 <#- chunkStart(`./query/list/${entity.plural}Edge.ts`); -#>
-import { Type } from '../../../common';
+import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 <#- slot('import-query-list-index-slot',`${entity.plural}Edge`)-#>
 <#- slot('item-query-list-index-slot',`${entity.plural}Edge`)-#>
@@ -18,7 +18,7 @@ export default new Type({
 });
 
 <#-chunkStart(`./query/list/${entity.plural}Connection.ts`); -#>
-import { Type } from '../../../common';
+import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 <#- slot('import-query-list-index-slot',`${entity.plural}Connection`)-#>
 <#- slot('item-query-list-index-slot',`${entity.plural}Connection`)-#>
@@ -39,7 +39,7 @@ if(entity.connections.length > 0){
 #>
 
 <#- chunkStart(`./query/list/${connection.connectionName}Connection.ts`); -#>
-import { Type } from '../../../common';
+import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 <#- slot('import-query-list-index-slot',`${connection.connectionName}Connection`)-#>
 <#- slot('item-query-list-index-slot',`${connection.connectionName}Connection`)-#>
@@ -54,7 +54,7 @@ export default new Type({
 });
 
 <#- chunkStart(`./query/list/${connection.connectionName}Edge.ts`); -#>
-import { Type } from '../../../common';
+import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 <#- slot('import-query-list-index-slot',`${connection.connectionName}Edge`)-#>
 <#- slot('item-query-list-index-slot',`${connection.connectionName}Edge`)-#>

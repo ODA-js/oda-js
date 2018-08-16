@@ -7,7 +7,7 @@ import {
   Query,
   logger,
   RegisterConnectors,
-} from '../../../common';
+} from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Query({

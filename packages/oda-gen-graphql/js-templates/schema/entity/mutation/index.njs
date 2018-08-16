@@ -8,7 +8,7 @@ import _delete from './delete';
 import update from './update';
 import embed#{ctx.types.name}Input from './embed#{ctx.types.name}Input';
 
-import { Schema } from '../../common';
+import { Schema } from '../../../common';
 
 export default new Schema({
   name: '#{ctx.types.name}.mutations',

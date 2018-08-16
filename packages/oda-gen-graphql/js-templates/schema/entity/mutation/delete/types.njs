@@ -3,7 +3,7 @@
 <#@ context 'entity'#>
 
 <#- chunkStart(`./mutations/delete/delete${entity.name}Input.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -18,7 +18,7 @@ export default new Input({
 
 <#- chunkStart(`./mutations/delete/delete${entity.name}Payload.ts`); -#>
 
-import { Type } from '../../../common';
+import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({

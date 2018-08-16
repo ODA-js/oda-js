@@ -1,7 +1,8 @@
 <#@ context 'entity' -#>
 <#@ chunks '$$$main$$$' -#>
+<#@ alias 'dataPump/config' #>
 
-<# chunkStart(`../../../dataPump/${entity.name}/index`); #>
+<# chunkStart(`../../dataPump/${entity.name}/index.ts`); #>
 import imp from './import'
 import exp from './export'
 
@@ -10,12 +11,7 @@ export default {
   ...exp
 }
 
-<# chunkStart(`../../../dataPump/${entity.name}/import`); #>
-
-import { utils } from 'oda-api-graphql';
-
-const { validId } = utils;
-
+<# chunkStart(`../../dataPump/${entity.name}/import.ts`); #>
 export default {
   import: {
     queries : {
@@ -99,7 +95,7 @@ export default {
     },
   },
 }
-<# chunkStart(`../../../dataPump/${entity.name}/export`); #>
+<# chunkStart(`../../dataPump/${entity.name}/export.ts`); #>
 export default {
   export: {
     queries: {

@@ -382,26 +382,6 @@ export class MetaModel extends ModelPackage implements IModel {
     );
   }
 
-  public saveActualModel(fileName: string = this.store) {
-    fs.writeFileSync(
-      fileName,
-      JSON.stringify({
-        entities: Array.from(this.entities.values()).map(f => f.toObject()),
-        packages: Array.from(
-          this.packages.values(),
-        ) /*.filter(p => p.name !== 'default')*/
-          .map(f => f.toObject()),
-        mutations: Array.from(this.mutations.values()).map(f => f.toObject()),
-        queries: Array.from(this.queries.values()).map(f => f.toObject()),
-        enums: Array.from(this.enums.values()).map(f => f.toObject()),
-        unions: Array.from(this.unions.values()).map(f => f.toObject()),
-        mixins: Array.from(this.mixins.values()).map(f => f.toObject()),
-        scalars: Array.from(this.scalars.values()).map(f => f.toJSON()),
-        directives: Array.from(this.directives.values()).map(f => f.toJSON()),
-      }),
-    );
-  }
-
   public reset() {
     this.entities.clear();
     this.packages.clear();

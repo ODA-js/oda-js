@@ -13,7 +13,7 @@ import {
   mutateAndGetPayload,
   PubSubEngine,
   Mutation,
-} from '../../common';
+} from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Mutation({
@@ -35,8 +35,8 @@ export default new Mutation({
       info
     ) => {
       logger.trace('addTo#{connection.relationName}');
-      let { id: #{entity.ownerFieldName} } = args.#{entity.ownerFieldName};
-      let { id: #{connection.refFieldName} } = args.#{connection.refFieldName};
+      let #{entity.ownerFieldName}= args.#{entity.ownerFieldName};
+      let #{connection.refFieldName} = args.#{connection.refFieldName};
       let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},

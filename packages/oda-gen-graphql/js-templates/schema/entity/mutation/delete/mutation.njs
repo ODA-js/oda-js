@@ -11,7 +11,7 @@ import {
   PubSubEngine,
   Mutation,
   #{slot('import-common-mutation-delete-slot')}
-} from '../../../common';
+} from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Mutation({

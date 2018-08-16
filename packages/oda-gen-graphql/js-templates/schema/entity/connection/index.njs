@@ -7,7 +7,7 @@
 #{ partial(ctx.mutations.types, 'connection-mutations-input-payload') }
 
 <#-chunkStart(`./connections/index.ts`); -#>
-import { Schema } from '../../common';
+import { Schema } from '../../../common';
 #{slot('import-connection-index-slot')}
 
 export default new Schema({

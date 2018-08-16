@@ -10,7 +10,7 @@ import {
   PubSubEngine,
   Mutation,
   #{slot('import-common-mutation-create-slot')}
-} from '../../../common';
+} from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Mutation({

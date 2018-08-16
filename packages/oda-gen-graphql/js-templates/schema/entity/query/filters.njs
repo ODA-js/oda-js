@@ -3,7 +3,7 @@
 <#@ context 'entity'#>
 
 <#-chunkStart(`./query/filters/${entity.name}Filter.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -19,7 +19,7 @@ export default new Input({
 });
 
 <#-chunkStart(`./query/filters/${entity.name}FilterItem.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -33,7 +33,7 @@ export default new Input({
 });
 
 <#-chunkStart(`./query/filters/Embed${entity.name}Filter.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -49,7 +49,7 @@ export default new Input({
 });
 
 <#-chunkStart(`./query/filters/Embed${entity.name}FilterItem.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -63,7 +63,7 @@ export default new Input({
 });
 
 <#-chunkStart(`./query/filters/${entity.name}FilterSubscriptionsItem.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -78,7 +78,7 @@ export default new Input({
 
 
 <#-chunkStart(`./query/filters/${entity.name}FilterSubscriptions.ts`); -#>
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
@@ -102,7 +102,7 @@ import #{entity.name}Filter from './#{entity.name}Filter';
 import #{entity.name}FilterItem from './#{entity.name}FilterItem';
 import #{entity.name}FilterSubscriptions from './#{entity.name}FilterSubscriptions';
 import #{entity.name}FilterSubscriptionsItem from './#{entity.name}FilterSubscriptionsItem';
-import { Schema } from '../../../common';
+import { Schema } from '../../../../common';
 
 export default new Schema({
   name: '#{entity.name}.queries.filter',

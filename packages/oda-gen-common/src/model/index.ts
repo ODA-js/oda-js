@@ -664,6 +664,7 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * build schema
    */
   public build() {
+    debugger;
     if (Array.isArray(this._items) && this._items.length > 0) {
       this._items
         .filter(i => i instanceof Schema)

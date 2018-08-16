@@ -7,7 +7,7 @@ const {entity, connection} = ctx;
 chunkStart(`./connections/removeFrom${connection.name}Input.ts`); -#>
 <# slot('import-connection-index-slot',`removeFrom${connection.name}Input`) #>
 <# slot('export-connection-index-slot',`removeFrom${connection.name}Input`) #>
-import { Input } from '../../common';
+import { Input } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({

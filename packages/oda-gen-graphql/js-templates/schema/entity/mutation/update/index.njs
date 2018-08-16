@@ -3,7 +3,7 @@
 <#@ context 'ctx'#>
 
 <#-chunkStart(`./mutations/update/index.ts`); -#>
-import { Schema } from '../../../common';
+import { Schema } from '../../../../common';
 import update#{ctx.types.name} from './update#{ctx.types.name}';
 import update#{ctx.types.name}Input from './update#{ctx.types.name}Input';
 import update#{ctx.types.name}Payload from './update#{ctx.types.name}Payload';

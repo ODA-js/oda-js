@@ -3,7 +3,6 @@ import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
 import * as get from 'lodash/get';
 
-import { fromGlobalId } from 'oda-isomorfic';
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { emptyConnection, pagination, detectCursorDirection, consts } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';
@@ -13,14 +12,6 @@ const { selectionTree: traverse } = lib;
 import { utils } from 'oda-api-graphql';
 
 const { validId } = utils;
-
-export function getValue(value) {
-    if (typeof value === 'string') {
-      return validId(value) ? value : fromGlobalId(value).id;
-    } else {
-      return value;
-    }
-}
 
 export async function fixCount(length: number, cursor: { skip?: number, limit?: number; }, getCount: () => Promise<Number>) {
   const count = await getCount();
@@ -123,14 +114,14 @@ export const query: { [key: string]: any } = {
     logger.trace('#{entity.singular}');
     let result;
     if (args.id) {
-      result = await context.connectors.#{entity.name}.findOneById(getValue(args.id));
+      result = await context.connectors.#{entity.name}.findOneById(args.id);
     <#- for (let f of entity.unique.find) {#>
     } else if (args.#{f.name}) {
       result = await context.connectors.#{entity.name}.findOneBy#{f.cName}(args.#{f.name});
     <#-}#>
     <#- for (let f of entity.unique.complex) {
       let findBy = f.fields.map(f=>f.uName).join('And');
-      let loadArgs = `${f.fields.map(f=>f.gqlType === 'ID' ? `getValue(args.${f.name})` : `args.${f.name}`).join(', ')}`;
+      let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
       let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
 #>
     } else if (#{condArgs}) {

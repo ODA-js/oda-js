@@ -327,7 +327,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
   }
 
   public ensureId(obj){
-    let result = super.ensureId(obj);
-    return new DTO(result);
+    if(obj){
+      let result = super.ensureId(obj);
+      return new DTO(result);
+    }
   }
 };

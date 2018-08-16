@@ -6,7 +6,7 @@
 <#- slot('import-query-list-index-slot',`${entity.name}SortOrder`)-#>
 <#- slot('item-query-list-index-slot',`${entity.name}SortOrder`)-#>
 
-import { Input } from '../../../common';
+import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({

@@ -1,5 +1,6 @@
-import { graphqlLodashExpress } from "./express";
-import { LodashModule } from "./lodash";
+import { graphqlLodashExpress } from './express';
+import { LodashModule } from './lodash';
+import LodashSchema from './lodashSchema';
 import { runQueryLodash } from './runQuery';
 import reshape from './reshape';
 
@@ -8,4 +9,5 @@ export {
   LodashModule,
   runQueryLodash,
   reshape,
-}
+  LodashSchema,
+};

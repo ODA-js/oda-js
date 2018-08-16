@@ -6,7 +6,7 @@
 <#- slot('export-subscriptions-slot',entity.name) #>
 <#- slot('import-subscriptions-slot',entity.name) #>
 
-import { ModelType, Subscription, Filter, filterIt, pubsub, withFilter } from '../../common';
+import { ModelType, Subscription, Filter, filterIt, pubsub, withFilter } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Subscription({

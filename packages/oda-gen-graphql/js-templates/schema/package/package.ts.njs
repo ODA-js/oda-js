@@ -2,10 +2,44 @@
 <#@ alias 'schema/package' #>
 <#@ context 'pkg' #>
 
-<#- chunkStart(`./index.ts`); -#>
+<#- chunkStart(`./entities/index.ts`); -#>
 <#- pkg.entities.forEach( ent => {#>
 import #{ent.name} from './#{ent.name}';
 <#-})#>
+import { Schema } from 'oda-gen-common';
+
+export default new Schema({
+  name: '#{pkg.name}.entities',
+  items:[
+<#- pkg.entities.forEach( ent => {#>
+  #{ent.name},
+<#-})#>
+  ]
+})
+
+<#- chunkStart(`./helpers.ts`); -#>
+<#- pkg.entities.forEach( ent => {#>
+export * from './entities/#{ent.name}/helpers';
+<#-})#>
+
+<# chunkStart(`./dataPump/index.ts`); -#>
+import * as _ from 'lodash';
+<# for(let entity of pkg.entities){-#>
+import #{entity.name} from './#{entity.name}';
+<#}-#>
+
+const result = _.merge (
+<# for(let entity of pkg.entities){-#>
+    #{entity.name},
+<#}-#>
+)
+
+export default {
+  ...result
+};
+
+<#- chunkStart(`./index.ts`); -#>
+import Entities from './entities';
 import Types from './_Types';
 import Scalars from './scalars';
 import Directives from './directives';
@@ -19,6 +53,7 @@ import gql from 'graphql-tag';
 
 export {
   Types,
+  Entities,
   Directives,
   Scalars,
   Enums,
@@ -26,9 +61,6 @@ export {
   Unions,
   Queries,
   Mutations,
-<#- pkg.entities.forEach( ent => {#>
-  #{ent.name},
-<#-})#>
 }
 
 export default new Schema({
@@ -42,6 +74,7 @@ export default new Schema({
   `,
   items: [
     Types,
+    Entities,
     Directives,
     Scalars,
     Enums,
@@ -49,9 +82,7 @@ export default new Schema({
     Unions,
     Queries,
     Mutations,
-<#- pkg.entities.forEach( ent => {#>
-    #{ent.name},
-<#-})#>],
+  ],
 })
 
 <#- chunkStart(`./common.ts`); -#>
@@ -81,13 +112,11 @@ import { PubSubEngine, withFilter } from 'graphql-subscriptions';
 const { selectionTree: traverse } = lib;
 
 import { utils, getWithType } from 'oda-api-graphql';
-import RegisterConnectors from '../../graphql-gen/data/registerConnectors';
+import RegisterConnectors from './data/registerConnectors';
 
 const { validId } = utils;
 
-<#- pkg.entities.forEach( ent => {#>
-export * from './#{ent.name}/helpers';
-<#-})#>
+export * from './helpers';
 
 import {
   Enum,

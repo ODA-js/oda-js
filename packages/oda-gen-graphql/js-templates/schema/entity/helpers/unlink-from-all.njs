@@ -67,7 +67,7 @@ export default async function unlink#{entity.name}From#{r.cField}({
 <#-chunkStart(`./helpers/unlink${entity.name}FromAll.ts`); -#>
 import {
   logger,
-} from '../../common';
+} from '../../../common';
 import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`unlink${entity.name}FromAll`) #>
 <# slot('export-helpers-index-slot',`unlink${entity.name}FromAll`) #>

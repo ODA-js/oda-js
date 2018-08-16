@@ -47,7 +47,7 @@ export class Mutation extends ModelBase {
   }
 
   // it get clean object with no default values
-  public toJSON() {
+  public toJSON(): MutationInput {
     let props = this.$obj;
     let res = super.toJSON();
     return clean({

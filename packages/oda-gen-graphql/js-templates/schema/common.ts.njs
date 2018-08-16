@@ -11,4 +11,6 @@
 #{partial(entity.query, 'query-index')}
 #{partial(entity.subscriptions, 'subscriptions-index')}
 #{partial(entity.data, 'data-index')}
+#{partial(entity.dataPump.config, 'dataPump/config')}
+#{partial(entity.dataPump.queries, 'dataPump/queries')}
 

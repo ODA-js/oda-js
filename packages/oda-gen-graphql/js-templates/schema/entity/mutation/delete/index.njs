@@ -3,7 +3,7 @@
 <#@ context 'ctx'#>
 
 <#-chunkStart(`./mutations/delete/index.ts`); -#>
-import { Schema } from '../../../common';
+import { Schema } from '../../../../common';
 import delete#{ctx.types.name} from './delete#{ctx.types.name}';
 import delete#{ctx.types.name}Input from './delete#{ctx.types.name}Input';
 import delete#{ctx.types.name}Payload from './delete#{ctx.types.name}Payload';

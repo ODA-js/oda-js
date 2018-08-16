@@ -7,7 +7,7 @@
 <#- slot('export-subscriptions-slot',`${hasConnections ? 'Update' : ''}${entity.name}SubscriptionPayload`) #>
 <#- slot('import-subscriptions-slot',`${hasConnections ? 'Update' : ''}${entity.name}SubscriptionPayload`) #>
 
-import { ModelType, Type } from '../../common';
+import { ModelType, Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
@@ -28,7 +28,7 @@ export default new Type({
 <#-chunkStart(`./subscriptions/${entity.name}Subscription.ts`); -#>
 <#- slot('export-subscriptions-slot',`${entity.name}Subscription`) #>
 <#- slot('import-subscriptions-slot',`${entity.name}Subscription`) #>
-import { ModelType, Type } from '../../common';
+import { ModelType, Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
@@ -54,7 +54,7 @@ export default new Type({
 <#- slot('export-subscriptions-slot',`${connection.name}ArgsSubscriptionPayload`) #>
 <#- slot('import-subscriptions-slot',`${connection.name}ArgsSubscriptionPayload`) #>
 
-import { ModelType, Type } from '../../common';
+import { ModelType, Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
@@ -76,7 +76,7 @@ export default new Type({
 <#-chunkStart(`./subscriptions/${connection.name}SubscriptionPayload.ts`); -#>
 <#- slot('export-subscriptions-slot',`${connection.name}SubscriptionPayload`) #>
 <#- slot('import-subscriptions-slot',`${connection.name}SubscriptionPayload`) #>
-import { ModelType, Type } from '../../common';
+import { ModelType, Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
@@ -93,7 +93,7 @@ export default new Type({
 <#-chunkStart(`./subscriptions/${entity.name}SubscriptionPayload.ts`); -#>
 <#- slot('export-subscriptions-slot',`${entity.name}SubscriptionPayload`) #>
 <#- slot('import-subscriptions-slot',`${entity.name}SubscriptionPayload`) #>
-import { ModelType, Type } from '../../common';
+import { ModelType, Type } from '../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({

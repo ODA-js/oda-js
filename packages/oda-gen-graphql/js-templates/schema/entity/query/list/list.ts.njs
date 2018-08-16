@@ -2,20 +2,20 @@
 <#@ alias 'query-list'#>
 <#@ context 'ctx'#>
 
-<#-chunkStart(`./query/list/${ctx.entry.name}Items.ts`); -#>
-<#- slot('import-query-list-index-slot',`${ctx.entry.name}Items`)-#>
-<#- slot('item-query-list-index-slot',`${ctx.entry.name}Items`)-#>
+<#-chunkStart(`./query/list/${ctx.entry.singularEntry}Items.ts`); -#>
+<#- slot('import-query-list-index-slot',`${ctx.entry.singularEntry}Items`)-#>
+<#- slot('item-query-list-index-slot',`${ctx.entry.singularEntry}Items`)-#>
 import {
   Query,
   logger,
   RegisterConnectors,
-} from '../../../common';
+} from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Query({
   schema: gql`
     extend type RootQuery {
-      #{ctx.entry.name}Items( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
+      #{ctx.entry.singularEntry}Items( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
     }
   `,
   resolver: async (
@@ -61,7 +61,7 @@ import {
   fixCount,
   consts,
   emptyConnection,
-} from '../../../common';
+} from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Query({

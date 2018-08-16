@@ -1,10 +1,6 @@
 import { getWithType } from 'oda-api-graphql';
 import { common } from 'oda-gen-graphql';
 
-import {
-  fromGlobalId,
-} from 'oda-isomorfic';
-
 let { fillDefaults } = common.lib;
 
 export class NodeEntity extends common.types.GQLModule {
@@ -25,16 +21,8 @@ export class NodeEntity extends common.types.GQLModule {
     });
 
     this._query = fillDefaults(this._query, {
-      async node(_, {id: globalId}, context, info) {
-        let { type, id } = fromGlobalId(globalId);
-        // здесь проверить можно ли получить данные
-        // поэтому нужна своя структура для получения данных. чтобы не просто null,
-        // а с описанием почему
-        if (context.connectors[type]) {
-          return await getWithType(context.connectors[type].findOneById(id), type);
-        } else {
-          return null;
-        }
+      async node(_, {id}, context, info) {
+        throw new Error('!!!deprecated!!!') 
       },
     });
 

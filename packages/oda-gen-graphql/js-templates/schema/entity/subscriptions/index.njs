@@ -5,7 +5,7 @@
 <#-chunkStart(`./subscriptions/index.ts`); -#>
 
 #{slot('import-subscriptions-slot')}
-import { Schema } from '../../common';
+import { Schema } from '../../../common';
 
 export default new Schema({
   name: '#{ctx.name}.subscriptions',

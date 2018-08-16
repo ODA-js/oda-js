@@ -2,10 +2,6 @@
 import { passport } from 'oda-api-common';
 import RegisterConnectors from '../../data/registerConnectors';
 import { common } from 'oda-gen-graphql';
-import { fromGlobalId } from 'oda-isomorfic';
-import {
-  globalIdField,
-} from 'oda-api-graphql';
 
 let { fillDefaults } = common.lib;
 
@@ -16,7 +12,7 @@ export class ViewerEntity extends common.types.GQLModule {
 
     this._resolver = fillDefaults(this._resolver, {
       Viewer: {
-        id: globalIdField('Viewer', ({ id }) => id),
+        id: ({ id }) => id,
       },
     });
 
@@ -26,7 +22,7 @@ export class ViewerEntity extends common.types.GQLModule {
         context: { connectors: RegisterConnectors, user, db },
         info) => {
         return {
-          id: context.user ? fromGlobalId(context.user.id).id : null,
+          id: context.user ? context.user.id : null,
         };
       },
     });
@@ -42,7 +38,7 @@ export class ViewerEntity extends common.types.GQLModule {
               result = {
                 ...context.user,
               };
-              result.id = fromGlobalId(result.id).id;
+              result.id = result.id;
             } else {
               result.id = result.id;
             }

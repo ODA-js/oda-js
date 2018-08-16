@@ -4,9 +4,6 @@ import * as _ from 'lodash';
 import * as get from 'lodash/get';
 
 let logger = log4js.getLogger('graphql:query:#{entity.name}');
-import {
-  globalIdField,
-} from 'oda-api-graphql';
 
 <#-if(entity.relations.length > 0){#>
 import RegisterConnectors from '../../../../data/registerConnectors';
@@ -20,7 +17,7 @@ const { selectionTree: traverse } = lib;
 
 export const resolver: { [key: string]: any } = {
   #{entity.name}: {
-    id: globalIdField('#{entity.name}', ({ _id }) => _id),
+    id: ({ _id }) => _id,
 <# for (let connection of entity.relations) {-#>
     #{connection.field}: async (
       {_id: id}, // owner id

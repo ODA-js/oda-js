@@ -1,3 +1,6 @@
+<#@ alias 'type-resolver'#>
+<#@ context 'entity' #>
+
 <# for (let connection of entity.relations) {-#>
     #{connection.field}: async (
       {_id: id}, // owner id

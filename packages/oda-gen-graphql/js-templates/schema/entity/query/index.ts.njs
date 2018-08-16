@@ -4,7 +4,7 @@
 
 <#-chunkStart(`./query/item/index.ts`); -#>
 import #{ctx.entry.singularEntry} from './#{ctx.entry.singularEntry}';
-import { Schema } from '../../../common';
+import { Schema } from '../../../../common';
 
 export default new Schema({
   name: '#{ctx.entry.name}.queries.single',
@@ -13,7 +13,7 @@ export default new Schema({
 
 <#-chunkStart(`./query/list/index.ts`); -#>
 #{slot('import-query-list-index-slot')}
-import { Schema } from '../../../common';
+import { Schema } from '../../../../common';
 export default new Schema({
   name: '#{ctx.entry.name}.queries.list',
   items: [
@@ -27,7 +27,7 @@ import list from './list';
 import item from './item';
 import filters from './filters';
 
-import { Schema } from '../../common';
+import { Schema } from '../../../common';
 
 export default new Schema({
   name: '#{ctx.entry.name}.query',

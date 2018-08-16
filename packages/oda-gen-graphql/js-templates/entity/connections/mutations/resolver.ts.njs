@@ -2,11 +2,6 @@
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 
-import {
-  fromGlobalId,
-  toGlobalId,
-} from 'oda-isomorfic';
-
 import RegisterConnectors from '../../../../../data/registerConnectors';
 import { mutateAndGetPayload } from 'oda-api-graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
@@ -24,8 +19,8 @@ export const mutation = {
       info
     ) => {
       logger.trace('addTo#{connection.relationName}');
-      let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
-      let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
+      let #{entity.ownerFieldName} = args.#{entity.ownerFieldName};
+      let #{connection.refFieldName} = args.#{connection.refFieldName};
       let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
@@ -100,8 +95,8 @@ for (let fname of connection.ref.fields){
       info
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
-      let { id: #{entity.ownerFieldName} } = fromGlobalId(args.#{entity.ownerFieldName});
-      let { id: #{connection.refFieldName} } = fromGlobalId(args.#{connection.refFieldName});
+      let #{entity.ownerFieldName} } = args.#{entity.ownerFieldName};
+      let #{connection.refFieldName} } = args.#{connection.refFieldName};
       let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},

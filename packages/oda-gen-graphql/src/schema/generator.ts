@@ -2,12 +2,12 @@ import { Factory } from 'fte.js';
 import {
   common as entities,
   pkg as templatePkg,
-} from '../../graphql-backend-template/schema';
+} from '../graphql-backend-template/schema';
 import * as path from 'path';
 import { writeFile } from './writeFile';
-import { ModelPackage } from '../../../node_modules/oda-model';
+import { ModelPackage } from 'oda-model';
 
-export default function $generate(
+export default function generate(
   pkg: ModelPackage,
   raw: Factory,
   rootDir: string,
@@ -47,7 +47,12 @@ export default function $generate(
   console.timeEnd('generate');
   sources.forEach(f => {
     let fn = path.join(
-      ...[rootDir, '../gql', pkg.name, f.entity, f.name].filter(f => f),
+      ...[
+        rootDir,
+        pkg.name,
+        ...(f.entity ? ['entities', f.entity] : [false]),
+        f.name,
+      ].filter(f => f),
     );
     writeFile(fn, f.content);
   });

@@ -2,11 +2,6 @@
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 import gql from 'graphql-tag';
-import {
-  fromGlobalId,
-  toGlobalId,
-} from 'oda-isomorfic';
-
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { mutateAndGetPayload } from 'oda-api-graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
@@ -129,7 +124,7 @@ async function linkTo#{r.cField}({
         }`,
       variables: {
         input: {
-          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
           #{r.ref.fieldName}: #{r.field}.id,
 <#-r.fields.forEach(f=>{#>
           #{f.name},
@@ -154,7 +149,7 @@ async function unlinkFrom#{r.cField}({
         }`,
       variables: {
         input: {
-          #{entity.ownerFieldName}: toGlobalId('#{entity.name}', #{entity.ownerFieldName}.id),
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
           #{r.ref.fieldName}: #{r.field}.id,
         }
       }
@@ -255,7 +250,7 @@ export const mutation = {
     };
 
     if(args.id) {
-      create.id = fromGlobalId(args.id).id;
+      create.id = args.id;
     }
 
     let result = await context.connectors.#{entity.name}.create(create);
@@ -335,8 +330,8 @@ export const mutation = {
     let previous;
     try {
       if (args.id) {
-        previous = await context.connectors.#{entity.name}.findOneById(fromGlobalId(args.id).id);
-        result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(fromGlobalId(args.id).id, payload);
+        previous = await context.connectors.#{entity.name}.findOneById(args.id);
+        result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(args.id, payload);
       <#- for (let f of entity.args.update.find) {#>
       } else if (args.#{f.name}) {
         delete payload.#{f.name};
@@ -488,7 +483,7 @@ export const mutation = {
           context,
         );
 
-        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(fromGlobalId(args.id).id);
+        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
       <#- for (let f of entity.args.remove.find) {#>
       } else if (args.#{f.name}) {
 
@@ -544,7 +539,7 @@ export const mutation = {
     }
 
     return {
-      deletedItemId: toGlobalId('#{entity.name}', result.id),
+      deletedItemId: result.id,
       #{entity.ownerFieldName}: result,
     };
   }),

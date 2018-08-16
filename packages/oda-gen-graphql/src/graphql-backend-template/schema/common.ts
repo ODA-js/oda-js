@@ -176,5 +176,23 @@ export function mapper(
         adapter,
       ),
     },
+    dataPump: {
+      config: entityMappers.dataPump.config.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+      queries: entityMappers.dataPump.queries.mapper(
+        entity,
+        pack,
+        role,
+        aclAllow,
+        typeMapper,
+        adapter,
+      ),
+    },
   };
 }

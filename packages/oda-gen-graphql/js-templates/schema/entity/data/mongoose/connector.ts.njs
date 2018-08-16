@@ -285,9 +285,11 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   let type = f.type;
     #>
   public async findOneBy#{f.cName}(#{ukey}?: #{type}) {
-    logger.trace(`findOneBy#{f.cName} with ${#{ukey}} `);
-    let result = await this.loaders.by#{f.cName}.load(#{ukey});
-    return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
+    if(#{ukey}){
+      logger.trace(`findOneBy#{f.cName} with ${#{ukey}} `);
+      let result = await this.loaders.by#{f.cName}.load(#{ukey});
+      return this.ensureId((result && result.toJSON) ? result.toJSON() : result);
+    }
   }
 
 <#-}-#>
@@ -328,7 +330,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   }
   
   public ensureId(obj){
-    let result = super.ensureId(obj);
-    return new DTO(result);
+    if(obj) {
+      let result = super.ensureId(obj);
+      return new DTO(result);
+    }
   }
 };
