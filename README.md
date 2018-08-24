@@ -13,6 +13,6 @@ Package organization:
 - server libraries should compiles to `dist` folder
   components that can be used both on client and the server side shuold compiles to
 
--
-
+TODO
 обновить log4js до крайней версии
+посмотреть повнимательней на правила tslint
