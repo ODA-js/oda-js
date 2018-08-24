@@ -5,7 +5,7 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "prepublish": "./compile.sh"
+    "prepare": "./compile.sh"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
