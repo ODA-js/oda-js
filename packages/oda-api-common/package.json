@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "1.0.0-15",
+  "version": "1.0.0-16",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -38,10 +38,10 @@
     "typescript": "^3.0.1"
   },
   "peerDependencies": {
-    "log4js": "^1.1.1",
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0",
     "graphql-tag": "^2.9.2",
-    "graphql-tools": "^3.0.4"
+    "graphql-tools": "^3.0.4",
+    "log4js": "^1.1.1"
   },
   "jest": {
     "testEnvironment": "node",

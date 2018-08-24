@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql-mongoose",
-  "version": "1.0.0-15",
+  "version": "1.0.0-16",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -24,9 +24,9 @@
   "peerDependencies": {
     "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
     "graphql-tag": "^2.9.2",
+    "log4js": "^1.1.1",
     "mongoose": "^5.2.9",
-    "muri": "^1.3.0",
-    "log4js": "^1.1.1"
+    "muri": "^1.3.0"
   },
   "jest": {
     "testEnvironment": "node",

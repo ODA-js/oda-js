@@ -1,6 +1,6 @@
 {
   "name": "oda-ra-ui",
-  "version": "1.0.0-15",
+  "version": "1.0.0-16",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -23,16 +23,16 @@
     "react-json-view": "^1.19.0"
   },
   "peerDependencies": {
-    "redux-form": "^7.4.2",
-    "redux-saga": "^0.16.0",
     "apollo-cache-inmemory": "^1.2.8",
     "apollo-client": "^2.4.0",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
-    "recompose": "~0.26.0",
     "prop-types": "^15.6.1",
     "ra-core": "^2.0.3",
-    "react-admin": "^2.1.2"
+    "react-admin": "^2.1.2",
+    "recompose": "~0.26.0",
+    "redux-form": "^7.4.2",
+    "redux-saga": "^0.16.0"
   },
   "jest": {
     "testEnvironment": "node",
