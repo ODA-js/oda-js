@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
-import * as get from 'lodash/get';
+import {get} from 'lodash';
 
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { emptyConnection, pagination, detectCursorDirection, consts } from 'oda-api-graphql';

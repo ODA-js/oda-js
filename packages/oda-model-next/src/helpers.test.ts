@@ -1,3 +1,4 @@
+import 'jest';
 import { EntityContext } from './contexts/EntityContext';
 import { FieldContext } from './contexts/FieldContext';
 import { ModelContext } from './contexts/ModelContext';
@@ -22,17 +23,19 @@ import {
   isMutation,
   isPackage,
   isRelation,
-  isIRelationContext,
+  isIRelationContext
 } from './helpers';
 import { IEntity } from './interfaces/IEntity';
 import { IField } from './interfaces/IField';
 import { IModel } from './interfaces/IModel';
 import { IPackage } from './interfaces/IPackage';
 import { IRelation } from './interfaces/IRelation';
+
 import { Entity } from './model/Entity';
 import { Field } from './model/Field';
 import { HasMany } from './model/HasMany';
 import { Model } from './model/Model';
+
 import { Package } from './model/Package';
 import { IRelationContext } from './contexts/IRelationContext';
 import { IFieldContext } from './contexts/IFieldContext';
@@ -84,54 +87,70 @@ describe('Relation helpers', () => {
     expect(isRelation({ modelType: 'relation' } as any)).toBeTruthy();
   });
   it('detects HasMany', () => {
-    expect(IsHasMany({ modelType: 'relation', verb: 'HasMany' } as any)).toBeTruthy();
+    expect(
+      IsHasMany({ modelType: 'relation', verb: 'HasMany' } as any)
+    ).toBeTruthy();
   });
   it('detects HasOne', () => {
-    expect(IsHasOne({ modelType: 'relation', verb: 'HasOne' } as any)).toBeTruthy();
+    expect(
+      IsHasOne({ modelType: 'relation', verb: 'HasOne' } as any)
+    ).toBeTruthy();
   });
   it('detects BelongstTo', () => {
-    expect(IsBelongsTo({ modelType: 'relation', verb: 'BelongsTo' } as any)).toBeTruthy();
+    expect(
+      IsBelongsTo({ modelType: 'relation', verb: 'BelongsTo' } as any)
+    ).toBeTruthy();
   });
   it('detects BelongsToMany', () => {
-    expect(IsBelongsToMany({ modelType: 'relation', verb: 'BelongsToMany' } as any)).toBeTruthy();
+    expect(
+      IsBelongsToMany({ modelType: 'relation', verb: 'BelongsToMany' } as any)
+    ).toBeTruthy();
   });
 });
 
 describe('Context helpers', () => {
   const models: {
-    relation: IRelation,
-    field: IField,
-    model: IModel,
-    entity: IEntity,
-    package: IPackage,
+    relation: IRelation;
+    field: IField;
+    model: IModel;
+    entity: IEntity;
+    package: IPackage;
   } = {} as any;
 
   const contexts: {
-    relation: IRelationContext & IValidationContext,
-    field: IFieldContext & IValidationContext,
-    model: IModelContext & IValidationContext,
-    entity: IEntityContext & IValidationContext,
-    package: IPackageContext & IValidationContext,
+    relation: IRelationContext & IValidationContext;
+    field: IFieldContext & IValidationContext;
+    model: IModelContext & IValidationContext;
+    entity: IEntityContext & IValidationContext;
+    package: IPackageContext & IValidationContext;
   } = {} as any;
 
   beforeAll(() => {
-    expect(() =>
-    models.model = new Model({
-      name: 'TodoItems',
-      packages: [{
-        name: 'system',
-        acl: 10000,
-        items: [{
-          name: 'ToDo',
-          fields: [{
-            name: 'item',
-            relation: {
-              hasMany: 'i@m#id',
-            },
-          }],
-        } as IPackagedItemInit],
-      }],
-    })).not.toThrow();
+    expect(
+      () =>
+        (models.model = new Model({
+          name: 'TodoItems',
+          packages: [
+            {
+              name: 'system',
+              acl: 10000,
+              items: [
+                {
+                  name: 'ToDo',
+                  fields: [
+                    {
+                      name: 'item',
+                      relation: {
+                        hasMany: 'i@m#id'
+                      }
+                    }
+                  ]
+                } as IPackagedItemInit
+              ]
+            }
+          ]
+        }))
+    ).not.toThrow();
 
     models.package = models.model.packages.get('system');
     models.entity = models.package.items.get('ToDo') as IEntity;

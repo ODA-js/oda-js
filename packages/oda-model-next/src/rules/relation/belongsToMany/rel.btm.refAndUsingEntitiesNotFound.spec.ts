@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refAndUsingEntitiesNotFound';
 
 describe('rule', () => {
@@ -10,29 +11,30 @@ describe('rule', () => {
     const updateWith = jest.fn();
     const result = rule.validate({
       field: {
-        updateWith,
+        updateWith
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
         ref: {
-          entity: true,
+          entity: true
         },
         using: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       package: {
         items: {
-          get: jest.fn()
+          get: jest
+            .fn()
             .mockReturnValueOnce({
-              modelType: 'not entity',
+              modelType: 'not entity'
             })
             .mockReturnValueOnce({
-              modelType: 'not entity',
-            }),
-        },
-      },
+              modelType: 'not entity'
+            })
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ relation: null });
     expect(result).toMatchSnapshot();
@@ -42,29 +44,30 @@ describe('rule', () => {
     const updateWith = jest.fn();
     const result = rule.validate({
       field: {
-        updateWith,
+        updateWith
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
         ref: {
-          entity: true,
+          entity: true
         },
         using: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       package: {
         items: {
-          get: jest.fn()
+          get: jest
+            .fn()
             .mockReturnValueOnce({
-              modelType: 'entity',
+              modelType: 'entity'
             })
             .mockReturnValueOnce({
-              modelType: 'entity',
-            }),
-        },
-      },
+              modelType: 'entity'
+            })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalledWith();
     expect(result).toMatchSnapshot();

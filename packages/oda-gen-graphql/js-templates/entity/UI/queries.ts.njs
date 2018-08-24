@@ -4,7 +4,7 @@
 <#- chunkStart(`../../../${entity.name}/queries/index`); -#>
 import { data } from 'oda-ra-data-provider';
 import { fragments, queries } from './queries';
-import set from 'lodash/set';
+import {set} from 'lodash';
 
 export default {
   queries,

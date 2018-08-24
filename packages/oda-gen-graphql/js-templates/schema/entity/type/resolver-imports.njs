@@ -2,7 +2,7 @@
 <#@ alias 'type-resolver-imports'#>
 
 import * as _ from 'lodash';
-import * as get from 'lodash/get';
+import { get } from 'lodash';
 
 <#- if(entity.relations.length > 0){#>
 import { RegisterConnectors } from '../../../common';

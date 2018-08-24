@@ -28,17 +28,17 @@ function useProxy(server, api) {
   });
 
   for (let i = 0, urlList = api.urls, len = urlList.length; i < len; i++) {
-    let url = urlList[i];
-    if (typeof url === 'string') {
-      url = {
-        src: url,
-        dst: url,
+    let _url = urlList[i];
+    if (typeof _url === 'string') {
+      _url = {
+        src: _url,
+        dst: _url,
       };
     }
 
-    server.use(url.src, (req, res) => {
+    server.use(_url.src, (req, res) => {
       proxy.web(req, res, {
-        target: targetUrl + url.dst,
+        target: targetUrl + _url.dst,
       });
     });
   }
@@ -56,7 +56,7 @@ function useProxy(server, api) {
     res.end(JSON.stringify(json));
   });
 
-  proxy.on('proxyReq', function (proxyReq, req, res, options) {
+  proxy.on('proxyReq', function(proxyReq, req, res, options) {
     proxyReq.setHeader('x-forwarded-for', req.ip);
   });
 }

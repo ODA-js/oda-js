@@ -1,53 +1,56 @@
-import * as every from 'lodash/every.js';
-import * as some from 'lodash/some.js';
-import * as startsWith from 'lodash/startsWith.js';
-import * as endsWith from 'lodash/endsWith.js';
-import * as lt from 'lodash/lt.js';
-import * as lte from 'lodash/lte.js';
-import * as gt from 'lodash/gt.js';
-import * as gte from 'lodash/gte.js';
-import * as eq from 'lodash/eq.js';
-import * as map from 'lodash/map.js';
-import * as keyBy from 'lodash/keyBy.js';
-import * as chunk from 'lodash/chunk.js';
-import * as drop from 'lodash/drop.js';
-import * as dropRight from 'lodash/dropRight.js';
-import * as take from 'lodash/take.js';
-import * as takeRight from 'lodash/takeRight.js';
-import * as flattenDepth from 'lodash/flattenDepth.js';
-import * as fromPairs from 'lodash/fromPairs.js';
-import * as nth from 'lodash/nth.js';
-import * as reverse from 'lodash/reverse.js';
-import * as uniq from 'lodash/uniq.js';
-import * as uniqBy from 'lodash/uniqBy.js';
-import * as countBy from 'lodash/countBy.js';
-import * as filter from 'lodash/filter.js';
-import * as reject from 'lodash/reject.js';
-import * as groupBy from 'lodash/groupBy.js';
-import * as sortBy from 'lodash/sortBy.js';
-import * as minBy from 'lodash/minBy.js';
-import * as maxBy from 'lodash/maxBy.js';
-import * as meanBy from 'lodash/meanBy.js';
-import * as sumBy from 'lodash/sumBy.js';
-import * as join from 'lodash/join.js';
+import { every } from 'lodash';
+import { some } from 'lodash';
+import { startsWith } from 'lodash';
+import { endsWith } from 'lodash';
+import { lt } from 'lodash';
+import { lte } from 'lodash';
+import { gt } from 'lodash';
+import { gte } from 'lodash';
+import { eq } from 'lodash';
+import { map } from 'lodash';
+import { keyBy } from 'lodash';
+import { chunk } from 'lodash';
+import { drop } from 'lodash';
+import { dropRight } from 'lodash';
+import { take } from 'lodash';
+import { takeRight } from 'lodash';
+import { flattenDepth } from 'lodash';
+import { fromPairs } from 'lodash';
+import { nth } from 'lodash';
+import { reverse } from 'lodash';
+import { uniq } from 'lodash';
+import { uniqBy } from 'lodash';
+import { countBy } from 'lodash';
+import { filter } from 'lodash';
+import { reject } from 'lodash';
+import { groupBy } from 'lodash';
+import { sortBy } from 'lodash';
+import { minBy } from 'lodash';
+import { maxBy } from 'lodash';
+import { meanBy } from 'lodash';
+import { sumBy } from 'lodash';
+import { join } from 'lodash';
 
-import * as get from 'lodash/get.js';
-import * as set from 'lodash/set.js';
-import * as unset from 'lodash/unset.js';
-import * as assign from 'lodash/assign.js';
-import * as mapValues from 'lodash/mapValues.js';
-import * as at from 'lodash/at.js';
-import * as toPairs from 'lodash/toPairs.js';
-import * as invert from 'lodash/invert.js';
-import * as invertBy from 'lodash/invertBy.js';
-import * as keys from 'lodash/keys.js';
-import * as values from 'lodash/values.js';
-import * as omit from 'lodash/omit.js';
+import { get } from 'lodash';
+import { set } from 'lodash';
+import { unset } from 'lodash';
+import { assign } from 'lodash';
+import { mapValues } from 'lodash';
+import { at } from 'lodash';
+import { toPairs } from 'lodash';
+import { invert } from 'lodash';
+import { invertBy } from 'lodash';
+import { keys } from 'lodash';
+import { values } from 'lodash';
+import { omit } from 'lodash';
 import { debug } from 'util';
 import { PageInfoType } from 'oda-gen-common/dist/types/pageInfo';
 
 function getType(v): String {
-  return Object.prototype.toString.call(v).match(/\[object (.+)\]/)[1].toLowerCase();
+  return Object.prototype.toString
+    .call(v)
+    .match(/\[object (.+)\]/)[1]
+    .toLowerCase();
 }
 
 const transformations = {
@@ -87,14 +90,15 @@ const transformations = {
   },
   object: {
     get,
-    assign: (src, args) => (Array.isArray(args) ? args : [args]).reduce((obj, path) => {
-      const source = get(obj, path);
-      if (source && typeof source === 'object') {
-        return omit(assign(obj, get(obj, path)), path);
-      } else {
-        return obj;
-      }
-    }, src),
+    assign: (src, args) =>
+      (Array.isArray(args) ? args : [args]).reduce((obj, path) => {
+        const source = get(obj, path);
+        if (source && typeof source === 'object') {
+          return omit(assign(obj, get(obj, path)), path);
+        } else {
+          return obj;
+        }
+      }, src),
     mapValues,
     at,
     toPairs,
@@ -117,11 +121,11 @@ const transformations = {
       return src.match(new RegExp(args.match, args.flags));
     },
     isMatch: (src: string, args) => {
-      return (new RegExp(args.match, args.flags)).test(src);
+      return new RegExp(args.match, args.flags).test(src);
     },
     toJSON: (str: string) => {
       return JSON.parse(str);
-    }
+    },
   },
   '*': {
     stringify: (src: any) => {
@@ -139,7 +143,7 @@ const transformations = {
             } else {
               return result;
             }
-          }
+          };
         } else {
           return src;
         }
@@ -171,7 +175,7 @@ const transformations = {
   },
 };
 
-const opToExpectedType = ((trans) => {
+const opToExpectedType = (trans => {
   let result = {};
   for (const type in trans) {
     if (trans.hasOwnProperty(type)) {
@@ -199,11 +203,15 @@ export function applyTransformations(object, args) {
       const arg = args[op];
 
       if (op === 'and') {
-        object = every(arg, predicateArgs => applyTransformations(object, predicateArgs));
+        object = every(arg, predicateArgs =>
+          applyTransformations(object, predicateArgs),
+        );
         continue;
       }
       if (op === 'or') {
-        object = some(arg, predicateArgs => applyTransformations(object, predicateArgs));
+        object = some(arg, predicateArgs =>
+          applyTransformations(object, predicateArgs),
+        );
         continue;
       }
 
@@ -211,9 +219,14 @@ export function applyTransformations(object, args) {
 
       if (!(object === undefined || object === null)) {
         let type = getType(object);
-        if (expectedType !== '*' && expectedType !== type && type !== undefined) {
-          debugger;
-          throw Error(`"${op}" transformation expect "${expectedType}" but got "${type}"`);
+        if (
+          expectedType !== '*' &&
+          expectedType !== type &&
+          type !== undefined
+        ) {
+          throw Error(
+            `"${op}" transformation expect "${expectedType}" but got "${type}"`,
+          );
         }
       }
 
@@ -223,4 +236,3 @@ export function applyTransformations(object, args) {
   }
   return object === undefined ? null : object;
 }
-

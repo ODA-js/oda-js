@@ -1,9 +1,13 @@
-import camelcase from 'camelcase';
+import * as camelcase from 'camelcase';
 import { Record } from 'immutable';
 import * as inflected from 'inflected';
 
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
-import { IEntityRef, IEntityRefInit, IEntityRefStore } from '../interfaces/IEntityRef';
+import {
+  IEntityRef,
+  IEntityRefInit,
+  IEntityRefStore
+} from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 import { IRelationContext } from '../contexts/IRelationContext';
 import { FieldContext } from '../contexts/FieldContext';
@@ -13,13 +17,18 @@ import { IFieldContext } from '../contexts/IFieldContext';
 export const DefaultEntityRef: IEntityRefStore = {
   backField: '',
   entity: '',
-  field: '',
+  field: ''
 };
 
 // tslint:disable-next-line:variable-name
 export const EntityRefStorage = Record(DefaultEntityRef);
 
-export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRelationContext | IFieldContext>
+export class EntityRef
+  extends Persistent<
+    IEntityRefInit,
+    IEntityRefStore,
+    IRelationContext | IFieldContext
+  >
   implements IEntityRef {
   public get backField(): string {
     return this.store.get('backField', '');
@@ -32,7 +41,8 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
   }
 
   public toString(): string {
-    return `${this.backField ? (this.backField + '@') : ''}${this.entity}#${this.field || DEFAULT_ID_FIELDNAME}`;
+    return `${this.backField ? this.backField + '@' : ''}${this.entity}#${this
+      .field || DEFAULT_ID_FIELDNAME}`;
   }
 
   protected transform(input: Partial<IEntityRef>): IEntityRef {
@@ -50,7 +60,9 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
     return result;
   }
 
-  protected reverse(input: Record<IEntityRefStore> & Readonly<IEntityRefStore>): IEntityRef {
+  protected reverse(
+    input: Record<IEntityRefStore> & Readonly<IEntityRefStore>
+  ): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
       const core = input.toJS();
@@ -65,16 +77,21 @@ export class EntityRef extends Persistent<IEntityRefInit, IEntityRefStore, IRela
     return result;
   }
 
-  constructor(init?: string | Partial<IEntityRef>, context?: IRelationContext | IFieldContext) {
+  constructor(
+    init?: string | Partial<IEntityRef>,
+    context?: IRelationContext | IFieldContext
+  ) {
     super(context);
     if (typeof init === 'string') {
       let res = init.match(REF_PATTERN);
       if (res && res.length > 0) {
-        this.store = new EntityRefStorage(this.transform({
-          backField: res[1],
-          entity: inflected.classify(res[2]),
-          field: camelcase(res[3].trim()),
-        }));
+        this.store = new EntityRefStorage(
+          this.transform({
+            backField: res[1],
+            entity: inflected.classify(res[2]),
+            field: camelcase(res[3].trim())
+          })
+        );
       }
     } else {
       this.store = new EntityRefStorage(this.transform(init));

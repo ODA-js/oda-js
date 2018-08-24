@@ -1,3 +1,4 @@
+import 'jest';
 import { IPackagedItemInit } from '../../interfaces/IPackagedItem';
 import { Entity } from '../../model/Entity';
 import { Model } from '../../model/Model';
@@ -14,10 +15,10 @@ describe('rule', () => {
 
   it('fix acl', () => {
     let update = {};
-    const updateWith = jest.fn((args) => {
+    const updateWith = jest.fn(args => {
       update = {
         ...update,
-        ...args,
+        ...args
       };
     });
 
@@ -27,15 +28,14 @@ describe('rule', () => {
       mutation: {
         name: 'mutation',
         args: {
-          input: {},
+          input: {}
         },
         payload: {
-          result: {},
+          result: {}
         },
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(update).toMatchSnapshot();
   });
-
 });

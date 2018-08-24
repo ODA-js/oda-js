@@ -37,7 +37,7 @@ export const uix = {
 };
 
 <#- chunkStart(`./i18n/index.js`); -#>
-import merge from 'lodash/merge';
+import {merge} from 'lodash';
 
 <# for(let entity of pack.entities){-#>
 import #{entity.name}Translate from './#{entity.name}';
@@ -95,7 +95,7 @@ import Loading from 'react-loading-animation'
 import { Admin, Resource, Delete } from 'react-admin';
 import { englishMessages } from 'react-admin';
 import translation from './i18n';
-import merge from 'lodash/merge';
+import {merge} from 'lodash';
 
 const messages = {
   'en': {

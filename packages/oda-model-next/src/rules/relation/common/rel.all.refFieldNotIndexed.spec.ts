@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refFieldNotIndexed';
 
 describe('rule', () => {
@@ -11,8 +12,8 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       package: {
         items: {
@@ -21,14 +22,14 @@ describe('rule', () => {
             fields: {
               get: jest.fn().mockReturnValueOnce({
                 indexed: false,
-                updateWith,
-              }),
-            },
-          }),
-        },
-      },
+                updateWith
+              })
+            }
+          })
+        }
+      }
     } as any);
-    expect(updateWith).toBeCalledWith({indexed: true});
+    expect(updateWith).toBeCalledWith({ indexed: true });
     expect(result).toMatchSnapshot();
   });
 
@@ -37,8 +38,8 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       package: {
         items: {
@@ -47,15 +48,14 @@ describe('rule', () => {
             fields: {
               get: jest.fn().mockReturnValueOnce({
                 indexed: true,
-                updateWith,
-              }),
-            },
-          }),
-        },
-      },
+                updateWith
+              })
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

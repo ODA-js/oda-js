@@ -25,7 +25,9 @@ function unfoldQuery(
     if (Array.isArray(obj)) {
       return obj.map(item => unfoldQuery(item, operations, parent));
     } else {
-      if (!res) res = {};
+      if (!res) {
+        res = {};
+      }
       Object.keys(obj).forEach(key => {
         let setKey = key;
         let index = setKey.match(/^at_(\d*)$/);
@@ -144,7 +146,7 @@ export default class MongooseApi<
           or.push(
             find.reduce((prev, f, index) => {
               const curr =
-                index == len - 1
+                index === len - 1
                   ? detect(f, current[f])
                   : {
                       [f]: { $eq: current[f] },
@@ -240,5 +242,7 @@ export default class MongooseApi<
     return await record.remove();
   }
 
-  public async sync({ force = false }: { force?: boolean }) {}
+  public async sync({ force = false }: { force?: boolean }) {
+    return;
+  }
 }

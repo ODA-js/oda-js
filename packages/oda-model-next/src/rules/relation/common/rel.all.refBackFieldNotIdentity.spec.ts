@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refBackFieldNotIdentity';
 
 describe('rule', () => {
@@ -11,20 +12,19 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
           get: jest.fn().mockReturnValueOnce({
             identity: false,
-          updateWith,
-
-          }),
-        },
-      },
+            updateWith
+          })
+        }
+      }
     } as any);
-    expect(updateWith).toBeCalledWith({identity: true});
+    expect(updateWith).toBeCalledWith({ identity: true });
     expect(result).toMatchSnapshot();
   });
 
@@ -33,19 +33,18 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
           get: jest.fn().mockReturnValueOnce({
-            identity: true,
-          }),
-        },
-      },
+            identity: true
+          })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

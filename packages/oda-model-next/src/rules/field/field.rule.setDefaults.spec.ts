@@ -1,3 +1,4 @@
+import 'jest';
 import { IPackagedItemInit } from '../../interfaces/IPackagedItem';
 import { Entity } from '../../model/Entity';
 import { Model } from '../../model/Model';
@@ -13,18 +14,21 @@ describe('rule', () => {
 
   it('fix simple field', () => {
     let update = {};
-    const updateWith = jest.fn((args) => update = {
-      ...update,
-      ...args,
-    });
+    const updateWith = jest.fn(
+      args =>
+        (update = {
+          ...update,
+          ...args
+        })
+    );
     const result = rule.validate({
       entity: {
-        name: 'cool entity',
+        name: 'cool entity'
       },
       field: {
         name: 'user',
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(result).toMatchSnapshot();
     expect(updateWith).toHaveBeenCalledTimes(4);
@@ -33,19 +37,22 @@ describe('rule', () => {
 
   it('fix indexed field', () => {
     let update = {};
-    const updateWith = jest.fn((args) => update = {
-      ...update,
-      ...args,
-    });
+    const updateWith = jest.fn(
+      args =>
+        (update = {
+          ...update,
+          ...args
+        })
+    );
     const result = rule.validate({
       entity: {
-        name: 'cool entity',
+        name: 'cool entity'
       },
       field: {
         name: 'user',
         indexed: true,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(result).toMatchSnapshot();
     expect(updateWith).toHaveBeenCalledTimes(4);
@@ -54,19 +61,22 @@ describe('rule', () => {
 
   it('fix identity field', () => {
     let update = {};
-    const updateWith = jest.fn((args) => update = {
-      ...update,
-      ...args,
-    });
+    const updateWith = jest.fn(
+      args =>
+        (update = {
+          ...update,
+          ...args
+        })
+    );
     const result = rule.validate({
       entity: {
-        name: 'cool entity',
+        name: 'cool entity'
       },
       field: {
         name: 'user',
         identity: true,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(result).toMatchSnapshot();
     expect(updateWith).toHaveBeenCalledTimes(5);
@@ -75,19 +85,22 @@ describe('rule', () => {
 
   it('fix derived field', () => {
     let update = {};
-    const updateWith = jest.fn((args) => update = {
-      ...update,
-      ...args,
-    });
+    const updateWith = jest.fn(
+      args =>
+        (update = {
+          ...update,
+          ...args
+        })
+    );
     const result = rule.validate({
       entity: {
-        name: 'cool entity',
+        name: 'cool entity'
       },
       field: {
         name: 'user',
         derived: true,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(result).toMatchSnapshot();
     expect(updateWith).toHaveBeenCalledTimes(4);
@@ -96,24 +109,26 @@ describe('rule', () => {
 
   it('fix persistend-derived field', () => {
     let update = {};
-    const updateWith = jest.fn((args) => update = {
-      ...update,
-      ...args,
-    });
+    const updateWith = jest.fn(
+      args =>
+        (update = {
+          ...update,
+          ...args
+        })
+    );
     const result = rule.validate({
       entity: {
-        name: 'cool entity',
+        name: 'cool entity'
       },
       field: {
         name: 'user',
         derived: true,
         persistent: true,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(result).toMatchSnapshot();
     expect(updateWith).toHaveBeenCalledTimes(4);
     expect(update).toMatchSnapshot();
   });
-
 });

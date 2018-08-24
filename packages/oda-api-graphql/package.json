@@ -5,8 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "test-inspect": "node --inspect-brk ./node_modules/.bin/jest",
-    "prepare": "./compile.sh"
+    "prepare": "npm run clean && npm run compile",
+    "compile": "tsc -p ./",
+    "wipe": "./clean.sh",
+    "clean": "rm -rf dist",
+    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -20,7 +23,7 @@
     "inflected": "^2.0.4",
     "isomorphic-fetch": "^2.2.1",
     "iterall": "^1.2.2",
-    "oda-isomorfic": "^1.0.0-15"
+    "oda-isomorfic": "file:../oda-isomorfic"
   },
   "peerDependencies": {
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0",
@@ -28,13 +31,7 @@
     "graphql-tools": "^3.0.4"
   },
   "devDependencies": {
-    "@types/graphql": "0.12.4",
-    "@types/inflected": "^1.1.29",
-    "@types/jest": "^22.2.0",
-    "@types/node": "^8.0.20",
-    "jest": "^22.4.2",
-    "ts-jest": "^22.4.1",
-    "typescript": "~2.8.3"
+    "typescript": "^3.0.1"
   },
   "jest": {
     "testEnvironment": "node",

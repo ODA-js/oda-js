@@ -67,41 +67,56 @@ export class Server {
   public config() {
     this.app.use(cors());
   }
-  public async RegisterSvc(){
-    
+  public async RegisterSvc() {
+    return;
   }
   public initLogger() {
     if (this.logger) {
       let name = this.logger.name || this.service.name;
-      let logFileName = path.join(this.logger.path || process.cwd(), `${name}.log`);
+      let logFileName = path.join(
+        this.logger.path || process.cwd(),
+        `${name}.log`,
+      );
       fs.ensureFileSync(logFileName);
       log4js.configure({
-        appenders: [{
-          type: 'console',
-        },
-        {
-          type: 'file',
-          filename: logFileName,
-        }],
+        appenders: [
+          {
+            type: 'console',
+          },
+          {
+            type: 'file',
+            filename: logFileName,
+          },
+        ],
         levels: {
           '[all]': 'INFO',
           'db:connections': 'INFO',
           'api:web': 'INFO',
         },
         replaceConsole: true,
-
       });
       let logger = log4js.getLogger(`${name}:web`);
-      this.app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO /*, format: ':remote-addr :url :response-time' */ }));
+      this.app.use(
+        log4js.connectLogger(logger, {
+          level:
+            log4js.levels.INFO, /*, format: ':remote-addr :url :response-time' */
+        }),
+      );
     }
   }
-  initStatics() {
+  public initStatics() {
     if (!this.service.statics) {
-      const root = path.relative(process.cwd(), path.resolve(__dirname, '../../../'));
+      const root = path.relative(
+        process.cwd(),
+        path.resolve(__dirname, '../../../'),
+      );
       this.app.use(express.static(path.join(root, 'static'))); //?????
     } else {
       for (let i = 0, len = this.service.statics.length; i < len; i++) {
-        this.app.use(this.service.statics[i].route, express.static(this.service.statics[i].path));
+        this.app.use(
+          this.service.statics[i].route,
+          express.static(this.service.statics[i].path),
+        );
       }
     }
   }

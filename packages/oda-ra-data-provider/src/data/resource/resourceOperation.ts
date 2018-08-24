@@ -9,6 +9,7 @@ import {
   ShouldFakeExecuteFunction,
   UpdateFunction,
   VariablesFunction,
+  FetchPolicyFunction,
 } from './interfaces';
 import { queries } from './resourceContainer';
 
@@ -34,7 +35,7 @@ export default abstract class implements IResourceOperation {
   public get type(): queries {
     return this._type;
   }
-  public get fetchPolicy(): string {
+  public get fetchPolicy(): string | FetchPolicyFunction {
     return this._fetchPolicy;
   }
   public get orderBy() {
@@ -51,6 +52,17 @@ export default abstract class implements IResourceOperation {
     return this._shouldFakeExecute;
   }
 
+  protected _shouldFakeExecute: ShouldFakeExecuteFunction;
+  protected _resource: IResource;
+  protected _parseResponse: ResponseFunction;
+  protected _update: UpdateFunction;
+  protected _variables: VariablesFunction;
+  protected _type: queries;
+  protected _fetchPolicy: string | FetchPolicyFunction;
+  protected _orderBy: OrderByFunction;
+  protected _filterBy: FilterByFunction;
+  protected _refetchQueries: any;
+
   public override({
     parseResponse,
     update,
@@ -60,7 +72,7 @@ export default abstract class implements IResourceOperation {
     fetchPolicy = 'network-only',
     refetchQueries,
     shouldFakeExecute,
-}: IResourceOperationDefinition) {
+  }: IResourceOperationDefinition) {
     if (parseResponse) {
       this._parseResponse = parseResponse;
     }
@@ -88,14 +100,6 @@ export default abstract class implements IResourceOperation {
     return this;
   }
 
-  private defaultUpdate(store, response) {
-    // insert into cache
-  };
-
-  private defaultOrderBy(params) {
-    return params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined;
-  }
-
   public initDefaults({
     shouldFakeExecute,
     update,
@@ -108,25 +112,17 @@ export default abstract class implements IResourceOperation {
     }
   }
 
-  protected _shouldFakeExecute: ShouldFakeExecuteFunction;
-  protected _resource: IResource;
-  protected _parseResponse: ResponseFunction;
-  protected _update: UpdateFunction;
-  protected _variables: VariablesFunction;
-  protected _type: queries;
-  protected _fetchPolicy: string;
-  protected _orderBy: OrderByFunction;
-  protected _filterBy: FilterByFunction;
-  protected _refetchQueries: any;
-
-  constructor(options?: { overrides?: IResourceOperationDefinition, resource?: IResource }) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     if (options) {
       if (options.overrides) {
         this.initDefaults(options.overrides);
         this.override(options.overrides);
       }
       if (options.resource) {
-        this.connect(options.resource)
+        this.connect(options.resource);
       }
     }
   }
@@ -136,5 +132,15 @@ export default abstract class implements IResourceOperation {
       this._resource = resource;
     }
     return this;
+  }
+
+  private defaultUpdate(store, response) {
+    // insert into cache
+  }
+
+  private defaultOrderBy(params) {
+    return params.sort.field !== 'id'
+      ? `${params.sort.field}${SortOrder[params.sort.order]}`
+      : undefined;
   }
 }

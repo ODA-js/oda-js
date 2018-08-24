@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './oppositeNotFound';
 
 describe('rule', () => {
@@ -12,22 +13,22 @@ describe('rule', () => {
       relation: {
         opposite: true,
         ref: {
-          entity: true,
+          entity: true
         },
-        updateWith,
+        updateWith
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
             modelType: 'entity',
             fields: {
-              has: jest.fn().mockReturnValueOnce(false),
-            },
-          }),
-        },
-      },
+              has: jest.fn().mockReturnValueOnce(false)
+            }
+          })
+        }
+      }
     } as any);
-    expect(updateWith).toBeCalledWith({ opposite: null});
+    expect(updateWith).toBeCalledWith({ opposite: null });
     expect(result).toMatchSnapshot();
   });
 
@@ -37,23 +38,22 @@ describe('rule', () => {
       relation: {
         opposite: true,
         ref: {
-          entity: true,
+          entity: true
         },
-        updateWith,
+        updateWith
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
             modelType: 'entity',
             fields: {
-              has: jest.fn().mockReturnValueOnce(true),
-            },
-          }),
-        },
-      },
+              has: jest.fn().mockReturnValueOnce(true)
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './possibleOppositeNotFound';
 
 describe('rule', () => {
@@ -12,15 +13,15 @@ describe('rule', () => {
       relation: {
         opposite: false,
         ref: {
-          entity: true,
+          entity: true
         },
-        updateWith,
+        updateWith
       },
       entity: {
-        name: true,
+        name: true
       },
       field: {
-        name: true,
+        name: true
       },
       package: {
         items: {
@@ -33,15 +34,15 @@ describe('rule', () => {
                   relation: {
                     ref: {
                       entity: true,
-                      field: true,
-                    },
-                  },
-                },
-              ]),
-            },
-          }),
-        },
-      },
+                      field: true
+                    }
+                  }
+                }
+              ])
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ opposite: true });
     expect(result).toMatchSnapshot();
@@ -53,14 +54,14 @@ describe('rule', () => {
       relation: {
         opposite: false,
         ref: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       entity: {
-        name: true,
+        name: true
       },
       field: {
-        name: true,
+        name: true
       },
       package: {
         items: {
@@ -72,23 +73,23 @@ describe('rule', () => {
                   relation: {
                     ref: {
                       entity: true,
-                      field: true,
-                    },
-                  },
+                      field: true
+                    }
+                  }
                 },
                 {
                   relation: {
                     ref: {
                       entity: true,
-                      field: true,
-                    },
-                  },
-                },
-              ]),
-            },
-          }),
-        },
-      },
+                      field: true
+                    }
+                  }
+                }
+              ])
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
@@ -100,25 +101,25 @@ describe('rule', () => {
       relation: {
         opposite: false,
         ref: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       entity: {
-        name: true,
+        name: true
       },
       field: {
-        name: true,
+        name: true
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
             modelType: 'entity',
             fields: {
-              values: jest.fn().mockReturnValueOnce([]),
-            },
-          }),
-        },
-      },
+              values: jest.fn().mockReturnValueOnce([])
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
@@ -132,15 +133,15 @@ describe('rule', () => {
         verb: 'BelongsToMany',
         opposite: false,
         ref: {
-          entity: true,
+          entity: true
         },
-        updateWith,
+        updateWith
       },
       entity: {
-        name: true,
+        name: true
       },
       field: {
-        name: true,
+        name: true
       },
       package: {
         items: {
@@ -155,15 +156,15 @@ describe('rule', () => {
                     verb: 'BelongsToMany',
                     ref: {
                       entity: true,
-                      field: true,
-                    },
-                  },
-                },
-              ]),
-            },
-          }),
-        },
-      },
+                      field: true
+                    }
+                  }
+                }
+              ])
+            }
+          })
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ opposite: true });
     expect(result).toMatchSnapshot();
@@ -175,13 +176,12 @@ describe('rule', () => {
       relation: {
         opposite: true,
         ref: {
-          entity: true,
+          entity: true
         },
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

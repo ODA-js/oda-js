@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './defaultPackage';
 
 describe('rule', () => {
@@ -8,8 +9,7 @@ describe('rule', () => {
 
   it('throw', () => {
     const result = rule.validate({
-      model: {
-      },
+      model: {}
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -17,8 +17,8 @@ describe('rule', () => {
   it('not throw', () => {
     const result = rule.validate({
       model: {
-        defaultPackage: 'species',
-      },
+        defaultPackage: 'species'
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });

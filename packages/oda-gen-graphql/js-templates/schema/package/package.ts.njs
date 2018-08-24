@@ -89,7 +89,7 @@ export default new Schema({
 
 import * as log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
-import * as get from 'lodash/get';
+import { get } from 'lodash';
 
 import { pubsub } from '../../model/pubsub';
 

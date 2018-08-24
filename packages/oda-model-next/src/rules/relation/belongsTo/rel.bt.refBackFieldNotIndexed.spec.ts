@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refBackFieldNotIndexed';
 
 describe('rule', () => {
@@ -11,17 +12,17 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
             indexed: false,
-            updateWith,
-          })),
-        },
-      },
+            updateWith
+          }))
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ indexed: true });
     expect(result).toMatchSnapshot();
@@ -33,20 +34,19 @@ describe('rule', () => {
       relation: {
         ref: {
           backField: true,
-          updateWith,
-        },
+          updateWith
+        }
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
             indexed: true,
-            updateWith,
-          })),
-        },
-      },
+            updateWith
+          }))
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

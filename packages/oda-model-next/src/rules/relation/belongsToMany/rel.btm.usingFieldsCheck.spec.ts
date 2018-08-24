@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './usingFieldsCheck';
 
 describe('rule', () => {
@@ -15,37 +16,47 @@ describe('rule', () => {
           get: jest.fn(() => ({
             modelType: 'entity',
             fields: {
-              get: jest.fn().mockReturnValueOnce({
-                type: 'string',
-              }).mockReturnValueOnce({
-                type: 'string',
-                updateWith: updateField,
-              }).mockReturnValueOnce(false),
+              get: jest
+                .fn()
+                .mockReturnValueOnce({
+                  type: 'string'
+                })
+                .mockReturnValueOnce({
+                  type: 'string',
+                  updateWith: updateField
+                })
+                .mockReturnValueOnce(false)
             },
-            updateWith: updateWithEntity,
-          })),
-        },
+            updateWith: updateWithEntity
+          }))
+        }
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
-        fields: [{
-          name: 'one',
-          type: 'string',
-        }, {
-          name: 'two',
-          type: 'number',
-        }, {
-          name: 'three',
-          type: 'number',
-          }],
+        fields: [
+          {
+            name: 'one',
+            type: 'string'
+          },
+          {
+            name: 'two',
+            type: 'number'
+          },
+          {
+            name: 'three',
+            type: 'number'
+          }
+        ],
         using: {
-          entity: true,
-        },
-      },
+          entity: true
+        }
+      }
     } as any);
     expect(updateField).toBeCalledWith({ type: 'number' });
-    expect(updateWithEntity).toBeCalledWith({'fields': [{'name': 'three', 'type': 'number'}]});
+    expect(updateWithEntity).toBeCalledWith({
+      fields: [{ name: 'three', type: 'number' }]
+    });
     expect(result).toMatchSnapshot();
   });
 
@@ -57,27 +68,33 @@ describe('rule', () => {
           get: jest.fn(() => ({
             modelType: 'entity',
             fields: {
-              get: jest.fn().mockReturnValueOnce({
-                type: 'string',
-              }).mockReturnValueOnce({
-                type: 'number',
-              }),
+              get: jest
+                .fn()
+                .mockReturnValueOnce({
+                  type: 'string'
+                })
+                .mockReturnValueOnce({
+                  type: 'number'
+                })
             },
-            updateWith,
-          })),
-        },
+            updateWith
+          }))
+        }
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
-        fields: [{
-          name: 'one',
-          type: 'string',
-        }, {
-          name: 'two',
-          type: 'number',
-        }],
-      },
+        fields: [
+          {
+            name: 'one',
+            type: 'string'
+          },
+          {
+            name: 'two',
+            type: 'number'
+          }
+        ]
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
@@ -90,15 +107,15 @@ describe('rule', () => {
         items: {
           get: jest.fn(() => ({
             modelType: 'entity',
-            updateWith,
-          })),
-        },
+            updateWith
+          }))
+        }
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
-        fields: false,
-      },
+        fields: false
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();

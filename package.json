@@ -25,7 +25,18 @@
     "@types/jest": "^22.1.1",
     "jest": "^22.1.4",
     "ts-jest": "^22.0.2",
-    "@types/fs-extra": "^5.0.0"
+    "@types/fs-extra": "^5.0.0",
+    "redux-form": "^7.4.2",
+    "redux-saga": "^0.16.0",
+    "apollo-cache-inmemory": "^1.2.8",
+    "apollo-client": "^2.4.0",
+    "apollo-link": "^1.2.2",
+    "apollo-link-http": "^1.5.4",
+    "recompose": "~0.26.0",
+    "prop-types": "^15.6.1",
+    "ra-core": "^2.0.3",
+    "react-admin": "^2.1.2",
+    "log4js": "^1.1.1"
   },
   "scripts": {
     "postinstall": "npm run compile",

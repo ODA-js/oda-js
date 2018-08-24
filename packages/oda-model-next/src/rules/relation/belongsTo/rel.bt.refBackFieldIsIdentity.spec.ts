@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refBackFieldIsIdentity';
 
 describe('rule', () => {
@@ -10,16 +11,16 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
-            identity: true,
-          })),
-        },
-      },
+            identity: true
+          }))
+        }
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -28,16 +29,16 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
-            identity: false,
-          })),
-        },
-      },
+            identity: false
+          }))
+        }
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -46,14 +47,14 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true,
-        },
+          backField: true
+        }
       },
       entity: {
         fields: {
-          get: jest.fn(() => null),
-        },
-      },
+          get: jest.fn(() => null)
+        }
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });

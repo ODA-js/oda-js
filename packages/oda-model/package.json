@@ -8,29 +8,24 @@
   },
   "typings": "dist/model/index.d.ts",
   "scripts": {
-    "prepare": "./compile.sh",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "npm run clean && npm run compile",
+    "compile": "tsc -p ./",
+    "wipe": "./clean.sh",
+    "clean": "rm -rf dist",
+    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
   },
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "camelcase": "^4.1.0",
+    "camelcase": "^5.0.0",
     "decamelize": "^2.0.0",
     "global": "^4.3.2",
     "inflected": "^2.0.3",
-    "lodash": "^4.17.4"
+    "oda-isomorfic": "file:../oda-isomorfic"
   },
-  "devDependencies": {
-    "@types/camelcase": "4.1.0",
-    "@types/decamelize": "1.2.0",
-    "@types/graphql": "^0.12.4",
-    "@types/inflected": "^1.1.29",
-    "@types/jest": "^22.2.2",
-    "@types/node": "^8.0.20",
-    "jest": "^22.4.3",
-    "ts-jest": "^22.4.2",
-    "tslint": "^5.8.0",
-    "typescript": "~2.8.3"
+  "peerDependencies": {
+    "lodash": "^4.17.10"
   },
   "jest": {
     "testEnvironment": "node",
@@ -48,5 +43,8 @@
       "js",
       "json"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^3.0.1"
   }
 }

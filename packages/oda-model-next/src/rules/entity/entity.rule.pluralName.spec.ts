@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './pluralName';
 
 describe('rule', () => {
@@ -7,27 +8,24 @@ describe('rule', () => {
   });
 
   it('throw', () => {
-
     const result = rule.validate({
       entity: {
         plural: 'species',
-        name: 'species',
-      },
+        name: 'species'
+      }
     } as any);
 
     expect(result).toMatchSnapshot();
-
   });
 
   it('not throw', () => {
     const result = rule.validate({
       entity: {
         plural: 'AllSpecies',
-        name: 'species',
-      },
+        name: 'species'
+      }
     } as any);
 
     expect(result).toMatchSnapshot();
-
   });
 });

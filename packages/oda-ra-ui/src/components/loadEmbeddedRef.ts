@@ -1,10 +1,12 @@
 import { crudGetManyAccumulate as crudGetManyAccumulateAction } from 'ra-core/lib/actions/accumulateActions';
-import * as get from 'lodash/get';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 
 export const getReferences = (state, reference, id) => {
-  if (!id) return id;
+  if (!id) {
+    return id;
+  }
   return state.admin.resources[reference].data[id];
 };
 

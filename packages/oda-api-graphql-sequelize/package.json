@@ -4,7 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "./compile.sh"
+    "test": "jest",
+    "prepare": "npm run clean && npm run compile",
+    "compile": "tsc -p ./",
+    "wipe": "./clean.sh",
+    "clean": "rm -rf dist",
+    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -13,17 +18,31 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "oda-api-graphql": "^1.0.0-15"
+    "oda-api-graphql": "file:../oda-api-graphql",
+    "oda-isomorfic": "file:../oda-isomorfic"
   },
   "peerDependencies": {
     "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
-    "log4js": "^1.1.1",
     "sequelize": "^4.35.2"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
+  },
   "devDependencies": {
-    "@types/graphql": "0.12.4",
-    "@types/node": "^8.0.20",
-    "@types/sequelize": "^4.27.14",
-    "typescript": "~2.8.3"
+    "typescript": "^3.0.1"
   }
 }

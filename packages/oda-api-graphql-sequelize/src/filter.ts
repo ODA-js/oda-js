@@ -1,6 +1,4 @@
-import {
-  Filter,
-} from 'oda-api-graphql';
+import { Filter } from 'oda-api-graphql';
 
 const getValue = Filter.getValue;
 
@@ -82,14 +80,18 @@ export class FilterSequelize {
       if (typeof value !== 'object') {
         throw new Error('expected JSON type for exists operation');
       }
-      return Filter.parse(value, idMap, id);
+      return Filter.Filter.parse(value, idMap, id);
     },
   };
 
   public static parse(node, idMap = {}, id: boolean = false) {
     if (Array.isArray(node)) {
       return node.map(n => FilterSequelize.parse(n, idMap, id));
-    } if (typeof node === 'object' && (node.constructor === Object || node.constructor === undefined)) {
+    }
+    if (
+      typeof node === 'object' &&
+      (node.constructor === Object || node.constructor === undefined)
+    ) {
       let result = {};
       let keys = Object.keys(node);
       keys.forEach((key, index) => {
@@ -100,7 +102,11 @@ export class FilterSequelize {
           };
         } else {
           let idKey = idMap.hasOwnProperty(key);
-          result[idKey ? idMap[key] : key] = FilterSequelize.parse(node[key], idMap, idKey);
+          result[idKey ? idMap[key] : key] = FilterSequelize.parse(
+            node[key],
+            idMap,
+            idKey,
+          );
         }
       });
       return result;

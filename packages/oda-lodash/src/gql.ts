@@ -1,37 +1,44 @@
 import { DocumentNode, Kind, parse, visit, getOperationAST } from 'graphql';
 
-import {
-  argumentsObjectFromField,
-} from 'apollo-utilities';
-import * as each from 'lodash/each.js';
-import * as get from 'lodash/get.js';
-import * as isEqual from 'lodash/isEqual.js';
-import * as keyBy from 'lodash/keyBy.js';
-import * as set from 'lodash/set.js';
+import { argumentsObjectFromField } from 'apollo-utilities';
+import { each } from 'lodash';
+import { get } from 'lodash';
+import { isEqual } from 'lodash';
+import { keyBy } from 'lodash';
+import { set } from 'lodash';
 
 import { lodashAST } from './schema';
 import { applyTransformations } from './transformations';
 
-export function graphqlLodash(query: string | DocumentNode, operationName?: string) {
+export function graphqlLodash(
+  query: string | DocumentNode,
+  operationName?: string,
+) {
   const pathToArgs = {};
   const reshape = {};
   const queryAST = typeof query === 'string' ? parse(query) : query;
-  traverseOperationFields(queryAST, operationName, (node, resultPath, alias) => {
-    let args = getLodashDirectiveArgs(node, lodashAST());
-    if (args === null) {
-      return;
-    }
+  traverseOperationFields(
+    queryAST,
+    operationName,
+    (node, resultPath, alias) => {
+      let args = getLodashDirectiveArgs(node, lodashAST());
+      if (args === null) {
+        return;
+      }
 
-    // TODO: error if transformation applied on field that already
-    // seen without any transformation
-    const argsSetPath = [...resultPath, '@_'];
-    const previousArgsValue = get(pathToArgs, argsSetPath, null);
-    if (previousArgsValue !== null && !isEqual(previousArgsValue, args)) {
-      throw Error(`Different "@_" args for the "${resultPath.join('.')}" path`);
-    }
-    set(pathToArgs, argsSetPath, args);
-    set(reshape, [...resultPath, '_@'], alias[resultPath.length - 1]);
-  });
+      // TODO: error if transformation applied on field that already
+      // seen without any transformation
+      const argsSetPath = [...resultPath, '@_'];
+      const previousArgsValue = get(pathToArgs, argsSetPath, null);
+      if (previousArgsValue !== null && !isEqual(previousArgsValue, args)) {
+        throw Error(
+          `Different "@_" args for the "${resultPath.join('.')}" path`,
+        );
+      }
+      set(pathToArgs, argsSetPath, args);
+      set(reshape, [...resultPath, '_@'], alias[resultPath.length - 1]);
+    },
+  );
   return {
     apply: !!Object.keys(pathToArgs).length,
     query: stripQuery(queryAST),
@@ -127,7 +134,10 @@ function normalizeLodashArgs(argNodes, args) {
       const nodeValues = node.value.values;
       orderedArgs[name] = [];
       for (let i = 0; i < nodeValues.length; ++i) {
-        orderedArgs[name][i] = normalizeLodashArgs(nodeValues[i].fields, argValue[i]);
+        orderedArgs[name][i] = normalizeLodashArgs(
+          nodeValues[i].fields,
+          argValue[i],
+        );
       }
     } else if (node.value.kind === 'EnumValue' && node.value.value === 'none') {
       orderedArgs[name] = undefined;
@@ -140,7 +150,7 @@ function normalizeLodashArgs(argNodes, args) {
 
 function stripQuery(queryAST): DocumentNode {
   return visit(queryAST, {
-    [Kind.DIRECTIVE]: (node) => {
+    [Kind.DIRECTIVE]: node => {
       if (node.name.value === '_') {
         return null;
       }
@@ -203,6 +213,7 @@ function applyLodashArgs(path, object, args) {
     return applyTransformations(object, args);
   } catch (e) {
     // FIXME:
+    // tslint:disable-next-line:no-console
     console.log(path);
     throw e;
   }

@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refFieldNotIdentity';
 
 describe('rule', () => {
@@ -16,17 +17,17 @@ describe('rule', () => {
             fields: {
               get: jest.fn(() => ({
                 identity: false,
-                updateWith,
-              })),
-            },
-          })),
-        },
+                updateWith
+              }))
+            }
+          }))
+        }
       },
       relation: {
         ref: {
-          backField: true,
-        },
-      },
+          backField: true
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ identity: true });
     expect(result).toMatchSnapshot();
@@ -42,20 +43,19 @@ describe('rule', () => {
             fields: {
               get: jest.fn(() => ({
                 identity: true,
-                updateWith,
-              })),
-            },
-          })),
-        },
+                updateWith
+              }))
+            }
+          }))
+        }
       },
       relation: {
         ref: {
-          backField: true,
-        },
-      },
+          backField: true
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

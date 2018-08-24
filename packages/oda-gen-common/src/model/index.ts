@@ -543,7 +543,7 @@ export class Enum extends GQLType<IEnumResolver>
   }
 }
 
-type PossibleInitType = GQLType | IGQLInput | string | DocumentNode;
+export type PossibleInitType = GQLType | IGQLInput | string | DocumentNode;
 
 export type SchemaInit = void | PossibleInitType | PossibleInitType[];
 

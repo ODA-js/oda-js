@@ -13,7 +13,6 @@ describe('Filter Process', () => {
         },
       },
     };
-    debugger;
     let result = Process.go(query, { id: '_id' });
     expect(result).toEqual(['((value)=>true)(value.location)']);
   });

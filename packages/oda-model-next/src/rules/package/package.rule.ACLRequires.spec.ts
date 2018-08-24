@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './ACLRequired';
 
 describe('rule', () => {
@@ -9,8 +10,8 @@ describe('rule', () => {
   it('throw', () => {
     const result = rule.validate({
       package: {
-        abstract: false,
-      },
+        abstract: false
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -19,8 +20,8 @@ describe('rule', () => {
     const result = rule.validate({
       package: {
         abstract: false,
-        acl: 100,
-      },
+        acl: 100
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });

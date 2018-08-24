@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 import * as log4js from 'log4js';
 import * as _ from 'lodash';
-import * as get from 'lodash/get';
+import {get} from 'lodash';
 
 let logger = log4js.getLogger('graphql:query:#{entity.name}');
 

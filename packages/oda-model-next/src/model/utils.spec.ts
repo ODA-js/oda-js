@@ -1,3 +1,4 @@
+import 'jest';
 import { TransformArgs, TransformRef } from './utils';
 
 describe('transform Fields', () => {
@@ -7,7 +8,7 @@ describe('transform Fields', () => {
       { name: 'one' },
       { name: 'two', required: true },
       { name: 'three', required: false, defaultValue: '3' },
-      { name: 'four', required: false, defaultValue: '3', type: 'Number' },
+      { name: 'four', required: false, defaultValue: '3', type: 'Number' }
     ]);
     expect(result).toMatchSnapshot();
     const result2 = transform.reverse(result);
@@ -18,7 +19,7 @@ describe('transform Fields', () => {
       one: {},
       two: { required: true },
       three: { required: false, defaultValue: '3' },
-      four: { required: false, defaultValue: '3', type: 'Number' },
+      four: { required: false, defaultValue: '3', type: 'Number' }
     });
     expect(result).toMatchSnapshot();
     const result2 = transform.reverse(result);

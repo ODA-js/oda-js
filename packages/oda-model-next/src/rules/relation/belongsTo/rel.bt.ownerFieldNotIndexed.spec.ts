@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './ownerFieldNotIndexed';
 
 describe('rule', () => {
@@ -13,13 +14,13 @@ describe('rule', () => {
         ref: {
           entity: 'Cool',
           field: 'refee',
-          backField: false,
-        },
+          backField: false
+        }
       },
       field: {
         indexed: false,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(updateWith).toBeCalled();
     expect(result).toMatchSnapshot();
@@ -32,16 +33,15 @@ describe('rule', () => {
         ref: {
           entity: 'Cool',
           field: 'refee',
-          backField: false,
-        },
+          backField: false
+        }
       },
       field: {
         indexed: true,
-        updateWith,
-      },
+        updateWith
+      }
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();
   });
-
 });

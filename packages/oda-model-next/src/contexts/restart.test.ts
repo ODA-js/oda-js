@@ -1,3 +1,4 @@
+import 'jest';
 import { restart } from './restart';
 
 describe('restart', () => {
@@ -26,4 +27,3 @@ describe('restart', () => {
     expect(() => restart('new!one' as any)).toThrowError('unknown');
   });
 });
-

@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refBackFieldNotExists';
 
 describe('rule', () => {
@@ -12,14 +13,14 @@ describe('rule', () => {
       relation: {
         ref: {
           backField: true,
-          updateWith,
-        },
+          updateWith
+        }
       },
       entity: {
         fields: {
-          get: jest.fn(() => false),
-        },
-      },
+          get: jest.fn(() => false)
+        }
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -30,16 +31,15 @@ describe('rule', () => {
       relation: {
         ref: {
           backField: true,
-          updateWith,
-        },
+          updateWith
+        }
       },
       entity: {
         fields: {
-          get: jest.fn(() => true),
-        },
-      },
+          get: jest.fn(() => true)
+        }
+      }
     } as any);
     expect(result).toMatchSnapshot();
   });
-
 });

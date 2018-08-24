@@ -4,8 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "./compile.sh",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "npm run clean && npm run compile",
+    "compile": "tsc -p ./",
+    "wipe": "./clean.sh",
+    "clean": "rm -rf dist",
+    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -17,12 +21,6 @@
     "md5-hex": "^2.0.0"
   },
   "devDependencies": {
-    "@types/graphql": "0.12.4",
-    "@types/jest": "^22.2.2",
-    "@types/node": "^8.0.20",
-    "jest": "^23.4.2",
-    "ts-jest": "^23.0.1",
-    "tslint": "^5.8.0",
     "typescript": "^3.0.1"
   },
   "jest": {

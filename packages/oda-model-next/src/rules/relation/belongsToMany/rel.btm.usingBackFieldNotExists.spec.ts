@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './usingBackFieldNotExists';
 
 describe('rule', () => {
@@ -14,14 +15,14 @@ describe('rule', () => {
         verb: 'BelongsToMany',
         using: {
           backField: true,
-          updateWith,
-        },
+          updateWith
+        }
       },
       entity: {
         fields: {
-          get: jest.fn(() => null),
-        },
-      },
+          get: jest.fn(() => null)
+        }
+      }
     } as any);
     expect(updateWith).toBeCalledWith({ backField: 'id' });
     expect(result).toMatchSnapshot();
@@ -35,14 +36,14 @@ describe('rule', () => {
         verb: 'BelongsToMany',
         using: {
           backField: true,
-          updateWith,
-        },
+          updateWith
+        }
       },
       entity: {
         fields: {
-          get: jest.fn(() => true),
-        },
-      },
+          get: jest.fn(() => true)
+        }
+      }
     } as any);
     expect(updateWith).not.toBeCalledWith();
     expect(result).toMatchSnapshot();

@@ -8,16 +8,26 @@ export function decapitalize(name: string): string {
   return name[0].toLowerCase() + name.slice(1);
 }
 
-async function processItems<I>({ data, findQuery, createQuery, updateQuery, dataPropName, findVars, queries }:
+async function processItems<I>(
   {
-    data: I[],
-    findQuery: { [key: string]: string },
+    data,
+    findQuery,
     createQuery,
     updateQuery,
     dataPropName,
-    queries,
-    findVars: { [key: string]: (f: I) => any },
-  }, client) {
+    findVars,
+    queries
+  }: {
+    data: I[];
+    findQuery: { [key: string]: string };
+    createQuery;
+    updateQuery;
+    dataPropName;
+    queries;
+    findVars: { [key: string]: (f: I) => any };
+  },
+  client
+) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
     let variables;
@@ -30,7 +40,7 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
         //1. проверить что объект есть
         res = await client.query({
           query: queries[findQuery[key]],
-          variables,
+          variables
         });
         if (res.data[dataPropName]) {
           break;
@@ -42,31 +52,43 @@ async function processItems<I>({ data, findQuery, createQuery, updateQuery, data
       await client.mutate({
         mutation: queries[createQuery],
         variables: {
-          [dataPropName]: data[i],
-        },
+          [dataPropName]: data[i]
+        }
       });
     } else {
       //3. если есть обновить текущими данными из набора.
       await client.mutate({
         mutation: queries[updateQuery],
         variables: {
-          [dataPropName]: data[i],
-        },
+          [dataPropName]: data[i]
+        }
       });
     }
   }
 }
 
-async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery, dataPropName, findVars, queries }:
+async function processItemsDirect<I>(
   {
-    data: I[],
-    findQuery: { [key: string]: string },
+    data,
+    findQuery,
     createQuery,
     updateQuery,
     dataPropName,
-    queries,
-    findVars: { [key: string]: (f: I) => any },
-  }, schema, context, runQuery) {
+    findVars,
+    queries
+  }: {
+    data: I[];
+    findQuery: { [key: string]: string };
+    createQuery;
+    updateQuery;
+    dataPropName;
+    queries;
+    findVars: { [key: string]: (f: I) => any };
+  },
+  schema,
+  context,
+  runQuery
+) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
     let variables;
@@ -80,7 +102,7 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
           query: queries[findQuery[key]],
           variables,
           schema,
-          context,
+          context
         });
         if (res.data[dataPropName]) {
           break;
@@ -93,45 +115,63 @@ async function processItemsDirect<I>({ data, findQuery, createQuery, updateQuery
       await runQuery({
         query: queries[createQuery],
         variables: {
-          [dataPropName]: data[i],
+          [dataPropName]: data[i]
         },
         schema,
-        context,
+        context
       });
     } else {
       //3. если есть обновить текущими данными из набора.
       await runQuery({
         query: queries[updateQuery],
         variables: {
-          [dataPropName]: data[i],
+          [dataPropName]: data[i]
         },
         schema,
-        context,
+        context
       });
     }
   }
 }
 
-export let restoreDataDirect = async (importQueries, queries, data, schema, context, runQuery) => {
+export let restoreDataDirect = async (
+  importQueries,
+  queries,
+  data,
+  schema,
+  context,
+  runQuery
+) => {
   let entitiesNames = Object.keys(importQueries);
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
     let entityName = entitiesNames[iEnt];
-    let fields = importQueries[entityName].filter ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data) : data;
+    let fields = importQueries[entityName].filter
+      ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data)
+      : data;
     let uploader = {
       findQuery: `${entityName}/findById.graphql`,
       createQuery: `${entityName}/create.graphql`,
       updateQuery: `${entityName}/update.graphql`,
       dataPropName: `${decapitalize(entityName)}`,
       findVars: f => ({ id: f.id }),
-      ...importQueries[entityName].uploader,
+      ...importQueries[entityName].uploader
     };
 
-    if (fields.hasOwnProperty(entityName) && Array.isArray(fields[entityName]) && fields[entityName].length > 0) {
-      await processItemsDirect({
-        data: fields[entityName],
-        ...uploader,
-        queries: queries,
-      }, schema, context, runQuery);
+    if (
+      fields.hasOwnProperty(entityName) &&
+      Array.isArray(fields[entityName]) &&
+      fields[entityName].length > 0
+    ) {
+      await processItemsDirect(
+        {
+          data: fields[entityName],
+          ...uploader,
+          queries: queries
+        },
+        schema,
+        context,
+        runQuery
+      );
     }
   }
 };
@@ -141,27 +181,42 @@ export let restoreData = async (importQueries, queries, client, data) => {
 
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
     let entityName = entitiesNames[iEnt];
-    let fields = importQueries[entityName].filter ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data) : data;
+    let fields = importQueries[entityName].filter
+      ? filter(gql`{ ${entityName} ${importQueries[entityName].filter} }`, data)
+      : data;
     let uploader = {
       findQuery: `${entityName}/findById.graphql`,
       createQuery: `${entityName}/create.graphql`,
       updateQuery: `${entityName}/update.graphql`,
       dataPropName: `${decapitalize(entityName)}`,
       findVars: f => ({ id: f.id }),
-      ...importQueries[entityName].uploader,
+      ...importQueries[entityName].uploader
     };
 
-    if (fields.hasOwnProperty(entityName) && Array.isArray(fields[entityName]) && fields[entityName].length > 0) {
-      await processItems({
-        data: fields[entityName],
-        ...uploader,
-        queries: queries,
-      }, client);
+    if (
+      fields.hasOwnProperty(entityName) &&
+      Array.isArray(fields[entityName]) &&
+      fields[entityName].length > 0
+    ) {
+      await processItems(
+        {
+          data: fields[entityName],
+          ...uploader,
+          queries: queries
+        },
+        client
+      );
     }
   }
 };
 
-export let dumpDataDirect = async (config, queries, schema, context, runQuery) => {
+export let dumpDataDirect = async (
+  config,
+  queries,
+  schema,
+  context,
+  runQuery
+) => {
   let result = {};
   let exportQueries = config.export.queries;
   let entitiesNames = Object.keys(exportQueries);
@@ -169,19 +224,18 @@ export let dumpDataDirect = async (config, queries, schema, context, runQuery) =
     let entityName = entitiesNames[i];
     result = {
       ...result,
-      ...await runQuery({
+      ...(await runQuery({
         query: queries[exportQueries[entityName].query],
         schema,
-        context,
-      })
-        .then(res => {
-          if (exportQueries[entityName].process) {
-            return exportQueries[entityName].process(res.data)[entityName]
-          } else {
-            return res.data;
-          }
-        }),
-    }
+        context
+      }).then(res => {
+        if (exportQueries[entityName].process) {
+          return exportQueries[entityName].process(res.data)[entityName];
+        } else {
+          return res.data;
+        }
+      }))
+    };
   }
   return result;
 };
@@ -194,17 +248,18 @@ export let dumpData = async (config, queries, client) => {
     let entityName = entitiesNames[i];
     result = {
       ...result,
-      ...await client.query({
-        query: queries[exportQueries[entityName].query],
-      })
+      ...(await client
+        .query({
+          query: queries[exportQueries[entityName].query]
+        })
         .then(res => {
           if (exportQueries[entityName].process) {
-            return exportQueries[entityName].process(res.data)[entityName]
+            return exportQueries[entityName].process(res.data)[entityName];
           } else {
             return res.data;
           }
-        })
-    }
+        }))
+    };
   }
   return result;
 };

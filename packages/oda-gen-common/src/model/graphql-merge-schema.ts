@@ -55,7 +55,6 @@ function nodeMerger(objValue, srcValue, key, object, source, stack) {
             return objValue;
           }
         }
-        break;
       case 'loc':
         return objValue;
       case 'name':

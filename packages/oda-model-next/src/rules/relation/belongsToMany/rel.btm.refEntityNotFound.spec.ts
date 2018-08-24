@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './refEntityNotFound';
 
 describe('rule', () => {
@@ -10,16 +11,16 @@ describe('rule', () => {
     const updateWith = jest.fn();
     const result = rule.validate({
       field: {
-        updateWith,
+        updateWith
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
         ref: {
-          entity: true,
+          entity: true
         },
         using: {
-          entity: true,
+          entity: true
         },
         toJS: jest.fn(() => ({
           name: 'relation.name',
@@ -30,20 +31,21 @@ describe('rule', () => {
           shortName: 'relation.shortName',
           using: 'relation.using',
           opposite: 'relation.opposite',
-          fields: 'relation.fields',
-        })),
+          fields: 'relation.fields'
+        }))
       },
       package: {
         items: {
-          get: jest.fn()
+          get: jest
+            .fn()
             .mockReturnValueOnce({
-              modelType: 'not entity',
+              modelType: 'not entity'
             })
             .mockReturnValueOnce({
-              modelType: 'entity',
-            }),
-        },
-      },
+              modelType: 'entity'
+            })
+        }
+      }
     } as any);
 
     expect(updateWith).toBeCalledWith({
@@ -56,8 +58,8 @@ describe('rule', () => {
         shortName: 'relation.shortName',
         hasMany: 'relation.using',
         opposite: 'relation.opposite',
-        fields: 'relation.fields',
-      },
+        fields: 'relation.fields'
+      }
     });
     expect(result).toMatchSnapshot();
   });
@@ -66,29 +68,30 @@ describe('rule', () => {
     const updateWith = jest.fn();
     const result = rule.validate({
       field: {
-        updateWith,
+        updateWith
       },
       relation: {
         modelType: 'relation',
         verb: 'BelongsToMany',
         ref: {
-          entity: true,
+          entity: true
         },
         using: {
-          entity: true,
-        },
+          entity: true
+        }
       },
       package: {
         items: {
-          get: jest.fn()
+          get: jest
+            .fn()
             .mockReturnValueOnce({
-              modelType: 'not entity',
+              modelType: 'not entity'
             })
             .mockReturnValueOnce({
-              modelType: 'not entity',
-            }),
-        },
-      },
+              modelType: 'not entity'
+            })
+        }
+      }
     } as any);
 
     expect(result).toMatchSnapshot();

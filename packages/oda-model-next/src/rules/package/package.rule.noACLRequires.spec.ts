@@ -1,3 +1,4 @@
+import 'jest';
 import Rule from './noACLRequired';
 
 describe('rule', () => {
