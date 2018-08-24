@@ -41,7 +41,11 @@ export class EntityReference implements IEntityRef {
     this.$obj.backField_ = value;
   }
 
-  constructor(entity: string | EntityReferenceInput, field?: string, backField?: string) {
+  constructor(
+    entity: string | EntityReferenceInput,
+    field?: string,
+    backField?: string,
+  ) {
     if (typeof entity === 'string' && !field) {
       let res = entity.match(REF_PATTERN);
       if (res && res.length > 0) {
@@ -102,6 +106,7 @@ export class EntityReference implements IEntityRef {
   }
 
   public toString(): string {
-    return `${this.backField ? (this.backField + '@') : ''}${this.entity}#${this.field || DEFAULT_ID_FIELDNAME}`;
+    return `${this.backField ? this.backField + '@' : ''}${this.entity}#${this
+      .field || DEFAULT_ID_FIELDNAME}`;
   }
 }

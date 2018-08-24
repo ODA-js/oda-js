@@ -54,7 +54,12 @@ export class ModelPackage implements IValidate, IPackage {
     return validator.check(this);
   }
 
-  constructor(name?: string | ModelPackageInput, title?: string, description?: string, acl?: number) {
+  constructor(
+    name?: string | ModelPackageInput,
+    title?: string,
+    description?: string,
+    acl?: number,
+  ) {
     if (typeof name === 'string') {
       this.name = name;
       this.title = title || this.name;
@@ -177,7 +182,7 @@ export class ModelPackage implements IValidate, IPackage {
 
   /** ensure all foreign keys */
   public ensureAll() {
-    this.entities.forEach((e) => {
+    this.entities.forEach(e => {
       e.ensureImplementation(this);
       e.ensureFKs(this);
     });

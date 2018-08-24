@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereDate extends GQLModule {
   protected _name = 'WhereDate';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereDate {
         eq: Date
         gt: Date
@@ -20,7 +21,7 @@ export class WhereDate extends GQLModule {
         exists: Boolean
         match: String
       }
-  `],
+  `,
+    ],
   };
 }
-

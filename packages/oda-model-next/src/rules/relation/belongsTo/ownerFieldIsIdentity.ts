@@ -7,9 +7,10 @@ export default class implements Rule<IRelationContext> {
   public description = 'owner field is identity';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    if (!context.relation.ref.backField
-      && !!context.field.identity
-      && typeof context.field.identity === 'boolean'
+    if (
+      !context.relation.ref.backField &&
+      !!context.field.identity &&
+      typeof context.field.identity === 'boolean'
     ) {
       result.push({
         message: this.description,

@@ -1,15 +1,28 @@
-import { IEntity, IField, IModel, IPackage, IRelation, IValidationResult } from '../interfaces';
-import { IEntityContext, IFieldContext, IModelContext, IPackageContext, IRelationContext } from './interfaces';
+import {
+  IEntity,
+  IField,
+  IModel,
+  IPackage,
+  IRelation,
+  IValidationResult,
+} from '../interfaces';
+import {
+  IEntityContext,
+  IFieldContext,
+  IModelContext,
+  IPackageContext,
+  IRelationContext,
+} from './interfaces';
 
 export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation';
 
-export class RestartLevelError extends Error { }
+export class RestartLevelError extends Error {}
 
-export class ModelLevel extends RestartLevelError { }
-export class PackageLevel extends RestartLevelError { }
-export class EntityLevel extends RestartLevelError { }
-export class FieldLevel extends RestartLevelError { }
-export class RelationLevel extends RestartLevelError { }
+export class ModelLevel extends RestartLevelError {}
+export class PackageLevel extends RestartLevelError {}
+export class EntityLevel extends RestartLevelError {}
+export class FieldLevel extends RestartLevelError {}
+export class RelationLevel extends RestartLevelError {}
 
 export function restart(type: RestartType) {
   switch (type) {
@@ -36,7 +49,7 @@ export class ModelContext implements IModelContext {
     this.errors = [];
   }
   public get isValid() {
-    return !!(this.model);
+    return !!this.model;
   }
 
   public restart(level: RestartType) {
@@ -119,7 +132,13 @@ export class RelationContext implements IRelationContext {
     this.relation = relation;
   }
   public get isValid() {
-    return !!(this.model && this.package && this.entity && this.field && this.relation);
+    return !!(
+      this.model &&
+      this.package &&
+      this.entity &&
+      this.field &&
+      this.relation
+    );
   }
 
   public restart(level: RestartType) {

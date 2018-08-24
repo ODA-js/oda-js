@@ -1,4 +1,4 @@
-const checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+const checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
 
 export default function validId(id) {
   if (id == null) return false;
@@ -12,7 +12,10 @@ export default function validId(id) {
   }
 
   if (id.toHexString) {
-    return id.id.length == 12 || (id.id.length == 24 && checkForHexRegExp.test(id.id));
+    return (
+      id.id.length == 12 ||
+      (id.id.length == 24 && checkForHexRegExp.test(id.id))
+    );
   }
 
   if (id.toStirng) {
@@ -20,4 +23,4 @@ export default function validId(id) {
   }
 
   return false;
-};
+}

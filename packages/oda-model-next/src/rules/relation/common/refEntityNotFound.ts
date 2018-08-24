@@ -9,7 +9,9 @@ export default class implements Rule<IRelationContext> {
   public description = 'referenced entity not found';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+    const entity = context.package.items.get(
+      context.relation.ref.entity,
+    ) as IEntity;
     if (!isEntity(entity)) {
       result.push({
         message: this.description,

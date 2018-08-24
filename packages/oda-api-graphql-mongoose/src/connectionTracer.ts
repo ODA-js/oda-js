@@ -9,32 +9,34 @@ let errorCount = 0;
 export default () => {
   if (!mongoose.___createConnection) {
     mongoose.___createConnection = mongoose.createConnection;
-    mongoose.createConnection = function () {
-      let sl = (new Error().stack).split('\n')[2];
+    mongoose.createConnection = function() {
+      let sl = new Error().stack.split('\n')[2];
       let conId = ++connections;
       let connection;
       connection = this.___createConnection.apply(this, arguments);
 
       logger.info(`created: state: ${connection.readyState}\nsource\n${sl}`);
 
-      connection.on('connected', function () {
+      connection.on('connected', function() {
         logger.info(`connected: ${conId} opened: ${++openConnections}`);
       });
 
-      connection.on('connecting', function () {
+      connection.on('connecting', function() {
         logger.info(`connecting: ${conId}`);
       });
 
-      connection.on('reconnected', function () {
+      connection.on('reconnected', function() {
         logger.info(`reconnected: ${conId}`);
       });
 
-      connection.on('close', function () {
+      connection.on('close', function() {
         logger.info(`closed: ${conId} opened ${--openConnections}`);
       });
 
-      connection.on('error', function (err) {
-        logger.error(`error: ${conId}, opened: ${openConnections}, 'errors: ${++errorCount}\n ${err}`);
+      connection.on('error', function(err) {
+        logger.error(
+          `error: ${conId}, opened: ${openConnections}, 'errors: ${++errorCount}\n ${err}`,
+        );
       });
       return connection;
     };

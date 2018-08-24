@@ -10,7 +10,7 @@ export default class implements Rule<IRelationContext> {
     if (context.relation.ref.backField) {
       const bf = context.entity.fields.get(context.relation.ref.backField);
       if (bf && !bf.indexed) {
-        bf.updateWith({indexed: true});
+        bf.updateWith({ indexed: true });
         result.push({
           message: this.description,
           result: 'error',

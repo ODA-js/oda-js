@@ -38,4 +38,3 @@ const opposits = {
     BelongsTo: true,
   },
 };
-

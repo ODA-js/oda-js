@@ -12,7 +12,9 @@ export default class implements Rule<IRelationContext> {
     const entity = context.package.entities.get(context.relation.ref.entity);
     if (!entity) {
       if (context.relation.using.entity) {
-        const refEntity = context.package.entities.get(context.relation.using.entity);
+        const refEntity = context.package.entities.get(
+          context.relation.using.entity,
+        );
         if (refEntity) {
           let replaceRef = (<BelongsToMany>context.relation).toJSON();
           replaceRef.hasMany = replaceRef.using;

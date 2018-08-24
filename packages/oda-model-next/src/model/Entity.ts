@@ -1,6 +1,12 @@
 import { Map, Record, Set } from 'immutable';
 
-import { IEntity, IEntityInit, IEntityStore, IEntityTransform, IEntityACL} from '../interfaces/IEntity';
+import {
+  IEntity,
+  IEntityInit,
+  IEntityStore,
+  IEntityTransform,
+  IEntityACL,
+} from '../interfaces/IEntity';
 import { IField } from '../interfaces/IField';
 import { IPackage } from '../interfaces/IPackage';
 import { Persistent } from './Persistent';
@@ -31,7 +37,9 @@ export const EntityTransform: IEntityTransform = {
 // tslint:disable-next-line:variable-name
 export const EntityStorage = Record(DefaultEntity);
 
-export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContext> implements IEntity {
+export class Entity
+  extends Persistent<IEntityInit, IEntityStore, IPackageContext>
+  implements IEntity {
   public get modelType(): 'entity' {
     return 'entity';
   }
@@ -74,7 +82,10 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'fields') {
-            result.fields = EntityTransform.fields.transform(input.fields, this);
+            result.fields = EntityTransform.fields.transform(
+              input.fields,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -84,7 +95,9 @@ export class Entity extends Persistent<IEntityInit, IEntityStore, IPackageContex
     return result;
   }
 
-  protected reverse(input: Record<IEntityStore> & Readonly<IEntityStore>): IEntityInit {
+  protected reverse(
+    input: Record<IEntityStore> & Readonly<IEntityStore>,
+  ): IEntityInit {
     const result: IEntityInit = {} as any;
     if (input) {
       const core = input.toJS();

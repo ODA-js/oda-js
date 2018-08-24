@@ -1,4 +1,4 @@
-const  get = (data, path) => {
+const get = (data, path) => {
   if (Array.isArray(data)) {
     const result = [];
     for (let i = 0, len = data.length; i < len; i++) {

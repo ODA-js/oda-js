@@ -3,16 +3,22 @@ import { put, select, take } from 'redux-saga/effects';
 
 import { actionType } from './../consts';
 
-export default function ({ form, relation }: {
-  form: string, relation: {
-    [key: string]: {
-      resource: string;
-      single: boolean;
-    } | string
-  }
+export default function({
+  form,
+  relation,
+}: {
+  form: string;
+  relation: {
+    [key: string]:
+      | {
+          resource: string;
+          single: boolean;
+        }
+      | string;
+  };
 }) {
   const relNames = Object.keys(relation);
-  return function* () {
+  return function*() {
     while (true) {
       const action = yield take('@@redux-form/INITIALIZE');
       const state = yield select();
@@ -34,5 +40,5 @@ export default function ({ form, relation }: {
         }
       }
     }
-  }
+  };
 }

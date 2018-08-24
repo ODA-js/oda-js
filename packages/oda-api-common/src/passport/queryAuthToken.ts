@@ -1,5 +1,3 @@
-
-
 export class Strategy {
   public name: string = 'authenticate-query-auth-token';
   // this will be overriden by passport
@@ -23,7 +21,9 @@ export class Strategy {
     let token = req.query.authToken;
     if (token) {
       this._verify(token, (err, user) => {
-        if (err) { return this.error(err); }
+        if (err) {
+          return this.error(err);
+        }
         if (user) {
           this.success(user);
         } else {

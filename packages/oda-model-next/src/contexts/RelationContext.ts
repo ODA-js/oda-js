@@ -18,7 +18,10 @@ export class RelationContext implements IRelationContext, IValidationContext {
   public field: IField;
   public relation: IRelation;
   public errors: IValidationResult[];
-  constructor(context: IFieldContext & IValidationContext, relation: IRelation) {
+  constructor(
+    context: IFieldContext & IValidationContext,
+    relation: IRelation,
+  ) {
     if (isIFieldContext(context)) {
       this.model = context.model;
       this.package = context.package;
@@ -30,12 +33,12 @@ export class RelationContext implements IRelationContext, IValidationContext {
   }
   public get isValid() {
     return !!(
-      this.model
-      && this.package
-      && this.entity
-      && this.field
-      && this.relation
-      && Array.isArray(this.errors)
+      this.model &&
+      this.package &&
+      this.entity &&
+      this.field &&
+      this.relation &&
+      Array.isArray(this.errors)
     );
   }
   public restart(level: RestartType) {

@@ -9,7 +9,7 @@ function find(array: any[], item) {
     array.some((f, i) => {
       const res = isEqual(f, item);
       if (res) {
-       result = i;
+        result = i;
       }
       return res;
     });
@@ -32,7 +32,10 @@ export default function deepMerge(...args: Object[]) {
             if (current.hasOwnProperty(key)) {
               let cv = get(current, key);
               let rv = get(result, key);
-              if (result.hasOwnProperty(key) && (typeof rv === 'object' && rv !== null)) {
+              if (
+                result.hasOwnProperty(key) &&
+                (typeof rv === 'object' && rv !== null)
+              ) {
                 set(result, key, deepMerge(rv, cv));
               } else {
                 set(result, key, cv);
@@ -43,9 +46,9 @@ export default function deepMerge(...args: Object[]) {
           if (Array.isArray(current)) {
             (<Object[]>current).forEach(item => {
               if (find(result, item) === -1) {
-                  result.push(item);
-                }
-              });
+                result.push(item);
+              }
+            });
           } else {
             if (result.indexOf(current) === -1) {
               result.push(current);

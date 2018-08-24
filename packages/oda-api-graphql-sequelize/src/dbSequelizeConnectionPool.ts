@@ -1,5 +1,5 @@
 import * as url from 'url';
-import * as Sequelize from "sequelize";
+import * as Sequelize from 'sequelize';
 // session specific connection pool
 export default class DbSequelizeConnectionPool {
   public defaultConnection: string;
@@ -8,7 +8,11 @@ export default class DbSequelizeConnectionPool {
   public maxRetry = 10;
   public maxRetryTime = 100;
 
-  constructor(args: { defaultUrl: string, maxRetry?: number, maxRetryTime?: number }) {
+  constructor(args: {
+    defaultUrl: string;
+    maxRetry?: number;
+    maxRetryTime?: number;
+  }) {
     if (this.checkConnectionStringIsValid(args.defaultUrl)) {
       this.defaultConnection = args.defaultUrl;
     }
@@ -38,7 +42,9 @@ export default class DbSequelizeConnectionPool {
       db = list[i];
       if (db) {
         if (!(4 === db.readyState)) {
-          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+          await new Promise((res, rej) =>
+            db.close(err => (err ? rej(err) : res())),
+          );
         }
       }
     }
@@ -50,7 +56,7 @@ export default class DbSequelizeConnectionPool {
     if (db.validate instanceof Function) {
       let valid = true;
       try {
-        await db.validate(db)
+        await db.validate(db);
       } catch (e) {
         valid = false;
       }
@@ -67,10 +73,14 @@ export default class DbSequelizeConnectionPool {
       const valid = this.isValid(db);
       if (typeof valid === 'boolean') {
         if (valid) {
-          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+          await new Promise((res, rej) =>
+            db.close(err => (err ? rej(err) : res())),
+          );
         }
       } else {
-        await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+        await new Promise((res, rej) =>
+          db.close(err => (err ? rej(err) : res())),
+        );
       }
       this.dbPool.delete(name);
     }
@@ -85,12 +95,13 @@ export default class DbSequelizeConnectionPool {
     return new Promise((res, rej) => {
       try {
         let result = new Sequelize(connection);
-        result.authenticate()
+        result
+          .authenticate()
           .then(() => {
-            res(result)
+            res(result);
           })
-          .catch((e) => {
-            rej(e)
+          .catch(e => {
+            rej(e);
           });
       } catch (err) {
         rej(err);
@@ -99,7 +110,6 @@ export default class DbSequelizeConnectionPool {
   }
 
   public async get(name: string, connection?: string) {
-
     if (this.dbPool.has(name)) {
       let db = this.dbPool.get(name);
       const valid = this.isValid(db);
@@ -107,7 +117,9 @@ export default class DbSequelizeConnectionPool {
         if (valid) {
           return Promise.resolve(db);
         } else {
-          await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+          await new Promise((res, rej) =>
+            db.close(err => (err ? rej(err) : res())),
+          );
           await this.remove(name);
         }
       } else {
@@ -147,16 +159,14 @@ export default class DbSequelizeConnectionPool {
     } else {
       return Promise.reject(new Error('invalid connection string'));
     }
-
   }
-};
+}
 
 function waitFor(ms) {
   return new Promise((res, rej) => {
     setTimeout(res, ms);
   });
-};
-
+}
 
 // в общем не все так просто, опыты показали, что соединения могут быть удалены мной из пула,
 // но до сих пор поддерживать соединение с сервером.

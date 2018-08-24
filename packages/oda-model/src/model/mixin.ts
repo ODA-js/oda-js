@@ -1,8 +1,4 @@
-
-import {
-  MetaModelType,
-  IMixin, MixinStorage, MixinInput,
-} from './interfaces';
+import { MetaModelType, IMixin, MixinStorage, MixinInput } from './interfaces';
 import { EntityBase } from './entitybase';
 
 /**

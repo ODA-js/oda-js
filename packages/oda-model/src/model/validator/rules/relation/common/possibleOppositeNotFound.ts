@@ -11,11 +11,15 @@ export default class implements Rule<IRelationContext> {
     if (!context.relation.opposite) {
       const entity = context.package.entities.get(context.relation.ref.entity);
       if (entity) {
-        let opposites = Array.from(entity.fields.values())
-          .filter(f => f.relation && (
-            (f.relation.ref.entity === context.entity.name && f.relation.ref.field === context.field.name) ||
-            ((f.relation as BelongsToMany).using && (this as any).using
-              && (f.relation as BelongsToMany).using.entity === (this as any).using.entity)),
+        let opposites = Array.from(entity.fields.values()).filter(
+          f =>
+            f.relation &&
+            ((f.relation.ref.entity === context.entity.name &&
+              f.relation.ref.field === context.field.name) ||
+              ((f.relation as BelongsToMany).using &&
+                (this as any).using &&
+                (f.relation as BelongsToMany).using.entity ===
+                  (this as any).using.entity)),
         );
 
         if (opposites.length > 2) {
@@ -31,7 +35,6 @@ export default class implements Rule<IRelationContext> {
             message: 'found one possible opposite. assigned.',
             result: 'fixable',
           });
-
         }
 
         if (opposites.length === 0) {
@@ -45,4 +48,3 @@ export default class implements Rule<IRelationContext> {
     return result;
   }
 }
-

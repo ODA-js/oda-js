@@ -35,7 +35,7 @@ export {
   WhereListOfStrings,
   WhereMutationKind,
   WhereJSON,
-}
+};
 
 export class DefaultTypes extends GQLModule {
   protected _name = 'DefaultTypes';

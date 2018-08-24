@@ -1,5 +1,3 @@
 import pluralName from './pluralName';
 
-export default [
-  new pluralName(),
-];
+export default [new pluralName()];

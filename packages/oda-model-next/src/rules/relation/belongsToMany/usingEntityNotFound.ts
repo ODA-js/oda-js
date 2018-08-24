@@ -10,10 +10,13 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (IsBelongsToMany(context.relation) && context.relation.using) {
-      const entity = context.package.items.get(context.relation.using.entity) as IEntity;
+      const entity = context.package.items.get(
+        context.relation.using.entity,
+      ) as IEntity;
       if (!isEntity(entity)) {
-        const sysEntity = context.model.packages.get('system')
-          .items.get(context.relation.using.entity)as IEntity;
+        const sysEntity = context.model.packages
+          .get('system')
+          .items.get(context.relation.using.entity) as IEntity;
         if (isEntity(sysEntity)) {
           context.package.updateWith({
             packages: [sysEntity],

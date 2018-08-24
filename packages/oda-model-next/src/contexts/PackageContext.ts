@@ -20,11 +20,7 @@ export class PackageContext implements IPackageContext, IValidationContext {
     }
   }
   public get isValid() {
-    return !!(
-      this.model
-      && this.package
-      && Array.isArray(this.errors)
-    );
+    return !!(this.model && this.package && Array.isArray(this.errors));
   }
   public restart(level: RestartType) {
     restart('package');

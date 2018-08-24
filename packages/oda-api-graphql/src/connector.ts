@@ -5,7 +5,7 @@ export interface Connector<T> {
   findOneById: (id) => Promise<T>;
   findOneByIdAndUpdate: (id, payload: T) => Promise<T>;
   findOneByIdAndRemove: (id) => Promise<T>;
-  secure: (action: CRUD, obj: { payload: T, source: any }) => T;
+  secure: (action: CRUD, obj: { payload: T; source: any }) => T;
   getPayload: (obj: any, update?: boolean) => T;
   getCount: (args) => Promise<Number>;
   getList: (args, checkExtraCriteria?) => Promise<T[]>;

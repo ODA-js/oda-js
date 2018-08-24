@@ -23,4 +23,3 @@ export interface IBelongsToMany extends IRelation {
   readonly belongsToMany: IEntityRef;
   readonly using: IEntityRef;
 }
-

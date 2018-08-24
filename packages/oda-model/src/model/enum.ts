@@ -1,6 +1,9 @@
 import clean from '../lib/json/clean';
 import {
-  MetaModelType, EnumStorage, EnumItemInput, EnumInput,
+  MetaModelType,
+  EnumStorage,
+  EnumItemInput,
+  EnumInput,
 } from './interfaces';
 import { ModelBase } from './modelbase';
 
@@ -21,13 +24,15 @@ export class Enum extends ModelBase {
       let $items = obj.items;
       let items = $items;
 
-      result.items = items.map(i => typeof i === 'string' ? { name: i } : i).map(i => ({
-        name: i.name,
-        title: i.title || i.name,
-        description: i.description || i.title || i.name,
-        value: i.value,
-        metadata: i.metadata,
-      }));
+      result.items = items
+        .map(i => (typeof i === 'string' ? { name: i } : i))
+        .map(i => ({
+          name: i.name,
+          title: i.title || i.name,
+          description: i.description || i.title || i.name,
+          value: i.value,
+          metadata: i.metadata,
+        }));
 
       result.items_ = $items;
 

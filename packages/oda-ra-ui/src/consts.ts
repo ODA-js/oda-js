@@ -10,4 +10,4 @@ export const actionType = {
   CLONE: 'CLONE',
   USE: 'USE',
   UNLINK: 'UNLINK',
-}
+};

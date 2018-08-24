@@ -44,5 +44,4 @@ export class EntityVisitor implements IVisitor<IEntity, IPackageContext> {
     this.validator = validator;
     this.context = pkg;
   }
-
 }

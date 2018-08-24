@@ -8,7 +8,7 @@ import { IModelType, INamedItem } from './IModelType';
 import { IMutationInit } from './IMutation';
 import { IPackage, IPackageInit } from './IPackage';
 
-export interface IModelInit extends INamedItem  {
+export interface IModelInit extends INamedItem {
   defaultPackageName: string;
   packages: IPackageInit[];
 }
@@ -19,8 +19,8 @@ export interface IModelStore extends INamedItem {
 
 export interface IModelTransform {
   packages: {
-    transform: (inp: IPackageInit[], model: IModel) => Map<string, IPackage>,
-    reverse: (inp: Map<string, IPackage> ) => IPackageInit[],
+    transform: (inp: IPackageInit[], model: IModel) => Map<string, IPackage>;
+    reverse: (inp: Map<string, IPackage>) => IPackageInit[];
   };
 }
 

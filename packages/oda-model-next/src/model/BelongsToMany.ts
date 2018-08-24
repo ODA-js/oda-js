@@ -1,6 +1,11 @@
 import { Map, Record } from 'immutable';
 
-import { IBelongsToMany, IBelongsToManyInit, IBelongsToManyStore, IRelationTransform } from '../interfaces/IBelongsToMany';
+import {
+  IBelongsToMany,
+  IBelongsToManyInit,
+  IBelongsToManyStore,
+  IRelationTransform,
+} from '../interfaces/IBelongsToMany';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField, IFieldInit } from '../interfaces/IField';
 import { EntityRef } from './EntityRef';
@@ -40,7 +45,8 @@ export const BelongsToManyTransform: IRelationTransform = {
 export const BelongsToManyStorage = Record(DefaultBelongsToMany);
 
 export class BelongsToMany
-  extends Relation<IBelongsToManyInit, IBelongsToManyStore> implements IBelongsToMany {
+  extends Relation<IBelongsToManyInit, IBelongsToManyStore>
+  implements IBelongsToMany {
   public get verb(): 'BelongsToMany' {
     return 'BelongsToMany';
   }
@@ -54,7 +60,9 @@ export class BelongsToMany
     return this.store.get('using', null);
   }
 
-  protected transform(input: Partial<IBelongsToManyInit>): Partial<IBelongsToManyStore> {
+  protected transform(
+    input: Partial<IBelongsToManyInit>,
+  ): Partial<IBelongsToManyStore> {
     const result: IBelongsToManyStore = {} as any;
     if (input) {
       if (input instanceof Persistent) {
@@ -63,11 +71,20 @@ export class BelongsToMany
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsToMany') {
-            result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(input.belongsToMany, this);
+            result.belongsToMany = BelongsToManyTransform.belongsToMany.transform(
+              input.belongsToMany,
+              this,
+            );
           } else if (f === 'using') {
-            result.using = BelongsToManyTransform.using.transform(input.using, this);
+            result.using = BelongsToManyTransform.using.transform(
+              input.using,
+              this,
+            );
           } else if (f === 'fields') {
-            result.fields = BelongsToManyTransform.fields.transform(input.fields, this);
+            result.fields = BelongsToManyTransform.fields.transform(
+              input.fields,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -77,7 +94,9 @@ export class BelongsToMany
     return result;
   }
 
-  protected reverse(input: Record<IBelongsToManyStore> & Readonly<IBelongsToManyStore>): Partial<IBelongsToManyInit> {
+  protected reverse(
+    input: Record<IBelongsToManyStore> & Readonly<IBelongsToManyStore>,
+  ): Partial<IBelongsToManyInit> {
     const result: IBelongsToManyInit = {} as any;
     if (input) {
       const core = input.toJS();
@@ -85,11 +104,15 @@ export class BelongsToMany
         if (core.hasOwnProperty(f)) {
           if (core[f] !== undefined && core[f] !== null) {
             if (f === 'belongsToMany' || f === 'ref') {
-              result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(input.belongsToMany);
+              result.belongsToMany = BelongsToManyTransform.belongsToMany.reverse(
+                input.belongsToMany,
+              );
             } else if (f === 'using') {
               result.using = BelongsToManyTransform.using.reverse(input.using);
             } else if (f === 'fields') {
-              result.fields = BelongsToManyTransform.fields.reverse(input.fields);
+              result.fields = BelongsToManyTransform.fields.reverse(
+                input.fields,
+              );
             } else {
               result[f] = core[f];
             }

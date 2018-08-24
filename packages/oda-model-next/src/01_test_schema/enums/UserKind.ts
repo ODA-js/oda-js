@@ -1,6 +1,5 @@
 import { IEnumInit } from '../../interfaces/IEnum';
 
-
 const result: IEnumInit = {
   name: 'UserKind',
   values: {

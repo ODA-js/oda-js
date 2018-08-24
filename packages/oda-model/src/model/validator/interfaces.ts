@@ -31,11 +31,7 @@ export interface IFieldContext {
   restart(level: RestartType);
 }
 
-export type Relation =
-  HasMany
-  | HasOne
-  | BelongsToMany
-  | BelongsTo;
+export type Relation = HasMany | HasOne | BelongsToMany | BelongsTo;
 
 export interface IRelationContext {
   model: IModel;
@@ -47,4 +43,8 @@ export interface IRelationContext {
 }
 
 export type ValidationContext =
-  IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
+  | IModelContext
+  | IPackageContext
+  | IEntityContext
+  | IFieldContext
+  | IRelationContext;

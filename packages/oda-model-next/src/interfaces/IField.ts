@@ -27,7 +27,10 @@ export interface IFieldStorage {
   identity: boolean | string | string[];
 }
 
-export interface IFieldInit extends Partial<IFieldStorage>, Partial<IFieldMetaData>, INamedItem {
+export interface IFieldInit
+  extends Partial<IFieldStorage>,
+    Partial<IFieldMetaData>,
+    INamedItem {
   entity?: IEntity;
   type?: string;
   args?: FieldArgsInput;
@@ -47,12 +50,14 @@ export interface IFieldStore extends IFieldStorage, IFieldMetaData, INamedItem {
 export interface IFieldTransform {
   args: FieldArgsTransform;
   relation: {
-    transform: (inp: Partial<IRelationInit>, field: IField) => IRelation,
-    reverse: (inp: IRelation) => Partial<IRelationInit>,
+    transform: (inp: Partial<IRelationInit>, field: IField) => IRelation;
+    reverse: (inp: IRelation) => Partial<IRelationInit>;
   };
 }
 
-export interface IField extends IModelType, IContextable<IEntityContext | IRelationContext> {
+export interface IField
+  extends IModelType,
+    IContextable<IEntityContext | IRelationContext> {
   readonly modelType: 'field';
   readonly type: string;
   readonly args?: Map<string, IFieldArgInit>;

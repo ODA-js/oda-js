@@ -3,7 +3,11 @@ import { Factory } from 'fte.js';
 
 export const template = 'model/packages.registerConnectors.ts.njs';
 
-export function generate(te: Factory, pack: MetaModel, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  pack: MetaModel,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(pack, typeMapper), template);
 }
 
@@ -14,11 +18,12 @@ export interface MapperOutput {
   }[];
 }
 
-import {
-  getPackages,
-} from '../queries';
+import { getPackages } from '../queries';
 
-export function mapper(model: MetaModel, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  model: MetaModel,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   return {
     packageList: getPackages(model)
       .filter(p => !p.abstract)

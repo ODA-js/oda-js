@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereID extends GQLModule {
   protected _name = 'WhereID';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereID {
         eq: ID
         ne: ID
@@ -15,7 +16,7 @@ export class WhereID extends GQLModule {
         not: [WhereID!]
         exists: Boolean
       }
-  `],
+  `,
+    ],
   };
 }
-

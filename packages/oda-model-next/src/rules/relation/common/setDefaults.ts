@@ -1,4 +1,4 @@
-import {Persistent} from '../../../model/Persistent';
+import { Persistent } from '../../../model/Persistent';
 import { IEntity } from '../../../interfaces/IEntity';
 import { IRelationContext } from '../../../contexts/IRelationContext';
 import { IValidationResult } from '../../../interfaces/IValidationResult';

@@ -8,7 +8,10 @@ export interface INamedItem {
   description?: string;
 }
 
-export interface IModelType extends Readonly<INamedItem>, IValidate, IUpdatable {
+export interface IModelType
+  extends Readonly<INamedItem>,
+    IValidate,
+    IUpdatable {
   readonly name: string;
   readonly title?: string;
   readonly description?: string;

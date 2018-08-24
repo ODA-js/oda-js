@@ -18,7 +18,9 @@ export class FieldVisitor implements IVisitor<IField, IEntityContext> {
           const rules = this.validator.getRules('field');
           rules.forEach(rule => result.push(...rule.validate(context)));
           if (item.relation) {
-            result.push(...this.validator.check(item.relation, { field: context }));
+            result.push(
+              ...this.validator.check(item.relation, { field: context }),
+            );
           }
           done = true;
         } catch (err) {

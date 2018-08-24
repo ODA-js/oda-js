@@ -14,8 +14,18 @@ import { IBelongsToInit } from '../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldACL, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
-import { IFieldArgInit, IFieldArg, IFieldArgStore } from '../interfaces/IFieldArg';
+import {
+  IField,
+  IFieldACL,
+  IFieldInit,
+  IFieldStore,
+  IFieldTransform,
+} from '../interfaces/IField';
+import {
+  IFieldArgInit,
+  IFieldArg,
+  IFieldArgStore,
+} from '../interfaces/IFieldArg';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -41,7 +51,13 @@ export const DefaultField: IFieldArgStore = {
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutationContext | IFieldContext > implements IFieldArg {
+export class FieldArg
+  extends Persistent<
+    IFieldArgInit,
+    IFieldArgStore,
+    IMutationContext | IFieldContext
+  >
+  implements IFieldArg {
   public get modelType(): 'fieldArg' {
     return 'fieldArg';
   }
@@ -77,7 +93,9 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutatio
     }
     return result;
   }
-  protected reverse(input: Record<IFieldArgStore> & Readonly<IFieldArgStore>): IFieldArgInit {
+  protected reverse(
+    input: Record<IFieldArgStore> & Readonly<IFieldArgStore>,
+  ): IFieldArgInit {
     const result: IFieldArgInit = {} as any;
     if (input) {
       const core = input.toJS();
@@ -91,7 +109,10 @@ export class FieldArg extends Persistent<IFieldArgInit, IFieldArgStore, IMutatio
     }
     return result;
   }
-  constructor(init?: Partial<IFieldArgInit>, context?: IMutationContext | IFieldContext ) {
+  constructor(
+    init?: Partial<IFieldArgInit>,
+    context?: IMutationContext | IFieldContext,
+  ) {
     super(context);
     this.store = new FieldStorage(this.transform(init));
   }

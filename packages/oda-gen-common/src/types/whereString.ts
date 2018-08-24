@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereString extends GQLModule {
   protected _name = 'WhereString';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereString {
         eq: String
         ne: String
@@ -17,6 +18,7 @@ export class WhereString extends GQLModule {
         match: String
         imatch: String
       }
-  `],
+  `,
+    ],
   };
 }

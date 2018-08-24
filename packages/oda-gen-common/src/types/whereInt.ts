@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereInt extends GQLModule {
   protected _name = 'WhereInt';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereInt {
         eq: Int
         gt: Int
@@ -19,7 +20,7 @@ export class WhereInt extends GQLModule {
         not: [WhereInt!]
         exists: Boolean
       }
-  `],
+  `,
+    ],
   };
 }
-

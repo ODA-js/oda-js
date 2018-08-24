@@ -5,7 +5,7 @@ import getEmbedForm from './embedForm';
 import getChanges from './getChanges';
 import getInitForm from './initForm';
 
-export default function* () {
+export default function*() {
   while (true) {
     const action = yield take(SELECTOR_INIT);
     const changes = getChanges(action.payload);

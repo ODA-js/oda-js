@@ -8,16 +8,15 @@ import AclDefault from '../acl';
 
 const { get } = lib;
 
-export default function ({
+export default function({
   pack,
   hooks,
   secureAcl,
   config,
 }: {
-    [keys: string]: any,
-    secureAcl: AclDefault,
-  }) {
-
+  [keys: string]: any;
+  secureAcl: AclDefault;
+}) {
   let modelStore = new MetaModel('system');
   if (typeof pack === 'string') {
     modelStore.loadModel(path.resolve(__dirname, '../test.json'));
@@ -34,7 +33,7 @@ export default function ({
       acl: get(entity, 'metadata.acl.create'),
       path: 'entities',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
 
     pushToAppropriate({
@@ -42,21 +41,21 @@ export default function ({
       acl: get(entity, 'metadata.acl.read'),
       path: 'entities',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.update'),
       path: 'entities',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.delete'),
       path: 'entities',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
     // if we didn't setup hooks at all
     pushToAppropriate({
@@ -64,7 +63,7 @@ export default function ({
       acl: 'system',
       path: 'entities',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
   });
 
@@ -74,7 +73,7 @@ export default function ({
       acl: get(mutation, 'metadata.acl.execute'),
       path: 'mutations',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
     // if we didn't setup hooks at all
     pushToAppropriate({
@@ -82,22 +81,24 @@ export default function ({
       acl: 'system',
       path: 'mutations',
       secureAcl,
-      packages: pckgs
+      packages: pckgs,
     });
   });
 
-  Object.keys(pckgs).reduce((result, cur) => {
-    result.push({
-      name: cur,
-      abstract: false,
-      acl: pckgs[cur].acl,
-      entities: Object.keys(pckgs[cur].entities),
-      mutations: Object.keys(pckgs[cur].mutations),
+  Object.keys(pckgs)
+    .reduce((result, cur) => {
+      result.push({
+        name: cur,
+        abstract: false,
+        acl: pckgs[cur].acl,
+        entities: Object.keys(pckgs[cur].entities),
+        mutations: Object.keys(pckgs[cur].mutations),
+      });
+      return result;
+    }, [])
+    .forEach(p => {
+      modelStore.addPackage(p);
     });
-    return result;
-  }, []).forEach(p => {
-    modelStore.addPackage(p);
-  });
 
   const packageNames = Array.from(modelStore.packages.keys());
 
@@ -108,9 +109,11 @@ export default function ({
     return hash;
   }, {});
 
-  let packages = new Map(Array.from(modelStore.packages.entries()).filter((i) => {
-    return generatedPackages[i[0]];
-  }));
+  let packages = new Map(
+    Array.from(modelStore.packages.entries()).filter(i => {
+      return generatedPackages[i[0]];
+    }),
+  );
 
   return {
     modelStore,

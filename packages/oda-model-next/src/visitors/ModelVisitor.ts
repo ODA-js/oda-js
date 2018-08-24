@@ -1,4 +1,3 @@
-
 import { Validator } from '../validators/Validator';
 import { IModel } from '../interfaces/IModel';
 import { IValidationResult } from '../interfaces/IValidationResult';
@@ -15,9 +14,11 @@ export class ModelVisitor {
         try {
           const rules = this.validator.getRules('model');
           rules.forEach(rule => result.push(...rule.validate(context)));
-          Array.from(model.packages.values()).filter(p => p.name === model.name).forEach(p => {
-            result.push(...this.validator.check(p, { model: context }));
-          });
+          Array.from(model.packages.values())
+            .filter(p => p.name === model.name)
+            .forEach(p => {
+              result.push(...this.validator.check(p, { model: context }));
+            });
           done = true;
         } catch (err) {
           if (err.message !== 'model') {

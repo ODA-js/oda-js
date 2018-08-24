@@ -1,6 +1,11 @@
 import { Map, Record } from 'immutable';
 
-import { IEnum, IEnumInit, IEnumStore, IEnumTransform } from '../interfaces/IEnum';
+import {
+  IEnum,
+  IEnumInit,
+  IEnumStore,
+  IEnumTransform,
+} from '../interfaces/IEnum';
 import { Persistent } from './Persistent';
 import { EnumInitItem, IEnumItem } from '../interfaces/IEnumItem';
 import { EnumItem } from './EnumItem';
@@ -19,18 +24,29 @@ export const DefaultEnum: IEnumStore = {
 // tslint:disable-next-line:variable-name
 export const EnumTransform: IEnumTransform = {
   values: {
-    transform: (input: EnumInitItem[] | {
-      [name: string]: EnumInitItem;
-    }, en: IEnum) => {
+    transform: (
+      input:
+        | EnumInitItem[]
+        | {
+            [name: string]: EnumInitItem;
+          },
+      en: IEnum,
+    ) => {
       if (!Array.isArray(input)) {
         input = Object.keys(input).map(k => input[k]);
       }
       const context = ModelFactory.getContext(en) as IEnumContext;
       return Map<string, IEnumItem>(input.map(p => {
         if (typeof p === 'string') {
-          return [p, new EnumItem({
-            name: p,
-          }, context)];
+          return [
+            p,
+            new EnumItem(
+              {
+                name: p,
+              },
+              context,
+            ),
+          ];
         } else {
           return [p.name, new EnumItem(p, context)];
         }
@@ -38,7 +54,9 @@ export const EnumTransform: IEnumTransform = {
     },
     reverse: (input: Map<string, IEnumItem>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IEnumItem);
+        return Array.from(input.values()[Symbol.iterator]()).map(
+          i => i.toJS() as IEnumItem,
+        );
       } else {
         return null;
       }
@@ -49,7 +67,8 @@ export const EnumTransform: IEnumTransform = {
 // tslint:disable-next-line:variable-name
 export const EnumStorage = Record(DefaultEnum);
 
-export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> implements IEnum {
+export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext>
+  implements IEnum {
   public get modelType(): 'enum' {
     return 'enum';
   }
@@ -83,7 +102,9 @@ export class Enum extends Persistent<IEnumInit, IEnumStore, IPackageContext> imp
     }
     return result;
   }
-  protected reverse(input: Record<IEnumStore> & Readonly<IEnumStore>): IEnumInit {
+  protected reverse(
+    input: Record<IEnumStore> & Readonly<IEnumStore>,
+  ): IEnumInit {
     const result: IEnumInit = {} as any;
     if (input) {
       const core = input.toJS();

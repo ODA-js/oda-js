@@ -7,7 +7,6 @@ import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
 import { MetaModelType, RelationType } from './types';
 
-
 // metadata attributes
 export interface IRelationStorage {
   single: boolean;
@@ -21,16 +20,24 @@ export interface IRelationName {
   shortName: string;
 }
 // props
-export interface IRelationStore extends IRelationName, IRelationStorage, INamedItem {
+export interface IRelationStore
+  extends IRelationName,
+    IRelationStorage,
+    INamedItem {
   opposite: string;
   fields: Map<string, IField>;
 }
 
-export interface IRelationInit extends Partial<IRelationName>, Partial<IRelationStorage>, Partial<INamedItem> {
+export interface IRelationInit
+  extends Partial<IRelationName>,
+    Partial<IRelationStorage>,
+    Partial<INamedItem> {
   opposite: string;
-  fields?: {
-    [name: string]: Partial<IFieldInit>,
-  } | IFieldInit[];
+  fields?:
+    | {
+        [name: string]: Partial<IFieldInit>;
+      }
+    | IFieldInit[];
 }
 
 export interface IRelation extends IModelType, IContextable<IFieldContext> {

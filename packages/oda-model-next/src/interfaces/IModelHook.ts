@@ -4,7 +4,7 @@ import { IMutationInit } from './IMutation';
 export interface IModelHook {
   name: string;
   entities?: {
-    [eName: string]: IEntityInit,
+    [eName: string]: IEntityInit;
   };
   mutations?: {
     [mName: string]: IMutationInit;

@@ -14,9 +14,11 @@ export class JSONType extends GQLModule {
   };
 
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       scalar JSON
-    `],
+    `,
+    ],
   };
 }
 
@@ -37,7 +39,7 @@ function parseLiteral(ast) {
       break;
     case Kind.OBJECT:
       const value = Object.create(null);
-      ast.fields.forEach((field) => {
+      ast.fields.forEach(field => {
         value[field.name.value] = parseLiteral(field.value);
       });
       result = value;

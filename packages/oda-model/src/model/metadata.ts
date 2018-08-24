@@ -2,7 +2,13 @@ import clean from '../lib/json/clean';
 import deepMerge from './../lib/json/deepMerge';
 import get from './../lib/json/get';
 import set from './../lib/json/set';
-import { IValidate, IValidationResult, IValidator, MetadataInput, MetaModelType } from './interfaces';
+import {
+  IValidate,
+  IValidationResult,
+  IValidator,
+  MetadataInput,
+  MetaModelType,
+} from './interfaces';
 
 export class Metadata implements IValidate {
   public modelType: MetaModelType;
@@ -30,9 +36,13 @@ export class Metadata implements IValidate {
     }
   }
 
-  public setMetadata(key?: string | { [key: string]: any }, data?: { [key: string]: any } | any): any {
+  public setMetadata(
+    key?: string | { [key: string]: any },
+    data?: { [key: string]: any } | any,
+  ): any {
     if (typeof key !== 'string' && !data) {
-      data = key; key = '*';
+      data = key;
+      key = '*';
     }
     if (data !== undefined) {
       if (key === '*') {

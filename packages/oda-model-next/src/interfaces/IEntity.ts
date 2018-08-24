@@ -4,7 +4,11 @@ import { IContextable } from '../contexts/IContextable';
 import { IPackageContext } from '../contexts/IPackageContext';
 import { IField, IFieldInit } from './IField';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackagedItem, IPackagedItemInit, IPackagedItemStore } from './IPackagedItem';
+import {
+  IPackagedItem,
+  IPackagedItemInit,
+  IPackagedItemStore,
+} from './IPackagedItem';
 import { FieldTransformType } from './types';
 
 export interface IEntityACL {
@@ -37,7 +41,10 @@ export interface IEntityMetaData {
   storage: IEntityStorage;
 }
 
-export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItemStore {
+export interface IEntityStore
+  extends IEntityMetaData,
+    INamedItem,
+    IPackagedItemStore {
   singular: string;
   plural: string;
   fields: Map<string, IField>;
@@ -46,19 +53,27 @@ export interface IEntityStore extends IEntityMetaData, INamedItem, IPackagedItem
   indexed: Set<string>;
 }
 
-export interface IEntityInit extends Partial<IEntityMetaData>, INamedItem, IPackagedItemInit {
+export interface IEntityInit
+  extends Partial<IEntityMetaData>,
+    INamedItem,
+    IPackagedItemInit {
   singular?: string;
   plural?: string;
-  fields?: {
-    [name: string]: Partial<IFieldInit>,
-  } | IFieldInit[];
+  fields?:
+    | {
+        [name: string]: Partial<IFieldInit>;
+      }
+    | IFieldInit[];
 }
 
 export interface IEntityTransform {
   fields: FieldTransformType;
 }
 
-export interface IEntity extends IModelType, IPackagedItem, IContextable<IPackageContext> {
+export interface IEntity
+  extends IModelType,
+    IPackagedItem,
+    IContextable<IPackageContext> {
   readonly modelType: 'entity';
   readonly singular: string;
   readonly plural: string;

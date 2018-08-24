@@ -14,10 +14,14 @@ export default class implements Rule<IRelationContext> {
   public description = 'referenced entity not found relink';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+    const entity = context.package.items.get(
+      context.relation.ref.entity,
+    ) as IEntity;
     if (!isEntity(entity)) {
       if (IsBelongsToMany(context.relation) && context.relation.using.entity) {
-        const refEntity = context.package.items.get(context.relation.using.entity) as IEntity;
+        const refEntity = context.package.items.get(
+          context.relation.using.entity,
+        ) as IEntity;
         if (isEntity(refEntity)) {
           const relation = context.relation.toJS() as IBelongsToManyInit;
           context.field.updateWith({

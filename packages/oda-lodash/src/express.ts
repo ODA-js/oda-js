@@ -1,24 +1,36 @@
-import { GraphQLOptions, HttpQueryError, runHttpQuery } from 'apollo-server-core';
-import { ExpressGraphQLOptionsFunction, ExpressHandler } from 'apollo-server-express';
+import {
+  GraphQLOptions,
+  HttpQueryError,
+  runHttpQuery,
+} from 'apollo-server-core';
+import {
+  ExpressGraphQLOptionsFunction,
+  ExpressHandler,
+} from 'apollo-server-express';
 import * as express from 'express';
 
 import { graphqlLodash } from './gql';
 
-
-export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOptionsFunction): ExpressHandler {
+export function graphqlLodashExpress(
+  options: GraphQLOptions | ExpressGraphQLOptionsFunction,
+): ExpressHandler {
   if (!options) {
     throw new Error('Apollo Server requires options.');
   }
 
   if (arguments.length > 1) {
     // TODO: test this
-    throw new Error(`Apollo Server expects exactly one argument, got ${arguments.length}`);
+    throw new Error(
+      `Apollo Server expects exactly one argument, got ${arguments.length}`,
+    );
   }
 
   return (req: express.Request, res: express.Response, next): void => {
     const originalQuery = req.method === 'POST' ? req.body : req.query;
 
-    let transform, apply, isBatch = false;
+    let transform,
+      apply,
+      isBatch = false;
     if (Array.isArray(originalQuery)) {
       isBatch = true;
       let res = originalQuery.map(q => graphqlLodash(q.query, q.operationName));
@@ -35,16 +47,18 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
       options: options,
       query: originalQuery,
     })
-      .then((gqlResponse) => {
+      .then(gqlResponse => {
         if (isBatch) {
           const result = JSON.parse(gqlResponse) as object[];
-          return JSON.stringify(result.map((r, i) => {
-            if (apply[i]) {
-              return transform[i](r);
-            } else {
-              return r;
-            }
-          }));
+          return JSON.stringify(
+            result.map((r, i) => {
+              if (apply[i]) {
+                return transform[i](r);
+              } else {
+                return r;
+              }
+            }),
+          );
         } else {
           if (apply) {
             return JSON.stringify({
@@ -55,23 +69,26 @@ export function graphqlLodashExpress(options: GraphQLOptions | ExpressGraphQLOpt
           }
         }
       })
-      .then((gqlResponse) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.write(gqlResponse);
-        res.end();
-      }, (error: HttpQueryError) => {
-        if ('HttpQueryError' !== error.name) {
-          return next(error);
-        }
-        if (error.headers) {
-          Object.keys(error.headers).forEach((header) => {
-            res.setHeader(header, error.headers[header]);
-          });
-        }
+      .then(
+        gqlResponse => {
+          res.setHeader('Content-Type', 'application/json');
+          res.write(gqlResponse);
+          res.end();
+        },
+        (error: HttpQueryError) => {
+          if ('HttpQueryError' !== error.name) {
+            return next(error);
+          }
+          if (error.headers) {
+            Object.keys(error.headers).forEach(header => {
+              res.setHeader(header, error.headers[header]);
+            });
+          }
 
-        res.statusCode = error.statusCode;
-        res.write(error.message);
-        res.end();
-      });
+          res.statusCode = error.statusCode;
+          res.write(error.message);
+          res.end();
+        },
+      );
   };
 }

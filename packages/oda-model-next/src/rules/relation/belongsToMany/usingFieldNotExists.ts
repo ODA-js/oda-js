@@ -10,7 +10,9 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (IsBelongsToMany(context.relation)) {
-      const entity = context.package.items.get(context.relation.using.entity) as IEntity;
+      const entity = context.package.items.get(
+        context.relation.using.entity,
+      ) as IEntity;
       if (isEntity(entity)) {
         let refField = entity.fields.get(context.relation.using.field);
         if (!refField) {

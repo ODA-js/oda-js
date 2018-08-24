@@ -3,7 +3,14 @@ import { ModelPackage } from 'oda-model';
 
 export const template = 'mutation/resolver.ts.njs';
 
-export function generate(te: Factory, mutation: MutationInput, pack: ModelPackage, role: string, aclAllow, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  mutation: MutationInput,
+  pack: ModelPackage,
+  role: string,
+  aclAllow,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
 
@@ -25,16 +32,20 @@ export interface MutationInput {
 export interface MapperOutput {
   name: string;
   args: {
-    name: string,
-    type: string,
+    name: string;
+    type: string;
   }[];
   payload: {
-    name: string,
-    type: string,
+    name: string;
+    type: string;
   }[];
 }
 
-export function mapper(mutation: MutationInput, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  mutation: MutationInput,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
   return {
     name: mutation.name,

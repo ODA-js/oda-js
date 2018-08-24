@@ -1,8 +1,17 @@
 import { Map, Record } from 'immutable';
 
 import { IModelContext } from '../contexts/IModelContext';
-import { IPackage, IPackageInit, IPackageStore, IPackageTransform } from '../interfaces/IPackage';
-import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from '../interfaces/IPackagedItem';
+import {
+  IPackage,
+  IPackageInit,
+  IPackageStore,
+  IPackageTransform,
+} from '../interfaces/IPackage';
+import {
+  IPackagedItem,
+  IPackagedItemInit,
+  PackagedItemInit,
+} from '../interfaces/IPackagedItem';
 import { Persistent } from './Persistent';
 import { createPackagedItem } from '../helpers';
 
@@ -24,22 +33,29 @@ export const PackageTransform: IPackageTransform = {
         return Map<string, IPackagedItem>(input.map(p => {
           if (typeof p === 'string') {
             if (pkg.context.model.defaultPackage.items.has(p)) {
-              return [p, createPackagedItem(pkg.context.model.defaultPackage.items.get(p), pkg)];
+              return [
+                p,
+                createPackagedItem(
+                  pkg.context.model.defaultPackage.items.get(p),
+                  pkg,
+                ),
+              ];
             } else {
               throw Error('item does not exists');
             }
           } else {
             return [p.name, createPackagedItem(p, pkg)];
           }
-        },
-        ) as [string, IPackagedItem][]);
+        }) as [string, IPackagedItem][]);
       } else {
         return null;
       }
     },
     reverse: (input?: Map<string, IPackagedItem>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(i => i.toJS() as IPackagedItemInit);
+        return Array.from(input.values()[Symbol.iterator]()).map(
+          i => i.toJS() as IPackagedItemInit,
+        );
       } else {
         return null;
       }
@@ -50,7 +66,9 @@ export const PackageTransform: IPackageTransform = {
 // tslint:disable-next-line:variable-name
 const PackageStorage = Record(DefaultPackage);
 
-export class Package extends Persistent<IPackageInit, IPackageStore, IModelContext> implements IPackage {
+export class Package
+  extends Persistent<IPackageInit, IPackageStore, IModelContext>
+  implements IPackage {
   public get modelType(): 'package' {
     return 'package';
   }
@@ -92,7 +110,9 @@ export class Package extends Persistent<IPackageInit, IPackageStore, IModelConte
     return result;
   }
 
-  protected reverse(input: Record<IPackageStore> & Readonly<IPackageStore>): IPackageInit {
+  protected reverse(
+    input: Record<IPackageStore> & Readonly<IPackageStore>,
+  ): IPackageInit {
     const result: IPackageInit = {} as any;
     if (input) {
       const core = input.toJS();

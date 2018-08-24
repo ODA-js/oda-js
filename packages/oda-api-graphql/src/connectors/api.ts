@@ -1,19 +1,27 @@
 import { ACLCRUD } from '../acl/secureAny';
 import { CRUD } from './../connector';
 
-export type ACLCheck = (context, obj: {
-  source?: any,
-  payload?: any;
-}) => object
+export type ACLCheck = (
+  context,
+  obj: {
+    source?: any;
+    payload?: any;
+  },
+) => object;
 
 export type SecurityContext<Connectors> = {
   [key: string]: any;
-  acls: ACLCRUD<(context: SecurityContext<Connectors>, obj: {
-    source?: any,
-    payload?: object;
-  }) => object | Promise<any>>;
+  acls: ACLCRUD<
+    (
+      context: SecurityContext<Connectors>,
+      obj: {
+        source?: any;
+        payload?: object;
+      },
+    ) => object | Promise<any>
+  >;
   group: string;
-}
+};
 
 export default class ConnectorsApiBase<Connectors, Payload extends object> {
   public name: string;
@@ -27,10 +35,14 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   public loaderKeys: any;
   public storeToCache: any;
 
-  constructor({ name, connectors, securityContext }: {
+  constructor({
+    name,
+    connectors,
+    securityContext,
+  }: {
     name: string;
     connectors: Connectors;
-    securityContext: SecurityContext<Connectors>
+    securityContext: SecurityContext<Connectors>;
   }) {
     this.name = name;
     this.connectors = connectors;
@@ -49,28 +61,40 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     }, {}) as Payload;
   }
 
-  public secure(action: CRUD, obj: {
-    source?: any,
-    payload?: Payload;
-  }) {
-    return this.securityContext.acls[action].allow(this.securityContext.group, this.name)(this.securityContext, obj) as Payload;
+  public secure(
+    action: CRUD,
+    obj: {
+      source?: any;
+      payload?: Payload;
+    },
+  ) {
+    return this.securityContext.acls[action].allow(
+      this.securityContext.group,
+      this.name,
+    )(this.securityContext, obj) as Payload;
   }
 
-  protected _defaultAccess(context: ConnectorsApiBase<Connectors, Payload>, obj: {
-    source?: any,
-    payload?: Payload;
-  }): object {
+  protected _defaultAccess(
+    context: ConnectorsApiBase<Connectors, Payload>,
+    obj: {
+      source?: any;
+      payload?: Payload;
+    },
+  ): object {
     let result = obj.source;
     return result;
-  };
+  }
 
-  protected _defaultCreate(context: ConnectorsApiBase<Connectors, Payload>, obj: {
-    source?: any,
-    payload?: Payload;
-  }): object {
+  protected _defaultCreate(
+    context: ConnectorsApiBase<Connectors, Payload>,
+    obj: {
+      source?: any;
+      payload?: Payload;
+    },
+  ): object {
     let result = obj.payload;
     return result;
-  };
+  }
 
   protected async _getList(args, checkExtraCriteria?) {
     return [];
@@ -79,13 +103,13 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
   public async getList(args, checkExtraCriteria?) {
     let result = await this._getList(args, checkExtraCriteria);
     return result
-      .map(r => (r && r.toJSON) ? r.toJSON() : r)
+      .map(r => (r && r.toJSON ? r.toJSON() : r))
       .map(r => this.ensureId(r));
   }
 
   public async readSecure(source: Payload) {
     if (this.securityContext) {
-      return this.secure('read', { source })
+      return this.secure('read', { source });
     } else {
       return source;
     }
@@ -133,16 +157,20 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     throw new Error('not implemented');
   }
 
-  public getPayload(args) { return {} as Payload; };
+  public getPayload(args) {
+    return {} as Payload;
+  }
 
   protected initSchema(name, schema) {
     throw new Error('not implemented');
   }
 
   public updateLoaders(name: string) {
-    return (items) => {
+    return items => {
       for (let curr of Object.keys(this.loaders)) {
-        if (curr === name) { continue; }
+        if (curr === name) {
+          continue;
+        }
         let key = this.loaderKeys[curr];
         for (let item of items) {
           if (item) {

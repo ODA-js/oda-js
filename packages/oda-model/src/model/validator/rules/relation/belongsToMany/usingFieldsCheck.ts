@@ -9,7 +9,9 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (context.relation.using) {
-      const entity = context.package.entities.get(context.relation.using.entity);
+      const entity = context.package.entities.get(
+        context.relation.using.entity,
+      );
       if (entity) {
         if (context.relation.fields) {
           context.relation.fields.forEach(field => {
@@ -20,7 +22,9 @@ export default class implements Rule<IRelationContext> {
                 update.type = field.type;
                 found.updateWith(update);
                 result.push({
-                  message: `type of relation field '${field.name}' and in using entity differs`,
+                  message: `type of relation field '${
+                    field.name
+                  }' and in using entity differs`,
                   result: 'fixable',
                 });
               }

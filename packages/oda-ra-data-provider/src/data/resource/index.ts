@@ -12,4 +12,4 @@ export {
   ResourceContainer,
   ResourceOperation,
   interfaces,
-}
+};

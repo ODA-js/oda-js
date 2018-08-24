@@ -2,7 +2,11 @@ import { actionType } from './../constants';
 import { queries } from './resource/consts';
 import { INamedField, IResourceContainer } from './resource/interfaces';
 
-export default function (data: object, field: INamedField, resources: IResourceContainer) {
+export default function(
+  data: object,
+  field: INamedField,
+  resources: IResourceContainer,
+) {
   const fieldId = field.name + 'Id';
   const fieldType = field.name + 'Type';
   const fieldCreate = field.name + 'Create';

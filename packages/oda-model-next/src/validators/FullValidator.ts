@@ -1,4 +1,3 @@
-
 import { Rule } from '../rule';
 import { IValidator } from '../interfaces/IValidator';
 import { IValidationResult } from '../interfaces/IValidationResult';
@@ -18,46 +17,53 @@ import { IValidationContext } from '../contexts/IValidationContext';
 
 export class FullValidator implements IValidator {
   public errors: IValidationResult[];
-  public rules: { [modelType: string]: object[]; };
+  public rules: { [modelType: string]: object[] };
   public constructor() {
     this.errors = [];
     this.rules = {};
   }
 
-  public registerRule<T extends ValidationContext>(modelType: MetaModelType, rule: Rule<T>[]) {
+  public registerRule<T extends ValidationContext>(
+    modelType: MetaModelType,
+    rule: Rule<T>[],
+  ) {
     if (!this.rules[modelType]) {
       this.rules[modelType] = [];
     }
     this.rules[modelType].push(...rule);
   }
 
-  public getRules<T extends ValidationContext>(modelType: MetaModelType): Rule<T>[] {
+  public getRules<T extends ValidationContext>(
+    modelType: MetaModelType,
+  ): Rule<T>[] {
     return <Rule<T>[]>this.rules[modelType] || [];
   }
 
-  public check(item, options?: {
-    model?: IModelContext& IValidationContext,
-    package?: IPackageContext& IValidationContext,
-    entity?: IEntityContext& IValidationContext,
-    field?: IFieldContext& IValidationContext,
-  }): IValidationResult[] {
+  public check(
+    item,
+    options?: {
+      model?: IModelContext & IValidationContext;
+      package?: IPackageContext & IValidationContext;
+      entity?: IEntityContext & IValidationContext;
+      field?: IFieldContext & IValidationContext;
+    },
+  ): IValidationResult[] {
     let walker;
     if (isModel(item)) {
-      return (new ModelVisitor(this)).visit(item);
+      return new ModelVisitor(this).visit(item);
     }
     if (isPackage(item)) {
-      return (new PackageVisitor(this)).visit(item);
+      return new PackageVisitor(this).visit(item);
     }
     if (isEntity(item) && options && options.package) {
-      return (new EntityVisitor(this, options.package)).visit(item);
+      return new EntityVisitor(this, options.package).visit(item);
     }
     if (isField(item) && options && options.entity) {
-      return (new FieldVisitor(this, options.entity)).visit(item);
+      return new FieldVisitor(this, options.entity).visit(item);
     }
     if (isRelation(item) && options && options.field) {
-      return (new RelationVisitor(this, options.field)).visit(item);
+      return new RelationVisitor(this, options.field).visit(item);
     }
     return [];
   }
 }
-

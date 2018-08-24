@@ -10,14 +10,20 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (!context.relation.opposite) {
-      const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+      const entity = context.package.items.get(
+        context.relation.ref.entity,
+      ) as IEntity;
       if (isEntity(entity)) {
-        let opposites = Array.from(entity.fields.values())
-          .filter(f => f.relation && (
-            (f.relation.ref.entity === context.entity.name && f.relation.ref.field === context.field.name) ||
-
-            (IsBelongsToMany(f.relation) && f.relation.using && IsBelongsToMany(context.relation) && context.relation.using
-              && f.relation.using.entity === context.relation.using.entity)),
+        let opposites = Array.from(entity.fields.values()).filter(
+          f =>
+            f.relation &&
+            ((f.relation.ref.entity === context.entity.name &&
+              f.relation.ref.field === context.field.name) ||
+              (IsBelongsToMany(f.relation) &&
+                f.relation.using &&
+                IsBelongsToMany(context.relation) &&
+                context.relation.using &&
+                f.relation.using.entity === context.relation.using.entity)),
         );
 
         if (opposites.length > 2) {
@@ -35,7 +41,6 @@ export default class implements Rule<IRelationContext> {
             message: 'found one possible opposite. assigned.',
             result: 'fixable',
           });
-
         }
 
         if (opposites.length === 0) {
@@ -65,4 +70,3 @@ const opposits = {
     BelongsTo: true,
   },
 };
-

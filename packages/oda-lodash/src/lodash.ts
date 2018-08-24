@@ -100,9 +100,11 @@ export class Path extends types.GQLModule {
     },
   };
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       scalar Path
-    `],
+    `,
+    ],
   };
 }
 
@@ -110,19 +112,22 @@ export class RegularExpression extends types.GQLModule {
   protected _name = 'RegularExpression';
 
   protected _typeDef = {
-    type: [`
+    type: [
+      `
         input RegExpr {
           match: String!
           flags: String
         }
-    `],
+    `,
+    ],
   };
 }
 
 export class Predicate extends types.GQLModule {
   protected _name = 'Predicate';
   protected _typeDef = {
-    type: [`
+    type: [
+      `
         input Predicate {
           lt: JSON
           lte: JSON
@@ -135,52 +140,61 @@ export class Predicate extends types.GQLModule {
           or: [Predicate!]
         ${lodashProps}
         }
-    `],
+    `,
+    ],
   };
 }
 
 export class DirectiveLodash extends types.GQLModule {
   protected _name = 'DirectiveLodash';
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       directive @_(
         ${lodashProps}
       ) on FIELD | QUERY
-    `],
+    `,
+    ],
   };
 }
 
 export class LodashOperations extends types.GQLModule {
   protected _name = 'LodashOperations';
   protected _typeDef = {
-    type: [`
+    type: [
+      `
         input LodashOperations {
           ${lodashProps}
         }
-    `],
+    `,
+    ],
   };
 }
 
 export class DummyArgument extends types.GQLModule {
   protected _name = 'DummyArgument';
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       enum DummyArgument{
         none
       }
-    `],
+    `,
+    ],
   };
 }
 
 export class ConvertTypeArgument extends types.GQLModule {
   protected _name = 'ConvertTypeArgument';
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       enum ConvertTypeArgument{
         toNumber
         toString
       }
-    `],
+    `,
+    ],
   };
 }
 
@@ -196,4 +210,3 @@ export class LodashModule extends types.GQLModule {
     new ConvertTypeArgument({}),
   ];
 }
-

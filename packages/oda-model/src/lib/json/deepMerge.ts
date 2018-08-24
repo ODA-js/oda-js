@@ -24,7 +24,8 @@ export function arrayItemOperation(inp: any) {
         $unset: arrayItemOperation(inp.slice(1, inp.length)),
       };
     } else if (inp.startsWith('[') && inp.endsWith(']')) {
-      return inp.slice(1, inp.length - 1)
+      return inp
+        .slice(1, inp.length - 1)
         .split(',')
         .map(f => f.trim())
         .filter(f => f && f !== 'undefined' && f !== 'null')
@@ -47,7 +48,7 @@ export function arrayItemOperation(inp: any) {
       });
       return changed ? res : inp;
     } else {
-      return inp
+      return inp;
     }
   }
 }
@@ -62,7 +63,6 @@ function pushUnique(result, current) {
       result.push(current);
     }
   }
-
 }
 
 function removeIfExists(result, current: any) {
@@ -115,7 +115,10 @@ export default function deepMerge(...args: object[]) {
             if (current.hasOwnProperty(key)) {
               let cv = get(current, key);
               let rv = get(result, key);
-              if (result.hasOwnProperty(key) && (typeof rv === 'object' && rv !== null)) {
+              if (
+                result.hasOwnProperty(key) &&
+                (typeof rv === 'object' && rv !== null)
+              ) {
                 set(result, key, deepMerge(rv, cv));
               } else {
                 set(result, key, cv);
@@ -132,5 +135,3 @@ export default function deepMerge(...args: object[]) {
     return args[0];
   }
 }
-
-

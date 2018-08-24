@@ -22,7 +22,7 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
           const rules = this.validator.getRules('package');
           rules.forEach(rule => result.push(...rule.validate(context)));
           item.items.forEach(p => {
-            result.push(... this.validator.check(p, { package: context }));
+            result.push(...this.validator.check(p, { package: context }));
           });
           done = true;
         } catch (err) {
@@ -44,7 +44,10 @@ export class PackageVisitor implements IVisitor<IPackage, IModelContext> {
     }));
   }
 
-  constructor(validator: Validator, model?: IModelContext & IValidationContext) {
+  constructor(
+    validator: Validator,
+    model?: IModelContext & IValidationContext,
+  ) {
     this.validator = validator;
     this.context = model;
   }

@@ -18,7 +18,13 @@ import { IBelongsToInit } from '../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../interfaces/IBelongsToMany';
 import { IEntity } from '../interfaces/IEntity';
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IField, IFieldACL, IFieldInit, IFieldStore, IFieldTransform } from '../interfaces/IField';
+import {
+  IField,
+  IFieldACL,
+  IFieldInit,
+  IFieldStore,
+  IFieldTransform,
+} from '../interfaces/IField';
 import { IHasManyInit } from '../interfaces/IHasMany';
 import { IHasOneInit } from '../interfaces/IHasOne';
 import { IRelation, IRelationInit } from '../interfaces/IRelation';
@@ -61,16 +67,24 @@ export const FieldTransform: IFieldTransform = {
     transform: (inp: Partial<IRelationInit>, field: IField): IRelation => {
       if (inp) {
         if (IsBelongsToProps(inp)) {
-          return new BelongsTo(inp, ModelFactory.getContext(field) as IFieldContext);
+          return new BelongsTo(inp, ModelFactory.getContext(
+            field,
+          ) as IFieldContext);
         }
         if (IsBelongsToManyProps(inp)) {
-          return new BelongsToMany(inp, ModelFactory.getContext(field) as IFieldContext);
+          return new BelongsToMany(inp, ModelFactory.getContext(
+            field,
+          ) as IFieldContext);
         }
         if (IsHasOneProps(inp)) {
-          return new HasOne(inp, ModelFactory.getContext(field) as IFieldContext);
+          return new HasOne(inp, ModelFactory.getContext(
+            field,
+          ) as IFieldContext);
         }
         if (IsHasManyProps(inp)) {
-          return new HasMany(inp, ModelFactory.getContext(field) as IFieldContext);
+          return new HasMany(inp, ModelFactory.getContext(
+            field,
+          ) as IFieldContext);
         }
       } else {
         return null;
@@ -87,7 +101,9 @@ export const FieldTransform: IFieldTransform = {
         }
         if (IsBelongsToMany(core)) {
           return {
-            belongsToMany: BelongsToManyTransform.belongsToMany.reverse(core.belongsToMany),
+            belongsToMany: BelongsToManyTransform.belongsToMany.reverse(
+              core.belongsToMany,
+            ),
             using: BelongsToManyTransform.using.reverse(core.using),
             fields: BelongsToManyTransform.fields.reverse(core.fields),
           } as IBelongsToManyInit;
@@ -114,7 +130,9 @@ export const FieldTransform: IFieldTransform = {
 // tslint:disable-next-line:variable-name
 export const FieldStorage = Record(DefaultField);
 
-export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | IRelationContext> implements IField {
+export class Field
+  extends Persistent<IFieldInit, IFieldStore, IEntityContext | IRelationContext>
+  implements IField {
   public get modelType(): 'field' {
     return 'field';
   }
@@ -175,7 +193,10 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
           if (f === 'args') {
             result.args = FieldTransform.args.transform(input.args, this);
           } else if (f === 'relation') {
-            result.relation = FieldTransform.relation.transform(input.relation, this);
+            result.relation = FieldTransform.relation.transform(
+              input.relation,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -184,7 +205,9 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
     }
     return result;
   }
-  protected reverse(input: Record<IFieldStore> & Readonly<IFieldStore>): IFieldInit {
+  protected reverse(
+    input: Record<IFieldStore> & Readonly<IFieldStore>,
+  ): IFieldInit {
     const result: IFieldInit = {} as any;
     if (input) {
       const core = input.toJS();
@@ -206,7 +229,10 @@ export class Field extends Persistent<IFieldInit, IFieldStore, IEntityContext | 
     }
     return result;
   }
-  constructor(init?: Partial<IFieldInit>, context?: IEntityContext | IRelationContext) {
+  constructor(
+    init?: Partial<IFieldInit>,
+    context?: IEntityContext | IRelationContext,
+  ) {
     super();
     if (!context && init && (init.args || init.relation)) {
       throw new Error('context must be provided');

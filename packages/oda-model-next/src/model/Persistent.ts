@@ -6,7 +6,11 @@ import { IValidator } from '../interfaces/IValidator';
 import { IContext } from '../contexts/IContext';
 import { IContextable } from '../contexts/IContextable';
 
-export abstract class Persistent<TInputProps, TStoredProps, TContext extends IContext> implements IUpdatable, IContextable<TContext> {
+export abstract class Persistent<
+  TInputProps,
+  TStoredProps,
+  TContext extends IContext
+> implements IUpdatable, IContextable<TContext> {
   protected store: Record<TStoredProps>;
   /**
    * validate current item
@@ -47,7 +51,11 @@ export abstract class Persistent<TInputProps, TStoredProps, TContext extends ICo
   private _context;
 
   public clone() {
-    const t = this.constructor() as Persistent<TInputProps, TStoredProps, TContext>;
+    const t = this.constructor() as Persistent<
+      TInputProps,
+      TStoredProps,
+      TContext
+    >;
     t.store = this.store;
     return t;
   }

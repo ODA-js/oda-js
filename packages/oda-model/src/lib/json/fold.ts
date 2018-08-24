@@ -1,6 +1,6 @@
 import set from './set';
 
-const fold = (data) => {
+const fold = data => {
   let result = data;
   if (Array.isArray(data)) {
     result = [];
@@ -14,7 +14,7 @@ const fold = (data) => {
     for (let i = 0, len = keys.length; i < len; i++) {
       let key = keys[i];
       let d = data[key];
-      set(result, key, (d instanceof Object) ? fold(d) : d);
+      set(result, key, d instanceof Object ? fold(d) : d);
     }
   }
   return result;

@@ -1,6 +1,6 @@
 import { IdGenerator } from './idGenerator';
-import base64 from './base64'
-import unbase64 from './unbase64'
+import base64 from './base64';
+import unbase64 from './unbase64';
 import { fromGlobalId, ResolvedGlobalId, toGlobalId } from './globalIds';
 
 export {

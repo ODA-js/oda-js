@@ -6,7 +6,7 @@ export class SecureMutation extends Secure<boolean> {
     super(args);
     this.userGroup = args.userGroup;
     if (!this.userGroup) {
-      this.userGroup = (context) => context.user.profileName;
+      this.userGroup = context => context.user.profileName;
     }
   }
   public getMutationInfo(info) {
@@ -33,4 +33,4 @@ export class SecureMutation extends Secure<boolean> {
       }
     };
   }
-};
+}

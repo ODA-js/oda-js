@@ -60,7 +60,8 @@ export const RuntimeRelationContext = Record(runtimeRelationContext);
 export const RuntimeMutationContext = Record(runtimeMutationContext);
 export const RuntimeEnumContext = Record(runtimeEnumContext);
 
-export class ValidationModelContext implements IModelContext, IValidationContext {
+export class ValidationModelContext
+  implements IModelContext, IValidationContext {
   public get isValid() {
     return !!(this.model && Array.isArray(this.errors));
   }

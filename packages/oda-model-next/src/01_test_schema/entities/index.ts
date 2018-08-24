@@ -6,10 +6,4 @@ import ToDoItemsSharedToGroups from './ToDoItemsSharedToGroupsMap';
 import { IEntityInit } from '../../interfaces/IEntity';
 import { IMutationInit } from '../../interfaces/IMutation';
 
-export default [
-  User,
-  Group,
-  UsersToGoups,
-  ToDoItem,
-  ToDoItemsSharedToGroups,
-];
+export default [User, Group, UsersToGoups, ToDoItem, ToDoItemsSharedToGroups];

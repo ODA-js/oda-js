@@ -1,7 +1,12 @@
 import { Record } from 'immutable';
 
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IHasOne, IHasOneInit, IHasOneStore, IRelationTransform } from '../interfaces/IHasOne';
+import {
+  IHasOne,
+  IHasOneInit,
+  IHasOneStore,
+  IRelationTransform,
+} from '../interfaces/IHasOne';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
@@ -34,7 +39,8 @@ export const HasOneTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const HasOneStorage = Record(DefaultHasOne);
 
-export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasOne {
+export class HasOne extends Relation<IHasOneInit, IHasOneStore>
+  implements IHasOne {
   public get verb(): 'HasOne' {
     return 'HasOne';
   }
@@ -53,9 +59,15 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'hasOne') {
-            result.hasOne = HasOneTransform.hasOne.transform(input.hasOne, this);
+            result.hasOne = HasOneTransform.hasOne.transform(
+              input.hasOne,
+              this,
+            );
           } else if (f === 'fields') {
-            result.fields = HasOneTransform.fields.transform(input.fields, this);
+            result.fields = HasOneTransform.fields.transform(
+              input.fields,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -64,7 +76,9 @@ export class HasOne extends Relation<IHasOneInit, IHasOneStore> implements IHasO
     }
     return result;
   }
-  protected reverse(input: Record<IHasOneStore> & Readonly<IHasOneStore>): IHasOneInit {
+  protected reverse(
+    input: Record<IHasOneStore> & Readonly<IHasOneStore>,
+  ): IHasOneInit {
     const result: IHasOneInit = {} as any;
     if (input) {
       const core = input.toJS();

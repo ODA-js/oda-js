@@ -3,9 +3,4 @@ import apollo from './apollo';
 import client from './client';
 import * as data from './data';
 
-export {
-  constants,
-  apollo,
-  client,
-  data,
-}
+export { constants, apollo, client, data };

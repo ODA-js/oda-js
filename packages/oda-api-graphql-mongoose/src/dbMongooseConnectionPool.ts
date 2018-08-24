@@ -13,7 +13,11 @@ export default class DbMongooseConnectionPool {
   public maxRetry = 10;
   public maxRetryTime = 100;
 
-  constructor(args: { defaultUrl: string, maxRetry?: number, maxRetryTime?: number }) {
+  constructor(args: {
+    defaultUrl: string;
+    maxRetry?: number;
+    maxRetryTime?: number;
+  }) {
     if (this.checkConnectionStringIsValid(args.defaultUrl)) {
       this.defaultConnection = args.defaultUrl;
     }
@@ -56,7 +60,9 @@ export default class DbMongooseConnectionPool {
     if (this.dbPool.has(name)) {
       db = this.dbPool.get(name);
       if (!(99 === db.readyState || 0 === db.readyState)) {
-        await new Promise((res, rej) => db.close((err) => err ? rej(err) : res()));
+        await new Promise((res, rej) =>
+          db.close(err => (err ? rej(err) : res())),
+        );
       }
       this.dbPool.delete(name);
     }
@@ -70,7 +76,7 @@ export default class DbMongooseConnectionPool {
   public async createConnection(connection) {
     return new Promise((res, rej) => {
       try {
-        let result = mongoose.createConnection(connection, (err) => {
+        let result = mongoose.createConnection(connection, err => {
           if (err) {
             rej(err);
           } else {
@@ -93,7 +99,6 @@ export default class DbMongooseConnectionPool {
    */
 
   public async get(name: string, connection?: string) {
-
     if (this.dbPool.has(name)) {
       let db = this.dbPool.get(name);
       if (!(4 === db.readyState)) {
@@ -135,16 +140,14 @@ export default class DbMongooseConnectionPool {
     } else {
       return Promise.reject(new Error('invalid connection string'));
     }
-
   }
-};
+}
 
 function waitFor(ms) {
   return new Promise((res, rej) => {
     setTimeout(res, ms);
   });
-};
-
+}
 
 // в общем не все так просто, опыты показали, что соединения могут быть удалены мной из пула,
 // но до сих пор поддерживать соединение с сервером.

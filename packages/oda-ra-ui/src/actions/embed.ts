@@ -6,5 +6,5 @@ export default (relname, type, form) => ({
     relname,
     type,
     form,
-  }
+  },
 });

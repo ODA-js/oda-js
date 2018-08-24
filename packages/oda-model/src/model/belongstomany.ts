@@ -1,4 +1,3 @@
-
 import clean from '../lib/json/clean';
 import capitalize from './../lib/capitalize';
 import decapitalize from './../lib/decapitalize';
@@ -9,7 +8,6 @@ import { RelationBase } from './relationbase';
 // http://ooad.asf.ru/standarts/UML/spr/Association_class.aspx
 
 export class BelongsToMany extends RelationBase {
-
   protected $obj: BelongsToManyStorage;
 
   get belongsToMany(): EntityReference {
@@ -59,7 +57,9 @@ export class BelongsToMany extends RelationBase {
         // this single end association to other
         // this.$obj.verb = 'HasMany';
         let relName = `${this.$obj.entity}${capitalize(this.$obj.field)}`;
-        using = new EntityReference(`${obj.name || relName}#${decapitalize(obj.entity)}`);
+        using = new EntityReference(
+          `${obj.name || relName}#${decapitalize(obj.entity)}`,
+        );
       }
 
       if (!using.backField) {
@@ -87,7 +87,9 @@ export class BelongsToMany extends RelationBase {
     let res = super.toObject();
     return clean({
       ...res,
-      belongsToMany: props.belongsToMany ? props.belongsToMany.toString() : undefined,
+      belongsToMany: props.belongsToMany
+        ? props.belongsToMany.toString()
+        : undefined,
       using: props.using ? props.using.toString() : undefined,
     });
   }

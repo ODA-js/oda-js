@@ -9,11 +9,13 @@ export default class implements Rule<IRelationContext> {
   public description = 'referenced field not identity';
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
-    const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+    const entity = context.package.items.get(
+      context.relation.ref.entity,
+    ) as IEntity;
     if (isEntity(entity)) {
       let refField = entity.fields.get(context.relation.ref.field);
       if (refField && !refField.identity) {
-        refField.updateWith({identity: true});
+        refField.updateWith({ identity: true });
         result.push({
           message: this.description,
           result: 'fixable',

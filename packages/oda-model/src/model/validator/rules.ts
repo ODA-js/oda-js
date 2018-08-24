@@ -1,7 +1,5 @@
 import { IValidationResult } from '../interfaces';
-import {
-  ValidationContext,
-} from './interfaces';
+import { ValidationContext } from './interfaces';
 
 export interface Rule<T extends ValidationContext> {
   name: string;

@@ -19,4 +19,3 @@ export interface IBelongsTo extends IRelation {
   readonly verb: 'BelongsTo';
   readonly belongsTo: IEntityRef;
 }
-

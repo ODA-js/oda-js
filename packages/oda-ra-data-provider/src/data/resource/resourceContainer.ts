@@ -1,11 +1,16 @@
 import { queries } from './consts';
-import { IResource, IResourceContainer, IResourceDefinition, IResourceOperation } from './interfaces';
+import {
+  IResource,
+  IResourceContainer,
+  IResourceDefinition,
+  IResourceOperation,
+} from './interfaces';
 import Resource from './resource';
 
-export { queries }
+export { queries };
 
 export default class implements IResourceContainer {
-  private resources: { [resource: string]: IResource }
+  private resources: { [resource: string]: IResource };
   constructor(options?: IResourceDefinition[] | IResourceDefinition) {
     this.resources = {};
     if (Array.isArray(options)) {
@@ -18,7 +23,10 @@ export default class implements IResourceContainer {
     if (Array.isArray(resource)) {
       resource.forEach(this.register.bind(this));
     } else if (resource) {
-      this.resources[resource.name] = (resource instanceof Resource) ? resource.connect(this) : new Resource({ overrides: resource, resourceContainer: this });
+      this.resources[resource.name] =
+        resource instanceof Resource
+          ? resource.connect(this)
+          : new Resource({ overrides: resource, resourceContainer: this });
     }
   }
   public override(resource: IResourceDefinition[] | IResourceDefinition) {

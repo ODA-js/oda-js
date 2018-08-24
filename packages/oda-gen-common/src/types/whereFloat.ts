@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereFloat extends GQLModule {
   protected _name = 'WhereFloat';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereFloat {
         eq: Float
         gt: Float
@@ -19,7 +20,7 @@ export class WhereFloat extends GQLModule {
         not: [WhereFloat!]
         exists: Boolean
       }
-  `],
+  `,
+    ],
   };
 }
-

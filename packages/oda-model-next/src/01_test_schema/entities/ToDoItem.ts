@@ -1,4 +1,3 @@
-
 import { IEntityInit } from '../../interfaces/IEntity';
 
 const entity: IEntityInit = {

@@ -1,5 +1,9 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IMutation, IMutationStore, IMutationInit } from '../interfaces/IMutation';
+import {
+  IMutation,
+  IMutationStore,
+  IMutationInit,
+} from '../interfaces/IMutation';
 import { IEntityContext } from '../contexts/IEntityContext';
 import { Validator } from '../validators/Validator';
 import { MutationContext } from '../contexts/MutationContext';
@@ -7,7 +11,7 @@ import { IValidationContext } from '../contexts/IValidationContext';
 
 export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
   public validator: Validator;
-  public context: IEntityContext& IValidationContext; // has to be parent context
+  public context: IEntityContext & IValidationContext; // has to be parent context
   public visit(item: IMutation) {
     const context = new MutationContext(this.context, item);
     const result = [];
@@ -19,7 +23,7 @@ export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
           rules.forEach(rule => result.push(...rule.validate(context)));
           done = true;
         } catch (err) {
-          if (err.message !== 'mutation' ) {
+          if (err.message !== 'mutation') {
             throw err;
           }
         }
@@ -36,7 +40,7 @@ export class MutationVisitor implements IVisitor<IMutation, IEntityContext> {
     }));
   }
 
-  constructor(validator: Validator, pkg: IEntityContext& IValidationContext) {
+  constructor(validator: Validator, pkg: IEntityContext & IValidationContext) {
     this.validator = validator;
     this.context = pkg;
   }

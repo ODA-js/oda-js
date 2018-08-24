@@ -14,7 +14,10 @@ export interface IEnumItemStore extends INamedItem {
   type: string;
 }
 
-export interface IEnumItem extends IModelType, Readonly<IEnumItemInit>, IContextable<IEnumContext> {
+export interface IEnumItem
+  extends IModelType,
+    Readonly<IEnumItemInit>,
+    IContextable<IEnumContext> {
   readonly value: string;
   readonly type: string;
 }

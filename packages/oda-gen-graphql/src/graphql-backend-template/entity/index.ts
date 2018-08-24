@@ -20,4 +20,4 @@ export {
   type,
   index,
   UI,
-}
+};

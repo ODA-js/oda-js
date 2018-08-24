@@ -19,4 +19,3 @@ export interface IHasMany extends IRelation {
   readonly verb: 'HasMany';
   readonly hasMany: IEntityRef;
 }
-

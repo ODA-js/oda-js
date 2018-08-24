@@ -3,12 +3,18 @@ import { Map } from 'immutable';
 import { IFieldContext } from '../contexts/IFieldContext';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { IField } from '../interfaces/IField';
-import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelation';
+import {
+  IRelation,
+  IRelationInit,
+  IRelationStore,
+} from '../interfaces/IRelation';
 import { RelationType } from '../interfaces/types';
 import { Persistent } from './Persistent';
 
-export abstract class Relation<P extends Partial<IRelationInit>, S extends IRelationStore>
-  extends Persistent<P, S, IFieldContext> implements IRelation {
+export abstract class Relation<
+  P extends Partial<IRelationInit>,
+  S extends IRelationStore
+> extends Persistent<P, S, IFieldContext> implements IRelation {
   public get modelType(): 'relation' {
     return 'relation';
   }

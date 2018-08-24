@@ -6,12 +6,4 @@ import Delete from './delete';
 import GetMany from './getMany';
 import GetManyReference from './getManyReference';
 
-export {
-  GetList,
-  GetOne,
-  Create,
-  Update,
-  Delete,
-  GetMany,
-  GetManyReference,
-}
+export { GetList, GetOne, Create, Update, Delete, GetMany, GetManyReference };

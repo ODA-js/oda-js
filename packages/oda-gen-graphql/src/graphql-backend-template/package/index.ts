@@ -20,4 +20,4 @@ export {
   graphqlIndex,
   graphqlSchema,
   uiIndex,
-}
+};

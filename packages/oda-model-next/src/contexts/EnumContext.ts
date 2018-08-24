@@ -26,10 +26,10 @@ export class EnumContext implements IEnumContext, IValidationContext {
   }
   public get isValid() {
     return !!(
-      this.model
-      && this.package
-      && this.enum
-      && Array.isArray(this.errors)
+      this.model &&
+      this.package &&
+      this.enum &&
+      Array.isArray(this.errors)
     );
   }
   public restart(level: RestartType) {

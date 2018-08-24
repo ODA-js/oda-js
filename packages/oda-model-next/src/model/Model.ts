@@ -1,6 +1,12 @@
 import { Map, Record } from 'immutable';
 
-import { IModel, IModelInit, IModelStore, IModelTransform, IModelLoad } from '../interfaces/IModel';
+import {
+  IModel,
+  IModelInit,
+  IModelStore,
+  IModelTransform,
+  IModelLoad,
+} from '../interfaces/IModel';
 import { IPackage, IPackageInit } from '../interfaces/IPackage';
 import { Package } from './Package';
 import { Persistent } from './Persistent';
@@ -27,9 +33,12 @@ export const ModelTransform: IModelTransform = {
     transform: (input: IPackageInit[], model: IModel) => {
       if (input) {
         return Map<string, IPackage>(input.map(p => {
-          const pkg = new Package({
-            ...p,
-          }, ModelFactory.getContext(model) as IModelContext);
+          const pkg = new Package(
+            {
+              ...p,
+            },
+            ModelFactory.getContext(model) as IModelContext,
+          );
           return [p.name, pkg];
         }) as [string, IPackage][]);
       } else {
@@ -38,7 +47,9 @@ export const ModelTransform: IModelTransform = {
     },
     reverse: (input?: Map<string, IPackage>) => {
       if (input) {
-        return Array.from(input.values()[Symbol.iterator]()).map(f => f.toJS() as IPackageInit);
+        return Array.from(input.values()[Symbol.iterator]()).map(
+          f => f.toJS() as IPackageInit,
+        );
       } else {
         return null;
       }
@@ -49,7 +60,8 @@ export const ModelTransform: IModelTransform = {
 // tslint:disable-next-line:variable-name
 export const ModelStorage = Record(DefaultModel);
 
-export class Model extends Persistent<IModelInit, IModelStore, IContext> implements IModel {
+export class Model extends Persistent<IModelInit, IModelStore, IContext>
+  implements IModel {
   public get modelType(): 'model' {
     return 'model';
   }
@@ -83,7 +95,10 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'packages') {
-            result.packages = ModelTransform.packages.transform(input.packages, this);
+            result.packages = ModelTransform.packages.transform(
+              input.packages,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -93,7 +108,9 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
     return result;
   }
 
-  protected reverse(input: Record<IModelStore> & Readonly<IModelStore>): IModelInit {
+  protected reverse(
+    input: Record<IModelStore> & Readonly<IModelStore>,
+  ): IModelInit {
     const result: IModelInit = {} as any;
     if (input) {
       const core = input.toJS();
@@ -112,24 +129,30 @@ export class Model extends Persistent<IModelInit, IModelStore, IContext> impleme
     return result;
   }
 
-  constructor(init?: Partial<IModelInit>, context?: IContext ) {
+  constructor(init?: Partial<IModelInit>, context?: IContext) {
     super();
     if (context) {
       this.attach(context);
     }
     ModelFactory.registerContext(this);
-    if (init && init.hasOwnProperty('defaultPackageName')
-      && init.defaultPackageName && init.defaultPackageName !== this.defaultPackageName) {
+    if (
+      init &&
+      init.hasOwnProperty('defaultPackageName') &&
+      init.defaultPackageName &&
+      init.defaultPackageName !== this.defaultPackageName
+    ) {
       this._defaultPackageName = init.defaultPackageName;
     }
     this.store = new ModelStorage(this.transform(init));
     if (!this.packages || !this.packages.has(this.defaultPackageName)) {
       this.updateWith({
-        packages: [{
-          acl: 0,
-          name: this.defaultPackageName,
-          items: [],
-        }],
+        packages: [
+          {
+            acl: 0,
+            name: this.defaultPackageName,
+            items: [],
+          },
+        ],
       });
     }
   }

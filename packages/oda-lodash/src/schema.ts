@@ -27,12 +27,9 @@ class LodashSchema extends types.GQLModule {
 
   public build() {
     super.build();
-    this._resolver = deepMerge(
-      this.resolver,
-      {
-        RootQuery: this.query,
-      },
-    );
+    this._resolver = deepMerge(this.resolver, {
+      RootQuery: this.query,
+    });
   }
 
   public get resolvers() {

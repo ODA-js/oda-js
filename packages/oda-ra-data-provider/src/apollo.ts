@@ -6,6 +6,6 @@ export default ({ uri }) => {
   const httpLink = new HttpLink({ uri });
   return new ApolloClient({
     link: httpLink,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
   });
-}
+};

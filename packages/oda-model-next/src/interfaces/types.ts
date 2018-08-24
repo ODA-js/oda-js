@@ -19,7 +19,7 @@ import { IEntityRef } from './IEntityRef';
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
 export type MetaModelType =
-  |'model'
+  | 'model'
   | 'package'
   | 'mutation'
   | 'entity'
@@ -28,26 +28,48 @@ export type MetaModelType =
   | 'field'
   | 'fieldArg'
   | 'ref'
-  | 'relation'
-  ;
+  | 'relation';
 
 export type ValdatedTypes = MetaModelType | RelationType;
 
 export type ValidationContext =
-  IModelContext | IPackageContext | IEntityContext | IFieldContext | IRelationContext;
+  | IModelContext
+  | IPackageContext
+  | IEntityContext
+  | IFieldContext
+  | IRelationContext;
 
-export type RestartType = 'model' | 'package' | 'entity' | 'field' | 'relation' | 'mutation' | 'enum';
+export type RestartType =
+  | 'model'
+  | 'package'
+  | 'entity'
+  | 'field'
+  | 'relation'
+  | 'mutation'
+  | 'enum';
 
-export type RelationInit = IHasManyInit | IHasOneInit | IBelongsToInit | IBelongsToManyInit;
+export type RelationInit =
+  | IHasManyInit
+  | IHasOneInit
+  | IBelongsToInit
+  | IBelongsToManyInit;
 
 export type FieldTransformType = {
-  transform: (input?: {
-    [name: string]: Partial<IFieldInit>,
-  } | IFieldInit[], owner?: IEntity | IRelation ) => Map<string, IField>;
-  reverse: (input?:  Map<string, IField>) => IFieldInit[];
+  transform: (
+    input?:
+      | {
+          [name: string]: Partial<IFieldInit>;
+        }
+      | IFieldInit[],
+    owner?: IEntity | IRelation,
+  ) => Map<string, IField>;
+  reverse: (input?: Map<string, IField>) => IFieldInit[];
 };
 export type FieldArgsTransform = {
-  transform: (input?: FieldArgsInput, owner?: IMutation | IField ) => Map<string, IFieldArg>;
+  transform: (
+    input?: FieldArgsInput,
+    owner?: IMutation | IField,
+  ) => Map<string, IFieldArg>;
   reverse: (input?: Map<string, IFieldArg>) => IFieldArgInit[];
 };
 

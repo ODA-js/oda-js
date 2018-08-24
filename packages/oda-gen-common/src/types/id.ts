@@ -11,9 +11,11 @@ export class IdType extends GQLModule {
     },
   };
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       scalar ID
-    `],
+    `,
+    ],
   };
 }
 

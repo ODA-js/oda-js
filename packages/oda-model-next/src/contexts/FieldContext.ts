@@ -27,11 +27,12 @@ export class FieldContext implements IFieldContext, IValidationContext {
     }
   }
   public get isValid() {
-    return !!(this.model
-      && this.package
-      && this.entity
-      && this.field
-      && Array.isArray(this.errors)
+    return !!(
+      this.model &&
+      this.package &&
+      this.entity &&
+      this.field &&
+      Array.isArray(this.errors)
     );
   }
 

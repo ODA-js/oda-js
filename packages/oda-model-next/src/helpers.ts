@@ -5,7 +5,10 @@ import { IModelContext } from './contexts/IModelContext';
 import { IPackageContext } from './contexts/IPackageContext';
 import { IRelationContext } from './contexts/IRelationContext';
 import { IBelongsTo, IBelongsToInit } from './interfaces/IBelongsTo';
-import { IBelongsToMany, IBelongsToManyInit } from './interfaces/IBelongsToMany';
+import {
+  IBelongsToMany,
+  IBelongsToManyInit,
+} from './interfaces/IBelongsToMany';
 import { IEntity, IEntityInit } from './interfaces/IEntity';
 import { IEnum, IEnumInit } from './interfaces/IEnum';
 import { IField } from './interfaces/IField';
@@ -24,19 +27,27 @@ import { RelationInit } from './interfaces/types';
 import { IValidationContext } from './contexts/IValidationContext';
 import { ModelFactory } from './model/Factory';
 
-export function IsBelongsToProps(item: Partial<IRelationInit>): item is IBelongsToInit {
+export function IsBelongsToProps(
+  item: Partial<IRelationInit>,
+): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
 }
 
-export function IsBelongsToManyProps(item: Partial<IRelationInit>): item is IBelongsToManyInit {
+export function IsBelongsToManyProps(
+  item: Partial<IRelationInit>,
+): item is IBelongsToManyInit {
   return !!(<IBelongsToManyInit>item).belongsToMany;
 }
 
-export function IsHasManyProps(item: Partial<IRelationInit>): item is IHasManyInit {
+export function IsHasManyProps(
+  item: Partial<IRelationInit>,
+): item is IHasManyInit {
   return !!(<IHasManyInit>item).hasMany;
 }
 
-export function IsHasOneProps(item: Partial<IRelationInit>): item is IHasOneInit {
+export function IsHasOneProps(
+  item: Partial<IRelationInit>,
+): item is IHasOneInit {
   return !!(<IHasOneInit>item).hasOne;
 }
 
@@ -65,9 +76,7 @@ export function isEnum(item: IModelType): item is IEnum {
 }
 
 export function isRelation(item: IModelType): item is IRelation {
-  return (
-    item.modelType === 'relation'
-  );
+  return item.modelType === 'relation';
 }
 
 export function IsBelongsTo(item: IRelation): item is IBelongsTo {
@@ -86,52 +95,77 @@ export function IsHasMany(item: IRelation): item is IHasMany {
   return isRelation(item) && item.verb === 'HasMany';
 }
 
-export function isIModelContext(ctx: IModelContext & IValidationContext): ctx is IModelContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && ctx.model
-    && Array.isArray(ctx.errors));
+export function isIModelContext(
+  ctx: IModelContext & IValidationContext,
+): ctx is IModelContext & IValidationContext {
+  return !!(ctx && ctx.isValid && ctx.model && Array.isArray(ctx.errors));
 }
 
-export function isIPackageContext(ctx?: IModelContext & IValidationContext): ctx is IPackageContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && (ctx as IPackageContext & IValidationContext).model
-    && (ctx as IPackageContext & IValidationContext).package
-    && Array.isArray((ctx as IPackageContext & IValidationContext).errors));
+export function isIPackageContext(
+  ctx?: IModelContext & IValidationContext,
+): ctx is IPackageContext & IValidationContext {
+  return !!(
+    ctx &&
+    ctx.isValid &&
+    (ctx as IPackageContext & IValidationContext).model &&
+    (ctx as IPackageContext & IValidationContext).package &&
+    Array.isArray((ctx as IPackageContext & IValidationContext).errors)
+  );
 }
 
-export function isIEntityContext(ctx?: IModelContext & IValidationContext): ctx is IEntityContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && (ctx as IEntityContext & IValidationContext).model
-    && (ctx as IEntityContext & IValidationContext).package
-    && (ctx as IEntityContext & IValidationContext).entity
-    && Array.isArray((ctx as IEntityContext & IValidationContext).errors));
+export function isIEntityContext(
+  ctx?: IModelContext & IValidationContext,
+): ctx is IEntityContext & IValidationContext {
+  return !!(
+    ctx &&
+    ctx.isValid &&
+    (ctx as IEntityContext & IValidationContext).model &&
+    (ctx as IEntityContext & IValidationContext).package &&
+    (ctx as IEntityContext & IValidationContext).entity &&
+    Array.isArray((ctx as IEntityContext & IValidationContext).errors)
+  );
 }
 
-export function isIEnumContext(ctx?: IModelContext & IValidationContext): ctx is IEnumContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && (ctx as IEnumContext & IValidationContext).model
-    && (ctx as IEnumContext & IValidationContext).package
-    && (ctx as IEnumContext & IValidationContext).enum
-    && Array.isArray((ctx as IEnumContext & IValidationContext).errors));
+export function isIEnumContext(
+  ctx?: IModelContext & IValidationContext,
+): ctx is IEnumContext & IValidationContext {
+  return !!(
+    ctx &&
+    ctx.isValid &&
+    (ctx as IEnumContext & IValidationContext).model &&
+    (ctx as IEnumContext & IValidationContext).package &&
+    (ctx as IEnumContext & IValidationContext).enum &&
+    Array.isArray((ctx as IEnumContext & IValidationContext).errors)
+  );
 }
 
-export function isIFieldContext(ctx?: IModelContext & IValidationContext): ctx is IFieldContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && (ctx as IFieldContext & IValidationContext).model
-    && (ctx as IFieldContext & IValidationContext).package
-    && (ctx as IFieldContext & IValidationContext).entity
-    && (ctx as IFieldContext & IValidationContext).field
-    && Array.isArray((ctx as IFieldContext & IValidationContext).errors));
+export function isIFieldContext(
+  ctx?: IModelContext & IValidationContext,
+): ctx is IFieldContext & IValidationContext {
+  return !!(
+    ctx &&
+    ctx.isValid &&
+    (ctx as IFieldContext & IValidationContext).model &&
+    (ctx as IFieldContext & IValidationContext).package &&
+    (ctx as IFieldContext & IValidationContext).entity &&
+    (ctx as IFieldContext & IValidationContext).field &&
+    Array.isArray((ctx as IFieldContext & IValidationContext).errors)
+  );
 }
 
-export function isIRelationContext(ctx?: IModelContext & IValidationContext): ctx is IRelationContext & IValidationContext {
-  return !!(ctx && ctx.isValid
-    && (ctx as IRelationContext & IValidationContext).model
-    && (ctx as IRelationContext & IValidationContext).package
-    && (ctx as IRelationContext & IValidationContext).entity
-    && (ctx as IRelationContext & IValidationContext).field
-    && (ctx as IRelationContext & IValidationContext).relation
-    && Array.isArray((ctx as IRelationContext & IValidationContext).errors));
+export function isIRelationContext(
+  ctx?: IModelContext & IValidationContext,
+): ctx is IRelationContext & IValidationContext {
+  return !!(
+    ctx &&
+    ctx.isValid &&
+    (ctx as IRelationContext & IValidationContext).model &&
+    (ctx as IRelationContext & IValidationContext).package &&
+    (ctx as IRelationContext & IValidationContext).entity &&
+    (ctx as IRelationContext & IValidationContext).field &&
+    (ctx as IRelationContext & IValidationContext).relation &&
+    Array.isArray((ctx as IRelationContext & IValidationContext).errors)
+  );
 }
 
 export function isEnumInit(item: IPackagedItemInit): item is IEnumInit {
@@ -150,7 +184,9 @@ export function IsBelongsToInit(item: RelationInit): item is IBelongsToInit {
   return !!(<IBelongsToInit>item).belongsTo;
 }
 
-export function IsBelongsToManyInit(item: RelationInit): item is IBelongsToManyInit {
+export function IsBelongsToManyInit(
+  item: RelationInit,
+): item is IBelongsToManyInit {
   return !!(<IBelongsToManyInit>item).belongsToMany;
 }
 
@@ -162,7 +198,10 @@ export function IsHasManyInit(item: RelationInit): item is IHasManyInit {
   return !!(<IHasManyInit>item).hasMany;
 }
 
-export function createPackagedItem(item: IPackagedItemInit, pkg: IPackage): IPackagedItem {
+export function createPackagedItem(
+  item: IPackagedItemInit,
+  pkg: IPackage,
+): IPackagedItem {
   if (item && pkg) {
     const context = ModelFactory.getContext(pkg) as IPackageContext;
     if (isEnumInit(item)) {

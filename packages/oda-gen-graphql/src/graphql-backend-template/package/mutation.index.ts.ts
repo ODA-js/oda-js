@@ -4,7 +4,11 @@ import { decapitalize, capitalize } from '../utils';
 
 export const template = 'package/mutation.index.ts.njs';
 
-export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(pack, typeMapper), template);
 }
 
@@ -16,17 +20,17 @@ export interface MapperOutput {
   }[];
 }
 
-import {
-  getMutations,
-} from '../queries';
+import { getMutations } from '../queries';
 
-export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   return {
     name: capitalize(pack.name),
-    mutations: getMutations(pack)
-      .map(e => ({
-        name: e.name,
-        entry: capitalize(e.name),
-      })),
+    mutations: getMutations(pack).map(e => ({
+      name: e.name,
+      entry: capitalize(e.name),
+    })),
   };
 }

@@ -48,7 +48,9 @@ export const MutationTransform: IMutationTransform = {
 // tslint:disable-next-line:variable-name
 const MutationStorage = Record(DefaultMutation);
 
-export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackageContext> implements IMutation {
+export class Mutation
+  extends Persistent<IMutationInit, IMutationStore, IPackageContext>
+  implements IMutation {
   public get modelType(): 'mutation' {
     return 'mutation';
   }
@@ -82,13 +84,18 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
           if (f === 'args') {
             result.args = MutationTransform.args.transform(input.args, this);
           } else if (f === 'payload') {
-            result.payload = MutationTransform.payload.transform(input.payload, this);
+            result.payload = MutationTransform.payload.transform(
+              input.payload,
+              this,
+            );
           } else if (f === 'acl') {
             for (let facl in input.acl) {
               if (input.acl.hasOwnProperty(facl)) {
                 result.acl = {} as any;
                 if (facl === 'execute') {
-                  result.acl.execute = MutationTransform.acl.execute.transform(input.acl.execute);
+                  result.acl.execute = MutationTransform.acl.execute.transform(
+                    input.acl.execute,
+                  );
                 } else {
                   result[facl] = input[f];
                 }
@@ -103,7 +110,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
     return result;
   }
 
-  protected reverse(input: Record<IMutationStore> & Readonly<IMutationStore>): IMutationInit {
+  protected reverse(
+    input: Record<IMutationStore> & Readonly<IMutationStore>,
+  ): IMutationInit {
     const result: IMutationInit = {} as any;
     if (input) {
       const core = input.toJS();
@@ -120,7 +129,9 @@ export class Mutation extends Persistent<IMutationInit, IMutationStore, IPackage
                 if (acl.hasOwnProperty(facl)) {
                   result.acl = {} as any;
                   if (facl === 'execute') {
-                    result.acl.execute = MutationTransform.acl.execute.reverse(acl.execute);
+                    result.acl.execute = MutationTransform.acl.execute.reverse(
+                      acl.execute,
+                    );
                   } else {
                     result.acl[facl] = core.acl[facl];
                   }

@@ -9,13 +9,13 @@ export class DateType extends GQLModule {
 
   protected _resolver: { [key: string]: any } = {
     Date: {
-      __serialize: (value) => {
+      __serialize: value => {
         return makeDate(value).toISOString();
       },
-      __parseValue: (value) => {
+      __parseValue: value => {
         return makeDate(value);
       },
-      __parseLiteral: (node) => {
+      __parseLiteral: node => {
         const { kind, value } = node;
         let result;
         switch (kind) {
@@ -35,9 +35,11 @@ export class DateType extends GQLModule {
   };
 
   protected _typeDef = {
-    type: [`
+    type: [
+      `
       scalar Date
-    `],
+    `,
+    ],
   };
 }
 

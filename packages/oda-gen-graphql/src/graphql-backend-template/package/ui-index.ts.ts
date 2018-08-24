@@ -4,7 +4,11 @@ import { decapitalize, capitalize } from '../utils';
 
 export const template = 'entity/UI/ui-index.ts.njs';
 
-export function generate(te: Factory, pack: ModelPackage, typeMapper: { [key: string]: (string) => string }) {
+export function generate(
+  te: Factory,
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+) {
   return te.run(mapper(pack, typeMapper), template);
 }
 
@@ -17,18 +21,18 @@ export interface MapperOutput {
   }[];
 }
 
-import {
-  getEntities,
-} from '../queries';
+import { getEntities } from '../queries';
 
-export function mapper(pack: ModelPackage, typeMapper: { [key: string]: (string) => string }): MapperOutput {
+export function mapper(
+  pack: ModelPackage,
+  typeMapper: { [key: string]: (string) => string },
+): MapperOutput {
   return {
     name: capitalize(pack.name),
     role: pack.name,
-    entities: getEntities(pack)
-      .map(e => ({
-        name: e.name,
-        entry: decapitalize(e.name),
-      })),
+    entities: getEntities(pack).map(e => ({
+      name: e.name,
+      entry: decapitalize(e.name),
+    })),
   };
 }

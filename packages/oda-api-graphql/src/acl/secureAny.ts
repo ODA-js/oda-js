@@ -1,8 +1,6 @@
 import { CRUD } from './../connector';
 
-export type ACLCRUD<T> = {
-  [k in CRUD]: Secure<T>;
-}
+export type ACLCRUD<T> = { [k in CRUD]: Secure<T> };
 
 export interface Acl<T> {
   [mutationMask: string]: T;
@@ -25,21 +23,25 @@ export class Secure<T> {
   public rules: Rules;
   public defaultAccess: T;
 
-  constructor({ acls = {} }: {
-    acls: Acls<T>;
-  }) {
+  constructor({ acls = {} }: { acls: Acls<T> }) {
     this.defaultAccess = acls['*'] as T;
     this.acl = acls;
     this.rules = {};
-    Object.keys(acls).filter(o => o !== '*').forEach(i => {
-      let rule = acls[i];
-      this.rules[i] = Object.keys(rule).filter(o => o !== '*').map(o => ({ match: new RegExp(o, 'ig'), key: o }));
-    });
+    Object.keys(acls)
+      .filter(o => o !== '*')
+      .forEach(i => {
+        let rule = acls[i];
+        this.rules[i] = Object.keys(rule)
+          .filter(o => o !== '*')
+          .map(o => ({ match: new RegExp(o, 'ig'), key: o }));
+      });
   }
 
   public allow(accessGroup: string, accessObject: string): T {
     if (this.acl[accessGroup]) {
-      let result = (this.acl[accessGroup] && this.acl[accessGroup]['*']) || this.defaultAccess;
+      let result =
+        (this.acl[accessGroup] && this.acl[accessGroup]['*']) ||
+        this.defaultAccess;
       let last = '';
       let found = this.rules[accessGroup].some(r => {
         last = r.key;
@@ -52,5 +54,5 @@ export class Secure<T> {
     } else {
       return this.defaultAccess;
     }
-  };
-};
+  }
+}

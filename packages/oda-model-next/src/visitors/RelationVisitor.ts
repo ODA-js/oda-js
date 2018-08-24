@@ -1,5 +1,9 @@
 import { IVisitor } from '../interfaces/IVisitor';
-import { IRelation, IRelationInit, IRelationStore } from '../interfaces/IRelation';
+import {
+  IRelation,
+  IRelationInit,
+  IRelationStore,
+} from '../interfaces/IRelation';
 import { IFieldContext } from '../contexts/IFieldContext';
 import { Validator } from '../validators/Validator';
 import { RelationContext } from '../contexts/RelationContext';
@@ -25,7 +29,9 @@ export class RelationVisitor implements IVisitor<IRelation, IFieldContext> {
             }
             case 'BelongsToMany': {
               const belongsToMany = this.validator.getRules('BelongsToMany');
-              belongsToMany.forEach(rule => result.push(...rule.validate(context)));
+              belongsToMany.forEach(rule =>
+                result.push(...rule.validate(context)),
+              );
               break;
             }
             case 'HasOne': {

@@ -86,13 +86,26 @@ export class RelationBase extends Metadata implements IRelation {
   }
 
   protected initNames() {
-    let ref = this.single ? inflected.singularize(this.$obj.field) : inflected.pluralize(this.$obj.field);
-    this.getMetadata('name.full', this.name || `${this.$obj.entity}${this.verb}${inflected.camelize(ref, true)}`);
+    let ref = this.single
+      ? inflected.singularize(this.$obj.field)
+      : inflected.pluralize(this.$obj.field);
+    this.getMetadata(
+      'name.full',
+      this.name ||
+        `${this.$obj.entity}${this.verb}${inflected.camelize(ref, true)}`,
+    );
 
-    let ref1 = this.single ? inflected.singularize(this.$obj.field) : inflected.pluralize(this.$obj.field);
-    this.setMetadata('name.normal', `${this.$obj.entity}${inflected.camelize(ref1, true)}`);
+    let ref1 = this.single
+      ? inflected.singularize(this.$obj.field)
+      : inflected.pluralize(this.$obj.field);
+    this.setMetadata(
+      'name.normal',
+      `${this.$obj.entity}${inflected.camelize(ref1, true)}`,
+    );
 
-    let ref2 = this.single ? inflected.singularize(this.$obj.field) : inflected.pluralize(this.$obj.field);
+    let ref2 = this.single
+      ? inflected.singularize(this.$obj.field)
+      : inflected.pluralize(this.$obj.field);
     this.getMetadata('name.short', `${inflected.camelize(ref2, true)}`);
   }
 
@@ -151,7 +164,6 @@ export class RelationBase extends Metadata implements IRelation {
 
   public updateWith(obj: RelationBaseInput): void {
     if (obj) {
-
       const result: RelationBaseStorage = { ...this.$obj };
 
       let $name = obj.name;
@@ -166,17 +178,18 @@ export class RelationBase extends Metadata implements IRelation {
       if (obj.fields) {
         result.fields = new Map<string, Field>();
         if (Array.isArray(obj.fields)) {
-          obj.fields.forEach(
-            f => {
-              result.fields.set(f.name, new Field(f));
-            },
-          );
+          obj.fields.forEach(f => {
+            result.fields.set(f.name, new Field(f));
+          });
         } else {
           Object.keys(obj.fields).forEach(f => {
-            result.fields.set(f, new Field({
-              name: f,
-              ...obj.fields[f],
-            }));
+            result.fields.set(
+              f,
+              new Field({
+                name: f,
+                ...obj.fields[f],
+              }),
+            );
           });
         }
       }

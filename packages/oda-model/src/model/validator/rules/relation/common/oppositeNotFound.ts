@@ -12,7 +12,7 @@ export default class implements Rule<IRelationContext> {
       if (entity && !entity.fields.has(context.relation.opposite)) {
         const update = context.relation.toObject();
         delete update.opposite;
-        (context.relation).updateWith(update);
+        context.relation.updateWith(update);
         result.push({
           message: this.description,
           result: 'fixable',

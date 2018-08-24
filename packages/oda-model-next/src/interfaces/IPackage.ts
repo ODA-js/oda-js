@@ -5,7 +5,11 @@ import { IModelContext } from '../contexts/IModelContext';
 import { IPackageContext } from '../contexts/IPackageContext';
 import { Rule } from '../rule';
 import { IModelType, INamedItem } from './IModelType';
-import { IPackagedItem, IPackagedItemInit, PackagedItemInit } from './IPackagedItem';
+import {
+  IPackagedItem,
+  IPackagedItemInit,
+  PackagedItemInit,
+} from './IPackagedItem';
 import { IValidationResult } from './IValidationResult';
 
 export interface IPackageInit extends INamedItem {
@@ -22,8 +26,11 @@ export interface IPackageStore extends INamedItem {
 
 export interface IPackageTransform {
   items: {
-      transform: (inp: PackagedItemInit[], pkg: IPackage) => Map<string, IPackagedItem>,
-      reverse: (inp: Map<string, IPackagedItem> ) => IPackagedItemInit[],
+    transform: (
+      inp: PackagedItemInit[],
+      pkg: IPackage,
+    ) => Map<string, IPackagedItem>;
+    reverse: (inp: Map<string, IPackagedItem>) => IPackagedItemInit[];
   };
 }
 

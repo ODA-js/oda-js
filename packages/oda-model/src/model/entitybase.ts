@@ -224,7 +224,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
         if (fields.has(field.name)) {
           throw new Error(
             `the same field ${field.name} is already exists in ${
-            obj.name
+              obj.name
             } entry`,
           );
         }

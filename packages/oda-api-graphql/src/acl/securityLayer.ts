@@ -6,7 +6,10 @@ export default {
       typeName: info.parentType.name,
       operation: {
         type: info.operation ? info.operation.operation : '',
-        name: (info.operation && info.operation.name) ? info.operation.name.value : '',
+        name:
+          info.operation && info.operation.name
+            ? info.operation.name.value
+            : '',
       },
       path: info.path,
       variables: info.variableValues ? info.variableValues.input_0 : {},

@@ -11,7 +11,9 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (IsBelongsToMany(context.relation) && context.relation.using) {
-      const entity = context.package.items.get(context.relation.using.entity) as IEntity;
+      const entity = context.package.items.get(
+        context.relation.using.entity,
+      ) as IEntity;
       if (isEntity(entity)) {
         if (context.relation.fields) {
           context.relation.fields.forEach(field => {
@@ -20,14 +22,18 @@ export default class implements Rule<IRelationContext> {
               if (found.type !== field.type) {
                 found.updateWith({ type: field.type });
                 result.push({
-                  message: `type of relation field '${field.name}' and in using entity differs`,
+                  message: `type of relation field '${
+                    field.name
+                  }' and in using entity differs`,
                   result: 'fixable',
                 });
               }
             } else {
               entity.updateWith({ fields: [field] });
               result.push({
-                message: `relation field '${field.name}' is not met in using entity`,
+                message: `relation field '${
+                  field.name
+                }' is not met in using entity`,
                 result: 'fixable',
               });
             }

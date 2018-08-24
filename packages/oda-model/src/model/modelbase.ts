@@ -56,7 +56,7 @@ export class ModelBase extends Metadata {
     if (obj) {
       super.updateWith(obj);
 
-      const result: ModelBaseStorage = { ... this.$obj };
+      const result: ModelBaseStorage = { ...this.$obj };
 
       let $name = obj.name;
       let $title = obj.title;

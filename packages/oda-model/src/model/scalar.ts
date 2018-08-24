@@ -1,6 +1,4 @@
-import {
-  MetaModelType, ScalarInput,
-} from './interfaces';
+import { MetaModelType, ScalarInput } from './interfaces';
 import { ModelBase } from './modelbase';
 
 export class Scalar extends ModelBase {

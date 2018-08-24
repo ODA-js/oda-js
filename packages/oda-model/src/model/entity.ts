@@ -1,7 +1,12 @@
-
 import clean from '../lib/json/clean';
 import { Field } from './field';
-import { EntityInput, EntityJSON, EntityStorage, IEntity, MetaModelType } from './interfaces';
+import {
+  EntityInput,
+  EntityJSON,
+  EntityStorage,
+  IEntity,
+  MetaModelType,
+} from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { EntityBase } from './entitybase';
 
@@ -40,9 +45,7 @@ export class Entity extends EntityBase implements IEntity {
 
     if (newFields.size > 0) {
       const update = this.toJSON();
-      update.fields.push(...[
-        ...newFields.values(),
-      ].map(f => f.toJSON()));
+      update.fields.push(...[...newFields.values()].map(f => f.toJSON()));
       this.updateWith(update);
       this.ensureIds(modelPackage);
     }
@@ -73,7 +76,9 @@ export class Entity extends EntityBase implements IEntity {
         let res = super.toObject();
         return clean({
           ...res,
-          implements: [...this.implements].filter(i => modelPackage.mixins.has(i)),
+          implements: [...this.implements].filter(i =>
+            modelPackage.mixins.has(i),
+          ),
         });
       }
     }
@@ -92,7 +97,9 @@ export class Entity extends EntityBase implements IEntity {
         let res = super.toJSON();
         return clean({
           ...res,
-          implements: [...this.implements].filter(i => modelPackage.mixins.has(i)),
+          implements: [...this.implements].filter(i =>
+            modelPackage.mixins.has(i),
+          ),
         });
       }
     }

@@ -3,7 +3,7 @@ import { IValidationResult } from '../../interfaces/IValidationResult';
 import { EntityRef } from './../../model/EntityRef';
 import { Rule } from '../../rule';
 import { HasMany } from '../../model/HasMany';
-import { IBelongsToInit} from '../../interfaces/IBelongsTo';
+import { IBelongsToInit } from '../../interfaces/IBelongsTo';
 import { IBelongsToManyInit } from '../../interfaces/IBelongsToMany';
 import { IHasOneInit } from '../../interfaces/IHasOne';
 import { IHasManyInit } from '../../interfaces/IHasMany';
@@ -20,7 +20,9 @@ export default class implements Rule<IFieldContext> {
     });
 
     field.updateWith({
-      persistent: !!field.persistent || !(!!field.derived || !!field.args && field.args.size > 0),
+      persistent:
+        !!field.persistent ||
+        !(!!field.derived || (!!field.args && field.args.size > 0)),
     });
 
     field.updateWith({
@@ -33,14 +35,16 @@ export default class implements Rule<IFieldContext> {
 
     if (field.identity) {
       field.updateWith({
-        idKey: new EntityRef({
-          entity: context.entity.name,
-          field: field.name,
-          backField: '',
-        }, ModelFactory.getContext(context.field) as IFieldContext),
+        idKey: new EntityRef(
+          {
+            entity: context.entity.name,
+            field: field.name,
+            backField: '',
+          },
+          ModelFactory.getContext(context.field) as IFieldContext,
+        ),
       });
     }
     return result;
   }
 }
-

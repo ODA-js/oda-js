@@ -12,19 +12,25 @@ import {
 import * as Sequelize from 'sequelize';
 import { FilterSequelize } from './filter';
 
-
 const { forward } = listIterator;
 const { DIRECTION } = consts;
 
-export default class SequelizeApi<RegisterConnectors, Payload extends object> extends ConnectorsApiBase<RegisterConnectors, Payload>{
-
+export default class SequelizeApi<
+  RegisterConnectors,
+  Payload extends object
+> extends ConnectorsApiBase<RegisterConnectors, Payload> {
   public sequelize: Sequelize.Sequelize;
 
-  constructor({ sequelize, connectors, name, securityContext }: {
+  constructor({
+    sequelize,
+    connectors,
+    name,
+    securityContext,
+  }: {
     sequelize: any;
     name: string;
     connectors: RegisterConnectors;
-    securityContext: SecurityContext<RegisterConnectors>
+    securityContext: SecurityContext<RegisterConnectors>;
   }) {
     super({ connectors, securityContext, name });
     this.sequelize = sequelize;
@@ -41,16 +47,16 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
 
   public async getCount(args) {
     let query = this.getFilter(args);
-    return (await this.model.count(query));
+    return await this.model.count(query);
   }
 
-  public getFilter(args: { filter: any, idMap: any }) {
+  public getFilter(args: { filter: any; idMap: any }) {
     if (args.filter) {
       return FilterSequelize.parse(args.filter, args.idMap);
     } else {
       return {};
     }
-  };
+  }
 
   public ensureId(obj) {
     if (obj) {
@@ -74,13 +80,12 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
     let move: any = {};
 
     if (cursor.after || cursor.before) {
-      const detect = (name: string, value: any) =>
-        ({
-          [name]: (sort[name] === DIRECTION.BACKWARD) ?
-            { [cursor.after ? '$lt' : '$gt']: value } :
-            { [cursor.before ? '$lt' : '$gt']: value },
-        });
-      ;
+      const detect = (name: string, value: any) => ({
+        [name]:
+          sort[name] === DIRECTION.BACKWARD
+            ? { [cursor.after ? '$lt' : '$gt']: value }
+            : { [cursor.before ? '$lt' : '$gt']: value },
+      });
       let sortKeys = Object.keys(sort);
       if (sortKeys.length > 1) {
         let current = await this.findOneById(cursor.after || cursor.before);
@@ -89,24 +94,30 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
         const or = [];
         while (find.length > 0) {
           const len = find.length;
-          or.push(find.reduce((prev, f, index) => {
-            const curr = index == len - 1 ?
-              detect(f, current[f]) :
-              {
-                [f]: { $eq: current[f] },
+          or.push(
+            find.reduce((prev, f, index) => {
+              const curr =
+                index == len - 1
+                  ? detect(f, current[f])
+                  : {
+                      [f]: { $eq: current[f] },
+                    };
+              prev = {
+                ...prev,
+                ...curr,
               };
-            prev = {
-              ...prev,
-              ...curr,
-            };
-            return prev;
-          }, {}));
+              return prev;
+            }, {}),
+          );
           find.pop();
         }
         move = { $or: or };
       } else {
         move = {
-          _id: { [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']: cursor.after || cursor.before },
+          _id: {
+            [sort._id === DIRECTION.FORWARD ? '$gt' : '$lt']:
+              cursor.after || cursor.before,
+          },
         };
       }
     }
@@ -114,10 +125,7 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
     if (Object.keys(query).length > 0) {
       if (Object.keys(move).length > 0) {
         query = {
-          $and: [
-            move,
-            query,
-          ],
+          $and: [move, query],
         };
       }
     } else {
@@ -133,14 +141,20 @@ export default class SequelizeApi<RegisterConnectors, Payload extends object> ex
         limit: pageSize,
         where: query,
         order: Object.keys(sort).reduce((order, curr) => {
-          order.push([curr === '_id' ? 'id' : curr, sort[curr] === DIRECTION.FORWARD ? 'ASC' : 'DESC'])
+          order.push([
+            curr === '_id' ? 'id' : curr,
+            sort[curr] === DIRECTION.FORWARD ? 'ASC' : 'DESC',
+          ]);
           return order;
-        }, [])
+        }, []),
       });
     }, pageSize);
 
     for await (let source of iterator) {
-      if ((cursor.limit && (result.length < cursor.limit)) || ((!cursor.limit) || (cursor.limit <= 0))) {
+      if (
+        (cursor.limit && result.length < cursor.limit) ||
+        (!cursor.limit || cursor.limit <= 0)
+      ) {
         if (await this.readSecure(source)) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(source)) {

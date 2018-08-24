@@ -5,11 +5,4 @@ import deepMerge from './deepMerge';
 import padLeft from './padLeft';
 import validId from './validId';
 
-export {
-  set,
-  get,
-  fold,
-  deepMerge,
-  padLeft,
-  validId,
-};
+export { set, get, fold, deepMerge, padLeft, validId };

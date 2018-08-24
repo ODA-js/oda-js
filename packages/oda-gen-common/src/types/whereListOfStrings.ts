@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class WhereListOfStrings extends GQLModule {
   protected _name = 'WhereListOfStrings';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereListOfStrings {
         contains: String
         some: [String!]
@@ -11,7 +12,7 @@ export class WhereListOfStrings extends GQLModule {
         except: String
         none: [String!]
       }
-  `],
+  `,
+    ],
   };
 }
-

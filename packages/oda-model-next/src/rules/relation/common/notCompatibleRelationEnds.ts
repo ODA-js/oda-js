@@ -10,7 +10,9 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (context.relation.opposite) {
-      const entity = context.package.items.get(context.relation.ref.entity) as IEntity;
+      const entity = context.package.items.get(
+        context.relation.ref.entity,
+      ) as IEntity;
       if (isEntity(entity) && entity.fields.has(context.relation.opposite)) {
         const opposite = entity.fields.get(context.relation.opposite);
         if (!opposits[context.relation.verb][opposite.relation.verb]) {
@@ -40,4 +42,3 @@ const opposits = {
     BelongsTo: true,
   },
 };
-

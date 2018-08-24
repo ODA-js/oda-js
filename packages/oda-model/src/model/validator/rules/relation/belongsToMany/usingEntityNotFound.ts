@@ -10,12 +10,15 @@ export default class implements Rule<IRelationContext> {
   public validate(context: IRelationContext): IValidationResult[] {
     const result: IValidationResult[] = [];
     if (context.relation.using) {
-      const entity = context.package.entities.get(context.relation.using.entity);
+      const entity = context.package.entities.get(
+        context.relation.using.entity,
+      );
       if (!entity) {
-        const sysEntity = context.model.packages.get('system')
+        const sysEntity = context.model.packages
+          .get('system')
           .entities.get(context.relation.using.entity);
         if (sysEntity) {
-          (<ModelPackage>context.package).addEntity((<Entity>sysEntity));
+          (<ModelPackage>context.package).addEntity(<Entity>sysEntity);
           result.push({
             message: 'using entity resolved from system package',
             result: 'fixable',

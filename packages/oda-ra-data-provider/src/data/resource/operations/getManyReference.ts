@@ -6,11 +6,19 @@ import ResourceOperation from '../resourceOperation';
 
 export default class extends ResourceOperation {
   public get query() {
-    return params => this.resource.queries.getManyReference(this.resource.fragments, this.resource.queries)[params.target];
+    return params =>
+      this.resource.queries.getManyReference(
+        this.resource.fragments,
+        this.resource.queries,
+      )[params.target];
   }
 
   public get resultQuery() {
-    return params => this.resource.queries.getManyReferenceResult(this.resource.fragments, this.resource.queries)[params.target]
+    return params =>
+      this.resource.queries.getManyReferenceResult(
+        this.resource.fragments,
+        this.resource.queries,
+      )[params.target];
   }
 
   constructor(options) {
@@ -22,24 +30,31 @@ export default class extends ResourceOperation {
           data: data.items.data,
           total: data.items.total,
         };
-      }
+      };
     }
 
     if (!this._orderBy) {
-      this._orderBy = (params) => params.sort.field !== 'id' ? `${params.sort.field}${SortOrder[params.sort.order]}` : undefined
+      this._orderBy = params =>
+        params.sort.field !== 'id'
+          ? `${params.sort.field}${SortOrder[params.sort.order]}`
+          : undefined;
     }
 
     if (!this._filterBy) {
-      this._filterBy = (params) => {
-        const useOpposite = this._resource.fields[params.target].ref.type === refType.BelongsToMany;
-        return !useOpposite ? {
-          [params.target]: { eq: params.id }
-        } : undefined;
-      }
+      this._filterBy = params => {
+        const useOpposite =
+          this._resource.fields[params.target].ref.type ===
+          refType.BelongsToMany;
+        return !useOpposite
+          ? {
+              [params.target]: { eq: params.id },
+            }
+          : undefined;
+      };
     }
 
     if (!this._variables) {
-      this._variables = (params) => {
+      this._variables = params => {
         return {
           id: params.id,
           target: params.target,
@@ -48,7 +63,7 @@ export default class extends ResourceOperation {
           orderBy: this.orderBy(params),
           filter: this.filterBy(params),
         };
-      }
+      };
     }
   }
 }

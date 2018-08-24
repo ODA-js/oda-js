@@ -1,7 +1,12 @@
 import { Record } from 'immutable';
 
 import { IEntityRef } from '../interfaces/IEntityRef';
-import { IHasMany, IHasManyInit, IHasManyStore, IRelationTransform } from '../interfaces/IHasMany';
+import {
+  IHasMany,
+  IHasManyInit,
+  IHasManyStore,
+  IRelationTransform,
+} from '../interfaces/IHasMany';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
 import { IFieldContext } from '../contexts/IFieldContext';
@@ -34,7 +39,8 @@ export const HasManyTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const HasManyStorage = Record(DefaultHasMany);
 
-export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IHasMany {
+export class HasMany extends Relation<IHasManyInit, IHasManyStore>
+  implements IHasMany {
   public get verb(): 'HasMany' {
     return 'HasMany';
   }
@@ -53,9 +59,15 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'hasMany') {
-            result.hasMany = HasManyTransform.hasMany.transform(input.hasMany, this);
+            result.hasMany = HasManyTransform.hasMany.transform(
+              input.hasMany,
+              this,
+            );
           } else if (f === 'fields') {
-            result.fields = HasManyTransform.fields.transform(input.fields, this);
+            result.fields = HasManyTransform.fields.transform(
+              input.fields,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -65,7 +77,9 @@ export class HasMany extends Relation<IHasManyInit, IHasManyStore> implements IH
     return result;
   }
 
-  protected reverse(input: Record<IHasManyStore> & Readonly<IHasManyStore>): IHasManyInit {
+  protected reverse(
+    input: Record<IHasManyStore> & Readonly<IHasManyStore>,
+  ): IHasManyInit {
     const result: IHasManyInit = {} as any;
     if (input) {
       const core = input.toJS();

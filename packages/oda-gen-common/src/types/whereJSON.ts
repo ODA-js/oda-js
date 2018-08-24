@@ -3,11 +3,12 @@ import { GQLModule } from './empty';
 export class WhereJSON extends GQLModule {
   protected _name = 'WhereJSON';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
       input WhereJSON {
         query: JSON!
       }
-  `],
+  `,
+    ],
   };
 }
-

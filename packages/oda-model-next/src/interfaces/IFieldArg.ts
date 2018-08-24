@@ -15,12 +15,17 @@ export interface IFieldArgStore extends INamedItem {
   defaultValue?: string;
 }
 
-export interface IFieldArg extends IModelType, Readonly<IFieldArgInit>, IContextable<IMutationContext | IFieldContext> {
+export interface IFieldArg
+  extends IModelType,
+    Readonly<IFieldArgInit>,
+    IContextable<IMutationContext | IFieldContext> {
   readonly type?: string;
   readonly required?: boolean;
   readonly defaultValue?: string;
 }
 
-export type FieldArgsInput = {
-  [name: string]: Partial<IFieldArgInit>,
-} | IFieldArgInit[];
+export type FieldArgsInput =
+  | {
+      [name: string]: Partial<IFieldArgInit>;
+    }
+  | IFieldArgInit[];

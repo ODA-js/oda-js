@@ -1,6 +1,11 @@
 import { Record } from 'immutable';
 
-import { IBelongsTo, IBelongsToInit, IBelongsToStore, IRelationTransform } from '../interfaces/IBelongsTo';
+import {
+  IBelongsTo,
+  IBelongsToInit,
+  IBelongsToStore,
+  IRelationTransform,
+} from '../interfaces/IBelongsTo';
 import { IEntityRef } from '../interfaces/IEntityRef';
 import { Relation } from './Relation';
 import { TransformField, TransformRef } from './utils';
@@ -34,7 +39,8 @@ export const BelongsToTransform: IRelationTransform = {
 // tslint:disable-next-line:variable-name
 export const BelongsToStorage = Record(DefaultBelongsTo);
 
-export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> implements IBelongsTo {
+export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore>
+  implements IBelongsTo {
   public get verb(): 'BelongsTo' {
     return 'BelongsTo';
   }
@@ -45,7 +51,9 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return this.store.get('belongsTo', null);
   }
 
-  protected transform(input: Partial<IBelongsToInit>): Partial<IBelongsToStore> {
+  protected transform(
+    input: Partial<IBelongsToInit>,
+  ): Partial<IBelongsToStore> {
     const result: Partial<IBelongsToStore> = {};
     if (input) {
       if (input instanceof Persistent) {
@@ -54,9 +62,15 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
       for (let f in input) {
         if (input.hasOwnProperty(f)) {
           if (f === 'belongsTo') {
-            result.belongsTo = BelongsToTransform.belongsTo.transform(input.belongsTo, this);
+            result.belongsTo = BelongsToTransform.belongsTo.transform(
+              input.belongsTo,
+              this,
+            );
           } else if (f === 'fields') {
-            result.fields = BelongsToTransform.fields.transform(input.fields, this);
+            result.fields = BelongsToTransform.fields.transform(
+              input.fields,
+              this,
+            );
           } else {
             result[f] = input[f];
           }
@@ -66,7 +80,9 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
     return result;
   }
 
-  protected reverse(input: Record<IBelongsToStore> & Readonly<IBelongsToStore>): Partial<IBelongsToInit> {
+  protected reverse(
+    input: Record<IBelongsToStore> & Readonly<IBelongsToStore>,
+  ): Partial<IBelongsToInit> {
     const result: Partial<IBelongsToInit> = {};
     if (input) {
       const core = input.toJS();
@@ -74,7 +90,9 @@ export class BelongsTo extends Relation<IBelongsToInit, IBelongsToStore> impleme
         if (core.hasOwnProperty(f)) {
           if (core[f] !== undefined && core[f] !== null) {
             if (f === 'belongsTo' || f === 'ref') {
-              result.belongsTo = BelongsToTransform.belongsTo.reverse(input.belongsTo);
+              result.belongsTo = BelongsToTransform.belongsTo.reverse(
+                input.belongsTo,
+              );
             } else if (f === 'fields') {
               result.fields = BelongsToTransform.fields.reverse(input.fields);
             } else {

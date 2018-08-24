@@ -27,18 +27,14 @@ export function getFieldList(context, fieldASTs) {
 
     switch (kind) {
       case 'Field':
-        return Object.assign({},
-          list,
-          getFieldList(context, ast),
-          { [name.value]: true },
-        );
+        return Object.assign({}, list, getFieldList(context, ast), {
+          [name.value]: true,
+        });
       case 'InlineFragment':
-        return Object.assign({},
-          list,
-          getFieldList(context, ast),
-        );
+        return Object.assign({}, list, getFieldList(context, ast));
       case 'FragmentSpread':
-        return Object.assign({},
+        return Object.assign(
+          {},
           list,
           getFieldList(context, context.fragments[name.value]),
         );

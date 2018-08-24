@@ -1,12 +1,20 @@
 export default class AclDefault {
-  public constructor(acl: { [key: string]: number } = {
-    system: 100000,
-  }) {
+  public constructor(
+    acl: { [key: string]: number } = {
+      system: 100000,
+    },
+  ) {
     this._acl = acl;
     this.names = Object.keys(this._acl).sort((a, b) => {
-      if (this._acl[a] > this._acl[b]) { return -1; }
-      if (this._acl[a] < this._acl[b]) { return 1; }
-      if (this._acl[a] === this._acl[b]) { return 0; }
+      if (this._acl[a] > this._acl[b]) {
+        return -1;
+      }
+      if (this._acl[a] < this._acl[b]) {
+        return 1;
+      }
+      if (this._acl[a] === this._acl[b]) {
+        return 0;
+      }
     });
     this.map = this.names.reduce((store, cur, index) => {
       store[cur] = index;
@@ -27,5 +35,5 @@ export default class AclDefault {
     } else {
       return this._acl[access] <= this._acl[role];
     }
-  };
+  }
 }

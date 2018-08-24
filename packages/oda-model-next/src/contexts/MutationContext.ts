@@ -14,7 +14,10 @@ export class MutationContext implements IMutationContext, IValidationContext {
   public model: IModel;
   public package: IPackage;
   public errors: IValidationResult[];
-  constructor(context: IPackageContext & IValidationContext, mutation: IMutation) {
+  constructor(
+    context: IPackageContext & IValidationContext,
+    mutation: IMutation,
+  ) {
     if (isIPackageContext(context)) {
       this.model = context.model;
       this.package = context.package;
@@ -24,10 +27,10 @@ export class MutationContext implements IMutationContext, IValidationContext {
   }
   public get isValid() {
     return !!(
-      this.model
-      && this.package
-      && this.mutation
-      && Array.isArray(this.errors)
+      this.model &&
+      this.package &&
+      this.mutation &&
+      Array.isArray(this.errors)
     );
   }
   public restart(level: RestartType) {

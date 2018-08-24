@@ -3,7 +3,8 @@ import { GQLModule } from './empty';
 export class PageInfoType extends GQLModule {
   protected _name = 'PageInfoType';
   protected _typeDef = {
-    entry: [`
+    entry: [
+      `
     type PageInfo {
       hasNextPage: Boolean!
       hasPreviousPage: Boolean!
@@ -11,7 +12,7 @@ export class PageInfoType extends GQLModule {
       endCursor: String
       count: Int
     }
-  `],
+  `,
+    ],
   };
 }
-
