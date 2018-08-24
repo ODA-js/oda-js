@@ -24,7 +24,9 @@ const styles = theme => ({
   },
 });
 
-class DeleteButton extends Component {
+class DeleteButton extends Component<{ [key: string]: any }> {
+  static defaultProps = {};
+  static propTypes = {};
   handleDelete = event => {
     event.preventDefault();
     const {

@@ -6,7 +6,15 @@ import { linkToRecord } from 'ra-core';
 
 import { Button, Link } from 'ra-ui-materialui';
 
-const ShowButton = ({
+interface ReactAdminProps {
+  basePath: string;
+  label: string;
+  record: {
+    [key: string]: any;
+  };
+}
+
+const ShowButton: React.SFC<ReactAdminProps> = ({
   basePath = '',
   label = 'ra.action.show',
   record = {},

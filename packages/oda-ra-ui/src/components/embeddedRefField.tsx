@@ -24,8 +24,19 @@ import dataLoadWrapper from './loadEmbeddedRef';
  * </embeddedRefField>
  *
  */
-export class embeddedRefField extends Component {
-
+export class embeddedRefField extends Component<{
+  addLabel?: boolean;
+  basePath?: string;
+  children: React.ReactNode;
+  data?: object;
+  label?: string;
+  record?: { [key: string]: any };
+  resource?: string;
+  source: string;
+  id: string;
+  crudGetManyAccumulate: (string, any) => void;
+  reference: string;
+}> {
   componentDidMount() {
     this.fetchReferences();
   }
@@ -46,10 +57,12 @@ export class embeddedRefField extends Component {
     return (
       <div>
         <SimpleShowLayout {...layoutProps}>
-          {React.Children.map(children, child =>
-            React.cloneElement(child, {
-              source: `${source}.${child.props.source}`,
-            })
+          {React.Children.map(
+            children,
+            (child: React.ReactElement<{ source: string }>) =>
+              React.cloneElement(child, {
+                source: `${source}.${child.props.source}`,
+              }),
           )}
         </SimpleShowLayout>
       </div>

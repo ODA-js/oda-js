@@ -22,17 +22,23 @@ import * as PropTypes from 'prop-types';
  * </embeddedRefField>
  *
  */
-export class EmbeddedField extends Component {
+export class EmbeddedField extends Component<{
+  [key: string]: any;
+}> {
+  static defaultProps;
+  static propTypes;
   render() {
     const { resource, children, source, record } = this.props;
     const layoutProps = { resource, basePath: '/', record };
     return (
       <SimpleShowLayout {...layoutProps}>
-        {React.Children.map(children, child =>
-          React.cloneElement(child, {
-            record,
-            source: `${source}.${child.props.source}`,
-          }),
+        {React.Children.map(
+          children,
+          (child: React.ReactElement<{ source: string; record: any }>) =>
+            React.cloneElement(child, {
+              record,
+              source: `${source}.${child.props.source}`,
+            }),
         )}
       </SimpleShowLayout>
     );

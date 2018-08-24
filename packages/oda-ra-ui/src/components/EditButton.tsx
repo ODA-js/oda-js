@@ -6,12 +6,13 @@ import { linkToRecord } from 'ra-core';
 
 import { Button, Link } from 'ra-ui-materialui';
 
-const EditButton = ({
-  basePath = '',
-  label = 'ra.action.edit',
-  record = {},
-  ...rest
-}) => (
+const EditButton: React.SFC<{
+  basePath: string;
+  label: string;
+  className: string;
+  classes: object;
+  record: { [key: string]: any };
+}> = ({ basePath = '', label = 'ra.action.edit', record = {}, ...rest }) => (
   <Button
     component={Link}
     label={label}
