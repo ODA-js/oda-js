@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepare": "./compile.sh",
+    "prepublishOnly": "./compile.sh",
     "test": "jest"
   },
   "typescript": {

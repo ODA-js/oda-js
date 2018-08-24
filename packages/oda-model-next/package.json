@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest",
     "lint": "tslint --project ./",
-    "prepare": "./compile.sh",
+    "prepublishOnly": "./compile.sh",
     "debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",

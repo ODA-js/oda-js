@@ -8,7 +8,7 @@
   },
   "typings": "dist/model/index.d.ts",
   "scripts": {
-    "prepare": "./compile.sh",
+    "prepublishOnly": "./compile.sh",
     "test": "jest"
   },
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",

@@ -5,7 +5,7 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "prepare": "./compile.sh",
+    "prepublishOnly": "./compile.sh",
     "test": "jest",
     "test-inspect": "node --inspect-brk ./node_modules/.bin/jest"
   },
