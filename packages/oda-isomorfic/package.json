@@ -1,6 +1,6 @@
 {
   "name": "oda-isomorfic",
-  "version": "1.0.0-10",
+  "version": "1.0.0-11",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@types/graphql": "0.12.4",
-    "@types/node": "^8.0.20",
     "@types/jest": "^22.2.2",
+    "@types/node": "^8.0.20",
     "jest": "^23.4.2",
     "ts-jest": "^23.0.1",
     "tslint": "^5.8.0",
