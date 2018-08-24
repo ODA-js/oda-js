@@ -22,8 +22,8 @@ describe('BelongsTo', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -33,15 +33,15 @@ describe('BelongsTo', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
     expect(() =>
       relation.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -49,8 +49,8 @@ describe('BelongsTo', () => {
   it('toJS with dupes', () => {
     expect(() =>
       relation.updateWith({
-        fields: [{ name: 'one' }, { name: 'one' }]
-      })
+        fields: [{ name: 'one' }, { name: 'one' }],
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -59,9 +59,9 @@ describe('BelongsTo', () => {
     expect(() =>
       relation.updateWith({
         fields: {
-          one: {}
-        }
-      })
+          one: {},
+        },
+      }),
     ).not.toThrow();
 
     expect(relation.toJS()).toMatchSnapshot();
@@ -70,8 +70,8 @@ describe('BelongsTo', () => {
   it('toJS ', () => {
     expect(() =>
       relation.updateWith({
-        belongsTo: 'id@Some#id'
-      })
+        belongsTo: 'id@Some#id',
+      }),
     ).not.toThrow();
     expect(relation.ref.toJS()).toMatchSnapshot();
     expect(relation.toJS()).toMatchSnapshot();

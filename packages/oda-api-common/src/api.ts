@@ -99,7 +99,8 @@ export class Server {
       this.app.use(
         log4js.connectLogger(logger, {
           level:
-            log4js.levels.INFO, /*, format: ':remote-addr :url :response-time' */
+            log4js.levels
+              .INFO /*, format: ':remote-addr :url :response-time' */,
         }),
       );
     }

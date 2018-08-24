@@ -22,16 +22,16 @@ describe('HasMany', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(relation.name).toBe('cool');
     expect(relation.description).toBe('very cool');
     expect(relation.title).toBe('very cool title');
     expect(() =>
       relation.updateWith({
-        name: 'cool!'
-      })
+        name: 'cool!',
+      }),
     ).not.toThrow();
     expect(relation.name).toBe('cool!');
   });
@@ -41,15 +41,15 @@ describe('HasMany', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
     expect(() =>
       relation.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -57,8 +57,8 @@ describe('HasMany', () => {
   it('toJS with dupes', () => {
     expect(() =>
       relation.updateWith({
-        fields: [{ name: 'one' }, { name: 'one' }]
-      })
+        fields: [{ name: 'one' }, { name: 'one' }],
+      }),
     ).not.toThrow();
 
     expect(relation.toJS()).toMatchSnapshot();
@@ -68,9 +68,9 @@ describe('HasMany', () => {
     expect(() =>
       relation.updateWith({
         fields: {
-          one: {}
-        }
-      })
+          one: {},
+        },
+      }),
     ).not.toThrow();
 
     expect(relation.toJS()).toMatchSnapshot();
@@ -78,8 +78,8 @@ describe('HasMany', () => {
   it('toJS ', () => {
     expect(() =>
       relation.updateWith({
-        hasMany: 'id@Some#id'
-      })
+        hasMany: 'id@Some#id',
+      }),
     ).not.toThrow();
 
     expect(relation.ref.toJS()).toMatchSnapshot();

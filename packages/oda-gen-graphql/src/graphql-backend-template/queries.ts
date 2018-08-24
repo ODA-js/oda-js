@@ -5,7 +5,7 @@ import {
   ModelPackage,
   MetaModel,
   Mutation,
-  Query
+  Query,
 } from 'oda-model';
 import { type } from './entity';
 
@@ -74,12 +74,12 @@ export const complexUniqueIndex = (entity: Entity) => {
       .filter(
         i =>
           indexList[i].options.unique &&
-          Object.keys(indexList[i].fields).length > 1
+          Object.keys(indexList[i].fields).length > 1,
       )
       .map(i => {
         return {
           name: i,
-          ...indexList[i]
+          ...indexList[i],
         };
       });
   } else {
@@ -117,7 +117,7 @@ export const searchParamsForAcl = (allow, role: string, entity: Entity) =>
   getFieldNames(entity)
     // .filter(i => i !== 'id')
     .filter(i =>
-      allow(role, entity.fields.get(i).getMetadata('acl.read', role))
+      allow(role, entity.fields.get(i).getMetadata('acl.read', role)),
     );
 
 export const _filterForAcl = (role: string, pack: ModelPackage) => {
@@ -129,7 +129,7 @@ export const _filterForAcl = (role: string, pack: ModelPackage) => {
         .reduce((res, cur) => {
           res[cur] = 1;
           return res;
-        }, {})
+        }, {}),
     ).filter(f => {
       const field = entity.fields.get(f);
       return (
@@ -197,7 +197,7 @@ export const getFieldsForAcl = function(role: string, pack: ModelPackage) {
 };
 
 export const relationFieldsExistsIn = (pack: ModelPackage) => (
-  f: Field
+  f: Field,
 ): boolean => relations(f) && pack.entities.has(f.relation.ref.entity);
 
 export const persistentFields = (f: Field): boolean =>
@@ -223,7 +223,7 @@ export const getUniqueFieldNames = (entity: Entity) => [
   ...getFields(entity)
     .filter(oneUniqueInIndex(entity))
     .filter(identityFields)
-    .map(f => f.name)
+    .map(f => f.name),
 ];
 
 export const indexes = (e: Entity) => {
@@ -237,7 +237,7 @@ export const indexes = (e: Entity) => {
 };
 
 export const singleStoredRelationsExistingIn = (pack: ModelPackage) => (
-  f: Field
+  f: Field,
 ): boolean =>
   relationFieldsExistsIn(pack)(f) &&
   f.relation.single &&
@@ -245,7 +245,7 @@ export const singleStoredRelationsExistingIn = (pack: ModelPackage) => (
   f.persistent;
 
 export const storedRelationsExistingIn = (pack: ModelPackage) => (
-  f: Field
+  f: Field,
 ): boolean =>
   relationFieldsExistsIn(pack)(f) && f.relation.stored && f.persistent;
 
@@ -259,11 +259,11 @@ export const memoizeEntityMapper = (name, mapper) => (
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (string) => string },
-  defaultAdapter?: string
+  defaultAdapter?: string,
 ) => {
   let adapter = entity.getMetadata(
     'storage.adapter',
-    defaultAdapter || 'mongoose'
+    defaultAdapter || 'mongoose',
   );
   if (!memoizeCache.hasOwnProperty(name)) {
     memoizeCache[name] = {};

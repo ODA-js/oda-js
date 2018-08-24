@@ -9,7 +9,7 @@ import {
   RuntimeModelContext,
   RuntimeMutationContext,
   RuntimeEnumContext,
-  RuntimePackageContext
+  RuntimePackageContext,
 } from './RuntimeContexts';
 import { IEnumInit, IEnum } from '../interfaces/IEnum';
 import { IEntity } from '../interfaces/IEntity';
@@ -37,35 +37,35 @@ export class ModelFactory {
         if (isModel(item)) {
           const ctx = new RuntimeModelContext({
             ...item.context,
-            model: item
+            model: item,
           });
           ModelFactory.context = ModelFactory.context.set(item, ctx);
           return ctx;
         } else if (isPackage(item)) {
           const ctx = new RuntimePackageContext({
             ...item.context,
-            package: item
+            package: item,
           });
           ModelFactory.context = ModelFactory.context.set(item, ctx);
           return ctx;
         } else if (isEntity(item)) {
           const ctx = new RuntimeEntityContext({
             ...item.context,
-            entity: item
+            entity: item,
           });
           ModelFactory.context = ModelFactory.context.set(item, ctx);
           return ctx;
         } else if (isMutation(item)) {
           const ctx = new RuntimeMutationContext({
             ...item.context,
-            mutation: item
+            mutation: item,
           });
           ModelFactory.context = ModelFactory.context.set(item, ctx);
           return ctx;
         } else if (isEnum(item)) {
           const ctx = new RuntimeEnumContext({
             ...item.context,
-            enum: item
+            enum: item,
           });
           ModelFactory.context = ModelFactory.context.set(item, ctx);
           return ctx;
@@ -86,23 +86,23 @@ export class ModelFactory {
     const result: Model = new Model({
       name: input.name,
       title: input.title,
-      description: input.description
+      description: input.description,
     });
 
     const context = ModelFactory.registerContext(
-      result.defaultPackage
+      result.defaultPackage,
     ) as IPackageContext;
 
     result.defaultPackage.updateWith({
       items: [
         ...input.entities.map(e => new Entity(e, context)),
         ...input.mutations.map(m => new Mutation(m, context)),
-        ...input.enums.map(m => new Enum(m, context))
-      ]
+        ...input.enums.map(m => new Enum(m, context)),
+      ],
     });
 
     result.updateWith({
-      packages: [...input.packages]
+      packages: [...input.packages],
     });
 
     return result;
@@ -126,7 +126,7 @@ export class ModelFactory {
 
   public static createMutation(
     input: IMutationInit,
-    ctx: IPackageContext
+    ctx: IPackageContext,
   ): IMutation {
     const result = new Mutation(input, ctx);
     result.attach(ctx);

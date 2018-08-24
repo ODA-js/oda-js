@@ -9,7 +9,7 @@ describe('rule', () => {
 
   it('throw', () => {
     const result = rule.validate({
-      package: {}
+      package: {},
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -17,8 +17,8 @@ describe('rule', () => {
   it('not throw', () => {
     const result = rule.validate({
       package: {
-        name: 'species'
-      }
+        name: 'species',
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });

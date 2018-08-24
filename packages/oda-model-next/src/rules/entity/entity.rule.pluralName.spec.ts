@@ -11,8 +11,8 @@ describe('rule', () => {
     const result = rule.validate({
       entity: {
         plural: 'species',
-        name: 'species'
-      }
+        name: 'species',
+      },
     } as any);
 
     expect(result).toMatchSnapshot();
@@ -22,8 +22,8 @@ describe('rule', () => {
     const result = rule.validate({
       entity: {
         plural: 'AllSpecies',
-        name: 'species'
-      }
+        name: 'species',
+      },
     } as any);
 
     expect(result).toMatchSnapshot();

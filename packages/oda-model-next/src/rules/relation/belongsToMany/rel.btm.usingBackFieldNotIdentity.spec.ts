@@ -14,17 +14,17 @@ describe('rule', () => {
         modelType: 'relation',
         verb: 'BelongsToMany',
         using: {
-          backField: true
-        }
+          backField: true,
+        },
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
             identity: false,
-            updateWith
-          }))
-        }
-      }
+            updateWith,
+          })),
+        },
+      },
     } as any);
     expect(updateWith).toBeCalledWith({ identity: true });
     expect(result).toMatchSnapshot();
@@ -37,17 +37,17 @@ describe('rule', () => {
         modelType: 'relation',
         verb: 'BelongsToMany',
         using: {
-          backField: true
-        }
+          backField: true,
+        },
       },
       entity: {
         fields: {
           get: jest.fn(() => ({
             updateWith,
-            identity: true
-          }))
-        }
-      }
+            identity: true,
+          })),
+        },
+      },
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();

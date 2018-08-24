@@ -18,7 +18,7 @@ describe('rule', () => {
     const updateWith = jest.fn(args => {
       update = {
         ...update,
-        ...args
+        ...args,
       };
     });
 
@@ -28,13 +28,13 @@ describe('rule', () => {
       mutation: {
         name: 'mutation',
         args: {
-          input: {}
+          input: {},
         },
         payload: {
-          result: {}
+          result: {},
         },
-        updateWith
-      }
+        updateWith,
+      },
     } as any);
     expect(update).toMatchSnapshot();
   });

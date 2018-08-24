@@ -34,8 +34,8 @@ describe('Model', () => {
       model.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
 
     expect(model.toJS()).toMatchSnapshot();
@@ -46,15 +46,15 @@ describe('Model', () => {
       model.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(model.toJS()).toMatchSnapshot();
     expect(() =>
       model.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(model.toJS()).toMatchSnapshot();
   });
@@ -62,8 +62,8 @@ describe('Model', () => {
   it('update packages', () => {
     expect(() =>
       model.updateWith({
-        packages: []
-      })
+        packages: [],
+      }),
     ).not.toThrow();
     expect(model.toJS()).toMatchSnapshot();
   });
@@ -76,9 +76,9 @@ describe('Model', () => {
         title: 'very cool title',
         packages: [
           { name: 'one', acl: 100, items: [] },
-          { name: 'one', acl: 100, items: [] }
-        ]
-      })
+          { name: 'one', acl: 100, items: [] },
+        ],
+      }),
     ).not.toThrow();
 
     expect(model.toJS()).toMatchSnapshot();

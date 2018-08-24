@@ -23,7 +23,7 @@ import {
   isMutation,
   isPackage,
   isRelation,
-  isIRelationContext
+  isIRelationContext,
 } from './helpers';
 import { IEntity } from './interfaces/IEntity';
 import { IField } from './interfaces/IField';
@@ -88,22 +88,22 @@ describe('Relation helpers', () => {
   });
   it('detects HasMany', () => {
     expect(
-      IsHasMany({ modelType: 'relation', verb: 'HasMany' } as any)
+      IsHasMany({ modelType: 'relation', verb: 'HasMany' } as any),
     ).toBeTruthy();
   });
   it('detects HasOne', () => {
     expect(
-      IsHasOne({ modelType: 'relation', verb: 'HasOne' } as any)
+      IsHasOne({ modelType: 'relation', verb: 'HasOne' } as any),
     ).toBeTruthy();
   });
   it('detects BelongstTo', () => {
     expect(
-      IsBelongsTo({ modelType: 'relation', verb: 'BelongsTo' } as any)
+      IsBelongsTo({ modelType: 'relation', verb: 'BelongsTo' } as any),
     ).toBeTruthy();
   });
   it('detects BelongsToMany', () => {
     expect(
-      IsBelongsToMany({ modelType: 'relation', verb: 'BelongsToMany' } as any)
+      IsBelongsToMany({ modelType: 'relation', verb: 'BelongsToMany' } as any),
     ).toBeTruthy();
   });
 });
@@ -141,15 +141,15 @@ describe('Context helpers', () => {
                     {
                       name: 'item',
                       relation: {
-                        hasMany: 'i@m#id'
-                      }
-                    }
-                  ]
-                } as IPackagedItemInit
-              ]
-            }
-          ]
-        }))
+                        hasMany: 'i@m#id',
+                      },
+                    },
+                  ],
+                } as IPackagedItemInit,
+              ],
+            },
+          ],
+        })),
     ).not.toThrow();
 
     models.package = models.model.packages.get('system');

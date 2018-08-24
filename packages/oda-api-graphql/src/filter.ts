@@ -401,7 +401,9 @@ export class Process {
     let filter = Process.go(obj, idMap);
     // tslint:disable-next-line:no-eval
     return eval(
-      `(value)=>${filter && Array.isArray(filter) ? filter.join('&&') : 'true'}`,
+      `(value)=>${
+        filter && Array.isArray(filter) ? filter.join('&&') : 'true'
+      }`,
     );
   }
 

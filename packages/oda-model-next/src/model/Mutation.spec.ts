@@ -23,14 +23,14 @@ describe('Mutaion', () => {
       mutation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
     expect(() =>
       mutation.updateWith({
-        name: 'cool!'
-      })
+        name: 'cool!',
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
   });
@@ -40,15 +40,15 @@ describe('Mutaion', () => {
       mutation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
     expect(() =>
       mutation.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
   });
@@ -57,18 +57,18 @@ describe('Mutaion', () => {
     expect(() =>
       mutation.updateWith({
         acl: {
-          execute: ['admin', 'public', 'public']
-        }
-      })
+          execute: ['admin', 'public', 'public'],
+        },
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
 
     expect(() =>
       mutation.updateWith({
         acl: {
-          execute: ['system']
-        }
-      })
+          execute: ['system'],
+        },
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
   });
@@ -76,8 +76,8 @@ describe('Mutaion', () => {
   it('updates input args', () => {
     expect(() =>
       mutation.updateWith({
-        args: []
-      })
+        args: [],
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
 
@@ -88,10 +88,10 @@ describe('Mutaion', () => {
             name: '1',
             type: 'string',
             defaultValue: 'not empty',
-            required: true
-          }
-        ]
-      })
+            required: true,
+          },
+        ],
+      }),
     ).not.toThrow();
     let arg;
     expect(() => (arg = mutation.args.get('1'))).not.toThrow();
@@ -99,8 +99,8 @@ describe('Mutaion', () => {
 
     expect(() =>
       mutation.updateWith({
-        args: [{ name: '1', type: 'number' }]
-      })
+        args: [{ name: '1', type: 'number' }],
+      }),
     ).not.toThrow();
     expect(() => (arg = mutation.args.get('1'))).not.toThrow();
     expect(arg.toJS()).toMatchSnapshot();
@@ -109,8 +109,8 @@ describe('Mutaion', () => {
   it('updates payload', () => {
     expect(() =>
       mutation.updateWith({
-        payload: []
-      })
+        payload: [],
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
 
@@ -121,10 +121,10 @@ describe('Mutaion', () => {
             name: '1',
             type: 'string',
             defaultValue: 'not empty',
-            required: true
-          }
-        ]
-      })
+            required: true,
+          },
+        ],
+      }),
     ).not.toThrow();
     let arg;
     expect(mutation.payload.has('1'));
@@ -133,8 +133,8 @@ describe('Mutaion', () => {
     expect(arg.toJS()).toMatchSnapshot();
     expect(() =>
       mutation.updateWith({
-        payload: [{ name: '1', type: 'number' }]
-      })
+        payload: [{ name: '1', type: 'number' }],
+      }),
     ).not.toThrow();
     expect(() => (arg = mutation.payload.get('1'))).not.toThrow();
     expect(arg.toJS()).toMatchSnapshot();
@@ -147,7 +147,7 @@ describe('Mutaion', () => {
         description: 'very cool',
         title: 'very cool title',
         acl: {
-          execute: ['admin', 'public', 'public']
+          execute: ['admin', 'public', 'public'],
         },
         args: [
           { name: 'i1', type: 'number', defaultValue: '100', required: true },
@@ -155,21 +155,21 @@ describe('Mutaion', () => {
             name: 'i1',
             type: 'string',
             defaultValue: 'not empty',
-            required: true
+            required: true,
           },
-          { name: 'i2', type: 'number', defaultValue: '1', required: false }
+          { name: 'i2', type: 'number', defaultValue: '1', required: false },
         ],
         payload: [
           {
             name: 'p1',
             type: 'string',
             defaultValue: 'not empty',
-            required: true
+            required: true,
           },
           { name: 'p1', type: 'number', defaultValue: '10', required: true },
-          { name: 'p2', type: 'number', defaultValue: '1', required: false }
-        ]
-      })
+          { name: 'p2', type: 'number', defaultValue: '1', required: false },
+        ],
+      }),
     ).not.toThrow();
     expect(mutation.toJS()).toMatchSnapshot();
   });

@@ -11,19 +11,19 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true
-        }
+          entity: true,
+        },
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
             modelType: 'entity',
             fields: {
-              get: jest.fn().mockReturnValueOnce(false)
-            }
-          })
-        }
-      }
+              get: jest.fn().mockReturnValueOnce(false),
+            },
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -32,19 +32,19 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true
-        }
+          entity: true,
+        },
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
             modelType: 'entity',
             fields: {
-              get: jest.fn().mockReturnValueOnce(true)
-            }
-          })
-        }
-      }
+              get: jest.fn().mockReturnValueOnce(true),
+            },
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });

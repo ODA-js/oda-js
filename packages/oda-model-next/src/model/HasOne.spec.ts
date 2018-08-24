@@ -22,15 +22,15 @@ describe('HasOne', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
 
     expect(relation.toJS()).toMatchSnapshot();
     expect(() =>
       relation.updateWith({
-        name: 'cool!'
-      })
+        name: 'cool!',
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -40,15 +40,15 @@ describe('HasOne', () => {
       relation.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
     expect(() =>
       relation.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -56,8 +56,8 @@ describe('HasOne', () => {
   it('toJS with dupes', () => {
     expect(() =>
       relation.updateWith({
-        fields: [{ name: 'one' }, { name: 'one' }]
-      })
+        fields: [{ name: 'one' }, { name: 'one' }],
+      }),
     ).not.toThrow();
     expect(relation.toJS()).toMatchSnapshot();
   });
@@ -66,9 +66,9 @@ describe('HasOne', () => {
     expect(() =>
       relation.updateWith({
         fields: {
-          one: {}
-        }
-      })
+          one: {},
+        },
+      }),
     ).not.toThrow();
 
     expect(relation.toJS()).toMatchSnapshot();
@@ -77,8 +77,8 @@ describe('HasOne', () => {
   it('toJS ', () => {
     expect(() =>
       relation.updateWith({
-        hasOne: 'id@Some#id'
-      })
+        hasOne: 'id@Some#id',
+      }),
     ).not.toThrow();
 
     expect(relation.ref.toJS()).toMatchSnapshot();

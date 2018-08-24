@@ -16,7 +16,7 @@ async function processItems<I>(
     updateQuery,
     dataPropName,
     findVars,
-    queries
+    queries,
   }: {
     data: I[];
     findQuery: { [key: string]: string };
@@ -26,7 +26,7 @@ async function processItems<I>(
     queries;
     findVars: { [key: string]: (f: I) => any };
   },
-  client
+  client,
 ) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
@@ -40,7 +40,7 @@ async function processItems<I>(
         //1. проверить что объект есть
         res = await client.query({
           query: queries[findQuery[key]],
-          variables
+          variables,
         });
         if (res.data[dataPropName]) {
           break;
@@ -52,16 +52,16 @@ async function processItems<I>(
       await client.mutate({
         mutation: queries[createQuery],
         variables: {
-          [dataPropName]: data[i]
-        }
+          [dataPropName]: data[i],
+        },
       });
     } else {
       //3. если есть обновить текущими данными из набора.
       await client.mutate({
         mutation: queries[updateQuery],
         variables: {
-          [dataPropName]: data[i]
-        }
+          [dataPropName]: data[i],
+        },
       });
     }
   }
@@ -75,7 +75,7 @@ async function processItemsDirect<I>(
     updateQuery,
     dataPropName,
     findVars,
-    queries
+    queries,
   }: {
     data: I[];
     findQuery: { [key: string]: string };
@@ -87,7 +87,7 @@ async function processItemsDirect<I>(
   },
   schema,
   context,
-  runQuery
+  runQuery,
 ) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
@@ -102,7 +102,7 @@ async function processItemsDirect<I>(
           query: queries[findQuery[key]],
           variables,
           schema,
-          context
+          context,
         });
         if (res.data[dataPropName]) {
           break;
@@ -115,20 +115,20 @@ async function processItemsDirect<I>(
       await runQuery({
         query: queries[createQuery],
         variables: {
-          [dataPropName]: data[i]
+          [dataPropName]: data[i],
         },
         schema,
-        context
+        context,
       });
     } else {
       //3. если есть обновить текущими данными из набора.
       await runQuery({
         query: queries[updateQuery],
         variables: {
-          [dataPropName]: data[i]
+          [dataPropName]: data[i],
         },
         schema,
-        context
+        context,
       });
     }
   }
@@ -140,7 +140,7 @@ export let restoreDataDirect = async (
   data,
   schema,
   context,
-  runQuery
+  runQuery,
 ) => {
   let entitiesNames = Object.keys(importQueries);
   for (let iEnt = 0, iEntLen = entitiesNames.length; iEnt < iEntLen; iEnt++) {
@@ -154,7 +154,7 @@ export let restoreDataDirect = async (
       updateQuery: `${entityName}/update.graphql`,
       dataPropName: `${decapitalize(entityName)}`,
       findVars: f => ({ id: f.id }),
-      ...importQueries[entityName].uploader
+      ...importQueries[entityName].uploader,
     };
 
     if (
@@ -166,11 +166,11 @@ export let restoreDataDirect = async (
         {
           data: fields[entityName],
           ...uploader,
-          queries: queries
+          queries: queries,
         },
         schema,
         context,
-        runQuery
+        runQuery,
       );
     }
   }
@@ -190,7 +190,7 @@ export let restoreData = async (importQueries, queries, client, data) => {
       updateQuery: `${entityName}/update.graphql`,
       dataPropName: `${decapitalize(entityName)}`,
       findVars: f => ({ id: f.id }),
-      ...importQueries[entityName].uploader
+      ...importQueries[entityName].uploader,
     };
 
     if (
@@ -202,9 +202,9 @@ export let restoreData = async (importQueries, queries, client, data) => {
         {
           data: fields[entityName],
           ...uploader,
-          queries: queries
+          queries: queries,
         },
-        client
+        client,
       );
     }
   }
@@ -215,7 +215,7 @@ export let dumpDataDirect = async (
   queries,
   schema,
   context,
-  runQuery
+  runQuery,
 ) => {
   let result = {};
   let exportQueries = config.export.queries;
@@ -227,14 +227,14 @@ export let dumpDataDirect = async (
       ...(await runQuery({
         query: queries[exportQueries[entityName].query],
         schema,
-        context
+        context,
       }).then(res => {
         if (exportQueries[entityName].process) {
           return exportQueries[entityName].process(res.data)[entityName];
         } else {
           return res.data;
         }
-      }))
+      })),
     };
   }
   return result;
@@ -250,7 +250,7 @@ export let dumpData = async (config, queries, client) => {
       ...result,
       ...(await client
         .query({
-          query: queries[exportQueries[entityName].query]
+          query: queries[exportQueries[entityName].query],
         })
         .then(res => {
           if (exportQueries[entityName].process) {
@@ -258,7 +258,7 @@ export let dumpData = async (config, queries, client) => {
           } else {
             return res.data;
           }
-        }))
+        })),
     };
   }
   return result;

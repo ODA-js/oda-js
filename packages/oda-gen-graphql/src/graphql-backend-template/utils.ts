@@ -20,20 +20,20 @@ export const defaultTypeMapper = {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
-    RichText: ['richtext']
+    RichText: ['richtext'],
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
     string: ['string', 'text', '*', 'uuid', 'id', 'identity', 'richtext'],
     date: ['date', 'time', 'datetime'],
-    boolean: ['bool', 'boolean']
+    boolean: ['bool', 'boolean'],
   },
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
     Text: ['string', 'text', '*', 'richtext'],
     ID: ['uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
-    Boolean: ['bool', 'boolean']
+    Boolean: ['bool', 'boolean'],
   },
   graphql: {
     Int: ['int', 'integer'],
@@ -42,7 +42,7 @@ export const defaultTypeMapper = {
     JSON: ['object', 'json'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
-    ID: ['id', 'identity']
+    ID: ['id', 'identity'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -50,7 +50,7 @@ export const defaultTypeMapper = {
     'mongoose.Schema.Types.Mixed': ['object', 'json'],
     Boolean: ['bool', 'boolean'],
     Date: ['date'],
-    'mongoose.Schema.Types.ObjectId': ['id']
+    'mongoose.Schema.Types.ObjectId': ['id'],
   },
   sequelize: {
     'DataTypes.INTEGER': ['int', 'integer', 'identity'],
@@ -63,16 +63,16 @@ export const defaultTypeMapper = {
     'DataTypes.UUID': ['uuid'],
     'DataTypes.UUID, defaultValue: Sequelize.UUIDV4': ['uuid_pk'],
     'DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId()': [
-      'id_pk'
-    ]
+      'id_pk',
+    ],
   },
   typescript: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
     string: ['string', 'text', 'id', '*', 'uuid', 'richtext'],
     boolean: ['bool', 'boolean'],
     Date: ['date'],
-    object: ['json', 'object']
-  }
+    object: ['json', 'object'],
+  },
 };
 
 export function prepareMapper(mapper: { [key: string]: string[] }) {
@@ -94,7 +94,7 @@ export function prepareMapper(mapper: { [key: string]: string[] }) {
 
 export function printArguments(
   field: { args: any },
-  typeMapper: (string) => string
+  typeMapper: (string) => string,
 ) {
   let result = '';
   if (field.args) {
@@ -116,7 +116,7 @@ export function printArguments(
 export function connectionName(
   entity: Entity,
   fieldName: string,
-  rel: RelationBase
+  rel: RelationBase,
 ) {
   return `${rel.ref.entity}To${entity.name}As_${fieldName}`;
 }

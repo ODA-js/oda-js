@@ -11,16 +11,16 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true
-        }
+          entity: true,
+        },
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
-            modelType: 'notEntity'
-          })
-        }
-      }
+            modelType: 'notEntity',
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -29,16 +29,16 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          entity: true
-        }
+          entity: true,
+        },
       },
       package: {
         items: {
           get: jest.fn().mockReturnValueOnce({
-            modelType: 'entity'
-          })
-        }
-      }
+            modelType: 'entity',
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });

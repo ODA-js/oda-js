@@ -13,14 +13,14 @@ describe('rule', () => {
       relation: {
         ref: {
           backField: true,
-          updateWith
-        }
+          updateWith,
+        },
       },
       entity: {
         fields: {
-          get: jest.fn().mockReturnValueOnce(false)
-        }
-      }
+          get: jest.fn().mockReturnValueOnce(false),
+        },
+      },
     } as any);
     expect(updateWith).toBeCalledWith({ backField: 'id' });
     expect(result).toMatchSnapshot();
@@ -31,14 +31,14 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: true
-        }
+          backField: true,
+        },
       },
       entity: {
         fields: {
-          get: jest.fn().mockReturnValueOnce(true)
-        }
-      }
+          get: jest.fn().mockReturnValueOnce(true),
+        },
+      },
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();

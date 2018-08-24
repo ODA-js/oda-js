@@ -12,9 +12,9 @@ describe('rule', () => {
       relation: {
         opposite: true,
         ref: {
-          entity: true
+          entity: true,
         },
-        verb: 'BelongsTo'
+        verb: 'BelongsTo',
       },
       package: {
         items: {
@@ -24,13 +24,13 @@ describe('rule', () => {
               has: jest.fn().mockReturnValueOnce(true),
               get: jest.fn().mockReturnValueOnce({
                 relation: {
-                  verb: 'BelongsTo'
-                }
-              })
-            }
-          })
-        }
-      }
+                  verb: 'BelongsTo',
+                },
+              }),
+            },
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -40,9 +40,9 @@ describe('rule', () => {
       relation: {
         opposite: true,
         ref: {
-          entity: true
+          entity: true,
         },
-        verb: 'BelongsTo'
+        verb: 'BelongsTo',
       },
       package: {
         items: {
@@ -52,13 +52,13 @@ describe('rule', () => {
               has: jest.fn().mockReturnValueOnce(true),
               get: jest.fn().mockReturnValueOnce({
                 relation: {
-                  verb: 'HasMany'
-                }
-              })
-            }
-          })
-        }
-      }
+                  verb: 'HasMany',
+                },
+              }),
+            },
+          }),
+        },
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });

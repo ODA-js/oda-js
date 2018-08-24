@@ -13,12 +13,12 @@ describe('rule', () => {
       field: {
         identity: true,
         indexed: true,
-        updateWith
-      }
+        updateWith,
+      },
     } as any);
     expect(updateWith).toBeCalledWith({
       identity: null,
-      indexed: null
+      indexed: null,
     });
     expect(result).toMatchSnapshot();
   });
@@ -29,8 +29,8 @@ describe('rule', () => {
       field: {
         identity: false,
         indexed: false,
-        updateWith
-      }
+        updateWith,
+      },
     } as any);
     expect(updateWith).not.toBeCalled();
     expect(result).toMatchSnapshot();

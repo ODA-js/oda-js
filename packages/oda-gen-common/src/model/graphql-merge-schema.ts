@@ -43,18 +43,17 @@ function nodeMerger(objValue, srcValue, key, object, source, stack) {
     }
   } else {
     switch (key) {
-      case 'kind':
-        {
-          if (!object.kind.match(/Definition/)) {
-            if (source.kind.match(/Definition/)) {
-              return srcValue;
-            } else {
-              return object.kind.replace(/Extension/i, 'Definition');
-            }
+      case 'kind': {
+        if (!object.kind.match(/Definition/)) {
+          if (source.kind.match(/Definition/)) {
+            return srcValue;
           } else {
-            return objValue;
+            return object.kind.replace(/Extension/i, 'Definition');
           }
+        } else {
+          return objValue;
         }
+      }
       case 'loc':
         return objValue;
       case 'name':

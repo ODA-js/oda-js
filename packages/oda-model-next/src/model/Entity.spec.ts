@@ -22,14 +22,14 @@ describe('Entity', () => {
       entity.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
 
     expect(entity.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
-      title: 'very cool title'
+      title: 'very cool title',
     });
   });
 
@@ -38,15 +38,15 @@ describe('Entity', () => {
       entity.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(entity.toJS()).toMatchSnapshot();
     expect(() =>
       entity.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(entity.toJS()).toMatchSnapshot();
   });
@@ -57,8 +57,8 @@ describe('Entity', () => {
         name: 'cool',
         description: 'very cool',
         title: 'very cool title',
-        fields: [{ name: 'one' }, { name: 'one' }]
-      })
+        fields: [{ name: 'one' }, { name: 'one' }],
+      }),
     ).not.toThrow();
 
     expect(entity.toJS()).toMatchSnapshot();
@@ -72,9 +72,9 @@ describe('Entity', () => {
         title: 'very cool title',
         fields: {
           one: { type: 'string' },
-          two: {}
-        }
-      })
+          two: {},
+        },
+      }),
     ).not.toThrow();
 
     expect(entity.toJS()).toMatchSnapshot();

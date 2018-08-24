@@ -6,7 +6,7 @@ import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
 import {
   IEntityRef,
   IEntityRefInit,
-  IEntityRefStore
+  IEntityRefStore,
 } from '../interfaces/IEntityRef';
 import { Persistent } from './Persistent';
 import { IRelationContext } from '../contexts/IRelationContext';
@@ -17,7 +17,7 @@ import { IFieldContext } from '../contexts/IFieldContext';
 export const DefaultEntityRef: IEntityRefStore = {
   backField: '',
   entity: '',
-  field: ''
+  field: '',
 };
 
 // tslint:disable-next-line:variable-name
@@ -61,7 +61,7 @@ export class EntityRef
   }
 
   protected reverse(
-    input: Record<IEntityRefStore> & Readonly<IEntityRefStore>
+    input: Record<IEntityRefStore> & Readonly<IEntityRefStore>,
   ): IEntityRef {
     const result: IEntityRef = {} as any;
     if (input) {
@@ -79,7 +79,7 @@ export class EntityRef
 
   constructor(
     init?: string | Partial<IEntityRef>,
-    context?: IRelationContext | IFieldContext
+    context?: IRelationContext | IFieldContext,
   ) {
     super(context);
     if (typeof init === 'string') {
@@ -89,8 +89,8 @@ export class EntityRef
           this.transform({
             backField: res[1],
             entity: inflected.classify(res[2]),
-            field: camelcase(res[3].trim())
-          })
+            field: camelcase(res[3].trim()),
+          }),
         );
       }
     } else {

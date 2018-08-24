@@ -11,12 +11,12 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: false
-        }
+          backField: false,
+        },
       },
       field: {
-        identity: true
-      }
+        identity: true,
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -25,12 +25,12 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: false
-        }
+          backField: false,
+        },
       },
       field: {
-        identity: 'some composite key'
-      }
+        identity: 'some composite key',
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });
@@ -39,12 +39,12 @@ describe('rule', () => {
     const result = rule.validate({
       relation: {
         ref: {
-          backField: false
-        }
+          backField: false,
+        },
       },
       field: {
-        identity: 'some composite key'
-      }
+        identity: 'some composite key',
+      },
     } as any);
     expect(result).toMatchSnapshot();
   });

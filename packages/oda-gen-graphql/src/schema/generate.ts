@@ -24,17 +24,17 @@ export default function generateSchema({
   templateRoot = path.resolve(__dirname, '../../js-templates'),
   acl,
   context,
-  logs
+  logs,
 }: GeneratorInit) {
   const actualTypeMapper = deepMerge(
     defaultTypeMapper,
-    context.typeMapper || {}
+    context.typeMapper || {},
   );
 
   const defaultAdapter = context.defaultAdapter;
 
   const typeMapper: { [key: string]: (string) => string } = Object.keys(
-    actualTypeMapper
+    actualTypeMapper,
   ).reduce((hash, type) => {
     hash[type] = prepareMapper(actualTypeMapper[type]);
     return hash;
@@ -45,14 +45,14 @@ export default function generateSchema({
   const aclAllow = secureAcl.allow.bind(secureAcl);
 
   let raw = templateEngine({
-    root: templateRoot
+    root: templateRoot,
   });
 
   //mutating config...
   const { modelStore, packages } = initModel({
     schema,
     hooks,
-    secureAcl
+    secureAcl,
   });
 
   const existingTypes = knownTypes(actualTypeMapper);
@@ -75,7 +75,7 @@ export default function generateSchema({
         pkg.name,
         aclAllow,
         typeMapper,
-        defaultAdapter
+        defaultAdapter,
       );
       console.timeEnd('gql');
     });

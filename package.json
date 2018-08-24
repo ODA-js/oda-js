@@ -52,11 +52,19 @@
     "bootstrap": "lerna bootstrap"
   },
   "lint-staged": {
-    "*.ts*": [
+    "*.tsx$": [
       "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
       "git add"
     ],
-    "*.js*": [
+    "*.jsx$": [
+      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "git add"
+    ],
+    "*.ts$": [
+      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "git add"
+    ],
+    "*.js$": [
       "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
       "git add"
     ]

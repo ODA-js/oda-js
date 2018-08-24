@@ -19,15 +19,15 @@ describe('Mutaion', () => {
     expect(
       () =>
         new Package({
-          items: []
-        })
+          items: [],
+        }),
     ).toThrow();
 
     expect(
       () =>
         new Package({
-          name: 'cool package'
-        })
+          name: 'cool package',
+        }),
     ).not.toThrow();
 
     expect(() => new Package()).not.toThrow();
@@ -45,14 +45,14 @@ describe('Mutaion', () => {
         description: 'very cool',
         title: 'very cool title',
         acl: 100,
-        abstract: true
-      })
+        abstract: true,
+      }),
     ).not.toThrow();
     expect(pkg.toJS()).toMatchSnapshot();
     expect(() =>
       pkg.updateWith({
-        abstract: false
-      })
+        abstract: false,
+      }),
     ).not.toThrow();
     expect(pkg.toJS()).toMatchSnapshot();
   });
@@ -62,15 +62,15 @@ describe('Mutaion', () => {
       pkg.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(pkg.toJS()).toMatchSnapshot();
     expect(() =>
       pkg.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(pkg.toJS()).toMatchSnapshot();
   });
@@ -78,18 +78,18 @@ describe('Mutaion', () => {
   it('update items', () => {
     expect(() =>
       pkg.updateWith({
-        items: []
-      })
+        items: [],
+      }),
     ).not.toThrow();
     expect(pkg.toJS()).toMatchSnapshot();
     expect(() =>
       pkg.updateWith({
         items: [
           new Mutation({
-            name: '1'
-          })
-        ]
-      })
+            name: '1',
+          }),
+        ],
+      }),
     ).not.toThrow();
 
     expect(pkg.toJS()).toMatchSnapshot();
@@ -103,8 +103,8 @@ describe('Mutaion', () => {
         title: 'very cool title',
         acl: 100,
         abstract: false,
-        items: [new Mutation({ name: 'one' }), new Mutation({ name: 'one' })]
-      })
+        items: [new Mutation({ name: 'one' }), new Mutation({ name: 'one' })],
+      }),
     ).not.toThrow();
 
     expect(pkg.toJS()).toMatchSnapshot();

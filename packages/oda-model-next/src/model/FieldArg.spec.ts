@@ -22,14 +22,14 @@ describe('FieldArg', () => {
       enumItem.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
 
     expect(enumItem.toJS()).toMatchObject({
       name: 'cool',
       description: 'very cool',
-      title: 'very cool title'
+      title: 'very cool title',
     });
   });
 
@@ -38,15 +38,15 @@ describe('FieldArg', () => {
       enumItem.updateWith({
         name: 'cool',
         description: 'very cool',
-        title: 'very cool title'
-      })
+        title: 'very cool title',
+      }),
     ).not.toThrow();
     expect(enumItem.toJS()).toMatchSnapshot();
     expect(() =>
       enumItem.updateWith({
         description: null,
-        title: undefined
-      })
+        title: undefined,
+      }),
     ).not.toThrow();
     expect(enumItem.toJS()).toMatchSnapshot();
   });
@@ -58,8 +58,8 @@ describe('FieldArg', () => {
         type: 'string',
         title: 'Other',
         defaultValue: 'OTHER',
-        description: 'the other values'
-      })
+        description: 'the other values',
+      }),
     ).not.toThrow();
 
     expect(enumItem.defaultValue).not.toBeNull();
