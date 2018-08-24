@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepublishOnly": "./compile.sh"
+    "prepublish": "./compile.sh"
   },
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",

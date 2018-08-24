@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test-inspect": "node --inspect-brk ./node_modules/.bin/jest",
-    "prepublishOnly": "./compile.sh"
+    "prepublish": "./compile.sh"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
