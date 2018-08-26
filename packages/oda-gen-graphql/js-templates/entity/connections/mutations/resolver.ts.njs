@@ -95,8 +95,8 @@ for (let fname of connection.ref.fields){
       info
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
-      let #{entity.ownerFieldName} } = args.#{entity.ownerFieldName};
-      let #{connection.refFieldName} } = args.#{connection.refFieldName};
+      let #{entity.ownerFieldName} = args.#{entity.ownerFieldName};
+      let #{connection.refFieldName} = args.#{connection.refFieldName};
       let payload = {
         #{entity.ownerFieldName},
         #{connection.refFieldName},
