@@ -7,7 +7,7 @@ import * as path from 'path';
 import { writeFile } from './writeFile';
 import { ModelPackage } from 'oda-model';
 
-export default function generate(
+export default function generator(
   pkg: ModelPackage,
   raw: Factory,
   rootDir: string,

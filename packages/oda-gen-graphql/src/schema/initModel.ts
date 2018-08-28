@@ -63,7 +63,7 @@ export default function({
   schema,
   hooks,
   secureAcl,
-  packageList = ['system'],
+  packageList,
 }: {
   [keys: string]: any;
   secureAcl: AclDefault;
@@ -149,6 +149,15 @@ export default function({
     .forEach(p => {
       modelStore.addPackage(p);
     });
+
+  if (!Array.isArray(packageList)) {
+    packageList = Array.from(modelStore.packages.keys());
+  } else {
+    if (packageList.indexOf('system') === -1) {
+      packageList.push('system');
+    }
+  }
+  debugger;
   let packages = new Map(
     Array.from(modelStore.packages.entries()).filter(i => {
       return packageList.indexOf(i[0]) !== -1;

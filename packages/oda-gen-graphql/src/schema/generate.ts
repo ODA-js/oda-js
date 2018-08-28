@@ -10,14 +10,14 @@ const { defaultTypeMapper, prepareMapper } = template.utils;
 
 import templateEngine from './templateEngine';
 import initModel from './initModel';
-import generate from './generator';
+import generator from './generator';
 
 import { collectErrors, showLog, knownTypes, hasResult } from './validate';
 import { commit } from './writeFile';
 import { IValidationResult } from 'oda-model';
 import { GeneratorInit } from './init';
 
-export default function generateSchema({
+export default function generate({
   hooks,
   schema,
   rootDir,
@@ -33,7 +33,7 @@ export default function generateSchema({
 
   const defaultAdapter = context.defaultAdapter;
 
-  const typeMapper: { [key: string]: (string) => string } = Object.keys(
+  const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
     actualTypeMapper,
   ).reduce((hash, type) => {
     hash[type] = prepareMapper(actualTypeMapper[type]);
@@ -47,7 +47,7 @@ export default function generateSchema({
   let raw = templateEngine({
     root: templateRoot,
   });
-
+  debugger;
   //mutating config...
   const { modelStore, packages } = initModel({
     schema,
@@ -66,9 +66,9 @@ export default function generateSchema({
     fs.ensureDirSync(rootDir);
     // generate per package
     debugger;
-    packages.forEach(pkg => {
+    [...packages.values()].filter(p => !p.abstract).forEach(pkg => {
       console.time('gql');
-      generate(
+      generator(
         pkg,
         raw,
         rootDir,
