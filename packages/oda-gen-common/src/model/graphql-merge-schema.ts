@@ -4,6 +4,7 @@ import { getDescription } from 'graphql/utilities/buildASTSchema';
 import * as _ from 'lodash';
 
 import { Kind } from 'graphql';
+import { strictEqual } from 'assert';
 
 const isObjectTypeDefinition = def =>
   def.kind === Kind.OBJECT_TYPE_DEFINITION ||
@@ -37,7 +38,7 @@ function mergeDefinitions(objValue, srcValue) {
 }
 
 function nodeMerger(objValue, srcValue, key, object, source, stack) {
-  if (stack.size == 0) {
+  if (stack.size === 0) {
     if (!object.hasOwnProperty(key)) {
       return srcValue;
     }
@@ -63,7 +64,6 @@ function nodeMerger(objValue, srcValue, key, object, source, stack) {
       case 'fields':
         return mergeDefinitions(objValue, srcValue);
       case 'values':
-        debugger;
         return mergeDefinitions(objValue, srcValue);
       case 'types':
         return mergeDefinitions(objValue, srcValue);
@@ -73,6 +73,8 @@ function nodeMerger(objValue, srcValue, key, object, source, stack) {
         return mergeDefinitions(objValue, srcValue);
       case 'locations':
         return mergeDefinitions(objValue, srcValue);
+      default:
+        return;
     }
   }
 }
@@ -85,9 +87,7 @@ const _makeMergedDefinitions = defs => {
       return _.mergeWith(
         mergableDefs,
         {
-          [def.kind !== Kind.SCHEMA_DEFINITION
-            ? def.name.value
-            : 'schema']: def,
+          [def.kind !== Kind.SCHEMA_DEFINITION ? def.name.value : 'schema']: def,
         },
         nodeMerger,
       );

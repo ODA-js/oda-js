@@ -1,6 +1,7 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
 import { merge } from 'lodash';
 import mergeTypes from './graphql-merge-schema';
+import * as jsonUtils from '../lib';
 
 import {
   parse,
@@ -14,6 +15,7 @@ import {
   DirectiveDefinitionNode,
   NamedTypeNode,
 } from 'graphql';
+import _ = require('lodash');
 
 export type ResolverFunction = (
   owner,
@@ -142,16 +144,16 @@ export function isValidSchema(inp: any): inp is string | DocumentNode {
   }
 }
 
-export interface IGQLBaseInput<Resolver = any> {
+export interface IGQLBaseInput<Reslvr = any> {
   type?: ModelTypes;
   schema?: string | DocumentNode;
-  resolver?: Resolver;
+  resolver?: Reslvr;
 }
 
-export interface IGQLInput<Resolver = any> extends IGQLBaseInput<Resolver> {
+export interface IGQLInput<Reslvr = any> extends IGQLBaseInput<Reslvr> {
   type?: ModelTypes;
   schema: string | DocumentNode;
-  resolver?: Resolver;
+  resolver?: Reslvr;
 }
 
 export interface IGQLType {
@@ -167,9 +169,39 @@ export interface IGQLTypeDef extends IGQLType {
   resolver?: IResolvers;
 }
 
-export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
+export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
+  public get isExtend(): boolean {
+    return this._isExtend;
+  }
+  public get type(): ModelTypes {
+    return this._type;
+  }
+  public get name(): string {
+    return this._name;
+  }
+  public get schema(): string {
+    return this._schema;
+  }
+  public get schemaAST(): DocumentNode {
+    return this._schemaAST;
+  }
+  public get resolver(): null | IResolvers {
+    return this._resolver;
+  }
+  public get valid(): boolean {
+    return !!this._schema && !!this._name;
+  }
   public complex: boolean = false;
-  static create(inp: IGQLInput | string | DocumentNode): GQLType | GQLType[] {
+  protected _isExtend: boolean;
+  protected _type: ModelType;
+  protected _name: string;
+  protected _schema: string;
+  protected _schemaAST: DocumentNode;
+  protected _resolver?: any;
+  protected node: DefinitionNode[] | DefinitionNode;
+  public static create(
+    inp: IGQLInput | string | DocumentNode,
+  ): GQLType | GQLType[] {
     if (isValidInput(inp)) {
       let schema, type: ModelTypes;
       if (isIGQLInput(inp)) {
@@ -249,31 +281,6 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
       throw new Error('not valid input');
     }
   }
-  public get isExtend(): boolean {
-    return this._isExtend;
-  }
-  protected _isExtend: boolean;
-  protected _type: ModelType;
-  public get type(): ModelTypes {
-    return this._type;
-  }
-  protected _name: string;
-  public get name(): string {
-    return this._name;
-  }
-  protected _schema: string;
-  protected _schemaAST: DocumentNode;
-  public get schema(): string {
-    return this._schema;
-  }
-  public get schemaAST(): DocumentNode {
-    return this._schemaAST;
-  }
-  protected _resolver?: any;
-  public get resolver(): null | IResolvers {
-    return this._resolver;
-  }
-  protected node: DefinitionNode[] | DefinitionNode;
   protected resolveName(schema: string | DocumentNode) {
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
     if (parsed.definitions) {
@@ -281,14 +288,12 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
     } else if (parsed.hasOwnProperty('name')) {
       return ((parsed as any) as NamedTypeNode).name.value;
     } else {
-      debugger;
+      throw new Error('nonsence');
     }
   }
   constructor(
-    args: IGQLBaseInput<Resolver> | IGQLInput<Resolver> | string | DocumentNode,
+    args: IGQLBaseInput<Reslvr> | IGQLInput<Reslvr> | string | DocumentNode,
   ) {
-    if (this.complex) {
-    }
     if (isValidInput(args)) {
       if (isValidSchema(args)) {
         this.attachSchema(args);
@@ -300,7 +305,7 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
       }
     }
   }
-  public attachResolver(resolver: Resolver) {
+  public attachResolver(resolver: Reslvr) {
     this._resolver = resolver;
   }
 
@@ -327,9 +332,6 @@ export abstract class GQLType<Resolver = any> implements Readonly<IGQLTypeDef> {
       }
     }
   }
-  public get valid(): boolean {
-    return !!this._schema && !!this._name;
-  }
 }
 
 export class Directive extends GQLType {
@@ -340,7 +342,7 @@ export class Directive extends GQLType {
   }
 }
 
-export class Fields<Resolver> extends GQLType<Resolver>
+export class Fields<Reslvr> extends GQLType<Reslvr>
   implements Readonly<IGQLTypeDef> {
   protected _rootName: string;
   protected resolveName(schema: string | DocumentNode) {
@@ -592,11 +594,13 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
   public get items(): GQLType[] {
     return this._items;
   }
-
-  protected _compiledHooks: ResolverHook[];
-  protected _hooks: ResolverHook[] = [];
   public get hooks(): ResolverHook[] {
-    return this._hooks;
+    return [
+      ...(this._hooks.length > 0 ? this._hooks : []),
+      ...(this._isBuilt && this._compiledHooks.length > 0
+        ? this._compiledHooks
+        : []),
+    ];
   }
   /**
    * initial resolvers
@@ -604,6 +608,19 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
   public get resolvers(): IResolvers {
     return this._resolvers;
   }
+  public get isBuilt(): boolean {
+    return this._isBuilt;
+  }
+
+  public get valid(): boolean {
+    return true;
+  }
+  public get schema(): string {
+    return this._isBuilt ? this._schema : '';
+  }
+  protected _compiledHooks: ResolverHook[];
+  protected _hooks: ResolverHook[] = [];
+  protected _resolversClean: IResolvers;
   protected _resolvers: IResolvers;
   /**
    * All entries for this schema
@@ -626,6 +643,17 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    */
   protected _subscriptions: Subscription[];
   /**
+   * check is schema build
+   */
+  protected _isBuilt: boolean = false;
+
+  protected _initialSchema: string;
+
+  protected _rootQuery?: string = 'Query';
+  protected _rootMutation?: string = 'Mutation';
+  protected _rootSubscription?: string = 'Subscription';
+
+  /**
    * create item
    * @param inp the item must be
    */
@@ -646,72 +674,54 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
         return this.add(i);
       });
     } else {
-      if (!~this._items.indexOf(inp)) {
+      if (this._items.indexOf(inp) === -1) {
         this._items.push(inp);
         return inp;
       }
     }
   }
-  /**
-   * check is schema build
-   */
-  protected _isBuilt: boolean = false;
-  public get isBuilt(): boolean {
-    return this._isBuilt;
-  }
 
   /**
    * build schema
    */
-  public build() {
-    debugger;
-    if (Array.isArray(this._items) && this._items.length > 0) {
-      this._items
-        .filter(i => i instanceof Schema)
-        .forEach(i => (i as Schema).build());
-
-      this._schema = mergeTypes(
-        [...this._items.map(i => i.schema), this._initialSchema].filter(i => i),
-      );
-
-      this._schemaAST = parse(this._schema);
-
-      this._resolvers = merge(
-        {},
-        this._resolver,
-        ...this._items
-          .filter(i => !(i instanceof Schema))
-          .map(i => i.resolver)
-          .filter(i => i),
-        ...this._items
+  public build(force: boolean = false) {
+    if (!this._isBuilt || force) {
+      if (Array.isArray(this._items) && this._items.length > 0) {
+        this._items
           .filter(i => i instanceof Schema)
-          .map(i => (i as Schema).resolvers)
-          .filter(i => i),
-      );
+          .forEach(i => (i as Schema).build());
 
-      this._compiledHooks = this._items
-        .filter(r => r.type === ModelType.schema)
-        .map(r => (r as Schema).hooks)
-        .reduce((res, curr) => {
-          res.push(...curr);
-          return res;
-        }, []);
-      this._isBuilt = true;
+        this._schema = mergeTypes(
+          [...this._items.map(i => i.schema), this._initialSchema].filter(
+            i => i,
+          ),
+        );
+
+        this._schemaAST = parse(this._schema);
+        this._resolversClean = this._resolvers = merge(
+          this._resolver,
+          ...this._items
+            .map(
+              i => (i instanceof Schema ? (i as Schema).resolvers : i.resolver),
+            )
+            .filter(i => i),
+        );
+
+        this._compiledHooks = this._items
+          .filter(r => r.type === ModelType.schema)
+          .map(r => (r as Schema).hooks)
+          .reduce((res, curr) => {
+            res.push(...curr);
+            return res;
+          }, []);
+        this._isBuilt = true;
+      }
     }
   }
-
-  protected _initialSchema: string;
-  public get schema(): string {
-    return this._isBuilt ? this._schema : '';
-  }
-
-  protected _rootQuery?: string = 'Query';
-  protected _rootMutation?: string = 'Mutation';
-  protected _rootSubscription?: string = 'Subscription';
   /**
    * override inherited
    */
-  protected resolveName() {
+  public resolveName() {
     return '';
   }
   constructor(args: SchemaInput | string) {
@@ -764,7 +774,42 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
     }
     this.checkSchema();
   }
-  public get valid(): boolean {
-    return true;
+
+  public applyHooks() {
+    let modelHooks = this.hooks;
+    for (let i = 0, len = modelHooks.length; i < len; i++) {
+      let hookList = Object.keys(modelHooks[i]);
+      for (let j = 0, jLen = hookList.length; j < jLen; j++) {
+        let key = hookList[j];
+        jsonUtils.set(
+          this.resolvers,
+          key,
+          modelHooks[i][key](jsonUtils.get(this.resolvers, key)),
+        );
+      }
+    }
+  }
+  public fixSchema() {
+    this.attachSchema(_.cloneDeepWith(this._schemaAST, cloneCustomizer));
+  }
+}
+
+const needToFix = def =>
+  def.kind === Kind.ENUM_TYPE_EXTENSION ||
+  def.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION ||
+  def.kind === Kind.INTERFACE_TYPE_EXTENSION ||
+  def.kind === Kind.OBJECT_TYPE_EXTENSION ||
+  def.kind === Kind.SCALAR_TYPE_EXTENSION ||
+  def.kind === Kind.UNION_TYPE_EXTENSION;
+
+// optimize!!! it!!
+function cloneCustomizer(value, index, object, stack) {
+  if (value && value.kind && needToFix(value)) {
+    return {
+      ...value,
+      kind: value.kind.replace(/Extension/i, 'Definition'),
+    };
+  } else if (value && value.kind && value.kind !== Kind.DOCUMENT) {
+    return value;
   }
 }

@@ -11,26 +11,26 @@ type RootMutation {
   updateUser(id: String, payload: UserPayload): String
   deleteUser(id: String, payload: UserPayload): String
   login(user: String): String
-  createPicture: string
+  createPicture: String
 }
 
 union Images = Image | Picture
 
 type Image implements Node {
-  name: string
+  name: String
   size: ImageSize
 }
 
 type Viewer {
-  username(short: Boolean): string
+  username(short: Boolean): String
 }
 
-extend type RootQuery {
+type RootQuery {
   viewer(user: String): Viewer
 }
 
 type Picture implements Node & INode {
-  name: string @example
+  name: String @example
   size(name: String @example): ImageSize
   isJPG: ImageSize
 }
@@ -43,6 +43,73 @@ interface INode {
   id: ID!
 }
 "
+`;
+
+exports[`Merge override__resolvers 1`] = `
+"union Images = Image | Picture
+
+input UserPayload {
+  name: String
+  password: String
+}
+
+directive @example on FIELD | FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+interface INode {
+  id: ID!
+}
+
+type RootMutation {
+  updateUser(id: String, payload: UserPayload): String
+  deleteUser(id: String, payload: UserPayload): String
+  login(user: String): String
+  createPicture: Images
+}
+
+type Image implements INode {
+  id: ID!
+  name: String
+  size: ImageSize
+}
+
+type RootQuery {
+  images: [Image]
+  viewer(user: String): Viewer
+}
+
+type Viewer {
+  username(short: Boolean): String
+}
+
+type Picture implements INode {
+  name: String @example
+  size(name: String @example): ImageSize
+  id: ID!
+  isJPG: ImageSize
+}
+
+enum ImageSize {
+  jpg
+  gif
+}
+
+schema {
+  mutation: RootMutation
+  query: RootQuery
+}
+"
+`;
+
+exports[`Merge override__resolvers 2`] = `
+Object {
+  "data": Object {
+    "createPicture": Object {
+      "id": "coolPicture",
+      "isJPG": "jpg",
+      "name": "cool",
+    },
+  },
+}
 `;
 
 exports[`Schema created from one graphQl 1`] = `
@@ -69,24 +136,24 @@ exports[`Schema created from one graphQl 2`] = `
   updateUser(id: String, payload: UserPayload): String
   deleteUser(id: String, payload: UserPayload): String
   login(user: String): String
-  createPicture: string
+  createPicture: String
 }
 
 type Image {
-  name: string
+  name: String
   size: ImageSize
 }
 
 type Viewer {
-  username: string
+  username: String
 }
 
-extend type RootQuery {
+type RootQuery {
   viewer(user: String): Viewer
 }
 
 type Picture {
-  name: string
+  name: String
   size: ImageSize
   isJPG: ImageSize
 }
@@ -396,7 +463,7 @@ Object {
                 "end": 183,
                 "start": 177,
               },
-              "value": "string",
+              "value": "String",
             },
           },
         },
@@ -449,7 +516,7 @@ Object {
                 "end": 214,
                 "start": 208,
               },
-              "value": "string",
+              "value": "String",
             },
           },
         },
@@ -535,7 +602,7 @@ Object {
                 "end": 268,
                 "start": 262,
               },
-              "value": "string",
+              "value": "String",
             },
           },
         },
@@ -627,7 +694,7 @@ Object {
         },
       ],
       "interfaces": Array [],
-      "kind": "ObjectTypeExtension",
+      "kind": "ObjectTypeDefinition",
       "loc": Object {
         "end": 328,
         "start": 272,
@@ -674,7 +741,7 @@ Object {
                 "end": 359,
                 "start": 353,
               },
-              "value": "string",
+              "value": "String",
             },
           },
         },

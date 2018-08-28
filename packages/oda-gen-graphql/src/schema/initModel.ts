@@ -1,6 +1,6 @@
 import { lib } from 'oda-gen-common';
 import { MetaModel } from 'oda-model';
-import * as path from 'path';
+import * as pathLib from 'path';
 import AclDefault from '../acl';
 
 const { get } = lib;
@@ -70,12 +70,11 @@ export default function({
 }) {
   let modelStore = new MetaModel('system');
   if (typeof schema === 'string') {
-    modelStore.loadModel(path.resolve(__dirname, '../test.json'));
+    modelStore.loadModel(pathLib.resolve(__dirname, '../test.json'));
   } else {
     modelStore.loadPackage(schema, hooks);
     modelStore.saveModel('compiledModel.json');
   }
-  debugger;
   let pckgs = initPackages(secureAcl);
 
   modelStore.entities.forEach((entity, key) => {
@@ -150,7 +149,6 @@ export default function({
     .forEach(p => {
       modelStore.addPackage(p);
     });
-  debugger;
   let packages = new Map(
     Array.from(modelStore.packages.entries()).filter(i => {
       return packageList.indexOf(i[0]) !== -1;

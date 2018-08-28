@@ -7,6 +7,8 @@
   'import-common-mutation-delete-slot'
   'export-subscriptions-slot'
   'item-query-list-index-slot'
+  'use-embed-entity-create-rel-mutation-types'
+  'use-embed-entity-update-rel-mutation-types'
 #>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {

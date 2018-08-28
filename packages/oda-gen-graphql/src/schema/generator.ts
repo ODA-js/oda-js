@@ -13,11 +13,12 @@ export default function generate(
   rootDir: string,
   role: string,
   allow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (s: string) => string },
   adapter: string,
 ) {
   const sources = [];
   const prepared = [];
+  // tslint:disable-next-line:no-console
   console.time('prepare');
   prepared.push(templatePkg.prepare(pkg, role, allow, typeMapper, adapter));
   prepared.push(
@@ -28,7 +29,9 @@ export default function generate(
       };
     }),
   );
+  // tslint:disable-next-line:no-console
   console.timeEnd('prepare');
+  // tslint:disable-next-line:no-console
   console.time('generate');
   prepared
     .map(item => {
@@ -44,6 +47,7 @@ export default function generate(
       result.push(...curr);
       return result;
     }, sources);
+  // tslint:disable-next-line:no-console
   console.timeEnd('generate');
   sources.forEach(f => {
     let fn = path.join(
@@ -52,7 +56,7 @@ export default function generate(
         pkg.name,
         ...(f.entity ? ['entities', f.entity] : [false]),
         f.name,
-      ].filter(f => f),
+      ].filter(i => i),
     );
     writeFile(fn, f.content);
   });

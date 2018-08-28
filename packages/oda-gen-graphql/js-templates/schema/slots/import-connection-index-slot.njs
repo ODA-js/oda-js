@@ -4,6 +4,8 @@
   'import-helpers-index-slot'
   'import-subscriptions-slot'
   'import-query-list-index-slot'
+  'import-embed-entity-create-rel-mutation-types'
+  'import-embed-entity-update-rel-mutation-types'
 -#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {

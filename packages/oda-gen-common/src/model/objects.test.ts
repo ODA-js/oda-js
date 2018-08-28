@@ -1,6 +1,8 @@
 import 'jest';
-import { Enum, Query, GQLType, Schema, Type } from '.';
+import { Enum, Query, GQLType, Schema, Type, Mutation, Union } from '.';
 import gql from 'graphql-tag';
+import { makeExecutableSchema } from 'graphql-tools';
+import { runQuery } from 'apollo-server-core';
 
 describe('Enum', () => {
   it('parse name from schema as ast', () => {
@@ -72,7 +74,7 @@ describe('GQLType', () => {
   it('creates Type', () => {
     const item = GQLType.create(gql`
       extend type Picture {
-        name: string
+        name: String
         size: ImageSize
       }
     `);
@@ -111,7 +113,7 @@ describe('Schema', () => {
       `,
         new Type(gql`
           extend type Picture {
-            name: string
+            name: String
             size: ImageSize
           }
         `),
@@ -122,7 +124,6 @@ describe('Schema', () => {
     expect(res.items.length).toBe(3);
   });
   it('created from one graphQl', () => {
-    debugger;
     const res = new Schema({
       name: 'Person',
       items: [
@@ -138,12 +139,12 @@ describe('Schema', () => {
             deleteUser(id: String, payload: UserPayload): String
           }
           type Image {
-            name: string
+            name: String
             size: ImageSize
           }
 
           type Viewer {
-            username: string
+            username: String
           }
 
           extend type RootMutation {
@@ -159,7 +160,7 @@ describe('Schema', () => {
             new Type({
               schema: gql`
                 type Picture {
-                  name: string
+                  name: String
                   size: ImageSize
                 }
               `,
@@ -170,7 +171,7 @@ describe('Schema', () => {
           ],
           schema: gql`
             extend type RootMutation {
-              createPicture: string
+              createPicture: String
             }
             extend type Picture {
               isJPG: ImageSize
@@ -204,6 +205,7 @@ describe('Schema', () => {
     expect(res.name).toBe('Person');
     expect(res.items.length).toBe(7);
     res.build();
+    res.fixSchema();
     expect(res.isBuilt).toBeTruthy();
     expect(res.resolvers).toMatchSnapshot();
     expect(res.schema).toMatchSnapshot();
@@ -219,7 +221,7 @@ describe('Merge', () => {
           schema: gql`
             directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
             type Picture implements Node {
-              name: string @example
+              name: String @example
               size(name: String @example): ImageSize
             }
           `,
@@ -231,7 +233,6 @@ describe('Merge', () => {
   });
 
   it('merge-schema', () => {
-    debugger;
     const res = new Schema({
       name: 'Person',
       items: [
@@ -252,12 +253,12 @@ describe('Merge', () => {
           }
           union Images = Image
           type Image implements Node {
-            name: string
+            name: String
             size: ImageSize
           }
 
           type Viewer {
-            username: string
+            username: String
           }
 
           extend type RootMutation {
@@ -273,12 +274,12 @@ describe('Merge', () => {
             new Type({
               schema: gql`
                 type Picture implements Node {
-                  name: string @example
+                  name: String @example
                   size(name: String @example): ImageSize
                 }
               `,
               resolver: {
-                size: () => null,
+                size: () => 1,
               },
             }),
           ],
@@ -289,10 +290,10 @@ describe('Merge', () => {
               mutation: RootMutation
             }
             type Viewer {
-              username(short: Boolean): string
+              username(short: Boolean): String
             }
             extend type RootMutation {
-              createPicture: string
+              createPicture: String
             }
             interface INode {
               id: ID!
@@ -326,7 +327,166 @@ describe('Merge', () => {
       },
     });
     res.build();
-    debugger;
+    res.fixSchema();
     expect(res.schema).toMatchSnapshot();
+  });
+  it('override__resolvers', async () => {
+    const res = new Schema({
+      name: 'Person',
+      items: [
+        new Union({
+          schema: gql`
+            union Images = Image
+          `,
+          resolver: () => {
+            return 'Picture';
+          },
+        }),
+        gql`
+          schema {
+            query: RootQuery
+            mutation: RootMutation
+          }
+          input UserPayload {
+            name: String
+            password: String
+          }
+          directive @example on FIELD
+          interface INode {
+            id: ID!
+          }
+          extend type RootMutation {
+            updateUser(id: String, payload: UserPayload): String
+          }
+          extend type RootMutation {
+            deleteUser(id: String, payload: UserPayload): String
+          }
+          type Image implements INode {
+            id: ID!
+            name: String
+            size: ImageSize
+          }
+          extend type RootQuery {
+            images: [Image]
+          }
+          type Viewer {
+            username: String
+          }
+
+          extend type RootMutation {
+            login(user: String): String
+          }
+          extend type RootQuery {
+            viewer(user: String): Viewer
+          }
+        `,
+        new Schema({
+          name: 'Picture',
+          items: [
+            new Type({
+              schema: gql`
+                type Picture implements INode {
+                  id: ID!
+                  name: String @example
+                  size(name: String @example): ImageSize
+                }
+              `,
+              resolver: {
+                size: () => 1,
+              },
+            }),
+          ],
+          schema: gql`
+            directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
+            union Images = Picture
+            enum ImageSize {
+              jpg
+              gif
+            }
+            schema {
+              mutation: RootMutation
+              query: RootQuery
+            }
+            type Viewer {
+              username(short: Boolean): String
+            }
+            extend type RootMutation {
+              createPicture: Picture
+            }
+            interface INode {
+              id: ID!
+            }
+            extend type Picture implements INode {
+              id: ID!
+              isJPG: ImageSize
+            }
+          `,
+          resolver: {
+            RootMutation: {
+              createPicture: () => ({
+                id: 'Images',
+                name: 'cool',
+              }),
+            },
+            Picture: {
+              isJPG: () => 'jpg',
+            },
+          },
+        }),
+        new Mutation({
+          schema: gql`
+            extend type RootMutation {
+              createPicture: Images
+            }
+          `,
+          resolver: () => ({
+            id: 'coolPicture',
+            name: 'cool',
+          }),
+        }),
+      ],
+      resolver: {
+        RootMutation: {
+          login: () => null,
+          deleteUser: () => null,
+          updateUser: () => null,
+        },
+        RootQuery: {
+          viewer: () => null,
+        },
+        Viewer: () => ({
+          username: 'system',
+        }),
+      },
+    });
+    res.build();
+    res.fixSchema();
+    const _schema = makeExecutableSchema({
+      typeDefs: res.schema,
+      resolvers: res.resolvers,
+    });
+    const result = await runQuery({
+      schema: _schema,
+      parsedQuery: gql`
+        mutation create {
+          createPicture {
+            ... on Picture {
+              isJPG
+              name
+              id
+            }
+            ... on Image {
+              id
+              name
+              size
+            }
+          }
+        }
+      `,
+      request: null,
+    });
+
+    expect(res.schema).toMatchSnapshot();
+    expect(result).toMatchSnapshot();
   });
 });

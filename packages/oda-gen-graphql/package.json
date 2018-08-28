@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
+    "watch": "tsc -w -p .",
     "prepare": "npm run clean && npm run compile",
     "compile": "tsc -p ./",
     "wipe": "./clean.sh",

@@ -8,6 +8,7 @@
     "test": "jest",
     "prepare": "npm run clean && npm run compile",
     "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
     "wipe": "./clean.sh",
     "clean": "rm -rf dist",
     "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
@@ -46,6 +47,9 @@
     ]
   },
   "devDependencies": {
+    "apollo-server-core": "^2.0.4",
+    "jest": "^23.5.0",
+    "ts-jest": "^23.1.4",
     "typescript": "^3.0.1"
   }
 }
