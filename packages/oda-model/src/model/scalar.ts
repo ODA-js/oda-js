@@ -6,4 +6,11 @@ export class Scalar extends ModelBase {
   constructor(obj: ScalarInput) {
     super(obj);
   }
+  public updateWith(obj: ScalarInput) {
+    if (obj) {
+      super.updateWith(obj);
+      const result = { ...this.$obj };
+      result.name = obj.name;
+    }
+  }
 }

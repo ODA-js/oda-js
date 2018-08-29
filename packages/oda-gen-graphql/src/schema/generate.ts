@@ -47,7 +47,6 @@ export default function generate({
   let raw = templateEngine({
     root: templateRoot,
   });
-  debugger;
   //mutating config...
   const { modelStore, packages } = initModel({
     schema,
@@ -55,9 +54,10 @@ export default function generate({
     secureAcl,
   });
 
-  const existingTypes = knownTypes(actualTypeMapper);
+  const existingTypes = knownTypes(actualTypeMapper, packages.get('system'));
 
   // generate per package
+  debugger;
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
   if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
@@ -65,7 +65,6 @@ export default function generate({
   } else {
     fs.ensureDirSync(rootDir);
     // generate per package
-    debugger;
     [...packages.values()].filter(p => !p.abstract).forEach(pkg => {
       console.time('gql');
       generator(

@@ -1,5 +1,10 @@
 import { lib } from 'oda-gen-common';
-import { IValidationResult, ValidationResultType, Validator } from 'oda-model';
+import {
+  IValidationResult,
+  ValidationResultType,
+  Validator,
+  ModelPackage,
+} from 'oda-model';
 import * as path from 'path';
 
 import AclDefault from '../acl';
@@ -76,18 +81,39 @@ export function showLog(
   });
 }
 
-export function knownTypes(typeMapper: {
-  [key: string]: { [key: string]: string[] };
-}) {
+export function knownTypes(
+  typeMapper: {
+    [key: string]: { [key: string]: string[] };
+  },
+  systemPackage?: ModelPackage,
+) {
   const result = {};
   Object.keys(typeMapper).forEach(mapper => {
     Object.keys(typeMapper[mapper]).forEach(type => {
-      typeMapper[mapper][type].reduce((mapper, type) => {
-        result[type.toLowerCase()] = true;
+      typeMapper[mapper][type].reduce((_, t) => {
+        result[t.toLowerCase()] = true;
         return result;
       }, result);
     });
   });
+  debugger;
+  if (systemPackage) {
+    systemPackage.unions.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.mixins.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.scalars.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.entities.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.enums.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+  }
   return result;
 }
 
@@ -130,7 +156,7 @@ export default function validate(args: GeneratorInit) {
   let secureAcl = new AclDefault(acl);
 
   //mutating config...
-  const { modelStore } = initModel({
+  const { modelStore, packages } = initModel({
     schema,
     hooks,
     secureAcl,
@@ -141,7 +167,7 @@ export default function validate(args: GeneratorInit) {
     context.typeMapper || {},
   );
 
-  const existingTypes = knownTypes(actualTypeMapper);
+  const existingTypes = knownTypes(actualTypeMapper, packages.get('system'));
   // generate per package
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
 

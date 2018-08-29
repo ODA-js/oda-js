@@ -157,7 +157,6 @@ export default function({
       packageList.push('system');
     }
   }
-  debugger;
   let packages = new Map(
     Array.from(modelStore.packages.entries()).filter(i => {
       return packageList.indexOf(i[0]) !== -1;

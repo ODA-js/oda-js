@@ -12,6 +12,7 @@
     "prepare": "npm run clean && npm run compile",
     "compile": "tsc -p ./",
     "wipe": "./clean.sh",
+    "watch": "tsc -w -p ./",
     "clean": "rm -rf dist",
     "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
   },

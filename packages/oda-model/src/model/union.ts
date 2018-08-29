@@ -15,6 +15,7 @@ export class Union extends ModelBase {
       super.updateWith(obj);
 
       const result = { ...this.$obj };
+      result.name = obj.name;
 
       let $items = obj.items;
       let items = $items;
