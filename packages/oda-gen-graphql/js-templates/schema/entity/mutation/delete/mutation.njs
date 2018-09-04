@@ -17,7 +17,7 @@ import gql from 'graphql-tag';
 export default new Mutation({
   schema: gql`
     extend type RootMutation {
-      delete#{entity.name}(input: [delete#{entity.name}Input!]!): delete#{entity.name}Payload
+      delete#{entity.name}(input: delete#{entity.name}Input!): delete#{entity.name}Payload
     }
   `,
   resolver: mutateAndGetPayload( async (args: {
