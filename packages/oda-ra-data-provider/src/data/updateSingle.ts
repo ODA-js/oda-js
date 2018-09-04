@@ -14,7 +14,6 @@ export default function(
   const fieldType = field.name + 'Type';
   const fieldCreate = field.name + 'Create';
   const fieldUnlink = field.name + 'Unlink';
-  ы;
   let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
 
   // tslint:disable-next-line:switch-default
