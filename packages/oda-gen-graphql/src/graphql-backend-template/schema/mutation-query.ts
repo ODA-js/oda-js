@@ -29,7 +29,7 @@ export interface MutationQueryOutput {
 export function mapper(
   mutation: MutationInput,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MutationQueryOutput {
   const mapToTSTypes = typeMapper.typescript;
   return {

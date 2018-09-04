@@ -258,7 +258,7 @@ export const memoizeEntityMapper = (name, mapper) => (
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   defaultAdapter?: string,
 ) => {
   let adapter = entity.getMetadata(

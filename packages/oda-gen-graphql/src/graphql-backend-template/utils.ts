@@ -1,4 +1,4 @@
-import { Entity, RelationBase } from 'oda-model';
+import { Entity, RelationBase, ModelPackage } from 'oda-model';
 
 export function decapitalize(name: string): string {
   return name[0].toLowerCase() + name.slice(1);
@@ -43,6 +43,7 @@ export const defaultTypeMapper = {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
+    $ENUM: ['$ENUM'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -75,18 +76,28 @@ export const defaultTypeMapper = {
   },
 };
 
-export function prepareMapper(mapper: { [key: string]: string[] }) {
+export function prepareMapper(
+  mapper: { [key: string]: string[] },
+  systemPackage: ModelPackage,
+) {
   const specificMapper = Object.keys(mapper).reduce((hash, current) => {
     mapper[current].forEach(t => {
       hash[t.toUpperCase()] = current;
     });
     return hash;
   }, {});
+
+  const hasEnums = specificMapper.hasOwnProperty('$ENUM');
   return (type: string | void) => {
     let result = specificMapper['*'];
     if (type) {
-      result = specificMapper[type.toUpperCase()];
-      return result || type;
+      if (systemPackage.entities.has(type)) {
+        result = type;
+      } else if (hasEnums && systemPackage.enums.has(type)) {
+        result = type;
+      } else {
+        result = specificMapper[type.toUpperCase()] || specificMapper['*'];
+      }
     }
     return result;
   };
@@ -94,7 +105,7 @@ export function prepareMapper(mapper: { [key: string]: string[] }) {
 
 export function printArguments(
   field: { args: any },
-  typeMapper: (string) => string,
+  typeMapper: (i: string) => string,
 ) {
   let result = '';
   if (field.args) {

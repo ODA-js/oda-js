@@ -11,7 +11,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   allowAcl,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
@@ -57,7 +57,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let filter = filterForAcl(role, pack)(aclAllow, entity)

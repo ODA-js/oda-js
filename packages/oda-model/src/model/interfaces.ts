@@ -367,6 +367,7 @@ export interface ModelPackageInput extends ModelBaseInput {
   entities: string[];
   mutations: any[];
   queries: any[];
+  directives: any[];
   enums: any[];
   mixins: any[];
   unions: any[];
@@ -380,7 +381,8 @@ export interface ModelPackageStore {
   entities: string[];
   mutations: any[];
   queries: any[];
-  scalars: Scalar[];
+  directives: any[];
+  scalars: any[];
   enums: any[];
   unions: any[];
   mixins: any[];

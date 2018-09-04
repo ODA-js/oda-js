@@ -6,7 +6,7 @@ export const template = 'model/packages.registerConnectors.ts.njs';
 export function generate(
   te: Factory,
   pack: MetaModel,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(pack, typeMapper), template);
 }
@@ -22,7 +22,7 @@ import { getPackages } from '../queries';
 
 export function mapper(
   model: MetaModel,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   return {
     packageList: getPackages(model)

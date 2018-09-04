@@ -96,7 +96,6 @@ export function knownTypes(
       }, result);
     });
   });
-  debugger;
   if (systemPackage) {
     systemPackage.unions.forEach(u => {
       result[u.name.toLocaleLowerCase()] = true;

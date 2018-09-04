@@ -2,7 +2,9 @@
 <#@ chunks '$$$main$$$' -#>
 
 <#- chunkStart(`../../../${entity.name}/queries/index`); -#>
+<#- if(entity.relations.length > 0){#>
 import { data } from 'oda-ra-data-provider';
+<#}-#>
 import { fragments, queries } from './queries';
 import {set} from 'lodash';
 

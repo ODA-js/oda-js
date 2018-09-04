@@ -27,6 +27,11 @@ export function initPackages(secureAcl: AclDefault): IPackageDef {
         acl: secureAcl.acl(cur),
         entities: {},
         mutations: {},
+        enums: {},
+        scalars: {},
+        directives: {},
+        unions: {},
+        mixins: {},
       };
     }
     return store;
@@ -135,6 +140,40 @@ export default function({
     });
   });
 
+  const allPackages = secureAcl.names;
+
+  modelStore.enums.forEach((en, key) => {
+    pushToAppropriate({
+      item: en,
+      acl: allPackages,
+      path: 'enums',
+      secureAcl,
+      packages: pckgs,
+    });
+  });
+
+  modelStore.scalars.forEach((scal, key) => {
+    pushToAppropriate({
+      item: scal,
+      acl: allPackages,
+      path: 'scalars',
+      secureAcl,
+      packages: pckgs,
+    });
+  });
+
+  modelStore.directives.forEach((entity, key) => {
+    return;
+  });
+
+  modelStore.unions.forEach((entity, key) => {
+    return;
+  });
+
+  modelStore.mixins.forEach((entity, key) => {
+    return;
+  });
+
   Object.keys(pckgs)
     .reduce((result, cur) => {
       result.push({
@@ -143,6 +182,11 @@ export default function({
         acl: pckgs[cur].acl,
         entities: Object.keys(pckgs[cur].entities),
         mutations: Object.keys(pckgs[cur].mutations),
+        enums: Object.keys(pckgs[cur].enums),
+        scalars: Object.keys(pckgs[cur].scalars),
+        directives: Object.keys(pckgs[cur].directives),
+        unions: Object.keys(pckgs[cur].unions),
+        mixins: Object.keys(pckgs[cur].mixins),
       });
       return result;
     }, [])

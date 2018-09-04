@@ -9,10 +9,9 @@ export default function(
 ) {
   const fieldId = field.name + 'Id';
   const fieldType = field.name + 'Type';
-  const fieldCreate = field.name + 'Create';
-  const fieldUnlink = field.name + 'Unlink';
   let embedType = data[fieldType] ? data[fieldType] : actionType.USE;
 
+  // tslint:disable-next-line:switch-default
   switch (embedType) {
     case actionType.USE:
       if (data[fieldId]) {
@@ -20,6 +19,7 @@ export default function(
           [field.name]: { id: data[fieldId] },
         };
       }
+    // tslint:disable-next-line:no-switch-case-fall-through
     case actionType.CLONE:
     case actionType.CREATE:
       if (data[field.name] && typeof data[field.name] === 'object') {

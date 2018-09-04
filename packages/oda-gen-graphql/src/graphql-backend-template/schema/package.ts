@@ -8,7 +8,7 @@ export function prepare(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter: string,
 ) {
   return { ctx: mapper(pack, role, aclAllow, typeMapper, adapter), template };
@@ -54,7 +54,7 @@ export function mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter: string,
 ): MapperOutput {
   return {

@@ -55,13 +55,6 @@ export default (args: Generator) => {
 
   const defaultAdapter = context.defaultAdapter;
 
-  const typeMapper: { [key: string]: (string) => string } = Object.keys(
-    actualTypeMapper,
-  ).reduce((hash, type) => {
-    hash[type] = prepareMapper(actualTypeMapper[type]);
-    return hash;
-  }, {});
-
   // передавать в методы кодогенерации.
   let secureAcl = new AclDefault(acl);
   const aclAllow = secureAcl.allow.bind(secureAcl);
@@ -78,7 +71,15 @@ export default (args: Generator) => {
     config,
   });
 
-  const existingTypes = knownTypes(actualTypeMapper);
+  const systemPackage = packages.get('system');
+  const existingTypes = knownTypes(actualTypeMapper, systemPackage);
+  const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
+    actualTypeMapper,
+  ).reduce((hash, type) => {
+    hash[type] = prepareMapper(actualTypeMapper[type], systemPackage);
+    return hash;
+  }, {});
+
   // generate per package
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
   if (hasResult(errors, 'error')) {

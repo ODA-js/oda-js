@@ -11,7 +11,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
@@ -27,7 +27,7 @@ export interface MapperOutput {
 export function mapper(
   mutation: Mutation,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   return {
     name: capitalize(mutation.name),

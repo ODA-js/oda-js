@@ -174,7 +174,7 @@ export const resolver: { [key: string]: any } = {
           if (res.length > 0) {
             let edges = res.map(r=>({
               <#- for(let field of connection.ref.fields){#>
-                #{field}: l.#{field},
+                #{field}: linksHash[r.#{connection.ref.backField}].#{field},
               <#-}#>
               cursor: linksHash[r.#{connection.ref.backField}].id,
               node: r,

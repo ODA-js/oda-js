@@ -291,16 +291,71 @@ export class MetaModel extends ModelPackage implements IModel {
       pack.connect(this);
       this.packages.set(pckg.name, pack);
     }
-    pckg.entities.forEach(e => {
-      if (this.entities.has(e) && !pack.entities.has(e)) {
-        pack.addEntity(this.entities.get(e));
-      }
-    });
-    pckg.mutations.forEach(m => {
-      if (this.mutations.has(m) && !pack.mutations.has(m)) {
-        pack.addMutation(this.mutations.get(m));
-      }
-    });
+
+    if (pckg.mixins) {
+      pckg.mixins.forEach(e => {
+        if (this.mixins.has(e) && !pack.mixins.has(e)) {
+          pack.addMixin(this.mixins.get(e));
+        }
+      });
+    }
+
+    if (pckg.entities) {
+      pckg.entities.forEach(e => {
+        if (this.entities.has(e) && !pack.entities.has(e)) {
+          pack.addEntity(this.entities.get(e));
+        }
+      });
+    }
+
+    if (pckg.mutations) {
+      pckg.mutations.forEach(m => {
+        if (this.mutations.has(m) && !pack.mutations.has(m)) {
+          pack.addMutation(this.mutations.get(m));
+        }
+      });
+    }
+
+    if (pckg.queries) {
+      pckg.queries.forEach(e => {
+        if (this.queries.has(e) && !pack.queries.has(e)) {
+          pack.addQuery(this.queries.get(e));
+        }
+      });
+    }
+
+    if (pckg.enums) {
+      pckg.enums.forEach(e => {
+        if (this.enums.has(e) && !pack.enums.has(e)) {
+          pack.addEnum(this.enums.get(e));
+        }
+      });
+    }
+
+    if (pckg.scalars) {
+      pckg.scalars.forEach(e => {
+        if (this.scalars.has(e) && !pack.scalars.has(e)) {
+          pack.addScalar(this.scalars.get(e));
+        }
+      });
+    }
+
+    if (pckg.directives) {
+      pckg.directives.forEach(e => {
+        if (this.directives.has(e) && !pack.directives.has(e)) {
+          pack.addDirective(this.directives.get(e));
+        }
+      });
+    }
+
+    if (pckg.unions) {
+      pckg.unions.forEach(e => {
+        if (this.unions.has(e) && !pack.unions.has(e)) {
+          pack.addUnion(this.unions.get(e));
+        }
+      });
+    }
+
     pack.ensureAll();
   }
 

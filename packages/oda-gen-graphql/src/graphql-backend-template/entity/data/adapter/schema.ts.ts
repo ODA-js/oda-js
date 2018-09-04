@@ -14,7 +14,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter?: string,
 ) {
   return te.run(
@@ -65,7 +65,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter: string,
 ): MapperOutput {
   let ids = getFields(entity)

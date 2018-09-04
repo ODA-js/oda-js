@@ -33,13 +33,6 @@ export default function generate({
 
   const defaultAdapter = context.defaultAdapter;
 
-  const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
-    actualTypeMapper,
-  ).reduce((hash, type) => {
-    hash[type] = prepareMapper(actualTypeMapper[type]);
-    return hash;
-  }, {});
-
   // передавать в методы кодогенерации.
   let secureAcl = new AclDefault(acl);
   const aclAllow = secureAcl.allow.bind(secureAcl);
@@ -54,7 +47,14 @@ export default function generate({
     secureAcl,
   });
 
-  const existingTypes = knownTypes(actualTypeMapper, packages.get('system'));
+  const systemPackage = packages.get('system');
+  const existingTypes = knownTypes(actualTypeMapper, systemPackage);
+  const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
+    actualTypeMapper,
+  ).reduce((hash, type) => {
+    hash[type] = prepareMapper(actualTypeMapper[type], systemPackage);
+    return hash;
+  }, {});
 
   // generate per package
   debugger;
@@ -67,6 +67,7 @@ export default function generate({
     // generate per package
     [...packages.values()].filter(p => !p.abstract).forEach(pkg => {
       console.time('gql');
+      debugger;
       generator(
         pkg,
         raw,

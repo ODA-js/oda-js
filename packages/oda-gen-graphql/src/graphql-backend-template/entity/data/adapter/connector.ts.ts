@@ -16,7 +16,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter?: string,
 ) {
   return te.run(
@@ -104,7 +104,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter?: string,
 ): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
@@ -127,9 +127,13 @@ export function _mapper(
           type: mapToTSTypes(f.type),
         }))
         .sort((a, b) => {
-          if (a.name > b.name) return 1;
-          else if (a.name < b.name) return -1;
-          else return 0;
+          if (a.name > b.name) {
+            return 1;
+          } else if (a.name < b.name) {
+            return -1;
+          } else {
+            return 0;
+          }
         });
       return {
         fields,

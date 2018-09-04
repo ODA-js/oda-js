@@ -16,3 +16,13 @@ import {
   logger,
 } from '../../../common';
 import gql from 'graphql-tag';
+
+<# for (let usingEntity of Object.keys(entity.relations.filter(c=> c.verb === 'BelongsToMany').reduce((res, cur)=>{
+  if(cur.ref && cur.ref.using){
+    res[cur.ref.using.entity] = true;
+  }
+  
+  return res;
+  },{}))) {-#>
+import { Partial#{usingEntity} } from '../../../data/#{usingEntity}/types/model';
+<#}#>

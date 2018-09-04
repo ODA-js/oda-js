@@ -7,7 +7,7 @@ export const template = 'package/mutation.index.ts.njs';
 export function generate(
   te: Factory,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(pack, typeMapper), template);
 }
@@ -24,7 +24,7 @@ import { getMutations } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   return {
     name: capitalize(pack.name),

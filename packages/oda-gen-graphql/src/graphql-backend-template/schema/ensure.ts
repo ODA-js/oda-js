@@ -18,7 +18,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
   adapter: string,
 ) {
   let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);

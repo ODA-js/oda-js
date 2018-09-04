@@ -6,7 +6,7 @@ export const template = 'package/schema.puml.njs';
 export function generate(
   te: Factory,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(pack, typeMapper), template);
 }
@@ -49,7 +49,7 @@ import {
 
 export function mapper(
   pack: ModelPackage,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {

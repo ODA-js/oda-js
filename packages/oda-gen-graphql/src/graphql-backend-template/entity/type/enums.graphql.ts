@@ -10,7 +10,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   allowAcl,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ) {
   return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
@@ -29,7 +29,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   allowAcl,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (i: string) => string },
 ): MapperOutput {
   return {
     name: entity.name,

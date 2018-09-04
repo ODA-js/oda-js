@@ -89,18 +89,38 @@ export function showLog(
   });
 }
 
-export function knownTypes(typeMapper: {
-  [key: string]: { [key: string]: string[] };
-}) {
+export function knownTypes(
+  typeMapper: {
+    [key: string]: { [key: string]: string[] };
+  },
+  systemPackage?: ModelPackage,
+) {
   const result = {};
   Object.keys(typeMapper).forEach(mapper => {
     Object.keys(typeMapper[mapper]).forEach(type => {
-      typeMapper[mapper][type].reduce((mapper, type) => {
-        result[type.toLowerCase()] = true;
+      typeMapper[mapper][type].reduce((_, t) => {
+        result[t.toLowerCase()] = true;
         return result;
       }, result);
     });
   });
+  if (systemPackage) {
+    systemPackage.unions.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.mixins.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.scalars.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.entities.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+    systemPackage.enums.forEach(u => {
+      result[u.name.toLocaleLowerCase()] = true;
+    });
+  }
   return result;
 }
 
@@ -163,7 +183,7 @@ export default (args: Generator) => {
     context.typeMapper || {},
   );
 
-  const existingTypes = knownTypes(actualTypeMapper);
+  const existingTypes = knownTypes(actualTypeMapper, packages.get('system'));
   // generate per package
 
   // const errors: IValidationResult[] = collectErrors(packages, existingTypes);
