@@ -112,7 +112,10 @@ export class Field extends FieldBase implements IField {
 
       this.setMetadata('storage.identity', obj.identity);
 
-      this.setMetadata('storage.required', obj.required || obj.identity);
+      this.setMetadata(
+        'storage.required',
+        obj.required || (obj.identity && obj.required !== false),
+      );
 
       this.setMetadata('storage.indexed', obj.indexed || obj.identity);
 
