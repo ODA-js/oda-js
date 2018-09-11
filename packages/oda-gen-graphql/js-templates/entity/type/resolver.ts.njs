@@ -17,7 +17,7 @@ const { selectionTree: traverse } = lib;
 
 export const resolver: { [key: string]: any } = {
   #{entity.name}: {
-    id: ({ _id }) => _id,
+    id: ({ id }) => id,
 <# for (let connection of entity.relations) {-#>
     #{connection.field}: async (
       {_id: id}, // owner id
