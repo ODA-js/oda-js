@@ -384,10 +384,14 @@ export function _mapper(
         entity: f.relation.ref.entity,
         queryName: decapitalize(f.relation.ref.entity),
         field: f.relation.ref.field,
-        type: refe.fields.get(f.relation.ref.field).type,
+        type: refe.fields.has(f.relation.ref.field)
+          ? refe.fields.get(f.relation.ref.field).type
+          : 'string',
         cField: capitalize(f.relation.ref.field),
         label: humanize(
-          refe.fields.get(f.relation.ref.field).title || f.relation.ref.field,
+          refe.fields.has(f.relation.ref.field)
+            ? refe.fields.get(f.relation.ref.field).title
+            : f.relation.ref.field,
         ),
         fields: [],
         listName: '',
