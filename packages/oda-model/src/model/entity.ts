@@ -30,6 +30,10 @@ export class Entity extends EntityBase implements IEntity {
     return this.$obj.implements;
   }
 
+  get embedded(): boolean {
+    return this.$obj.embedded;
+  }
+
   public ensureImplementation(modelPackage: ModelPackage) {
     const newFields: Map<string, Field> = new Map<string, Field>();
     this.implements.forEach(intrf => {
@@ -57,7 +61,7 @@ export class Entity extends EntityBase implements IEntity {
 
       const result = { ...this.$obj };
       const impl = new Set(obj.implements);
-
+      result.embedded = obj.embedded;
       result.implements = impl;
       this.$obj = result;
     }
@@ -69,6 +73,7 @@ export class Entity extends EntityBase implements IEntity {
       return clean({
         ...res,
         implements: [...this.implements],
+        embedded: this.embedded,
       });
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -90,6 +95,7 @@ export class Entity extends EntityBase implements IEntity {
       return clean({
         ...res,
         implements: [...this.implements],
+        embedded: this.embedded,
       }) as any;
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -100,6 +106,7 @@ export class Entity extends EntityBase implements IEntity {
           implements: [...this.implements].filter(i =>
             modelPackage.mixins.has(i),
           ),
+          embedded: this.embedded,
         });
       }
     }

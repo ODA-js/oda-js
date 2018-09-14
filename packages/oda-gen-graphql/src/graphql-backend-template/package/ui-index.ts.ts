@@ -33,6 +33,7 @@ export function mapper(
     entities: getEntities(pack).map(e => ({
       name: e.name,
       entry: decapitalize(e.name),
+      embedded: e.embedded,
     })),
   };
 }
