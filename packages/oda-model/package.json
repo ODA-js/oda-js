@@ -1,6 +1,6 @@
 {
   "name": "oda-model",
-  "version": "1.0.0-19",
+  "version": "1.0.0-20",
   "description": "",
   "main": "dist/model/index.js",
   "typescript": {
