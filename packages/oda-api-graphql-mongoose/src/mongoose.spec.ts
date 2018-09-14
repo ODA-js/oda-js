@@ -56,7 +56,6 @@ describe('filter', () => {
       },
     });
     expect(result6).toMatchSnapshot();
-    debugger;
     const result7 = Filter.parse({
       location: {
         query: {

@@ -72,7 +72,7 @@ export class RelationBase extends Metadata implements IRelation {
   }
 
   // stored as members of class
-  get emdebbed() {
+  get embedded() {
     return this.getMetadata('storage.embedded');
   }
 

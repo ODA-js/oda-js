@@ -1,4 +1,4 @@
-import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
+import { Entity, ModelPackage, BelongsToMany, Field } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
 
@@ -19,17 +19,17 @@ export interface UIResult {
   embedded?: string[];
 }
 
-export interface embeddedRel {
+export interface EmbeddedRel {
   name: string;
   type: string;
   required: boolean;
 }
 
-export interface embedded {
+export interface Embedded {
   name: string;
   entity: string;
   single: boolean;
-  fields: embeddedRel[];
+  fields: EmbeddedRel[];
   UI?: UIView;
 }
 
@@ -42,7 +42,7 @@ export interface UIView {
   list?: { [key: string]: boolean };
   embedded?: {
     names: { [key: string]: number };
-    items: embedded[];
+    items: Embedded[];
   };
 }
 
@@ -112,7 +112,7 @@ function visibility(
   first = false,
 ): UIView {
   const result: UIResult = {
-    listName: guessListLabel(entity, aclAllow, role, pack, aor).source,
+    listName: guessListLabel(entity.name, aclAllow, role, pack, aor).source,
     quickSearch: guessQuickSearch(entity, aclAllow, role, pack, aor),
     hidden: [],
     edit: [],
@@ -220,9 +220,13 @@ function visibility(
 
   if (first) {
     const embedItems = allFields
-      .filter(f => f.relation && result.embedded.indexOf(f.name) > -1)
-      .map(f => {
-        const lRes: embedded = {
+      .filter(
+        f =>
+          f.relation &&
+          (f.relation.embedded || result.embedded.indexOf(f.name) > -1),
+      )
+      .map((f: Field) => {
+        const lRes: Embedded = {
           name: f.name,
           single: f.relation.single,
           entity: f.relation.ref.entity,
@@ -230,20 +234,47 @@ function visibility(
         };
         const re = pack.entities.get(f.relation.ref.entity);
         const reUI = visibility(pack, re, aclAllow, role, aor);
-        const fList = Array.from(re.fields.values())
+        const fList = (Array.from(re.fields.values()) as Field[])
           // потом беру все поля которые редактируются,
           .filter(
-            f => reUI.edit[f.name] || reUI.list[f.name] || reUI.show[f.name],
+            fld =>
+              (f.relation && f.relation.embedded) ||
+              reUI.edit[fld.name] ||
+              reUI.list[fld.name] ||
+              reUI.show[fld.name],
           )
           // проверяю что это не связи,
-          .filter(f => !f.relation)
+          .filter(
+            fld =>
+              !fld.relation ||
+              (f.relation &&
+                f.relation.embedded &&
+                fld.relation &&
+                fld.relation.ref.entity !== entity.name),
+          )
           // формирую список полей и возвращаю
-          .map(f => ({
-            name: f.name,
-            cName: capitalize(f.name),
-            label: humanize(f.name),
-            type: aor(f.type),
-            required: f.required,
+          .map(fld => ({
+            ref: fld.relation
+              ? {
+                  single: fld.relation.single,
+                  entity: fld.relation.ref.entity,
+                  listLabel: guessListLabel(
+                    fld.relation.ref.entity,
+                    aclAllow,
+                    role,
+                    pack,
+                    aor,
+                  ),
+                }
+              : undefined,
+            field: f.name,
+            name: fld.name,
+            source: f.name,
+            defaultValue: fld.defaultValue,
+            cName: capitalize(fld.name),
+            label: humanize(fld.name),
+            type: aor(fld.type),
+            required: fld.required,
           }));
 
         lRes.fields.push(...fList);
@@ -263,7 +294,14 @@ function visibility(
   return res;
 }
 
-function guessListLabel(entity, aclAllow, role, pack, aor) {
+function guessListLabel(
+  entityName: string,
+  aclAllow,
+  role,
+  pack: ModelPackage,
+  aor,
+) {
+  const entity = pack.entities.get(entityName);
   let UI = entity.getMetadata('UI');
   let result = {
     type: 'Text',
@@ -319,12 +357,14 @@ export function _mapper(
   const mapFields = f => ({
     order: f.order,
     name: f.name,
+    source: f.name,
     persistent: f.persistent,
     derived: f.derived,
     cName: capitalize(f.name),
     label: humanize(f.title || f.name),
     required: f.required,
     defaultValue: f.defaultValue,
+    list: f.list,
     type: mapAORTypes(f.type),
     resourceType: mapResourceTypes(f.type),
     filterType: mapAORFilterTypes(f.type),
@@ -337,6 +377,7 @@ export function _mapper(
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
       let ref = {
+        embedded: f.relation.embedded,
         opposite: f.relation.ref.field,
         usingField: '',
         backField: f.relation.ref.backField,
@@ -404,7 +445,8 @@ export function _mapper(
         derived: f.derived,
         persistent: f.persistent,
         field: f.name,
-        name: f.relation.fullName,
+        source: f.name,
+        name: f.name,
         shortName: f.relation.shortName,
         cField: capitalize(f.name),
         label: humanize(f.title || f.name),
@@ -413,18 +455,27 @@ export function _mapper(
         ref: {
           ...ref,
           fieldName: decapitalize(refFieldName),
-          listLabel: guessListLabel(refe, aclAllow, role, pack, mapAORTypes),
+          listLabel: guessListLabel(
+            f.relation.ref.entity,
+            aclAllow,
+            role,
+            pack,
+            mapAORTypes,
+          ),
         },
       };
     })
-    .sort((a, b) => (a.order > b.order ? 1 : -1));
+    .sort((a, b) => (a.order || -1) - (b.order || -1));
 
   const fieldsList = [
     ...ids,
     ...fieldsAcl.filter(f => fields(f) && !idField(f)),
   ]
     .map(mapFields)
-    .sort((a, b) => (a.order > b.order ? 1 : -1));
+    .sort((a, b) => (a.order || -1) - (b.order || -1));
+  const props = [...relations, ...fieldsList].sort(
+    (a, b) => (a.order || -1) - (b.order || -1),
+  );
 
   return {
     packageName: capitalize(pack.name),
@@ -434,13 +485,11 @@ export function _mapper(
     titlePlural: entity.titlePlural,
     UI,
     plural: entity.plural,
-    listLabel: guessListLabel(entity, aclAllow, role, pack, mapAORTypes),
+    listLabel: guessListLabel(entity.name, aclAllow, role, pack, mapAORTypes),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,
     fields: fieldsList,
-    props: [...relations, ...fieldsList].sort(
-      (a, b) => (a.order > b.order ? 1 : -1),
-    ),
+    props,
   };
 }

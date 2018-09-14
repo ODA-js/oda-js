@@ -66,7 +66,7 @@ export function _mapper(
       if (!f.relation) {
         return true;
       }
-      if (!f.relation.emdebbed) {
+      if (!f.relation.embedded) {
         return false;
       }
       let ref = pack.relations.get(entity.name).get(f.name);
@@ -113,7 +113,6 @@ export function _mapper(
       if (field.relation) {
         let ref = pack.relations.get(entity.name).get(field.name);
         let ent = pack.entities.get(ref.relation.ref.entity);
-        field.relation.single;
         type = `${field.relation.single ? '' : 'Embed'}${ent.name}Filter`;
       } else {
         type = `Where${idField(field) ? 'ID' : typeMapper.graphql(field.type)}`;

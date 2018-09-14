@@ -5,6 +5,9 @@ import { Mixin } from './mixin';
 import { Enum } from './enum';
 import { Union } from './union';
 import { Scalar } from './scalar';
+import { Directive } from './directive';
+import { Query } from './query';
+import { Mutation } from './mutation';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -43,6 +46,10 @@ export interface IPackage extends IModelType {
   mixins: Map<string, Mixin>;
   enums: Map<string, Enum>;
   unions: Map<string, Union>;
+  // ?? нужно или нет, надо подумать
+  mutations: Map<string, Mutation>;
+  queries: Map<string, Query>;
+  directives: Map<string, Directive>;
 }
 
 export interface ScalarInput extends ModelBaseInput {}
@@ -368,6 +375,7 @@ export interface ModelPackageInput extends ModelBaseInput {
   mutations: any[];
   queries: any[];
   directives: any[];
+  scalars: any[];
   enums: any[];
   mixins: any[];
   unions: any[];
@@ -409,6 +417,7 @@ export interface RelationBaseInput {
    * больше не зачем
    */
   metadata?: { [key: string]: any };
+  embedded?: boolean;
   name?: string;
   entity: string;
   field: string;

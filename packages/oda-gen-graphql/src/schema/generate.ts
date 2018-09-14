@@ -57,7 +57,6 @@ export default function generate({
   }, {});
 
   // generate per package
-  debugger;
   const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
   if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
@@ -67,7 +66,6 @@ export default function generate({
     // generate per package
     [...packages.values()].filter(p => !p.abstract).forEach(pkg => {
       console.time('gql');
-      debugger;
       generator(
         pkg,
         raw,

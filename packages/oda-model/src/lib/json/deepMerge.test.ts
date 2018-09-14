@@ -139,7 +139,6 @@ describe('processArray', () => {
   });
   it('remove string list', () => {
     const src = ['0', '1', '2', '3', '4', '5', '6'];
-    debugger;
     processArray(src, '^[1, 2, 5]');
     expect(find(src, '1')).toBe(-1);
     expect(find(src, '2')).toBe(-1);

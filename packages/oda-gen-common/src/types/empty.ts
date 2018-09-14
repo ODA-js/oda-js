@@ -224,7 +224,6 @@ export class GQLModule {
   }
 
   public build() {
-    // debugger;
     if (!this._extendsOf) {
       this._extendsOf = OrderedMap();
     } else {

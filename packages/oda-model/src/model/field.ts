@@ -33,7 +33,7 @@ export class Field extends FieldBase implements IField {
   get type(): string {
     return this.$obj.type;
   }
-
+  // wheather the field is List of Items i.e. String[]
   get list(): boolean {
     return this.$obj.list;
   }

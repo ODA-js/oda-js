@@ -414,7 +414,9 @@ export class MetaModel extends ModelPackage implements IModel {
 
     this.applyHooks(fold(hooks) as ModelHook[]);
 
-    store.packages.forEach(this.addPackage.bind(this));
+    if (Array.isArray(store.packages)) {
+      store.packages.forEach(this.addPackage.bind(this));
+    }
   }
 
   public saveModel(fileName: string = this.store) {

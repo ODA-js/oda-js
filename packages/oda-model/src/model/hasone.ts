@@ -25,7 +25,7 @@ export class HasOne extends RelationBase {
 
       this.setMetadata('storage.single', true);
       this.setMetadata('storage.stored', false);
-      this.setMetadata('storage.embedded', false);
+      this.setMetadata('storage.embedded', obj.embedded || false);
       this.setMetadata('verb', 'HasOne');
 
       let $hasOne = obj.hasOne;
