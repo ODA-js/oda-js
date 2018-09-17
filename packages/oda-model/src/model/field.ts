@@ -46,6 +46,10 @@ export class Field extends FieldBase implements IField {
     return this.getMetadata('storage.identity');
   }
 
+  get inheritedFrom(): string {
+    return this.$obj.inheritedFrom;
+  }
+
   // this is to make sure that if we internally set
   public makeIdentity() {
     this.$obj.idKey = new EntityReference(
@@ -109,6 +113,8 @@ export class Field extends FieldBase implements IField {
 
       result.map = obj.map || result.map || false;
       result.list = obj.list || result.list || false;
+
+      result.inheritedFrom = obj.inheritedFrom;
 
       this.setMetadata('storage.identity', obj.identity);
 
@@ -191,6 +197,7 @@ export class Field extends FieldBase implements IField {
       ...res,
       entity: props.entity,
       type: props.type || props.type_,
+      inheritedFrom: props.inheritedFrom,
       list: props.list,
       map: props.map,
       idKey: props.idKey ? props.idKey.toString() : undefined,
@@ -205,6 +212,7 @@ export class Field extends FieldBase implements IField {
     return clean({
       ...res,
       type: props.type_,
+      inheritedFrom: props.inheritedFrom,
       list: props.list,
       map: props.map,
       relation: props.relation ? props.relation.toJSON() : undefined,

@@ -50,6 +50,7 @@ export interface MapperOutput {
   packageName: string;
   role: string;
   name: string;
+  implements: string[];
   title: string;
   titlePlural: string;
   UI: UIView;
@@ -61,6 +62,7 @@ export interface MapperOutput {
   listName: string;
   ownerFieldName: string;
   relations: {
+    inheritedFrom?: string;
     required: boolean;
     derived: boolean;
     persistent: boolean;
@@ -77,10 +79,12 @@ export interface MapperOutput {
     };
   }[];
   fields: {
+    inheritedFrom?: string;
     name: string;
     required: boolean;
   }[];
   props: {
+    inheritedFrom?: string;
     order: string;
     required: boolean;
   }[];
@@ -357,6 +361,7 @@ export function _mapper(
   const mapFields = f => ({
     order: f.order,
     name: f.name,
+    inheritedFrom: f.inheritedFrom,
     source: f.name,
     persistent: f.persistent,
     derived: f.derived,
@@ -444,6 +449,7 @@ export function _mapper(
         sameEntity ? capitalize(f.name) : ''
       }`;
       return {
+        inheritedFrom: f.inheritedFrom,
         order: f.order,
         required: f.required,
         derived: f.derived,
@@ -485,6 +491,7 @@ export function _mapper(
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
+    implements: Array.from(entity.implements),
     title: entity.title,
     titlePlural: entity.titlePlural,
     UI,

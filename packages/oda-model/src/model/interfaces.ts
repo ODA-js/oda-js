@@ -74,6 +74,7 @@ export interface IField extends IModelType {
   indexed: boolean | string | string[];
   identity: boolean | string | string[];
   relation: IRelation;
+  inheritedFrom: string;
 }
 
 export interface IRelation extends IModelType {
@@ -179,6 +180,7 @@ export interface IValidate {
 export interface FieldInput extends FieldBaseInput {
   type?: string;
   list?: boolean;
+  inheritedFrom?: string;
   map?: boolean;
   identity?: boolean | string | string[];
   indexed?: boolean | string | string[];
@@ -197,6 +199,7 @@ export interface FieldInput extends FieldBaseInput {
 export interface FieldStorage extends FieldBaseStorage {
   type: string;
   list?: boolean;
+  inheritedFrom?: string;
   map?: boolean;
   arguments?: [FieldArgs];
   type_: string;
