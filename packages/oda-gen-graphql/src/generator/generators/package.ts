@@ -9,7 +9,7 @@ const { get, deepMerge } = lib;
 export default function $generatePkg(
   raw: Factory,
   rootDir: string,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (s: string) => string },
   pkg: { name: string },
   type: string,
   route: string,

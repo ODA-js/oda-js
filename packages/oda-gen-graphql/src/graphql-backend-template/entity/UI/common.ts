@@ -284,7 +284,7 @@ function visibility(
         lRes.fields.push(...fList);
         lRes.UI = reUI;
         return lRes;
-      }, {});
+      });
 
     res.embedded = {
       items: embedItems,
