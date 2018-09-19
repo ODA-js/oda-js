@@ -51,6 +51,8 @@ export interface MapperOutput {
   role: string;
   name: string;
   implements: string[];
+  embedded: boolean | string[];
+  abstract: boolean;
   title: string;
   titlePlural: string;
   UI: UIView;
@@ -491,6 +493,8 @@ export function _mapper(
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
+    abstract: entity.abstract,
+    embedded: entity.embedded,
     implements: Array.from(entity.implements),
     title: entity.title,
     titlePlural: entity.titlePlural,

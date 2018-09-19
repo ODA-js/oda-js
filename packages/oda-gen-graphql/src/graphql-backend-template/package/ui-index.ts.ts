@@ -18,6 +18,8 @@ export interface MapperOutput {
   entities: {
     name: string;
     entry: string;
+    embedded: boolean | string[];
+    abstract: boolean;
   }[];
 }
 
@@ -34,6 +36,7 @@ export function mapper(
       name: e.name,
       entry: decapitalize(e.name),
       embedded: e.embedded,
+      abstract: e.abstract,
     })),
   };
 }
