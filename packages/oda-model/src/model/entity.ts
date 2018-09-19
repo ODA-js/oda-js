@@ -34,8 +34,10 @@ export class Entity extends EntityBase implements IEntity {
     return !!this.$obj.abstract;
   }
 
-  get embedded(): string[] {
-    return Array.from(this.$obj.embedded);
+  get embedded(): boolean | string[] {
+    return this.$obj.embedded instanceof Set
+      ? Array.from(this.$obj.embedded)
+      : this.$obj.embedded;
   }
 
   public ensureImplementation(modelPackage: ModelPackage) {
@@ -65,7 +67,9 @@ export class Entity extends EntityBase implements IEntity {
 
       const result = { ...this.$obj };
       const impl = new Set(obj.implements);
-      result.embedded = new Set(obj.embedded);
+      result.embedded = Array.isArray(obj.embedded)
+        ? new Set(obj.embedded)
+        : obj.embedded;
       result.abstract = obj.abstract;
       result.implements = impl;
       this.$obj = result;
