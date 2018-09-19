@@ -385,7 +385,8 @@ export function _mapper(
       let verb = f.relation.verb;
       let ref = {
         embedded: f.relation.embedded,
-        opposite: f.relation.ref.field,
+        //для разных ассоциаций... точнее их окончаний
+        opposite: f.relation.opposite || f.relation.ref.field,
         usingField: '',
         backField: f.relation.ref.backField,
         entity: f.relation.ref.entity,
