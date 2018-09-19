@@ -84,7 +84,9 @@ function processArrayItem(result: any[], value: any) {
     removeIfExists(result, item.$unset);
   } else if (typeof item === 'object' && item.hasOwnProperty('$assign')) {
     result.length = 0;
-    if (!Array.isArray(item.$assign)) item.$assign = [item.$assign];
+    if (!Array.isArray(item.$assign)) {
+      item.$assign = [item.$assign];
+    }
     result.push(...item.$assign);
   } else {
     pushUnique(result, item);

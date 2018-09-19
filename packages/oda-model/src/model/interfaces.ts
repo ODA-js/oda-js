@@ -65,7 +65,8 @@ export interface IMixin extends IEntityBase {}
 
 export interface IEntity extends IEntityBase {
   implements: Set<string>;
-  embedded: boolean;
+  embedded: string[];
+  abstract: boolean;
 }
 
 export interface IField extends IModelType {
@@ -240,7 +241,8 @@ export interface EntityBaseInput extends ModelBaseInput {
 
 export interface EntityInput extends EntityBaseInput {
   implements?: string[];
-  embedded?: boolean;
+  embedded?: string[];
+  abstract?: boolean;
 }
 
 export interface MixinInput extends EntityBaseInput {}
@@ -265,7 +267,8 @@ export interface EntityBaseStorage extends ModelBaseStorage {
 
 export interface EntityStorage extends EntityBaseStorage {
   implements: Set<string>;
-  embedded?: boolean;
+  embedded?: Set<string>;
+  abstract?: boolean;
 }
 
 export interface EntityReferenceInput {
