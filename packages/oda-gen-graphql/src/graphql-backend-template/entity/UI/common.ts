@@ -468,6 +468,7 @@ export function _mapper(
         ref: {
           ...ref,
           fieldName: decapitalize(refFieldName),
+          cFieldName: refFieldName,
           listLabel: guessListLabel(
             f.relation.ref.entity,
             aclAllow,
