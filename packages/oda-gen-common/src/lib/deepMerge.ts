@@ -2,8 +2,9 @@ import { mergeWith, isArray } from 'lodash';
 
 function mergeAll(srcValue, dstValue) {
   if (isArray(dstValue)) {
-    if (srcValue !== undefined && srcValue !== null)
+    if (srcValue !== undefined && srcValue !== null) {
       return dstValue.concat(srcValue);
+    }
   }
   if (dstValue === null) {
     return dstValue;
