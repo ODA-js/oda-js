@@ -428,11 +428,20 @@ export class Process {
           result.push(Process.operations[key](node[key], idMap, id));
         } else if (!Process.skip[key]) {
           let idKey = idMap.hasOwnProperty(key);
-          result.push(
-            `((value)=>${Process.go(node[key], idMap, idKey) || true})(value.${
-              idKey ? idMap[key] : key
-            })`,
-          );
+          if (key !== '*') {
+            result.push(
+              `((value)=>${Process.go(node[key], idMap, idKey) ||
+                true})(value.${idKey ? idMap[key] : key})`,
+            );
+          } else {
+            result.push(
+              `(Object.keys(value).some(key =>(value=>${Process.go(
+                node[key],
+                idMap,
+                idKey,
+              ) || true})(value[key])))`,
+            );
+          }
         }
       });
       return result.length > 0 ? result : undefined;
