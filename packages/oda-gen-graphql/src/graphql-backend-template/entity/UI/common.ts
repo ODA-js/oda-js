@@ -90,6 +90,10 @@ export interface MapperOutput {
     order: string;
     required: boolean;
   }[];
+  actions?: {
+    name: string;
+    actionType: string;
+  }[];
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -491,6 +495,11 @@ export function _mapper(
     (a, b) => (a.order || -1) - (b.order || -1),
   );
 
+  const actions = Array.from(entity.operations.values()).map(a => ({
+    name: a.name,
+    actionType: a.actionType,
+  }));
+
   return {
     packageName: capitalize(pack.name),
     role: pack.name,
@@ -508,5 +517,6 @@ export function _mapper(
     relations,
     fields: fieldsList,
     props,
+    actions,
   };
 }

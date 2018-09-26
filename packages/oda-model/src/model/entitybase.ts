@@ -12,9 +12,11 @@ import {
   EntityBaseInput,
   IEntityBase,
   EntityBaseJSON,
+  OperationInput,
 } from './interfaces';
 import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';
+import { Operation } from './operation';
 
 /**
  * 1. тип объекта который входит на updateWith
@@ -94,6 +96,10 @@ export class EntityBase extends ModelBase implements IEntityBase {
 
   get fields(): Map<string, Field> {
     return this.$obj.fields;
+  }
+
+  get operations(): Map<string, Operation> {
+    return this.$obj.operations;
   }
 
   get indexed(): Set<string> {
@@ -206,6 +212,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
         result.name.slice(0, 1).toUpperCase() + result.name.slice(1);
 
       const fields = new Map<string, Field>();
+      const operations = new Map<string, Operation>();
       const relations = new Set();
       const identity = new Set();
       const required = new Set();
@@ -250,6 +257,25 @@ export class EntityBase extends ModelBase implements IEntityBase {
         }
       };
 
+      const opTraverse = (op: OperationInput | Operation, index: Number) => {
+        const operation = new Operation({
+          ...(op.hasOwnProperty('toJSON') ? (op as Operation).toJSON() : op),
+          metadata: {
+            order: index,
+            ...op.metadata,
+          },
+          entity: result.name,
+        });
+        if (fields.has(operation.name)) {
+          throw new Error(
+            `the same field ${operation.name} is already exists in ${
+              obj.name
+            } entry`,
+          );
+        }
+        operations.set(operation.name, operation);
+      };
+
       if (Array.isArray(obj.fields)) {
         (obj.fields as FieldInput[]).forEach(traverse);
       } else {
@@ -257,6 +283,16 @@ export class EntityBase extends ModelBase implements IEntityBase {
         for (let i = 0, len = fieldNames.length; i < len; i++) {
           let fName = fieldNames[i];
           traverse({ ...obj.fields[fName], name: fName }, i);
+        }
+      }
+
+      if (Array.isArray(obj.operations)) {
+        (obj.operations as FieldInput[]).forEach(opTraverse);
+      } else if (obj.operations) {
+        let opName = Object.keys(obj.operations);
+        for (let i = 0, len = opName.length; i < len; i++) {
+          let fName = opName[i];
+          opTraverse({ ...obj.operations[fName], name: fName }, i);
         }
       }
 
@@ -285,6 +321,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
       result.required = required;
       result.indexed = indexed;
       result.fields = fields;
+      result.operations = operations;
       this.$obj = result;
     }
   }
@@ -296,6 +333,9 @@ export class EntityBase extends ModelBase implements IEntityBase {
       return clean({
         ...res,
         fields: [...Array.from(props.fields.values())].map(f => f.toObject()),
+        operations: [...Array.from(props.operations.values())].map(f =>
+          f.toObject(),
+        ),
       });
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -304,6 +344,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
         let res = super.toObject();
         return clean({
           ...res,
+          operations: [...Array.from(props.operations.values())],
           fields: [...Array.from(props.fields.values())]
             .map(f => {
               let result;
@@ -329,6 +370,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
       return clean({
         ...res,
         fields: [...Array.from(props.fields.values())],
+        operations: [...Array.from(props.operations.values())],
       }) as any;
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -350,6 +392,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
               return result;
             })
             .filter(f => f),
+          operations: [...Array.from(props.operations.values())],
         });
       }
     }

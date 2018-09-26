@@ -8,6 +8,7 @@ import { Scalar } from './scalar';
 import { Directive } from './directive';
 import { Query } from './query';
 import { Mutation } from './mutation';
+import { Operation } from './operation';
 
 export type RelationType = 'HasMany' | 'HasOne' | 'BelongsToMany' | 'BelongsTo';
 
@@ -23,6 +24,7 @@ export type MetaModelType =
   | 'enum'
   | 'field'
   | 'relation'
+  | 'operation'
   | 'ref'
   | RelationType;
 
@@ -232,6 +234,11 @@ export interface EntityBaseInput extends ModelBaseInput {
     | {
         [fName: string]: FieldInput;
       };
+  operations?:
+    | OperationInput[]
+    | {
+        [fName: string]: OperationInput;
+      };
 }
 
 export interface EntityInput extends EntityBaseInput {
@@ -254,6 +261,7 @@ export interface EntityJSON extends EntityBaseJSON {
 
 export interface EntityBaseStorage extends ModelBaseStorage {
   fields: Map<string, Field>;
+  operations: Map<string, Operation>;
   relations: Set<string>;
   identity: Set<string>;
   required: Set<string>;
@@ -350,6 +358,10 @@ export interface EnumInput extends ModelBaseInput {
   items: (EnumItemInput | string)[];
 }
 
+export interface OperationInput extends FieldBaseInput {
+  actionType: string;
+}
+
 export interface ModelBaseStorage {
   name: string;
   title: string;
@@ -367,6 +379,11 @@ export interface UnionStorage extends ModelBaseStorage {
 export interface EnumStorage extends ModelBaseStorage {
   items: EnumItemInput[];
   items_: (EnumItemInput | string)[];
+}
+
+export interface OperationStorage extends FieldBaseStorage {
+  actionType: string;
+  actionType_: string;
 }
 
 export interface DirectiveStorage extends ModelBaseStorage {
