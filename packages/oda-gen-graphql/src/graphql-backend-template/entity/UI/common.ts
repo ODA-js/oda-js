@@ -1,6 +1,7 @@
 import { Entity, ModelPackage, BelongsToMany, Field } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
+import { constantify, camelize } from 'inflected';
 
 const formPriority = {
   list: 1,
@@ -500,6 +501,18 @@ export function _mapper(
     name: a.name,
     actionType: a.actionType,
     title: a.title,
+    actionName:
+      a.actionType === 'itemAction'
+        ? constantify(`${entity.name}_${a.title}`)
+        : constantify(`${entity.plural}_${a.title}`),
+    actionCreatorName:
+      a.actionType === 'itemAction'
+        ? camelize(`${entity.name}_${a.title}`, false)
+        : camelize(`${entity.plural}_${a.title}`, false),
+    fullName:
+      a.actionType === 'itemAction'
+        ? camelize(`${entity.name}_${a.title}`)
+        : camelize(`${entity.plural}_${a.title}`),
   }));
 
   return {
