@@ -92,6 +92,7 @@ export interface MapperOutput {
   }[];
   actions?: {
     name: string;
+    title: string;
     actionType: string;
   }[];
 }
@@ -498,6 +499,7 @@ export function _mapper(
   const actions = Array.from(entity.operations.values()).map(a => ({
     name: a.name,
     actionType: a.actionType,
+    title: a.title,
   }));
 
   return {
