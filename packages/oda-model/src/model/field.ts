@@ -30,9 +30,21 @@ export class Field extends FieldBase implements IField {
   constructor(obj: FieldInput) {
     super(obj);
   }
-  get type(): string {
-    return this.$obj.type;
+
+  // is used with custom resolver
+  get derived() {
+    return this.getMetadata('storage.derived');
   }
+
+  // is retrieved from storage layer
+  get persistent() {
+    return this.getMetadata('storage.persistent');
+  }
+
+  get defaultValue() {
+    return this.getMetadata('defaultValue');
+  }
+
   // wheather the field is List of Items i.e. String[]
   get list(): boolean {
     return this.$obj.list;
@@ -44,10 +56,6 @@ export class Field extends FieldBase implements IField {
 
   get identity(): boolean | string | string[] {
     return this.getMetadata('storage.identity');
-  }
-
-  get inheritedFrom(): string {
-    return this.$obj.inheritedFrom;
   }
 
   // this is to make sure that if we internally set
@@ -108,13 +116,30 @@ export class Field extends FieldBase implements IField {
       super.updateWith(obj);
       const result = { ...this.$obj };
 
-      let $type = obj.type;
-      let type = $type || 'String';
-
       result.map = obj.map || result.map || false;
       result.list = obj.list || result.list || false;
 
-      result.inheritedFrom = obj.inheritedFrom;
+      // wheather it is explicitly defined or has arguments
+
+      this.setMetadata(
+        'storage.derived',
+        obj.derived ||
+          (Array.isArray(obj.args) && obj.args.length > 0) ||
+          this.getMetadata('storage.derived'),
+      );
+      this.setMetadata(
+        'storage.persistent',
+        obj.persistent ||
+          !(
+            obj.derived ||
+            this.getMetadata('storage.derived') ||
+            (Array.isArray(obj.args) && obj.args.length > 0)
+          ),
+      );
+
+      if (obj.defaultValue && !this.derived) {
+        this.setMetadata('defaultValue', obj.defaultValue);
+      }
 
       this.setMetadata('storage.identity', obj.identity);
 
@@ -124,9 +149,6 @@ export class Field extends FieldBase implements IField {
       );
 
       this.setMetadata('storage.indexed', obj.indexed || obj.identity);
-
-      result.type_ = $type;
-      result.type = type;
 
       if (this.getMetadata('storage.identity', false)) {
         // это то как выглядит ключ для внешних ссылок
@@ -195,6 +217,9 @@ export class Field extends FieldBase implements IField {
     let res = super.toObject();
     return clean({
       ...res,
+      derived: this.derived,
+      defaultValue: this.defaultValue,
+      persistent: this.persistent,
       entity: props.entity,
       type: props.type || props.type_,
       inheritedFrom: props.inheritedFrom,
@@ -211,8 +236,9 @@ export class Field extends FieldBase implements IField {
     let res = super.toJSON();
     return clean({
       ...res,
-      type: props.type_,
-      inheritedFrom: props.inheritedFrom,
+      derived: this.derived,
+      defaultValue: this.defaultValue,
+      persistent: this.persistent,
       list: props.list,
       map: props.map,
       relation: props.relation ? props.relation.toJSON() : undefined,

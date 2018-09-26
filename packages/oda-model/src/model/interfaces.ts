@@ -179,9 +179,7 @@ export interface IValidate {
 }
 
 export interface FieldInput extends FieldBaseInput {
-  type?: string;
   list?: boolean;
-  inheritedFrom?: string;
   map?: boolean;
   identity?: boolean | string | string[];
   indexed?: boolean | string | string[];
@@ -198,12 +196,9 @@ export interface FieldInput extends FieldBaseInput {
 }
 
 export interface FieldStorage extends FieldBaseStorage {
-  type: string;
   list?: boolean;
-  inheritedFrom?: string;
   map?: boolean;
   arguments?: [FieldArgs];
-  type_: string;
   idKey: EntityReference;
   relation: RelationBase;
 }
@@ -286,6 +281,8 @@ export interface FieldArgs {
 
 export interface FieldBaseInput extends ModelBaseInput {
   args?: FieldArgs[];
+  inheritedFrom?: string;
+  type?: string;
   derived?: boolean;
   persistent?: boolean;
   entity?: string;
@@ -295,6 +292,9 @@ export interface FieldBaseInput extends ModelBaseInput {
 export interface FieldBaseStorage extends ModelBaseStorage {
   args?: FieldArgs[];
   args_?: FieldArgs[];
+  inheritedFrom?: string;
+  type: string;
+  type_: string;
   entity: string;
   entity_: string;
 }

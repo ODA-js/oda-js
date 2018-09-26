@@ -15,22 +15,16 @@ export class FieldBase extends ModelBase {
     return this.$obj.entity;
   }
 
+  get type(): string {
+    return this.$obj.type;
+  }
+
+  get inheritedFrom(): string {
+    return this.$obj.inheritedFrom;
+  }
+
   get args(): FieldArgs[] {
     return this.$obj.args;
-  }
-
-  // is used with custom resolver
-  get derived() {
-    return this.getMetadata('storage.derived');
-  }
-
-  // is retrieved from storage layer
-  get persistent() {
-    return this.getMetadata('storage.persistent');
-  }
-
-  get defaultValue() {
-    return this.getMetadata('defaultValue');
   }
 
   public updateWith(obj: FieldBaseInput) {
@@ -45,27 +39,13 @@ export class FieldBase extends ModelBase {
       let args = obj.args;
       let $args = obj.args;
 
-      // wheather it is explicitly defined or has arguments
+      let $type = obj.type;
+      let type = $type || 'String';
 
-      this.setMetadata(
-        'storage.derived',
-        obj.derived ||
-          (Array.isArray(obj.args) && obj.args.length > 0) ||
-          this.getMetadata('storage.derived'),
-      );
-      this.setMetadata(
-        'storage.persistent',
-        obj.persistent ||
-          !(
-            obj.derived ||
-            this.getMetadata('storage.derived') ||
-            (Array.isArray(obj.args) && obj.args.length > 0)
-          ),
-      );
+      result.inheritedFrom = obj.inheritedFrom;
 
-      if (obj.defaultValue && !this.derived) {
-        this.setMetadata('defaultValue', obj.defaultValue);
-      }
+      result.type_ = $type;
+      result.type = type;
 
       result.entity = entity;
       result.entity_ = $entity;
@@ -83,10 +63,9 @@ export class FieldBase extends ModelBase {
     let res = super.toObject();
     return clean({
       ...res,
-      derived: this.derived,
-      defaultValue: this.defaultValue,
-      persistent: this.persistent,
       entity: props.entity || props.entity_,
+      type: props.type_,
+      inheritedFrom: props.inheritedFrom,
       args: props.args || props.args_,
     });
   }
@@ -97,9 +76,8 @@ export class FieldBase extends ModelBase {
     let res = super.toJSON();
     return clean({
       ...res,
-      derived: this.derived,
-      defaultValue: this.defaultValue,
-      persistent: this.persistent,
+      type: props.type_,
+      inheritedFrom: props.inheritedFrom,
       args: props.args_,
     });
   }
