@@ -66,7 +66,7 @@ export function _mapper(
       if (!f.relation) {
         return true;
       }
-      if (!f.relation.embedded) {
+      if (!f.relation.stored) {
         return false;
       }
       let ref = pack.relations.get(entity.name).get(f.name);

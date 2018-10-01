@@ -47,16 +47,19 @@ export const getQueries = (pack: ModelPackage): Query[] =>
 const falseFilter = () => false;
 
 export const oneUniqueInIndex = (entity: Entity) => {
-  let indexes = entity.getMetadata('storage.indexes');
-  if (indexes !== null && typeof indexes === 'object') {
+  let indexList = entity.getMetadata('storage.indexes');
+  if (indexList !== null && typeof indexList === 'object') {
     return (f: Field) => {
       let result = false;
-      let iNames = Object.keys(indexes);
+      let iNames = Object.keys(indexList);
       for (let i = 0, len = iNames.length; i < len; i++) {
         let iName = iNames[i];
-        if (indexes[iName].options.unique && indexes[iName].fields[f.name]) {
+        if (
+          indexList[iName].options.unique &&
+          indexList[iName].fields[f.name]
+        ) {
           // only one in unique index
-          result = Object.keys(indexes[iName].fields).length === 1;
+          result = Object.keys(indexList[iName].fields).length === 1;
           if (result) {
             break;
           }
@@ -64,7 +67,9 @@ export const oneUniqueInIndex = (entity: Entity) => {
       }
       return result;
     };
-  } else return falseFilter;
+  } else {
+    return falseFilter;
+  }
 };
 
 export const complexUniqueIndex = (entity: Entity) => {
