@@ -72,6 +72,29 @@ export const oneUniqueInIndex = (entity: Entity) => {
   }
 };
 
+export const oneFieldIndex = (entity: Entity) => {
+  let indexList = entity.getMetadata('storage.indexes');
+  if (indexList !== null && typeof indexList === 'object') {
+    return (f: Field) => {
+      let result = false;
+      let iNames = Object.keys(indexList);
+      for (let i = 0, len = iNames.length; i < len; i++) {
+        let iName = iNames[i];
+        if (indexList[iName].fields[f.name]) {
+          // only one in unique index
+          result = Object.keys(indexList[iName].fields).length === 1;
+          if (result) {
+            break;
+          }
+        }
+      }
+      return result;
+    };
+  } else {
+    return falseFilter;
+  }
+};
+
 export const complexUniqueIndex = (entity: Entity) => {
   let indexList = entity.getMetadata('storage.indexes');
   if (indexList) {

@@ -112,6 +112,7 @@ import {
   getFields,
   idField,
   memoizeEntityMapper,
+  oneFieldIndex,
 } from '../../queries';
 import { platform } from 'os';
 
@@ -135,15 +136,19 @@ function visibility(
   let allFields = getFieldsForAcl(role, pack)(aclAllow, entity);
   result.edit.push(...allFields.map(f => f.name));
   result.show.push(...result.edit);
-  result.list.push(
-    ...allFields.filter(oneUniqueInIndex(entity)).map(f => f.name),
-  );
-  result.list.push(
-    ...complexUniqueFields(entity)
-      .map(f => entity.fields.get(f))
-      .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
-      .map(f => f.name),
-  );
+
+  result.list = [...result.quickSearch];
+
+  // result.list.push(
+  //   ...allFields.filter(oneUniqueInIndex(entity)).map(f => f.name),
+  //   ...allFields.filter(oneFieldIndex(entity)).map(f => f.name),
+  // );
+  // result.list.push(
+  //   ...complexUniqueFields(entity)
+  //     .map(f => entity.fields.get(f))
+  //     .filter(f => aclAllow(role, f.getMetadata('acl.read', role)))
+  //     .map(f => f.name),
+  // );
 
   // придумать как вытаскивать реляции из модели...
   //
@@ -344,8 +349,9 @@ function guessQuickSearch(entity: Entity, aclAllow, role, pack, aor) {
   }
   result.push(
     ...getFieldsForAcl(role, pack)(aclAllow, entity)
-      .filter(identityFields)
-      .filter(oneUniqueInIndex(entity))
+      // TODO: to be defined more later!!!
+      // .filter(identityFields)
+      // .filter(oneUniqueInIndex(entity) || oneFieldIndex(entity))
       .map(i => i.name),
   );
   return result;
