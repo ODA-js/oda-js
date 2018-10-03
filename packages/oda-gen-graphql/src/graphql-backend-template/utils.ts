@@ -12,7 +12,11 @@ export function capitalize(name: string): string {
 export function printRequired(field: { required?: boolean }): string {
   return field.required ? '!' : '';
 }
-
+// двух уровневая система распознавания типов
+// 1. уровень парсит типы чтобы было понятно что за тип
+// 2. уровень должен извлекать конкретные данные для конкретного типа, на основе полной информации о типе
+// полная информация хранит первый тип и все выведенные типы....
+//
 // * means default type
 export const defaultTypeMapper = {
   aor: {
@@ -22,6 +26,8 @@ export const defaultTypeMapper = {
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
     RichText: ['richtext'],
+    File: ['file'],
+    Image: ['image'],
     'uix.components.$type': ['json'],
     'uix.enums.$type': ['enum()'],
   },
@@ -37,7 +43,7 @@ export const defaultTypeMapper = {
     ID: ['uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
-    'uix.enums.$type': ['enum()'],
+    [`#{partial('uix.enums.$type')}`]: ['enum()'],
   },
   graphql: {
     Int: ['int', 'integer'],
@@ -93,7 +99,7 @@ export function prepareMapper(
 ) {
   const specificMapper = Object.keys(mapper).reduce((hash, current) => {
     mapper[current].forEach(t => {
-      hash[t.toUpperCase()] = current;
+      hash[t.toLowerCase()] = current;
     });
     return hash;
   }, {});
@@ -110,13 +116,13 @@ export function prepareMapper(
         type.type === 'entity' &&
         systemPackage.entities.has(type.name)
       ) {
-        result = specificMapper['many()'].replace(/\$type/gi, type.name);
+        result = specificMapper['entity()'].replace(/\$type/gi, type.name);
       } else if (
         type.type === 'enum' &&
         hasEnums &&
         systemPackage.enums.has(type.name)
       ) {
-        result = specificMapper['many()'].replace(/\$type/gi, type.name);
+        result = specificMapper['enum()'].replace(/\$type/gi, type.name);
       }
       if (!result) {
         result = specificMapper['*'];
@@ -124,7 +130,7 @@ export function prepareMapper(
         result = specificMapper['many()'].replace(/\$type/gi, result);
       }
     } else if (typeof type === 'string') {
-      result = specificMapper[type.toUpperCase()] || specificMapper['*'];
+      result = specificMapper[type.toLowerCase()] || specificMapper['*'];
     } else {
       result = specificMapper['*'];
     }
