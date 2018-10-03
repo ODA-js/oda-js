@@ -1,4 +1,4 @@
-import { ModelPackage } from 'oda-model';
+import { ModelPackage, FieldType } from 'oda-model';
 import { Factory } from 'fte.js';
 import { capitalize, printArguments } from '../utils';
 
@@ -8,7 +8,7 @@ export function prepare(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ) {
   return { ctx: mapper(pack, role, aclAllow, typeMapper, adapter), template };
@@ -54,7 +54,7 @@ export function mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ): MapperOutput {
   return {

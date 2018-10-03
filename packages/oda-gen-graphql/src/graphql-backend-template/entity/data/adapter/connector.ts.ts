@@ -1,4 +1,4 @@
-import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
+import { Entity, ModelPackage, BelongsToMany, FieldType } from 'oda-model';
 import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
 import { lib } from 'oda-gen-common';
@@ -16,7 +16,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter?: string,
 ) {
   return te.run(
@@ -104,7 +104,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter?: string,
 ): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
@@ -151,7 +151,7 @@ export function _mapper(
       .map(f => ({
         name: f.name,
         type: mapToTSTypes(f.type),
-        gqlType: f.type,
+        gqlType: typeMapper.graphql(f.type),
       })),
     search: [
       ...ids,
@@ -161,7 +161,7 @@ export function _mapper(
     ].map(f => ({
       name: f.name,
       type: mapToTSTypes(f.type),
-      gqlType: f.type,
+      gqlType: typeMapper.graphql(f.type),
       rel: !!f.relation,
       _name: f['_name'] || f.name,
     })),

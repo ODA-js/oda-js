@@ -1,4 +1,10 @@
-import { Entity, ModelPackage, BelongsToMany, Field } from 'oda-model';
+import {
+  Entity,
+  ModelPackage,
+  BelongsToMany,
+  Field,
+  FieldType,
+} from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
@@ -364,13 +370,13 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapAORTypes = typeMapper.aor;
   const mapResourceTypes = typeMapper.resource;
-  const mapAORFilterTypes = typeMapper.aor;
+  const mapAORFilterTypes = typeMapper.aorFilter;
   const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
   const mapFields = f => ({
     order: f.order,

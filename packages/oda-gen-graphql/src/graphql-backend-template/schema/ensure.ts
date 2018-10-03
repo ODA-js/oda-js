@@ -1,4 +1,4 @@
-import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
+import { Entity, ModelPackage, BelongsToMany, FieldType } from 'oda-model';
 import { capitalize, decapitalize } from '../utils';
 
 import {
@@ -18,7 +18,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ) {
   let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);

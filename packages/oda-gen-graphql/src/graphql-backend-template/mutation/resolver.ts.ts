@@ -1,5 +1,5 @@
 import { Factory } from 'fte.js';
-import { ModelPackage } from 'oda-model';
+import { ModelPackage, FieldType } from 'oda-model';
 
 export const template = 'mutation/resolver.ts.njs';
 
@@ -9,7 +9,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
@@ -44,7 +44,7 @@ export interface MapperOutput {
 export function mapper(
   mutation: MutationInput,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
   return {

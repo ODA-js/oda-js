@@ -1,4 +1,4 @@
-import { ModelPackage, Mixin } from 'oda-model';
+import { ModelPackage, Mixin, FieldType } from 'oda-model';
 import { printRequired, printArguments } from './../utils';
 
 export interface MapperOutput {
@@ -23,7 +23,7 @@ export function mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);

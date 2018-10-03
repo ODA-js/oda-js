@@ -1,4 +1,4 @@
-import { Entity, ModelPackage, BelongsToMany } from 'oda-model';
+import { Entity, ModelPackage, BelongsToMany, FieldType } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
 import { Factory } from 'fte.js';
 
@@ -10,7 +10,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
@@ -93,7 +93,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   const relsInPackage = relationFieldsExistsIn(pack);
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
@@ -140,13 +140,13 @@ export function _mapper(
         }
         return prev;
       }, [])
-      .map(entity => pack.get(entity))
-      .map(entity => {
-        let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
+      .map(e => pack.get(e))
+      .map(e => {
+        let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, e);
         return {
-          name: entity.name,
-          findQuery: decapitalize(entity.name),
-          ownerFieldName: decapitalize(entity.name),
+          name: e.name,
+          findQuery: decapitalize(e.name),
+          ownerFieldName: decapitalize(e.name),
           fields: fieldsEntityAcl
             // not only persistent fields but also not derived relations
             .filter(f => persistentFields(f) || (filterRels(f) && !f.derived))
@@ -158,16 +158,16 @@ export function _mapper(
             find: [
               ...fieldsEntityAcl
                 .filter(identityFields)
-                .filter(oneUniqueInIndex(entity))
+                .filter(oneUniqueInIndex(e))
                 .map(f => ({
                   name: f.name,
                   type: typeMapper.graphql(f.type),
                   cName: capitalize(f.name),
                 })),
             ],
-            complex: complexUniqueIndex(entity).map(i => {
+            complex: complexUniqueIndex(e).map(i => {
               let fields = Object.keys(i.fields)
-                .map(fn => entity.fields.get(fn))
+                .map(fn => e.fields.get(fn))
                 .map(f => ({
                   name: f.name,
                   uName: capitalize(f.name),

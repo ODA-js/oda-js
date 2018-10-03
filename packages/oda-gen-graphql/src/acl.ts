@@ -1,4 +1,9 @@
 export default class AclDefault {
+  // reverse order
+  public names: string[];
+  // reverse order
+  public map: { [key: string]: number };
+  private _acl;
   public constructor(
     acl: { [key: string]: number } = {
       system: 100000,
@@ -21,11 +26,6 @@ export default class AclDefault {
       return store;
     }, {});
   }
-  private _acl;
-  // reverse order
-  public names: string[];
-  // reverse order
-  public map: { [key: string]: number };
   public acl(pack) {
     return this._acl[pack];
   }

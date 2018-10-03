@@ -1,4 +1,4 @@
-import { Mutation, ModelPackage } from 'oda-model';
+import { Mutation, ModelPackage, FieldType } from 'oda-model';
 import { Factory } from 'fte.js';
 import * as schema from './index';
 import { capitalize } from '../utils';
@@ -11,7 +11,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
@@ -27,7 +27,7 @@ export interface MapperOutput {
 export function mapper(
   mutation: Mutation,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
     name: capitalize(mutation.name),

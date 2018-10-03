@@ -1,4 +1,4 @@
-import { ModelPackage, BelongsToMany } from 'oda-model';
+import { ModelPackage, BelongsToMany, FieldType } from 'oda-model';
 import { Factory } from 'fte.js';
 
 export const template = 'package/schema.puml.njs';
@@ -6,7 +6,7 @@ export const template = 'package/schema.puml.njs';
 export function generate(
   te: Factory,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(pack, typeMapper), template);
 }
@@ -49,7 +49,7 @@ import {
 
 export function mapper(
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {
@@ -108,13 +108,16 @@ export function mapper(
         .filter(f => persistentFields(f) || storedRelationsExistingIn(pack)(f))
         .map(f => ({
           name: f.name,
-          type: (f.relation && f.relation.ref.toString()) || f.type,
+          type:
+            (f.relation && f.relation.ref.toString()) ||
+            typeMapper.graphql(f.type),
         })),
       queries: getFields(e)
         .filter(derivedFieldsAndRelations)
         .map(f => ({
           name: f.name,
-          type: (f.relation && f.relation.ref.entity) || f.type,
+          type:
+            (f.relation && f.relation.ref.entity) || typeMapper.graphql(f.type),
           args: (
             (f.args && f.args.map(a => `${a.name}: ${a.type}`)) ||
             []

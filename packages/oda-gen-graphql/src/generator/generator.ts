@@ -1,21 +1,15 @@
-import { Factory } from 'fte.js';
-import { MetaModel, IValidationResult } from 'oda-model';
+import { IValidationResult } from 'oda-model';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as template from '../graphql-backend-template';
 import AclDefault from '../acl';
 
 import { lib } from 'oda-gen-common';
-import { BelongsTo } from 'oda-model';
 
-const { get, deepMerge } = lib;
+const { deepMerge } = lib;
 const { defaultTypeMapper, prepareMapper } = template.utils;
 
-import {
-  GeneratorConfigPackage,
-  GeneratorConfig,
-  Generator,
-} from './interfaces';
+import { Generator } from './interfaces';
 
 import $generateGraphql from './generators/graphql';
 import $generateData from './generators/data';
@@ -24,8 +18,7 @@ import $generatePkg from './generators/package';
 import $generateModel from './generators/model';
 import templateEngine from './templateEngine';
 import initModel from './initModel';
-import { collectErrors, showLog, knownTypes, hasResult } from './validate';
-import { error } from 'util';
+import { collectErrors, showLog, hasResult } from './validate';
 import { commit } from './generators/writeFile';
 
 export default (args: Generator) => {
@@ -72,7 +65,6 @@ export default (args: Generator) => {
   });
 
   const systemPackage = packages.get('system');
-  const existingTypes = knownTypes(actualTypeMapper, systemPackage);
   const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
     actualTypeMapper,
   ).reduce((hash, type) => {
@@ -81,7 +73,7 @@ export default (args: Generator) => {
   }, {});
 
   // generate per package
-  const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
+  const errors: IValidationResult[] = collectErrors(modelStore);
   if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
     showLog(errors, logs);

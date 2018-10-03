@@ -1,4 +1,4 @@
-import { Entity, ModelPackage } from 'oda-model';
+import { Entity, ModelPackage, FieldType } from 'oda-model';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/data/types/model.ts.njs';
@@ -9,7 +9,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   defaultAdapter?: string,
 ) {
   return te.run(
@@ -43,7 +43,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter?: string,
 ): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;

@@ -24,6 +24,7 @@ import {
   ModelHook,
   IValidationResult,
   ValidationResultType,
+  FieldType,
 } from './interfaces';
 import { Metadata } from './metadata';
 import Validator from './validator/index';
@@ -35,6 +36,7 @@ export {
   MetaModelStore,
   Entity,
   Field,
+  FieldType,
   HasOne,
   HasMany,
   BelongsTo,

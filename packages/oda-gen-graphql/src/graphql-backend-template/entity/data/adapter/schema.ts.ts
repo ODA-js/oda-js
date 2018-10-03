@@ -1,4 +1,4 @@
-import { Entity, ModelPackage } from 'oda-model';
+import { Entity, ModelPackage, FieldType } from 'oda-model';
 import { Factory } from 'fte.js';
 import { lib } from 'oda-gen-common';
 let get = lib.get;
@@ -14,7 +14,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter?: string,
 ) {
   return te.run(
@@ -65,7 +65,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ): MapperOutput {
   let ids = getFields(entity)

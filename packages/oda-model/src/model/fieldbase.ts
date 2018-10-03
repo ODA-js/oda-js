@@ -4,6 +4,7 @@ import {
   FieldBaseInput,
   FieldBaseStorage,
   MetaModelType,
+  FieldType,
 } from './interfaces';
 import { ModelBase } from './modelbase';
 
@@ -15,7 +16,7 @@ export class FieldBase extends ModelBase {
     return this.$obj.entity;
   }
 
-  get type(): string {
+  get type(): FieldType {
     return this.$obj.type;
   }
 

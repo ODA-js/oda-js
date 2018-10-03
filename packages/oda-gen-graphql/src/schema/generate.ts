@@ -12,7 +12,7 @@ import templateEngine from './templateEngine';
 import initModel from './initModel';
 import generator from './generator';
 
-import { collectErrors, showLog, knownTypes, hasResult } from './validate';
+import { collectErrors, showLog, hasResult } from './validate';
 import { commit } from './writeFile';
 import { IValidationResult } from 'oda-model';
 import { GeneratorInit } from './init';
@@ -48,7 +48,6 @@ export default function generate({
   });
 
   const systemPackage = packages.get('system');
-  const existingTypes = knownTypes(actualTypeMapper, systemPackage);
   const typeMapper: { [key: string]: (inp: string) => string } = Object.keys(
     actualTypeMapper,
   ).reduce((hash, type) => {
@@ -57,7 +56,7 @@ export default function generate({
   }, {});
 
   // generate per package
-  const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
+  const errors: IValidationResult[] = collectErrors(modelStore);
   if (hasResult(errors, 'error')) {
     console.error('please fix followings errors to proceed');
     showLog(errors, logs);

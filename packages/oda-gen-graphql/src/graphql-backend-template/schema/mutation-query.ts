@@ -1,5 +1,5 @@
 import { printRequired } from '../utils';
-import { ModelPackage, FieldArgs } from 'oda-model';
+import { ModelPackage, FieldArgs, FieldType } from 'oda-model';
 
 export interface MutationInput {
   name: string;
@@ -29,7 +29,7 @@ export interface MutationQueryOutput {
 export function mapper(
   mutation: MutationInput,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MutationQueryOutput {
   const mapToTSTypes = typeMapper.typescript;
   return {

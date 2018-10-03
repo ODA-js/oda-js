@@ -1,4 +1,5 @@
-import { Entity, RelationBase, ModelPackage } from 'oda-model';
+import { ModelPackage, FieldType } from 'oda-model';
+import { template } from './model/packages.registerConnectors.ts';
 
 export function decapitalize(name: string): string {
   return name[0].toLowerCase() + name.slice(1);
@@ -21,6 +22,8 @@ export const defaultTypeMapper = {
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
     RichText: ['richtext'],
+    'uix.components.$type': ['json'],
+    'uix.enums.$type': ['enum()'],
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
@@ -34,6 +37,7 @@ export const defaultTypeMapper = {
     ID: ['uuid', 'id', 'identity'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
+    'uix.enums.$type': ['enum()'],
   },
   graphql: {
     Int: ['int', 'integer'],
@@ -43,7 +47,8 @@ export const defaultTypeMapper = {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
-    $ENUM: ['$ENUM'],
+    $type: ['entity()', 'enum()'],
+    '[$type]': ['many()'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -52,6 +57,8 @@ export const defaultTypeMapper = {
     Boolean: ['bool', 'boolean'],
     Date: ['date'],
     'mongoose.Schema.Types.ObjectId': ['id'],
+    '$type[]': ['many()'],
+    'common.schema.$type[]': ['entity()'],
   },
   sequelize: {
     'DataTypes.INTEGER': ['int', 'integer', 'identity'],
@@ -66,6 +73,8 @@ export const defaultTypeMapper = {
     'DataTypes.CHAR(24), defaultValue: ()=> IdGenerator.generateMongoId()': [
       'id_pk',
     ],
+    'DataTypes.JSON': ['many()'],
+    'DataTypes.STRING': ['enum()'],
   },
   typescript: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -73,6 +82,8 @@ export const defaultTypeMapper = {
     boolean: ['bool', 'boolean'],
     Date: ['date'],
     object: ['json', 'object'],
+    '$type[]': ['many()'],
+    'common.$type': ['entity()', 'enum()'],
   },
 };
 
@@ -87,17 +98,35 @@ export function prepareMapper(
     return hash;
   }, {});
 
-  const hasEnums = specificMapper.hasOwnProperty('$ENUM');
-  return (type: string | void) => {
-    let result = specificMapper['*'];
-    if (type) {
-      if (systemPackage.entities.has(type)) {
-        result = type;
-      } else if (hasEnums && systemPackage.enums.has(type)) {
-        result = type;
-      } else {
-        result = specificMapper[type.toUpperCase()] || specificMapper['*'];
+  const hasEnums = specificMapper.hasOwnProperty('enum()');
+  const hasMany = specificMapper.hasOwnProperty('many()');
+  const hasEntity = specificMapper.hasOwnProperty('entity()');
+  return (type: FieldType | void) => {
+    let result;
+    if (typeof type === 'object' && type) {
+      result = undefined;
+      if (
+        hasEntity &&
+        type.type === 'entity' &&
+        systemPackage.entities.has(type.name)
+      ) {
+        result = specificMapper['many()'].replace(/\$type/gi, type.name);
+      } else if (
+        type.type === 'enum' &&
+        hasEnums &&
+        systemPackage.enums.has(type.name)
+      ) {
+        result = specificMapper['many()'].replace(/\$type/gi, type.name);
       }
+      if (!result) {
+        result = specificMapper['*'];
+      } else if (type.multiplicity === 'many' && hasMany) {
+        result = specificMapper['many()'].replace(/\$type/gi, result);
+      }
+    } else if (typeof type === 'string') {
+      result = specificMapper[type.toUpperCase()] || specificMapper['*'];
+    } else {
+      result = specificMapper['*'];
     }
     return result;
   };
@@ -122,12 +151,4 @@ export function printArguments(
     }
   }
   return result;
-}
-
-export function connectionName(
-  entity: Entity,
-  fieldName: string,
-  rel: RelationBase,
-) {
-  return `${rel.ref.entity}To${entity.name}As_${fieldName}`;
 }

@@ -6,6 +6,7 @@ import {
   MetaModel,
   Mutation,
   Query,
+  FieldType,
 } from 'oda-model';
 import { type } from './entity';
 
@@ -286,7 +287,7 @@ export const memoizeEntityMapper = (name, mapper) => (
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
   defaultAdapter?: string,
 ) => {
   let adapter = entity.getMetadata(

@@ -1,10 +1,10 @@
 // import * as fs from 'fs-extra';
 const prettier = require('prettier');
-var memFs = require('mem-fs');
-var editor = require('mem-fs-editor');
+const memFs = require('mem-fs');
+const editor = require('mem-fs-editor');
 
-var store = memFs.create();
-var fs = editor.create(store);
+const store = memFs.create();
+const fs = editor.create(store);
 
 export function writeFile(fn, data, format: boolean = true) {
   if (format) {

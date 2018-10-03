@@ -5,7 +5,7 @@ import { EntityReference } from './entityreference';
 import { FieldBase } from './fieldbase';
 import { HasMany } from './hasmany';
 import { HasOne } from './hasone';
-import { FieldInput, FieldStorage, IField } from './interfaces';
+import { FieldInput, FieldStorage, IField, FieldType } from './interfaces';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
 
@@ -94,7 +94,7 @@ export class Field extends FieldBase implements IField {
     this.$obj.relation = value;
   }
 
-  public getRefType(pkg: ModelPackage): string | void {
+  public getRefType(pkg: ModelPackage): FieldType | void {
     if (this.relation) {
       let ref = this.relation.ref;
       let link = ref.toString();

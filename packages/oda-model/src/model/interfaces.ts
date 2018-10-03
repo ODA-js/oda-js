@@ -73,7 +73,7 @@ export interface IEntity extends IEntityBase {
 
 export interface IField extends IModelType {
   name: string;
-  type: string;
+  type: FieldType;
   indexed: boolean | string | string[];
   identity: boolean | string | string[];
   relation: IRelation;
@@ -171,6 +171,14 @@ export interface IValidationResult {
   result: ValidationResultType;
   message?: string;
 }
+
+export interface ComplextType {
+  type: 'enum' | 'entity';
+  name: string;
+  multiplicity: 'one' | 'many';
+}
+
+export type FieldType = string | ComplextType;
 
 export interface IValidator {
   check(item: IValidate): IValidationResult[];
@@ -290,7 +298,7 @@ export interface FieldArgs {
 export interface FieldBaseInput extends ModelBaseInput {
   args?: FieldArgs[];
   inheritedFrom?: string;
-  type?: string;
+  type?: FieldType;
   derived?: boolean;
   persistent?: boolean;
   entity?: string;
@@ -301,8 +309,8 @@ export interface FieldBaseStorage extends ModelBaseStorage {
   args?: FieldArgs[];
   args_?: FieldArgs[];
   inheritedFrom?: string;
-  type: string;
-  type_: string;
+  type: FieldType;
+  type_: FieldType;
   entity: string;
   entity_: string;
 }
@@ -464,18 +472,6 @@ export interface RelationBaseJSON {
   name?: string;
   fields?: FieldInput[];
   opposite?: string;
-}
-
-export interface RelationFields {
-  description: string;
-  name: string;
-  type: string;
-  required: boolean;
-  indexed: boolean | string | string[];
-  identity?: boolean | string | string[];
-  derived: boolean;
-  persistent: boolean;
-  args: FieldArgs[];
 }
 
 export interface RelationBaseStorage {

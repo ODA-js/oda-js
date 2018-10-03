@@ -1,4 +1,4 @@
-import { Entity, ModelPackage } from 'oda-model';
+import { Entity, ModelPackage, FieldType } from 'oda-model';
 import * as inflect from 'inflected';
 
 import { Factory } from 'fte.js';
@@ -11,7 +11,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   allowAcl,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(entity, pack, role, allowAcl, typeMapper), template);
 }
@@ -40,7 +40,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);

@@ -1,20 +1,14 @@
-import { lib } from 'oda-gen-common';
 import {
   IValidationResult,
   ValidationResultType,
   Validator,
   ModelPackage,
 } from 'oda-model';
-import * as path from 'path';
 
 import AclDefault from '../acl';
-import * as template from '../graphql-backend-template';
 import initModel from './initModel';
 import { MetaModel } from 'oda-model';
 import { GeneratorInit } from './init';
-
-const { deepMerge } = lib;
-const { defaultTypeMapper } = template.utils;
 
 export function hasResult(
   log: IValidationResult[],
@@ -81,61 +75,10 @@ export function showLog(
   });
 }
 
-export function knownTypes(
-  typeMapper: {
-    [key: string]: { [key: string]: string[] };
-  },
-  systemPackage?: ModelPackage,
-) {
-  const result = {};
-  Object.keys(typeMapper).forEach(mapper => {
-    Object.keys(typeMapper[mapper]).forEach(type => {
-      typeMapper[mapper][type].reduce((_, t) => {
-        result[t.toLowerCase()] = true;
-        return result;
-      }, result);
-    });
-  });
-  if (systemPackage) {
-    systemPackage.unions.forEach(u => {
-      result[u.name.toLocaleLowerCase()] = true;
-    });
-    systemPackage.mixins.forEach(u => {
-      result[u.name.toLocaleLowerCase()] = true;
-    });
-    systemPackage.scalars.forEach(u => {
-      result[u.name.toLocaleLowerCase()] = true;
-    });
-    systemPackage.entities.forEach(u => {
-      result[u.name.toLocaleLowerCase()] = true;
-    });
-    systemPackage.enums.forEach(u => {
-      result[u.name.toLocaleLowerCase()] = true;
-    });
-  }
-  return result;
-}
-
-export function collectErrors(model: MetaModel, existingTypes: object) {
+export function collectErrors(model: MetaModel) {
   const validator = Validator();
   const errors: IValidationResult[] = model.validate(validator);
   //custom validator
-  const pkg = model.defaultPackage;
-  Array.from(pkg.entities.values()).forEach(cur => {
-    Array.from(cur.fields.values())
-      .filter(f => !f.relation)
-      .forEach(fld => {
-        if (!existingTypes[fld.type.toLowerCase()]) {
-          errors.push({
-            package: pkg.name,
-            entity: cur.name,
-            field: fld.name,
-            result: 'error',
-            message: `type '${fld.type}' have no proper mapping`,
-          });
-        }
-      });
-  }, {});
   return errors;
 }
 
@@ -155,20 +98,14 @@ export default function validate(args: GeneratorInit) {
   let secureAcl = new AclDefault(acl);
 
   //mutating config...
-  const { modelStore, packages } = initModel({
+  const { modelStore } = initModel({
     schema,
     hooks,
     secureAcl,
   });
 
-  const actualTypeMapper = deepMerge(
-    defaultTypeMapper,
-    context.typeMapper || {},
-  );
-
-  const existingTypes = knownTypes(actualTypeMapper, packages.get('system'));
   // generate per package
-  const errors: IValidationResult[] = collectErrors(modelStore, existingTypes);
+  const errors: IValidationResult[] = collectErrors(modelStore);
 
   showLog(errors, logs);
 }

@@ -1,4 +1,10 @@
-import { Entity, HasMany, BelongsToMany, ModelPackage } from 'oda-model';
+import {
+  Entity,
+  HasMany,
+  BelongsToMany,
+  ModelPackage,
+  FieldType,
+} from 'oda-model';
 import { printRequired, printArguments } from '../../utils';
 import { Factory } from 'fte.js';
 
@@ -15,7 +21,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(entity, pack, role, aclAllow, typeMapper), template);
 }
@@ -42,7 +48,7 @@ export function _mapper(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
     name: entity.name,

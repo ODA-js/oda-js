@@ -1,6 +1,6 @@
 import { Factory } from 'fte.js';
 import { printRequired } from '../utils';
-import { ModelPackage, FieldArgs } from 'oda-model';
+import { ModelPackage, FieldArgs, FieldType } from 'oda-model';
 
 export const template = 'mutation/types.graphql.njs';
 
@@ -10,7 +10,7 @@ export function generate(
   pack: ModelPackage,
   role: string,
   aclAllow,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ) {
   return te.run(mapper(mutation, pack, typeMapper), template);
 }
@@ -37,7 +37,7 @@ export interface MapperOutput {
 export function mapper(
   mutation: MutationInput,
   pack: ModelPackage,
-  typeMapper: { [key: string]: (i: string) => string },
+  typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
     name: mutation.name,
