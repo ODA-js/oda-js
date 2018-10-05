@@ -42,7 +42,7 @@ export default function $generateGraphql(
         defaultAdapter,
       );
       if (typeof source === 'string') {
-        let parts = route.split('.');
+        parts = route.split('.');
         if (!fileName) {
           parts[parts.length - 1] = `${parts[parts.length - 1]}.${ext}`;
         } else {
@@ -51,7 +51,7 @@ export default function $generateGraphql(
         let fn = path.join(rootDir, pkg.name, type, `${entity.name}`, ...parts);
         writeFile(fn, source);
       } else if (Array.isArray(source)) {
-        let parts = route.split('.');
+        parts = route.split('.');
         source.forEach(f => {
           parts[parts.length - 1] = `${f.name}.${ext}`;
           let fn = path.join(

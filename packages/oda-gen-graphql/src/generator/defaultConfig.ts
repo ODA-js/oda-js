@@ -62,6 +62,9 @@ export default {
         types: true,
       },
     },
+    enums: {
+      UI: true,
+    },
     packages: {
       typeIndex: true,
       mutationIndex: true,

@@ -143,6 +143,7 @@ export default (args: Generator) => {
       const curConfig = config.packages[pkg.name];
       const entities = Array.from(pkg.entities.values());
       const mutations = Array.from(pkg.mutations.values());
+      const enums = Array.from(pkg.enums.values());
 
       // доделать фильтрацию по названиям сущностей, пакетов и т.п.
       // entity/connections
@@ -237,6 +238,8 @@ export default (args: Generator) => {
           generatePkg(pkg, '', 'uiIndex', 'index.js');
           generate(entities, curConfig, 'entity', 'UI.queries', 'js');
           generate(entities, curConfig, 'entity', 'UI.forms', 'js');
+          debugger;
+          generate(enums, curConfig, 'enums', 'UI.components', 'js');
         }
       }
 

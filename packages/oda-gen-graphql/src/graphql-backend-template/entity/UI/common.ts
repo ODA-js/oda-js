@@ -9,13 +9,6 @@ import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
-const formPriority = {
-  list: 1,
-  show: 2,
-  edit: 3,
-  hidden: 4,
-};
-
 export interface UIResult {
   listName: string;
   quickSearch: string[];

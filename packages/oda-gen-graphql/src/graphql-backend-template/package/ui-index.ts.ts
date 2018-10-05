@@ -21,9 +21,10 @@ export interface MapperOutput {
     embedded: boolean | string[];
     abstract: boolean;
   }[];
+  enums: { name: string }[];
 }
 
-import { getEntities } from '../queries';
+import { getEntities, getEnums } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
@@ -37,6 +38,9 @@ export function mapper(
       entry: decapitalize(e.name),
       embedded: e.embedded,
       abstract: e.abstract,
+    })),
+    enums: getEnums(pack).map(p => ({
+      name: p.name,
     })),
   };
 }
