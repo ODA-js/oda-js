@@ -13,44 +13,6 @@ export function printRequired(field: { required?: boolean }): string {
   return field.required ? '!' : '';
 }
 
-export type TypeDef = {
-  name: string;
-  lib: string;
-  input: string;
-  field: string;
-};
-
-export function ParseType(_type: string): TypeDef {
-  const type = _type.split(':');
-  return {
-    name: type[0],
-    lib: type[1],
-    input: type[2],
-    field: type[3],
-  };
-}
-
-export function TypeToString(type: TypeDef): string {
-  let result: string;
-  if (type.name) {
-    result = type.name;
-    if (type.lib) {
-      result += `:${type.lib}`;
-    } else if (type.input || type.field) {
-      result += ':';
-    }
-    if (type.input) {
-      result += `:${type.input}`;
-    } else if (type.field) {
-      result += ':';
-    }
-    if (type.field) {
-      result += `:${type.field}`;
-    }
-  }
-  return result;
-}
-
 export type possibleTypes =
   | 'int'
   | 'integer'
@@ -102,6 +64,7 @@ export const defaultTypeMapper: {
     Email: ['email'],
     URL: ['url'],
     ID: ['uuid', 'id', 'identity'],
+    $type: ['enum()'],
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
@@ -159,62 +122,6 @@ export const defaultTypeMapper: {
     object: ['json', 'object'],
   },
 };
-
-export class TypeMapperRA {
-  public hasEnums: boolean;
-  public hasMany: boolean;
-  public hasEntity: boolean;
-  private _mapper: { [key: string]: string[] };
-  private systemPackage: ModelPackage;
-  private specificMapper: { [key: string]: string };
-  constructor(systemPackage, config?) {
-    this.systemPackage = systemPackage;
-    this._mapper = config || defaultTypeMapper.aor;
-    this.init();
-  }
-  public resolve(type: FieldType | void): string {
-    let result;
-    if (typeof type === 'object' && type) {
-      result = undefined;
-      if (
-        this.hasEntity &&
-        type.type === 'entity' &&
-        this.systemPackage.entities.has(type.name)
-      ) {
-        result = this.specificMapper['entity()'].replace(/\$type/gi, type.name);
-      } else if (
-        type.type === 'enum' &&
-        this.hasEnums &&
-        this.systemPackage.enums.has(type.name)
-      ) {
-        result = this.specificMapper['enum()'].replace(/\$type/gi, type.name);
-      }
-      if (!result) {
-        result = this.specificMapper['*'];
-      } else if (type.multiplicity === 'many' && this.hasMany) {
-        result = this.specificMapper['many()'].replace(/\$type/gi, result);
-      }
-    } else if (typeof type === 'string') {
-      result =
-        this.specificMapper[type.toLowerCase()] || this.specificMapper['*'];
-    } else {
-      result = this.specificMapper['*'];
-    }
-    return result;
-  }
-  private init() {
-    this.specificMapper = Object.keys(this._mapper).reduce((hash, current) => {
-      this._mapper[current].forEach(t => {
-        hash[t.toLowerCase()] = current;
-      });
-      return hash;
-    }, {});
-
-    this.hasEnums = this.specificMapper.hasOwnProperty('enum()');
-    this.hasMany = this.specificMapper.hasOwnProperty('many()');
-    this.hasEntity = this.specificMapper.hasOwnProperty('entity()');
-  }
-}
 
 export function prepareMapper(
   mapper: { [key: string]: string[] },
