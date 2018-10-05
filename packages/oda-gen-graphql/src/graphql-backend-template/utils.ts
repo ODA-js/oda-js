@@ -51,21 +51,57 @@ export function TypeToString(type: TypeDef): string {
   return result;
 }
 
+export type possibleTypes =
+  | 'int'
+  | 'integer'
+  | 'number'
+  | 'float'
+  | 'double'
+  | 'string'
+  | '*'
+  | 'uuid'
+  | 'id'
+  | 'identity'
+  | 'richtext'
+  | 'date'
+  | 'time'
+  | 'datetime'
+  | 'bool'
+  | 'boolean'
+  | 'text'
+  | 'email'
+  | 'url'
+  | 'image'
+  | 'file'
+  | 'object'
+  | 'json'
+  | 'identity_pk'
+  | 'uuid_pk'
+  | 'id_pk'
+  | 'many()'
+  | 'enum()';
+
 // двух уровневая система распознавания типов
 // 1. уровень парсит типы чтобы было понятно что за тип
 // 2. уровень должен извлекать конкретные данные для конкретного типа, на основе полной информации о типе
 // полная информация хранит первый тип и все выведенные типы....
 //
 // * means default type
-export const defaultTypeMapper = {
+export const defaultTypeMapper: {
+  [key: string]: { [type: string]: possibleTypes[] };
+} = {
   aor: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
-    Text: ['string', '*', 'uuid', 'id', 'identity', 'richtext'],
+    Text: ['string', '*'],
+    RichText: ['richtext'],
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
     File: ['file'],
     Image: ['image'],
+    Email: ['email'],
+    URL: ['url'],
+    ID: ['uuid', 'id', 'identity'],
   },
   resource: {
     number: ['int', 'integer', 'number', 'float', 'double'],
