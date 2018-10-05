@@ -80,7 +80,7 @@ export const defaultTypeMapper: {
     Boolean: ['bool', 'boolean'],
     File: ['file'],
     Image: ['image'],
-    $type: ['enum()'],
+    Enum: ['enum()'],
   },
   graphql: {
     Int: ['int', 'integer'],
