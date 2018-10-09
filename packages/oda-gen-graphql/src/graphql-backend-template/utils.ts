@@ -1,5 +1,4 @@
 import { ModelPackage, FieldType } from 'oda-model';
-import { template } from './model/packages.registerConnectors.ts';
 
 export function decapitalize(name: string): string {
   return name[0].toLowerCase() + name.slice(1);

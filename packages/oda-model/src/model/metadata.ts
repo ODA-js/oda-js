@@ -36,6 +36,14 @@ export class Metadata implements IValidate {
     }
   }
 
+  public hasMetadata(key: string) {
+    if (key) {
+      return !!get(this.metadata, key);
+    } else {
+      return false;
+    }
+  }
+
   public setMetadata(
     key?: string | { [key: string]: any },
     data?: { [key: string]: any } | any,

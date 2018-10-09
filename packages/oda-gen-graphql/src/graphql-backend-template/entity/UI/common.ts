@@ -10,7 +10,7 @@ import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
 export interface UIResult {
-  listName: string;
+  // listName: string;
   quickSearch: string[];
   hidden?: string[];
   edit?: string[];
@@ -34,7 +34,7 @@ export interface Embedded {
 }
 
 export interface UIView {
-  listName: string;
+  // listName: string;
   quickSearch: string[];
   hidden?: { [key: string]: boolean };
   edit?: { [key: string]: boolean };
@@ -57,10 +57,7 @@ export interface MapperOutput {
   titlePlural: string;
   UI: UIView;
   plural: string;
-  listLabel: {
-    type: string;
-    source: any;
-  };
+  listLabel: string[];
   listName: string;
   ownerFieldName: string;
   relations: {
@@ -95,6 +92,7 @@ export interface MapperOutput {
     title: string;
     actionType: string;
   }[];
+  enum?: any;
 }
 
 // для каждой операции свои параметры с типами должны быть.
@@ -113,7 +111,6 @@ import {
   memoizeEntityMapper,
   oneFieldIndex,
 } from '../../queries';
-import { platform } from 'os';
 
 function visibility(
   pack: ModelPackage,
@@ -124,7 +121,7 @@ function visibility(
   first = false,
 ): UIView {
   const result: UIResult = {
-    listName: guessListLabel(entity.name, aclAllow, role, pack, aor).source,
+    // listName: guessListLabel(entity.name, aclAllow, role, pack, aor).source,
     quickSearch: guessQuickSearch(entity, aclAllow, role, pack, aor),
     hidden: [],
     edit: [],
@@ -178,7 +175,7 @@ function visibility(
   }
 
   const res: UIView = {
-    listName: result.listName,
+    // listName: result.listName,
     quickSearch: result.quickSearch.reduce((r, c) => {
       if (r.indexOf(c) === -1) {
         r.push(c);
@@ -274,13 +271,13 @@ function visibility(
               ? {
                   single: fld.relation.single,
                   entity: fld.relation.ref.entity,
-                  listLabel: guessListLabel(
-                    fld.relation.ref.entity,
-                    aclAllow,
-                    role,
-                    pack,
-                    aor,
-                  ),
+                  // listLabel: guessListLabel(
+                  //   fld.relation.ref.entity,
+                  //   aclAllow,
+                  //   role,
+                  //   pack,
+                  //   aor,
+                  // ),
                 }
               : undefined,
             field: f.name,
@@ -319,22 +316,18 @@ function guessListLabel(
 ) {
   const entity = pack.entities.get(entityName);
   let UI = entity.getMetadata('UI');
-  let result = {
-    type: 'Text',
-    source: 'id',
-  };
+  let result;
   if (UI && UI.listName) {
-    result.source = UI.listName;
+    result = UI.listName;
   } else {
     let res = getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(identityFields)
       .filter(oneUniqueInIndex(entity))[0];
     if (res) {
-      result.type = aor(res.type);
-      result.source = res.name;
+      result = res.name;
     }
   }
-  return result;
+  return result ? (Array.isArray(result) ? result : [result]) : [];
 }
 
 function guessQuickSearch(entity: Entity, aclAllow, role, pack, aor) {
@@ -480,13 +473,13 @@ export function _mapper(
           ...ref,
           fieldName: decapitalize(refFieldName),
           cFieldName: refFieldName,
-          listLabel: guessListLabel(
-            f.relation.ref.entity,
-            aclAllow,
-            role,
-            pack,
-            mapAORTypes,
-          ),
+          // listLabel: guessListLabel(
+          //   f.relation.ref.entity,
+          //   aclAllow,
+          //   role,
+          //   pack,
+          //   mapAORTypes,
+          // ),
         },
       };
     })
@@ -519,8 +512,7 @@ export function _mapper(
         ? camelize(`${entity.name}_${a.title}`)
         : camelize(`${entity.plural}_${a.title}`),
   }));
-
-  return {
+  let result: MapperOutput = {
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
@@ -539,4 +531,8 @@ export function _mapper(
     props,
     actions,
   };
+  if (entity.hasMetadata('enum')) {
+    result.enum = entity.getMetadata('enum');
+  }
+  return result;
 }
