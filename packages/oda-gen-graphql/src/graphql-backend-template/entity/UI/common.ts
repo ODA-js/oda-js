@@ -47,6 +47,7 @@ export interface UIView {
 }
 
 export interface MapperOutput {
+  dictionary: boolean;
   packageName: string;
   role: string;
   name: string;
@@ -513,6 +514,7 @@ export function _mapper(
         : camelize(`${entity.plural}_${a.title}`),
   }));
   let result: MapperOutput = {
+    dictionary: entity.getMetadata('dictionary'),
     packageName: capitalize(pack.name),
     role: pack.name,
     name: entity.name,
