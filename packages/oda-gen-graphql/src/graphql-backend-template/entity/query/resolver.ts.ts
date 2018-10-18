@@ -106,7 +106,7 @@ export function _mapper(
         field: '',
       },
     };
-    if (verb === 'BelongsToMany') {
+    if (verb === 'BelongsToMany' && (f.relation as BelongsToMany).using) {
       let current = f.relation as BelongsToMany;
       ref.using.entity = current.using.entity;
       ref.using.field = current.using.field;
@@ -119,6 +119,7 @@ export function _mapper(
           r =>
             (current.opposite && current.opposite === r) ||
             (refe.fields.get(r).relation instanceof BelongsToMany &&
+              (refe.fields.get(r).relation as BelongsToMany).using &&
               (refe.fields.get(r).relation as BelongsToMany).using.entity ===
                 (f.relation as BelongsToMany).using.entity),
         )

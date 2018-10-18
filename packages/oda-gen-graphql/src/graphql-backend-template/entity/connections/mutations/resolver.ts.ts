@@ -1,4 +1,4 @@
-import { Entity, ModelPackage, FieldType } from 'oda-model';
+import { Entity, ModelPackage, FieldType, BelongsToMany } from 'oda-model';
 import { capitalize, decapitalize } from '../../../utils';
 import { Factory } from 'fte.js';
 import {
@@ -75,7 +75,7 @@ export function _mapper(
         ];
         let removeArgs = [...addArgs];
 
-        if (verb === 'BelongsToMany') {
+        if (verb === 'BelongsToMany' && (f.relation as BelongsToMany).using) {
           if (f.relation.fields && f.relation.fields.size > 0) {
             f.relation.fields.forEach(field => {
               ref.fields.push(field.name);

@@ -66,6 +66,7 @@ export function mapper(
             (f.relation &&
               f.relation.verb === 'BelongsToMany' &&
               rel.relation.verb === 'BelongsToMany' &&
+              (f.relation as BelongsToMany).using &&
               (f.relation as BelongsToMany).using.entity ===
                 (rel.relation as BelongsToMany).using.entity),
         );

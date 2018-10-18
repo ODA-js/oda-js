@@ -53,16 +53,18 @@ export class BelongsToMany extends RelationBase {
         if (!using.$obj.field) {
           using.$obj.field = using.$obj._field = decapitalize(obj.entity);
         }
+        /*
+      // no need to create using Entity because items can be stored on each side this way
       } else {
         // this single end association to other
         // this.$obj.verb = 'HasMany';
         let relName = `${this.$obj.entity}${capitalize(this.$obj.field)}`;
         using = new EntityReference(
           `${obj.name || relName}#${decapitalize(obj.entity)}`,
-        );
+        ); */
       }
 
-      if (!using.backField) {
+      if (using && !using.backField) {
         using.backField = 'id';
       }
 

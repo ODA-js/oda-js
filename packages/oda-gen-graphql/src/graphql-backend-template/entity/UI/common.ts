@@ -388,7 +388,7 @@ export function _mapper(
     .map(f => {
       let refe = pack.entities.get(f.relation.ref.entity);
       let verb = f.relation.verb;
-      let ref = {
+      let ref: any = {
         embedded: f.relation.embedded,
         //для разных ассоциаций... точнее их окончаний
         opposite: f.relation.opposite || f.relation.ref.field,
@@ -408,14 +408,14 @@ export function _mapper(
         ),
         fields: [],
         listName: '',
-        using: {
+      };
+      if (verb === 'BelongsToMany' && (f.relation as BelongsToMany).using) {
+        ref.using = {
           UI: undefined,
           backField: '',
           entity: '',
           field: '',
-        },
-      };
-      if (verb === 'BelongsToMany') {
+        };
         let current = f.relation as BelongsToMany;
         ref.using.entity = current.using.entity;
         ref.using.field = current.using.field;
@@ -428,6 +428,7 @@ export function _mapper(
             r =>
               (current.opposite && current.opposite === r) ||
               (refe.fields.get(r).relation instanceof BelongsToMany &&
+                (refe.fields.get(r).relation as BelongsToMany).using &&
                 (refe.fields.get(r).relation as BelongsToMany).using.entity ===
                   (f.relation as BelongsToMany).using.entity),
           )
