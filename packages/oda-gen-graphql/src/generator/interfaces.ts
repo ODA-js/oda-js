@@ -116,15 +116,15 @@ export type Generator = {
     | string
     | {
         name: string;
-        mutations: any[];
-        entities: any[];
-        packages: any[];
-        enums: any[];
-        unions: any[];
-        mixins: any[];
-        directives: any[];
-        scalars: any[];
-        objects: any[];
+        mutations?: any[];
+        entities?: any[];
+        packages?: any[];
+        enums?: any[];
+        unions?: any[];
+        mixins?: any[];
+        directives?: any[];
+        scalars?: any[];
+        objects?: any[];
       };
   rootDir?: string;
   templateRoot?: string;

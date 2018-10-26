@@ -10,7 +10,7 @@ export default function $generateModel(
   raw,
   rootDir,
   model,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (q: string) => string },
   route: string,
   fileName: string,
 ) {
@@ -18,12 +18,12 @@ export default function $generateModel(
   let fn = path.join(rootDir, fileName);
 
   if (typeof source === 'string') {
-    let fn = path.join(rootDir, fileName);
+    fn = path.join(rootDir, fileName);
     writeFile(fn, source);
   } else if (Array.isArray(source)) {
     let parts = route.split('.').slice(1); // it is always `data`, at least here
     source.forEach(f => {
-      let fn = path.join(rootDir, f.name);
+      fn = path.join(rootDir, f.name);
       writeFile(fn, f.content);
     });
   }
