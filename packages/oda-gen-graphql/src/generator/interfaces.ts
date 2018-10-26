@@ -117,6 +117,7 @@ export type Generator = {
     | {
         name: string;
         mutations?: any[];
+        queries?: any[];
         entities?: any[];
         packages?: any[];
         enums?: any[];
