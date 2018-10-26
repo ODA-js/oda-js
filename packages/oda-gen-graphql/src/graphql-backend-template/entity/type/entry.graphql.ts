@@ -84,7 +84,21 @@ export function _mapper(
         let ent = pack.entities.get(ref.relation.ref.entity);
         type = ent.fields.get(ref.relation.ref.field).type;
       } else {
-        type = field.type;
+        if (
+          pack.entities.has(
+            typeof field.type === 'string' ? field.type : field.type.name,
+          )
+        ) {
+          type = 'id';
+        } else if (
+          pack.enums.has(
+            typeof field.type === 'string' ? field.type : field.type.name,
+          )
+        ) {
+          type = 'string';
+        } else {
+          type = field.type;
+        }
       }
       return {
         name: k,
