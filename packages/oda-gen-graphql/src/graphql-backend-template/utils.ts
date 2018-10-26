@@ -93,7 +93,7 @@ export const defaultTypeMapper: {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
-    $type: ['entity()'],
+    $type: ['entity()', 'enum()'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
