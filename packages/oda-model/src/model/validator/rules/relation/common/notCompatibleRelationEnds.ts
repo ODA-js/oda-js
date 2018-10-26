@@ -23,6 +23,8 @@ export default class implements Rule<IRelationContext> {
   }
 }
 
+// проверять на вычисляемые поля, они могут быть какими угодно....
+
 const opposits = {
   BelongsTo: {
     HasOne: true,

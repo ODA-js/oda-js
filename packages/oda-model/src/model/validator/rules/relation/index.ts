@@ -10,6 +10,7 @@ import usingBackFieldNotIdentity from './belongsToMany/usingBackFieldNotIdentity
 import usingEntityNotFound from './belongsToMany/usingEntityNotFound';
 import usingFieldNotExists from './belongsToMany/usingFieldNotExists';
 import usingFieldsCheck from './belongsToMany/usingFieldsCheck';
+import usingNotExists from './belongsToMany/usingNotExists';
 import notCompatibleRelationEnds from './common/notCompatibleRelationEnds';
 import oppositeNotFound from './common/oppositeNotFound';
 import ownerFieldUnnecesseryIndexed from './common/ownerFieldUnnecesseryIndexed';
@@ -49,6 +50,7 @@ export const belongsToMany = [
   new usingFieldNotExists(),
 
   new usingFieldsCheck(),
+  new usingNotExists(),
 ];
 
 export const hasOne = [

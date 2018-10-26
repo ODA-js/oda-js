@@ -21,9 +21,9 @@ export function showLog(
   log,
   visibility: ValidationResultType | ValidationResultType[] = [
     'error',
-    'warning',
-    'critics',
-    'fixable',
+    // 'warning',
+    // 'critics',
+    // 'fixable',
   ],
 ) {
   if (!Array.isArray(visibility)) {
