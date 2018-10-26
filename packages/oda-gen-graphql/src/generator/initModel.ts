@@ -32,7 +32,6 @@ export default function({
       item: entity,
       acl: get(entity, 'metadata.acl.create'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
 
@@ -40,21 +39,18 @@ export default function({
       item: entity,
       acl: get(entity, 'metadata.acl.read'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.update'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.delete'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     // if we didn't setup hooks at all
@@ -62,7 +58,6 @@ export default function({
       item: entity,
       acl: 'system',
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
   });
@@ -72,7 +67,6 @@ export default function({
       item: mutation,
       acl: get(mutation, 'metadata.acl.execute'),
       path: 'mutations',
-      secureAcl,
       packages: pckgs,
     });
     // if we didn't setup hooks at all
@@ -80,7 +74,6 @@ export default function({
       item: mutation,
       acl: 'system',
       path: 'mutations',
-      secureAcl,
       packages: pckgs,
     });
   });

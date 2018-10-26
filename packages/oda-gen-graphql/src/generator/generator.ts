@@ -238,7 +238,6 @@ export default (args: Generator) => {
           generatePkg(pkg, '', 'uiIndex', 'index.js');
           generate(entities, curConfig, 'entity', 'UI.queries', 'js');
           generate(entities, curConfig, 'entity', 'UI.forms', 'js');
-          debugger;
           generate(enums, curConfig, 'enums', 'UI.components', 'js');
         }
       }
@@ -248,5 +247,6 @@ export default (args: Generator) => {
       }
     });
   }
+  // tslint:disable-next-line:no-console
   commit().then(() => console.log('finish'));
 };

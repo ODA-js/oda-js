@@ -8,7 +8,6 @@ import {
   Query,
   FieldType,
 } from 'oda-model';
-import { type } from './entity';
 
 let memoizeCache: any = {};
 

@@ -4,9 +4,7 @@ export type GeneratorInit = {
   schema: any;
   rootDir?: string;
   templateRoot?: string;
-  acl?: {
-    [key: string]: number;
-  };
+  acl?: string[];
   context?: {
     typeMapper?: any;
     defaultAdapter?: 'mongoose' | 'sequelize';

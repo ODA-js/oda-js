@@ -20,11 +20,10 @@ export interface IPackageDef {
 }
 
 export function initPackages(secureAcl: AclDefault): IPackageDef {
-  return Object.keys(secureAcl.map).reduce((store, cur) => {
+  return secureAcl.roles.reduce((store, cur) => {
     // only create if not exists!
     if (!store[cur]) {
       store[cur] = {
-        acl: secureAcl.acl(cur),
         entities: {},
         mutations: {},
         enums: {},
@@ -42,25 +41,18 @@ export function pushToAppropriate({
   item,
   acl,
   path,
-  secureAcl,
   packages,
 }: {
   item: { name: string };
-  acl: any;
-  secureAcl: AclDefault;
+  acl: string | string[];
   path: string;
   packages: IPackageDef;
 }) {
-  if (Array.isArray(acl)) {
-    for (let i = 0, len = acl.length; i < len; i++) {
-      pushToAppropriate({ item, acl: acl[i], path, secureAcl, packages });
-    }
-  } else {
-    let count = secureAcl.map[acl] + 1;
-    let list = secureAcl.names.slice(0, count);
-    for (let i = 0, len = list.length; i < len; i++) {
-      packages[list[i]][path][item.name] = true;
-    }
+  if (!Array.isArray(acl)) {
+    acl = [acl];
+  }
+  for (let i = 0, len = acl.length; i < len; i++) {
+    packages[acl[i]][path][item.name] = true;
   }
 }
 
@@ -87,7 +79,6 @@ export default function({
       item: entity,
       acl: get(entity, 'metadata.acl.create'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
 
@@ -95,21 +86,18 @@ export default function({
       item: entity,
       acl: get(entity, 'metadata.acl.read'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.update'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.delete'),
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
     // if we didn't setup hooks at all
@@ -117,7 +105,6 @@ export default function({
       item: entity,
       acl: 'system',
       path: 'entities',
-      secureAcl,
       packages: pckgs,
     });
   });
@@ -127,7 +114,6 @@ export default function({
       item: mutation,
       acl: get(mutation, 'metadata.acl.execute'),
       path: 'mutations',
-      secureAcl,
       packages: pckgs,
     });
     // if we didn't setup hooks at all
@@ -135,19 +121,17 @@ export default function({
       item: mutation,
       acl: 'system',
       path: 'mutations',
-      secureAcl,
       packages: pckgs,
     });
   });
 
-  const allPackages = secureAcl.names;
+  const allPackages = secureAcl.roles;
 
   modelStore.enums.forEach((en, key) => {
     pushToAppropriate({
       item: en,
       acl: allPackages,
       path: 'enums',
-      secureAcl,
       packages: pckgs,
     });
   });
@@ -157,7 +141,6 @@ export default function({
       item: scal,
       acl: allPackages,
       path: 'scalars',
-      secureAcl,
       packages: pckgs,
     });
   });

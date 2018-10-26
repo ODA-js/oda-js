@@ -140,11 +140,10 @@ export interface IPackageDef {
 }
 
 export function initPackages(secureAcl: AclDefault): IPackageDef {
-  return Object.keys(secureAcl.map).reduce((store, cur) => {
+  return secureAcl.roles.reduce((store, cur) => {
     // only create if not exists!
     if (!store[cur]) {
       store[cur] = {
-        acl: secureAcl.acl(cur),
         entities: {},
         mutations: {},
       };
@@ -157,24 +156,17 @@ export function pushToAppropriate({
   item,
   acl,
   path,
-  secureAcl,
   packages,
 }: {
   item: { name: string };
-  acl: any;
-  secureAcl: AclDefault;
+  acl: string | string[];
   path: string;
   packages: IPackageDef;
 }) {
-  if (Array.isArray(acl)) {
-    for (let i = 0, len = acl.length; i < len; i++) {
-      pushToAppropriate({ item, acl: acl[i], path, secureAcl, packages });
-    }
-  } else {
-    let count = secureAcl.map[acl] + 1;
-    let list = secureAcl.names.slice(0, count);
-    for (let i = 0, len = list.length; i < len; i++) {
-      packages[list[i]][path][item.name] = true;
-    }
+  if (!Array.isArray(acl)) {
+    acl = [acl];
+  }
+  for (let i = 0, len = acl.length; i < len; i++) {
+    packages[acl[i]][path][item.name] = true;
   }
 }

@@ -129,7 +129,7 @@ export type Generator = {
   rootDir?: string;
   templateRoot?: string;
   config: GeneratorConfig;
-  acl?: { [key: string]: number };
+  acl?: string[];
   context?: {
     typeMapper?: {
       [key: string]: {

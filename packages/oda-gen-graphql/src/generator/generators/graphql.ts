@@ -12,7 +12,7 @@ export default function $generateGraphql(
   rootDir: string,
   role: string,
   allow,
-  typeMapper: { [key: string]: (string) => string },
+  typeMapper: { [key: string]: (q: string) => string },
   defaultAdapter: 'mongoose' | 'sequelize',
   collection,
   cfg,
