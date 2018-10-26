@@ -40,13 +40,15 @@ export type possibleTypes =
   | 'uuid_pk'
   | 'id_pk'
   | 'many()'
-  | 'enum()';
+  | 'enum()'
+  | 'entity()';
 
-// двух уровневая система распознавания типов
+// двухуровневая система распознавания типов
 // 1. уровень парсит типы чтобы было понятно что за тип
 // 2. уровень должен извлекать конкретные данные для конкретного типа, на основе полной информации о типе
 // полная информация хранит первый тип и все выведенные типы....
 //
+// придумать динамическую генерацию...
 // * means default type
 export const defaultTypeMapper: {
   [key: string]: { [type: string]: possibleTypes[] };
@@ -91,6 +93,7 @@ export const defaultTypeMapper: {
     Date: ['date', 'time', 'datetime'],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
+    $type: ['entity()'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
@@ -162,7 +165,13 @@ export function prepareMapper(
         result = specificMapper['many()'].replace(/\$type/gi, result);
       }
     } else if (typeof type === 'string') {
-      result = specificMapper[type.toLowerCase()] || specificMapper['*'];
+      if (hasEntity && systemPackage.entities.has(type)) {
+        result = specificMapper['entity()'].replace(/\$type/gi, type);
+      } else if (hasEnums && systemPackage.enums.has(type)) {
+        result = specificMapper['enum()'].replace(/\$type/gi, type);
+      } else {
+        result = specificMapper[type.toLowerCase()] || specificMapper['*'];
+      }
     } else {
       result = specificMapper['*'];
     }
