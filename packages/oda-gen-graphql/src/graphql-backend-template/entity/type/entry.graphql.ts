@@ -95,7 +95,7 @@ export function _mapper(
             typeof field.type === 'string' ? field.type : field.type.name,
           )
         ) {
-          type = 'string';
+          type = typeof field.type === 'string' ? field.type : field.type.name;
         } else {
           type = field.type;
         }
