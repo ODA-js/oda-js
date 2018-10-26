@@ -26,8 +26,6 @@ export class ModelPackage implements IValidate, IPackage {
   public modelType: MetaModelType = 'package';
   /** name of the package */
   public name: string;
-  /** acl level for security sort issues */
-  public acl: number;
   /** display title */
   public title?: string;
   /** description */
@@ -58,26 +56,18 @@ export class ModelPackage implements IValidate, IPackage {
     name?: string | ModelPackageInput,
     title?: string,
     description?: string,
-    acl?: number,
   ) {
     if (typeof name === 'string') {
       this.name = name;
       this.title = title || this.name;
       this.description = description || this.name;
-      if (typeof acl === 'number') {
-        this.acl = acl;
-      }
     } else if (!name) {
       this.name = 'DefaultPackage';
-      this.acl = Number.MAX_VALUE;
     } else {
       this.name = name.name;
       this.title = name.title;
       this.description = name.description;
       this.abstract = this.abstract || name.abstract;
-      if (!this.abstract && typeof name.acl === 'number') {
-        this.acl = name.acl;
-      }
     }
   }
 

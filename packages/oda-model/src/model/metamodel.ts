@@ -75,7 +75,6 @@ export class MetaModel extends ModelPackage implements IModel {
 
   constructor(name: string = 'default') {
     super(name);
-    this.acl = Number.MAX_VALUE;
     this.ensureDefaultPackage();
   }
 
