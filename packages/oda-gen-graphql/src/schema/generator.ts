@@ -22,12 +22,14 @@ export default function generator(
   console.time('prepare');
   prepared.push(templatePkg.prepare(pkg, role, allow, typeMapper, adapter));
   prepared.push(
-    ...Array.from(pkg.entities.values()).map(entity => {
-      return {
-        entity: entity.name,
-        ...entities.prepare(entity, pkg, role, allow, typeMapper, adapter),
-      };
-    }),
+    ...Array.from(pkg.entities.values())
+      .filter(f => !f.abstract)
+      .map(entity => {
+        return {
+          entity: entity.name,
+          ...entities.prepare(entity, pkg, role, allow, typeMapper, adapter),
+        };
+      }),
   );
   // tslint:disable-next-line:no-console
   console.timeEnd('prepare');
