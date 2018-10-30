@@ -18,25 +18,14 @@ import { Query } from './query';
 import { DEFAULT_ID_FIELD } from './definitions';
 import { ModelPackage } from './modelpackage';
 import { RelationBase } from './relationbase';
-import {
-  FieldArgs,
-  MetaModelStore,
-  ModelHook,
-  IValidationResult,
-  ValidationResultType,
-  FieldType,
-} from './interfaces';
 import { Metadata } from './metadata';
 import Validator from './validator/index';
+export * from './interfaces';
 
 export {
-  ModelHook,
   Metadata,
-  FieldArgs,
-  MetaModelStore,
   Entity,
   Field,
-  FieldType,
   HasOne,
   HasMany,
   BelongsTo,
@@ -50,8 +39,6 @@ export {
   FieldBase,
   EntityReference,
   ModelBase,
-  IValidationResult,
-  ValidationResultType,
   Validator,
   Mixin,
   Union,
