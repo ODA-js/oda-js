@@ -48,11 +48,13 @@ export function pushToAppropriate({
   path: string;
   packages: IPackageDef;
 }) {
-  if (!Array.isArray(acl)) {
-    acl = [acl];
-  }
-  for (let i = 0, len = acl.length; i < len; i++) {
-    packages[acl[i]][path][item.name] = true;
+  if (acl) {
+    if (!Array.isArray(acl)) {
+      acl = [acl];
+    }
+    for (let i = 0, len = acl.length; i < len; i++) {
+      packages[acl[i]][path][item.name] = true;
+    }
   }
 }
 
