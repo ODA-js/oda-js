@@ -83,6 +83,7 @@ export class Entity extends EntityBase implements IEntity {
         ...res,
         implements: [...this.implements],
         embedded: this.embedded,
+        abstract: this.abstract,
       });
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -90,6 +91,8 @@ export class Entity extends EntityBase implements IEntity {
         let res = super.toObject();
         return clean({
           ...res,
+          embedded: this.embedded,
+          abstract: this.abstract,
           implements: [...this.implements].filter(i =>
             modelPackage.mixins.has(i),
           ),
@@ -105,6 +108,7 @@ export class Entity extends EntityBase implements IEntity {
         ...res,
         implements: [...this.implements],
         embedded: this.embedded,
+        abstract: this.abstract,
       }) as any;
     } else {
       let modelRelations = modelPackage.relations.get(this.name);
@@ -115,7 +119,7 @@ export class Entity extends EntityBase implements IEntity {
           implements: [...this.implements].filter(i =>
             modelPackage.mixins.has(i),
           ),
-          embedded: this.embedded,
+          abstract: this.abstract,
         });
       }
     }
