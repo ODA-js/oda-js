@@ -24,7 +24,7 @@ export interface MapperOutput {
   enums: { name: string }[];
 }
 
-import { getEntities, getEnums } from '../queries';
+import { getRealEntities, getEnums } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
@@ -33,7 +33,7 @@ export function mapper(
   return {
     name: capitalize(pack.name),
     role: pack.name,
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
       entry: decapitalize(e.name),
       embedded: e.embedded,

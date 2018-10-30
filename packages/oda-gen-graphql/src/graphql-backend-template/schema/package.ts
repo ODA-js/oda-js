@@ -1,5 +1,4 @@
 import { ModelPackage, FieldType } from 'oda-model';
-import { Factory } from 'fte.js';
 import { capitalize, printArguments } from '../utils';
 
 export const template = 'schema/package';
@@ -33,7 +32,7 @@ export interface MapperOutput {
 }
 
 import {
-  getEntities,
+  getRealEntities,
   getScalars,
   getDirvectives,
   getEnums,
@@ -59,7 +58,7 @@ export function mapper(
 ): MapperOutput {
   return {
     name: capitalize(pack.name),
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
       adapter: e.getMetadata('storage.adapter', 'mongoose'),
     })),

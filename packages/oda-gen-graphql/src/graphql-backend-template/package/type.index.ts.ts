@@ -20,7 +20,7 @@ export interface MapperOutput {
   }[];
 }
 
-import { getEntities } from '../queries';
+import { getRealEntities } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
@@ -28,7 +28,7 @@ export function mapper(
 ): MapperOutput {
   return {
     name: capitalize(pack.name),
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
       entry: decapitalize(e.name),
     })),

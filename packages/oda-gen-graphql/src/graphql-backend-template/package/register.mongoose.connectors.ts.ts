@@ -18,14 +18,14 @@ export interface MapperOutput {
   }[];
 }
 
-import { getEntities } from '../queries';
+import { getRealEntities } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
       adapter: e.getMetadata('storage.adapter', 'mongoose'),
     })),

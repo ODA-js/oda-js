@@ -15,14 +15,14 @@ export interface MapperOutput {
   entities: { name: string }[];
 }
 
-import { getEntities } from '../queries';
+import { getRealEntities } from '../queries';
 
 export function mapper(
   pack: ModelPackage,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
     })),
   };

@@ -41,7 +41,7 @@ export interface MapperOutput {
 
 import {
   getFields,
-  getEntities,
+  getRealEntities,
   storedRelationsExistingIn,
   derivedFieldsAndRelations,
   persistentFields,
@@ -103,7 +103,7 @@ export function mapper(
   return {
     name: pack.name,
     relations,
-    entities: getEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map(e => ({
       name: e.name,
       fields: getFields(e)
         .filter(f => persistentFields(f) || storedRelationsExistingIn(pack)(f))

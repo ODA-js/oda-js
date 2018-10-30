@@ -7,7 +7,9 @@ import {
   Mutation,
   Query,
   FieldType,
+  Mixin,
 } from 'oda-model';
+import { IMixin } from 'oda-model/dist/model/interfaces';
 
 let memoizeCache: any = {};
 
@@ -18,7 +20,10 @@ export const resetCache = () => {
 export const getPackages = (model: MetaModel) =>
   Array.from(model.packages.values());
 
-export const getEntities = (pack: ModelPackage) =>
+export const getRealEntities = (pack: ModelPackage) =>
+  Array.from(pack.entities.values()).filter(f => !f.abstract);
+
+export const getUIEntities = (pack: ModelPackage) =>
   Array.from(pack.entities.values());
 
 export const getScalars = (pack: ModelPackage) =>
@@ -31,8 +36,10 @@ export const getEnums = (pack: ModelPackage) => Array.from(pack.enums.values());
 export const getUnions = (pack: ModelPackage) =>
   Array.from(pack.unions.values());
 
-export const getMixins = (pack: ModelPackage) =>
-  Array.from(pack.mixins.values());
+export const getMixins = (pack: ModelPackage) => [
+  ...Array.from(pack.mixins.values()),
+  ...(Array.from(pack.entities.values()).filter(e => e.abstract) as IMixin[]),
+];
 
 export const fields = (f: Field): boolean => !f.relation;
 
