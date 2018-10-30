@@ -163,6 +163,35 @@ export class Field extends FieldBase implements IField {
         this.setMetadata('defaultValue', undefined);
       }
 
+      if (typeof obj.type === 'object') {
+        if (obj.type.type === 'entity') {
+          const type = obj.type;
+          let relation: HasMany | HasOne;
+          switch (type.multiplicity) {
+            case 'one': {
+              relation = new HasOne({
+                hasOne: `${type.name}#`,
+                entity: obj.entity,
+                field: obj.name,
+                embedded: true,
+              });
+              break;
+            }
+            case 'many': {
+              relation = new HasMany({
+                hasMany: `${type.name}#`,
+                entity: obj.entity,
+                field: obj.name,
+                embedded: true,
+              });
+              break;
+            }
+            default:
+          }
+          result.relation = relation;
+        }
+      }
+
       if (obj.relation && !isIdentity) {
         let $relation = obj.relation;
         let relation: RelationBase;
