@@ -1,4 +1,4 @@
-import { ModelPackage, Mixin, FieldType } from 'oda-model';
+import { ModelPackage, IMixin, FieldType } from 'oda-model';
 import { printRequired, printArguments } from './../utils';
 
 export interface MapperOutput {
@@ -19,7 +19,7 @@ import {
 } from '../queries';
 
 export function mapper(
-  entity: Mixin,
+  entity: IMixin,
   pack: ModelPackage,
   role: string,
   aclAllow,
