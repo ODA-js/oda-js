@@ -10,6 +10,7 @@ import Resource from './resource';
 export { queries };
 
 export default class implements IResourceContainer {
+  public fragments: { [fragments: string]: IResource };
   private resources: { [resource: string]: IResource };
   constructor(options?: IResourceDefinition[] | IResourceDefinition) {
     this.resources = {};
@@ -27,6 +28,10 @@ export default class implements IResourceContainer {
         resource instanceof Resource
           ? resource.connect(this)
           : new Resource({ overrides: resource, resourceContainer: this });
+      this.fragments = {
+        ...this.fragments,
+        ...resource.fragments,
+      };
     }
   }
   public override(resource: IResourceDefinition[] | IResourceDefinition) {

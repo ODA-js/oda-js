@@ -54,7 +54,9 @@ export default class implements IResource {
   public get resourceContainer(): IResourceContainer {
     return this._resourceContainer;
   }
-  protected _fragments: FragmentsDefintions;
+  protected _fragments: (
+    frg: { [key: string]: FragmentsDefintions },
+  ) => FragmentsDefintions;
 
   protected _queries: IResourceQueryDefinitions;
 
@@ -95,7 +97,9 @@ export default class implements IResource {
         this._fragments = {
           ...this._fragments,
           ...overrides.fragments,
-        };
+        } as (
+          frg: { [key: string]: FragmentsDefintions },
+        ) => FragmentsDefintions;
       } else {
         this._fragments = overrides.fragments;
       }

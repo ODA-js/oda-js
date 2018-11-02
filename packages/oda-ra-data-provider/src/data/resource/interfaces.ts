@@ -139,7 +139,9 @@ export interface IResourceDefinition {
   fields?: FieldsDefinition;
   operations?: IResourceOperationsDefinition;
   queries?: IResourceQueryDefinitions;
-  fragments?: FragmentsDefintions;
+  fragments?: (
+    frg: { [key: string]: FragmentsDefintions },
+  ) => FragmentsDefintions;
 }
 
 export interface IResourceOperationDefinition {
@@ -158,7 +160,9 @@ export interface IResource extends IResourceDefinition {
   fields: FieldsDefinition;
   operations: IResourceOperationsDefinition;
   queries: IResourceQueryDefinitions;
-  fragments: FragmentsDefintions;
+  fragments: (
+    frg: { [key: string]: FragmentsDefintions },
+  ) => FragmentsDefintions;
   resourceContainer: IResourceContainer;
   override: (overrides: IResourceDefinition) => IResource;
   connect: (resourceContainer: IResourceContainer) => IResource;
@@ -168,6 +172,7 @@ export interface IResourceContainer {
   register: (resource: IResourceDefinition) => void;
   override: (resource: IResourceDefinition) => void;
   queries: (resource: string, query: queries) => any;
+  fragments: { [fragments: string]: IResource };
   resource(resource: string);
 }
 

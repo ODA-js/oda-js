@@ -5,7 +5,7 @@ import ResourceOperation from '../resourceOperation';
 export default class extends ResourceOperation {
   public get query(): any {
     return this.resource.queries.delete(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
