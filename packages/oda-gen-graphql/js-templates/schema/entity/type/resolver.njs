@@ -35,7 +35,7 @@
 <#} else if (connection.verb === 'HasMany') {#>
       //HasMany
         let idMap = {
-          id: 'id',
+          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
@@ -115,7 +115,8 @@
           }
         }
         let idMap = {
-          id: 'id',
+          <# debugger; #>
+          id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',
 <#})-#>
