@@ -73,7 +73,7 @@ export class BelongsToMany extends RelationBase {
       //   result.name = using.entity;
       // }
 
-      result.belongsToMany_ = $belongsToMany;
+      result.belongsToMany_ = new EntityReference($belongsToMany).toString();
       result.belongsToMany = belongsToMany;
 
       result.using_ = $using;

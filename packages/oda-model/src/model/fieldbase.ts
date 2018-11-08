@@ -7,6 +7,7 @@ import {
   FieldType,
 } from './interfaces';
 import { ModelBase } from './modelbase';
+import decapitalize from './../lib/decapitalize';
 
 export class FieldBase extends ModelBase {
   public modelType: MetaModelType = 'field';
@@ -33,6 +34,9 @@ export class FieldBase extends ModelBase {
       super.updateWith(obj);
 
       const result = { ...this.$obj };
+
+      this.$obj.name = decapitalize(this.$obj.name);
+      this.$obj.name_ = decapitalize(this.$obj.name_);
 
       let $entity = obj.entity;
       let entity = $entity;

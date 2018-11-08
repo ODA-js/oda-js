@@ -45,7 +45,7 @@ export class BelongsTo extends RelationBase {
         // no default backField!!! at all!!!
       }
 
-      result.belongsTo_ = $belongsTo;
+      result.belongsTo_ = new EntityReference($belongsTo).toString();
       result.belongsTo = belongsTo;
 
       this.$obj = result;

@@ -39,7 +39,7 @@ export class HasMany extends RelationBase {
         }
       }
 
-      result.hasMany_ = $hasMany;
+      result.hasMany_ = new EntityReference($hasMany).toString();
       result.hasMany = hasMany;
 
       this.$obj = result;

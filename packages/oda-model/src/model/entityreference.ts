@@ -1,5 +1,6 @@
 import * as camelcase from 'camelcase';
 import * as inflected from 'inflected';
+import decapitalize from './../lib/decapitalize';
 
 import clean from '../lib/json/clean';
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from './definitions';
@@ -77,6 +78,13 @@ export class EntityReference implements IEntityRef {
         field_: entity.field || DEFAULT_ID_FIELDNAME,
       };
     }
+    this.$obj.field = this.$obj.field && decapitalize(this.$obj.field);
+    this.$obj.field_ = this.$obj.field_ && decapitalize(this.$obj.field_);
+
+    this.$obj.backField =
+      this.$obj.backField && decapitalize(this.$obj.backField);
+    this.$obj.backField_ =
+      this.$obj.backField_ && decapitalize(this.$obj.backField_);
   }
 
   public clone() {

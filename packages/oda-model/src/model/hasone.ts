@@ -38,7 +38,7 @@ export class HasOne extends RelationBase {
         }
       }
 
-      result.hasOne_ = $hasOne;
+      result.hasOne_ = new EntityReference($hasOne).toString();
       result.hasOne = hasOne;
 
       this.$obj = result;

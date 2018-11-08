@@ -15,6 +15,7 @@ import {
   RelationType,
 } from './interfaces';
 import { Metadata } from './metadata';
+import decapitalize from '../lib/decapitalize';
 
 export class RelationBase extends Metadata implements IRelation {
   public get modelType(): MetaModelType {
@@ -167,7 +168,7 @@ export class RelationBase extends Metadata implements IRelation {
       const result: RelationBaseStorage = { ...this.$obj };
 
       let $name = obj.name;
-      let opposite = obj.opposite;
+      let opposite = obj.opposite && decapitalize(obj.opposite);
 
       let name = $name ? inflected.camelize($name.trim()) : $name;
 
