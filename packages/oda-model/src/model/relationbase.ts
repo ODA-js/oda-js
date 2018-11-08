@@ -150,6 +150,7 @@ export class RelationBase extends Metadata implements IRelation {
       field: props.field,
       fields: props.fields && Array.from(props.fields.values()),
       opposite: props.opposite,
+      embedded: this.embedded || undefined,
     });
   }
 
@@ -160,6 +161,7 @@ export class RelationBase extends Metadata implements IRelation {
       name: props.name_,
       fields: props.fields && Array.from(props.fields.values()),
       opposite: props.opposite,
+      embedded: this.embedded || undefined,
     });
   }
 
@@ -210,8 +212,4 @@ export class RelationBase extends Metadata implements IRelation {
       this.$obj = result;
     }
   }
-
-  // public clone(): RelationBase {
-  //   return new (<typeof RelationBase>this.constructor)(this.toJSON());
-  // }
 }

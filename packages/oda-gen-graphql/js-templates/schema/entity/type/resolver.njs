@@ -115,7 +115,6 @@
           }
         }
         let idMap = {
-          <# debugger; #>
           id: '#{entity.adapter == 'mongoose' ? '_id' : 'id'}',
 <# connection.idMap.forEach(f=>{-#>
           #{f}: '#{f}',

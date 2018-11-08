@@ -34,7 +34,6 @@ export default new Query({
     info
   ) => {
     logger.trace('#{ctx.resolver.plural}');
-    <# debugger; #>
     let idMap = {
       id: '#{ctx.resolver.adapter == 'mongoose' ? '_id' : 'id'}',
 <# ctx.resolver.idMap.forEach(f=>{-#>
