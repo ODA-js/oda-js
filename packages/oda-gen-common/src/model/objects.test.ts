@@ -467,7 +467,7 @@ describe('Merge', () => {
     });
     const result = await runQuery({
       schema: _schema,
-      parsedQuery: gql`
+      query: gql`
         mutation create {
           createPicture {
             ... on Picture {
@@ -483,7 +483,6 @@ describe('Merge', () => {
           }
         }
       `,
-      request: null,
     });
 
     expect(res.schema).toMatchSnapshot();

@@ -112,7 +112,7 @@ md5-o-matic@^0.1.1:
   integrity sha1-givM1l4RfFFPqxdrJZRdVBAKA8M=
 
 "oda-gen-common@file:../oda-gen-common":
-  version "1.0.0-25"
+  version "1.0.0-26"
   dependencies:
     immutable "^4.0.0-rc.9"
     invariant "^2.2.2"
@@ -120,7 +120,7 @@ md5-o-matic@^0.1.1:
     warning "^3.0.0"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-20"
+  version "1.0.0-21"
   dependencies:
     md5-hex "^2.0.0"
 
@@ -136,11 +136,6 @@ source-map@^0.6.0:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
-
-typescript@^3.0.1:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
-  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 warning@^3.0.0:
   version "3.0.0"

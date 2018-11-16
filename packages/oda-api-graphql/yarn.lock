@@ -84,7 +84,7 @@ node-fetch@^1.0.1:
     is-stream "^1.0.1"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-20"
+  version "1.0.0-21"
   dependencies:
     md5-hex "^2.0.0"
 
@@ -92,11 +92,6 @@ node-fetch@^1.0.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
-
-typescript@^3.0.1:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
-  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 whatwg-fetch@>=0.10.0:
   version "3.0.0"

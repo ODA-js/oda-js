@@ -27,7 +27,7 @@ global@^4.3.2:
     min-document "^2.19.0"
     process "~0.5.1"
 
-inflected@^2.0.3:
+inflected@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inflected/-/inflected-2.0.4.tgz#323770961ccbe992a98ea930512e9a82d3d3ef77"
   integrity sha512-HQPzFLTTUvwfeUH6RAGjD8cHS069mBqXG5n4qaxX7sJXBhVQrsGgF+0ZJGkSuN6a8pcUWB/GXStta11kKi/WvA==
@@ -52,7 +52,7 @@ min-document@^2.19.0:
     dom-walk "^0.1.0"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-20"
+  version "1.0.0-21"
   dependencies:
     md5-hex "^2.0.0"
 
@@ -60,11 +60,6 @@ process@~0.5.1:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/process/-/process-0.5.2.tgz#1638d8a8e34c2f440a91db95ab9aeb677fc185cf"
   integrity sha1-FjjYqONML0QKkduVq5rrZ3/Bhc8=
-
-typescript@^3.0.1:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
-  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 xregexp@4.0.0:
   version "4.0.0"

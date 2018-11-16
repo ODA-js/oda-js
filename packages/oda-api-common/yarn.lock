@@ -599,10 +599,10 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
 
-fte.js@^0.6.0:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/fte.js/-/fte.js-0.6.1.tgz#a3f20405d60eca535320a819b6260bf8a7276eab"
-  integrity sha512-d0CbZTuivnVovdt3tjK96SfhMyJ/r1MxwT4iuvh9Iuy749fP1sr2++W2wNyOTr+Tb6BMqQVkr+gYPkDXfmTAkw==
+fte.js@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/fte.js/-/fte.js-0.8.1.tgz#fc744595622835f9e6dcc307abf4f89f47d3c398"
+  integrity sha512-KzWO+SAl8BF0tCa9lcGPJG1dxvwGkyw/QHnqZXoFTKz4Rco1y2o0DDK/8VXAgAeu93FsThsQLaq+NVp2oVpETQ==
   dependencies:
     escodegen "^1.8.0"
     esmangle2 "^1.0.10"
@@ -629,7 +629,7 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
   integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
 
-graphql-anywhere@^4.1.14, graphql-anywhere@^4.1.5:
+graphql-anywhere@^4.1.14:
   version "4.1.22"
   resolved "https://registry.yarnpkg.com/graphql-anywhere/-/graphql-anywhere-4.1.22.tgz#1c831ba3c9e5664a0dd24d10d23a9e9512d92056"
   integrity sha512-qm2/1cKM8nfotxDhm4J0r1znVlK0Yge/yEKt26EVVBgpIhvxjXYFALCGbr7cvfDlvzal1iSPpaYa+8YTtjsxQA==
@@ -970,7 +970,7 @@ object-assign@^4:
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
 "oda-api-graphql@file:../oda-api-graphql":
-  version "1.0.0-22"
+  version "1.0.0-23"
   dependencies:
     core-js "^2.5.3"
     graphql-anywhere "^4.1.14"
@@ -980,7 +980,7 @@ object-assign@^4:
     oda-isomorfic "file:../../../../Library/Caches/Yarn/v2/oda-isomorfic"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-20"
+  version "1.0.0-21"
   dependencies:
     md5-hex "^2.0.0"
 
@@ -1253,11 +1253,6 @@ type-is@~1.6.16:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.18"
-
-typescript@^3.0.1:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
-  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 universalify@^0.1.0:
   version "0.1.2"

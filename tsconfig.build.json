@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "include": [],
+  "references": [{
+      "path": "./packages/oda-isomorfic"
+    },
+    {
+      "path": "./packages/oda-gen-common"
+    },
+    {
+      "path": "./packages/oda-model"
+    },
+    {
+      "path": "./packages/oda-model-next"
+    },
+    {
+      "path": "./packages/oda-api-graphql"
+    },
+    {
+      "path": "./packages/oda-api-common"
+    },
+    {
+      "path": "./packages/oda-api-graphql-dynamodb"
+    },
+    {
+      "path": "./packages/oda-api-graphql-mongoose"
+    },
+    {
+      "path": "./packages/oda-api-graphql-sequelize"
+    },
+    {
+      "path": "./packages/oda-gen-graphql"
+    },
+    {
+      "path": "./packages/oda-lodash"
+    },
+    {
+      "path": "./packages/oda-ra-data-provider"
+    },
+    {
+      "path": "./packages/oda-ra-ui"
+    },
+  ]
+}

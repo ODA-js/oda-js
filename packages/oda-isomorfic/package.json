@@ -20,9 +20,7 @@
   "dependencies": {
     "md5-hex": "^2.0.0"
   },
-  "devDependencies": {
-    "typescript": "^3.0.1"
-  },
+  "devDependencies": {},
   "jest": {
     "testEnvironment": "node",
     "transform": {
