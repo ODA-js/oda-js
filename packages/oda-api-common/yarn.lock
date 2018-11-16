@@ -970,7 +970,7 @@ object-assign@^4:
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
 "oda-api-graphql@file:../oda-api-graphql":
-  version "1.0.0-21"
+  version "1.0.0-22"
   dependencies:
     core-js "^2.5.3"
     graphql-anywhere "^4.1.14"
@@ -980,7 +980,7 @@ object-assign@^4:
     oda-isomorfic "file:../../../../Library/Caches/Yarn/v2/oda-isomorfic"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-19"
+  version "1.0.0-20"
   dependencies:
     md5-hex "^2.0.0"
 

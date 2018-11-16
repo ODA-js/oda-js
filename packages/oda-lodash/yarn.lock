@@ -112,7 +112,7 @@ md5-o-matic@^0.1.1:
   integrity sha1-givM1l4RfFFPqxdrJZRdVBAKA8M=
 
 "oda-gen-common@file:../oda-gen-common":
-  version "1.0.0-24"
+  version "1.0.0-25"
   dependencies:
     immutable "^4.0.0-rc.9"
     invariant "^2.2.2"
@@ -120,7 +120,7 @@ md5-o-matic@^0.1.1:
     warning "^3.0.0"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-19"
+  version "1.0.0-20"
   dependencies:
     md5-hex "^2.0.0"
 

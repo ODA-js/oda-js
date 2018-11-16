@@ -84,7 +84,7 @@ node-fetch@^1.0.1:
     is-stream "^1.0.1"
 
 "oda-isomorfic@file:../oda-isomorfic":
-  version "1.0.0-19"
+  version "1.0.0-20"
   dependencies:
     md5-hex "^2.0.0"
 
