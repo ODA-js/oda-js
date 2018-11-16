@@ -13,6 +13,6 @@ oda-ra-ui)
 for i in ${list[*]}; do
   echo ${i%%/};
   pushd packages/${i%%/}
-  npm i
+  yarn
   popd
 done
