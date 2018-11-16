@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql-dynamodb",
-  "version": "1.0.0-22",
+  "version": "1.0.0-23",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

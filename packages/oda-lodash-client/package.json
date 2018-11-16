@@ -1,6 +1,6 @@
 {
   "name": "oda-lodash-client",
-  "version": "1.0.0-26",
+  "version": "1.0.0-27",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
