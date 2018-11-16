@@ -36,10 +36,14 @@ export default new Mutation({
     ) => {
       logger.trace('removeFrom#{connection.relationName}');
       let #{entity.ownerFieldName} = args.#{entity.ownerFieldName};
+      <#if(!connection.embedded){-#>
       let #{connection.refFieldName} = args.#{connection.refFieldName};
+      <#-}#>
       let payload = {
         #{entity.ownerFieldName},
+        <#if(!connection.embedded){-#>
         #{connection.refFieldName},
+        <#-}#>
       };
       await context.connectors.#{entity.name}.removeFrom#{connection.shortName}(payload);
 
@@ -55,7 +59,9 @@ export default new Mutation({
             payload: {
               args: {
                 #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                <#-if(!connection.embedded){#>
                 #{connection.refFieldName}: args.#{connection.refFieldName},
+                <#}-#>
               },
               relation: '#{connection.name}'
             }
@@ -74,7 +80,9 @@ export default new Mutation({
             payload: {
               args: {
                 #{entity.ownerFieldName}: args.#{entity.ownerFieldName},
+                <#-if(!connection.embedded){#>
                 #{connection.refFieldName}: args.#{connection.refFieldName},
+                <#-}#>
               },
               relation: '#{connection.opposite}'
             }

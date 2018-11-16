@@ -12,6 +12,10 @@ import * as Dataloader from 'dataloader';
 import { Partial#{ entity.name }, #{ entity.name } as DTO } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
+<#entity.embedded.forEach(name=>{#>
+import {Partial#{name}} from './../../#{name}/types/model';
+<#})#>
+
 export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Partial#{ entity.name }> implements #{ entity.name }Connector {
   constructor(
     { mongoose, connectors, securityContext }:
@@ -187,7 +191,15 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     <#-}#>
   }) {
     logger.trace(`addTo#{ connection.shortName }`);
-<#- if (connection.verb === 'HasOne') {#>
+<#- if (connection.embedded && connection.single) { #>
+    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, {
+      #{connection.field}: args.#{connection.refFieldName}
+    });
+<#- } else  if (connection.embedded && !connection.single) { #>
+    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, {
+      #{connection.field}: args.#{connection.refFieldName}
+    });
+<#- } else if (connection.verb === 'HasOne') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
     if (current) {
       await this.connectors.#{connection.ref.entity}.findOneByIdAndUpdate(
@@ -249,7 +261,15 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     <#-}#>
   }) {
     logger.trace(`removeFrom#{ connection.shortName }`);
-<#- if (connection.verb === 'HasOne') {#>
+<#- if (connection.embedded && connection.single) { #>
+    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, {
+      #{connection.field}: null,
+    });
+<#- } else if (connection.embedded && !connection.single) { #>
+    await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName}, {
+      #{connection.field}: null,
+    });
+<#- } else if (connection.verb === 'HasOne') {#>
     await this.connectors.#{connection.ref.entity}.findOneByIdAndUpdate(args.#{connection.refFieldName},
     { #{connection.ref.field}: null });
 <#} else if (connection.verb === 'HasMany') {#>

@@ -36,6 +36,7 @@ export interface MapperOutput {
     type: string;
     connectionName: string;
     single: boolean;
+    embedded: boolean;
     args: string;
   }[];
 }
@@ -210,6 +211,7 @@ export function _mapper(
               .join('\n')
           : f.description,
         single,
+        embedded: f.relation.embedded,
         args,
         type: `${typeMapper.graphql(f.relation.ref.entity)}${printRequired(f)}`,
         connectionName: `${

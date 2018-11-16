@@ -35,9 +35,12 @@ export interface MapperOutput {
     type: string;
     required?: boolean;
   }[];
+  embedded: string[];
   relations: {
     name: string;
     type: string;
+    single: boolean;
+    embedded?: boolean | string;
     required?: boolean;
     primaryKey?: boolean;
   }[];
@@ -72,7 +75,9 @@ export function _mapper(
     .filter(idField)
     .filter(f => f.type !== 'ID');
   let useDefaultPK = ids.length === 0;
-
+  let embedded = getFields(entity).filter(
+    f => f.relation && f.relation.embedded,
+  );
   return {
     name: entity.name,
     plural: entity.plural,
@@ -84,7 +89,7 @@ export function _mapper(
     useDefaultPK,
     fields: [
       ...ids.map(f => ({
-        name: f.name === 'id' && adapter === 'mongoose' ? '_id' : f.name,
+        name: f.name === 'id' && adapter === 'sequelize' ? f.name : '_id',
         type: adapter === 'sequelize' ? `${f.type}_pk` : f.type,
         required: true,
         defaultValue: f.defaultValue,
@@ -100,33 +105,43 @@ export function _mapper(
         defaultValue: f.defaultValue,
       };
     }),
-    relations: getFields(entity)
-      .filter(singleStoredRelationsExistingIn(pack))
-      .filter(r => r.relation.ref.backField !== r.name)
-      .map(f => {
-        let retKeyType = pack.entities
-          .get(f.relation.ref.entity)
-          .fields.get(f.relation.ref.field).type;
-        return {
-          name: f.name,
-          type: typeMapper[adapter](retKeyType),
-          indexed: true,
-          required: !!f.required,
-        };
-      }),
-    indexes: indexes(entity).map(
-      i =>
-        adapter === 'mongoose'
-          ? {
-              fields: i.fields,
-              options: i.options,
-              name: i.name,
-            }
-          : {
-              fields: i.fields,
-              options: i.options,
-              name: i.name,
-            },
+    embedded: Object.keys(
+      embedded.map(f => f.relation.ref.entity).reduce((res, i) => {
+        res[i] = 1;
+        return res;
+      }, {}),
     ),
+    relations: [
+      ...getFields(entity)
+        .filter(singleStoredRelationsExistingIn(pack))
+        .filter(r => r.relation.ref.backField !== r.name),
+      ...embedded,
+    ].map(f => {
+      let retKeyType = pack.entities
+        .get(f.relation.ref.entity)
+        .fields.get(f.relation.ref.field).type;
+      return {
+        name: f.name,
+        type: typeMapper[adapter](retKeyType),
+        indexed: true,
+        single: f.relation.single,
+        embedded: f.relation.embedded ? f.relation.ref.entity : false,
+        required: !!f.required,
+      };
+    }),
+    indexes:
+      adapter === 'sequelize'
+        ? indexes(entity).map(i => ({
+            fields: i.fields,
+            options: i.options,
+            name: i.name,
+          }))
+        : indexes(entity)
+            .filter(i => i.name !== 'id')
+            .map(i => ({
+              fields: i.fields,
+              options: i.options,
+              name: i.name,
+            })),
   };
 }

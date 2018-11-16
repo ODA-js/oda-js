@@ -28,6 +28,8 @@ export interface MapperOutput {
     name: string;
     verb: string;
     idMap: string[];
+    embedded: boolean;
+    single: boolean;
     ref: {
       backField: string;
       usingField: string;
@@ -134,17 +136,19 @@ export function _mapper(
         refFieldName: decapitalize(refFieldName),
         verb,
         ref,
+        embedded: f.relation.embedded,
+        single: f.relation.single,
         idMap: fieldMap(aclAllow, pack.entities.get(ref.entity))
           .filter(relationFieldsExistsIn(pack))
-          .map(f => ({
-            verb: f.relation.verb,
+          .map(fld => ({
+            verb: fld.relation.verb,
             type: pack
-              .get(f.relation.ref.entity)
-              .fields.get(f.relation.ref.field).type,
-            field: f.name,
+              .get(fld.relation.ref.entity)
+              .fields.get(fld.relation.ref.field).type,
+            field: fld.name,
           }))
-          .filter(f => f.type === 'ID' && f.verb === 'BelongsTo')
-          .map(f => f.field),
+          .filter(fld => fld.type === 'ID' && fld.verb === 'BelongsTo')
+          .map(fld => fld.field),
       };
     }),
     fields: fieldsAcl

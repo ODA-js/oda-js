@@ -2,7 +2,7 @@
 <#@ alias 'entity-helpers-unlink-from-all'#>
 <#@ context 'entity'#>
 
-<#- for (let r of entity.relations) {#>
+<#- for (let r of entity.relations.filter(f=>!f.embedded)) {#>
 <#-chunkStart(`./helpers/link${entity.name}To${r.cField}.ts`); -#>
 import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`link${entity.name}To${r.cField}`) #>
@@ -27,7 +27,7 @@ export default async function link#{entity.name}To#{r.cField}({
       variables: {
         input: {
           #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
-          #{r.ref.fieldName}: #{r.field}.id,
+          #{r.ref.fieldName}: #{r.field}<#if(!r.embedded){#>.id<#}#>,
 <#-r.fields.forEach(f=>{#>
           #{f.name},
 <#-})#>
@@ -42,7 +42,9 @@ import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
 <# slot('export-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
 export default async function unlink#{entity.name}From#{r.cField}({
-  context, #{r.field},  #{entity.ownerFieldName},
+  context, 
+  #{r.field},
+  #{entity.ownerFieldName},
 }) {
   if (#{r.field}) {
     await context.userGQL({
@@ -56,7 +58,9 @@ export default async function unlink#{entity.name}From#{r.cField}({
       variables: {
         input: {
           #{entity.ownerFieldName}: #{entity.ownerFieldName}.id,
+          <#-if(!r.embedded){#>
           #{r.ref.fieldName}: #{r.field}.id,
+          <#-}#>
         }
       }
     });

@@ -40,6 +40,7 @@ export interface MapperOutput {
   };*/;
   loaders: any[];
   fields: string[];
+  embedded: string[];
   filterAndSort: { type: string; name: string; gqlType: string }[];
   search: {
     type: string;
@@ -78,6 +79,8 @@ export interface MapperOutput {
         field: string;
       };
     };
+    single: boolean;
+    embedded?: boolean | string;
   }[];
 }
 
@@ -114,7 +117,9 @@ export function _mapper(
   let singleUnique = oneUniqueInIndex(entity);
 
   let ids = getFields(entity).filter(idField);
-
+  let embedded = getFields(entity).filter(
+    f => f.relation && f.relation.embedded,
+  );
   return {
     name: entity.name,
     unique: getUniqueFieldNames(entity),
@@ -176,7 +181,10 @@ export function _mapper(
         ...[
           ...ids,
           ...getFields(entity).filter(
-            f => singleStoredRelations(f) || mutableFields(f),
+            f =>
+              singleStoredRelations(f) ||
+              mutableFields(f) ||
+              (f.relation && f.relation.embedded),
           ),
         ].map(f => ({
           name: f.name,
@@ -219,6 +227,12 @@ export function _mapper(
         cName: capitalize(f.name),
       })),
     },
+    embedded: Object.keys(
+      embedded.map(f => f.relation.ref.entity).reduce((res, i) => {
+        res[i] = 1;
+        return res;
+      }, {}),
+    ),
     relations: getFields(entity)
       .filter(persistentRelation)
       .map(f => {
@@ -248,10 +262,12 @@ export function _mapper(
           },
           {
             name: decapitalize(refFieldName),
-            type: mapToTSTypes(refe.fields.get(ref.field).type),
+            type: f.relation.embedded
+              ? `Partial${f.relation.ref.entity}`
+              : mapToTSTypes(refe.fields.get(ref.field).type),
           },
         ];
-        let removeArgs = [...addArgs];
+        let removeArgs = f.relation.embedded ? [addArgs[0]] : [...addArgs];
 
         if (verb === 'BelongsToMany' && (f.relation as BelongsToMany).using) {
           let current = f.relation as BelongsToMany;
@@ -301,6 +317,8 @@ export function _mapper(
           addArgs,
           removeArgs,
           ref,
+          single: f.relation.single,
+          embedded: f.relation.embedded ? f.relation.ref.entity : false,
         };
       }),
   };

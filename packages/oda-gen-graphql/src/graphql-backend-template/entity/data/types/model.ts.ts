@@ -22,6 +22,7 @@ export interface MapperOutput {
   name: string;
   plural: string;
   description: string;
+  embedded: string[];
   fields: {
     name: string;
     type: string;
@@ -49,20 +50,30 @@ export function _mapper(
   const mapToTSTypes = typeMapper.typescript;
   const relations = relationFieldsExistsIn(pack);
   let ids = getFields(entity).filter(idField);
-
+  let embedded = getFields(entity).filter(
+    f => f.relation && f.relation.embedded,
+  );
   return {
     name: entity.name,
     plural: entity.plural,
     description: entity.description,
+    embedded: Object.keys(
+      embedded.map(f => f.relation.ref.entity).reduce((res, i) => {
+        res[i] = 1;
+        return res;
+      }, {}),
+    ),
     fields: [
       ...ids,
       ...getFields(entity).filter(f => relations(f) || mutableFields(f)),
     ].map(f => {
       return {
         name: f.name,
-        type: `${mapToTSTypes(f.type)}${
-          f.relation && !f.relation.single ? '[]' : ''
-        }`,
+        type: `${
+          f.relation && f.relation.embedded
+            ? 'I' + f.relation.ref.entity
+            : mapToTSTypes(f.type)
+        }${f.relation && !f.relation.single ? '[]' : ''}`,
         required: f.required,
       };
     }),

@@ -1,5 +1,10 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/model' #>
+
+<#entity.embedded.forEach(name=>{-#>
+import {I#{name}} from './../../#{name}/types/model';
+<#})#>
+
 export interface I#{entity.name} {
   <#- entity.fields.forEach(field => { #>
   #{field.name}<#- if(!field.required){#>?<#-}#>: #{field.type};

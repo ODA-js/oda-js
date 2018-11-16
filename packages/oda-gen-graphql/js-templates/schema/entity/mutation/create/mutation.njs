@@ -31,15 +31,7 @@ export default new Mutation({
     info,
   ) => {
     logger.trace('create#{entity.name}');
-    let create: any = {
-    <#- for (let f of entity.args.create.find) {#>
-      #{f.name}: args.#{f.name},
-    <#-}#>
-    };
-
-    if(args.id) {
-      create.id = args.id;
-    }
+    let create = context.connectors.#{entity.name}.getPayload(args, false);
 
     let result = await context.connectors.#{entity.name}.create(create);
 
@@ -60,12 +52,13 @@ export default new Mutation({
       node: result,
     };
 
-    <#- for (let r of entity.relations) {#>
+    <#- for (let r of entity.relations.filter(f=>!f.embedded)) {#>
 
     if (args.#{r.field}<#if(!r.single){#> && Array.isArray(args.#{r.field}) && args.#{r.field}.length > 0<#}#> ) {
-    <#if(!r.single){#>
+    <#if(!r.single && !r.embedded){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
     <#}#>
+<#if(!r.embedded){#>
       let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
 <#- slot('import-common-mutation-create-slot',`ensure${r.ref.entity}`) -#>
@@ -74,17 +67,20 @@ export default new Mutation({
           context,
           create: true,
         });
+<#}#>
 <#- slot('import-common-mutation-create-slot',`link${entity.name}To${r.cField}`) -#>
         await link#{entity.name}To#{r.cField}({
           context,
-          #{r.field},
+          #{r.field}<#if(r.embedded){#>: args.#{r.field}<#}#>,
           #{entity.ownerFieldName}: result,
           <#-r.fields.forEach(f=>{#>
           #{f.name}: $item.#{f.name},
           <#-})#>
         });
+<#-if(!r.embedded){#>
       }
-    <#if(!r.single){#>
+<#-}#>
+    <#if(!r.single && !r.embedded){#>
       }
     <#}#>
     }

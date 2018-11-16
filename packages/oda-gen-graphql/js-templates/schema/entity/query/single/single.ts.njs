@@ -2,6 +2,18 @@
 <#@ alias 'query-single'#>
 <#@ context 'ctx'#>
 
+<#-chunkStart(`./query/item/${ctx.entry.singularEntry}UniqueKeys.ts`); -#>
+import { Input } from '../../../../common';
+import gql from 'graphql-tag';
+
+export default new Input({
+  schema: gql`
+    input #{ctx.entry.name}UniqueKeys {
+      #{ctx.entry.unique}
+    }
+  `,
+});
+
 <#-chunkStart(`./query/item/${ctx.entry.singularEntry}.ts`); -#>
 import {
   Query,

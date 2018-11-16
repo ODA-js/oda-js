@@ -10,4 +10,5 @@ export interface Connector<T> {
   getCount: (args) => Promise<Number>;
   getList: (args, checkExtraCriteria?) => Promise<T[]>;
   sync: (args: { force?: boolean }) => Promise<void>;
+  ensureId(obj: T): T;
 }

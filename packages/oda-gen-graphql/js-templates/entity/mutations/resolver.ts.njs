@@ -328,35 +328,31 @@ export const mutation = {
 
     let result;
     let previous;
-    try {
-      if (args.id) {
-        previous = await context.connectors.#{entity.name}.findOneById(args.id);
-        result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(args.id, payload);
-      <#- for (let f of entity.args.update.find) {#>
-      } else if (args.#{f.name}) {
-        delete payload.#{f.name};
-        previous = await context.connectors.#{entity.name}.findOneBy#{f.cName}(args.#{f.name});
-        result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndUpdate(args.#{f.name}, payload);
+    if (args.id) {
+      previous = await context.connectors.#{entity.name}.findOneById(args.id);
+      result = await context.connectors.#{entity.name}.findOneByIdAndUpdate(args.id, payload);
+    <#- for (let f of entity.args.update.find) {#>
+    } else if (args.#{f.name}) {
+      delete payload.#{f.name};
+      previous = await context.connectors.#{entity.name}.findOneBy#{f.cName}(args.#{f.name});
+      result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndUpdate(args.#{f.name}, payload);
+    <#-}#>
+    <#- for (let f of entity.complexUnique) {
+      let findBy = f.fields.map(f=>f.uName).join('And');
+      let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
+      let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
+    #>
+    } else if (#{condArgs}) {
+      <#-for(let fn of f.fields){#>
+      delete payload.#{fn.name};
       <#-}#>
-      <#- for (let f of entity.complexUnique) {
-        let findBy = f.fields.map(f=>f.uName).join('And');
-        let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
-        let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
-      #>
-      } else if (#{condArgs}) {
-        <#-for(let fn of f.fields){#>
-        delete payload.#{fn.name};
-        <#-}#>
-        previous = await context.connectors.#{entity.name}.findOneBy#{findBy}(#{loadArgs});
-        result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
-      <#-}#>
-      }
-    } catch (err) {
-      throw err;
+      previous = await context.connectors.#{entity.name}.findOneBy#{findBy}(#{loadArgs});
+      result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndUpdate(#{loadArgs}, payload);
+    <#-}#>
     }
 
     if (!result) {
-      throw new Error('Specified item not found!');
+      throw new Error('item of type #{entity.name} is not found for update');
     }
 
     if (context.pubsub) {
@@ -472,58 +468,54 @@ export const mutation = {
   ) => {
     logger.trace('delete#{entity.name}');
     let result;
-    try {
-      if (args.id) {
+    if (args.id) {
 
-        await unlink#{entity.name}FromAll([{
-          key: 'id',
-          type: 'ID',
-          value: args.id,
-        }],
-          context,
-        );
+      await unlink#{entity.name}FromAll([{
+        key: 'id',
+        type: 'ID',
+        value: args.id,
+      }],
+        context,
+      );
 
-        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
-      <#- for (let f of entity.args.remove.find) {#>
-      } else if (args.#{f.name}) {
+      result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
+    <#- for (let f of entity.args.remove.find) {#>
+    } else if (args.#{f.name}) {
 
-        await unlink#{entity.name}FromAll([{
+      await unlink#{entity.name}FromAll([{
+        key: '#{f.name}',
+        type: '#{f.gqlType}',
+        value: args.#{f.name},
+      }],
+        context,
+      );
+
+      result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
+    <#-}#>
+    <#- for (let f of entity.complexUnique) {
+      let findBy = f.fields.map(f=>f.uName).join('And');
+      let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
+      let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
+      #>
+    } else if (#{condArgs}) {
+
+      await unlink#{entity.name}FromAll([
+        <#-f.fields.forEach((f, i)=>{#>
+        <#-if(i>0){#>, <#}#>{
           key: '#{f.name}',
           type: '#{f.gqlType}',
           value: args.#{f.name},
-        }],
-          context,
-        );
+        }
+        <#-});-#>],
+        context,
+      );
 
-        result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
-      <#-}#>
-      <#- for (let f of entity.complexUnique) {
-        let findBy = f.fields.map(f=>f.uName).join('And');
-        let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
-        let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
-        #>
-      } else if (#{condArgs}) {
-
-        await unlink#{entity.name}FromAll([
-          <#-f.fields.forEach((f, i)=>{#>
-          <#-if(i>0){#>, <#}#>{
-            key: '#{f.name}',
-            type: '#{f.gqlType}',
-            value: args.#{f.name},
-          }
-          <#-});-#>],
-          context,
-        );
-
-        result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
-      <#-}#>
-      }
-    } catch (err) {
-      throw err;
+      result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
+    <#-}#>
     }
 
     if (!result) {
-      throw new Error('Specified item not found!');
+      throw new Error('item of type #{entity.name} is not found for delete');
     }
 
     if (context.pubsub) {

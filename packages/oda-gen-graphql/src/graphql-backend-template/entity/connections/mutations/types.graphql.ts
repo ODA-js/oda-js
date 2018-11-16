@@ -26,6 +26,8 @@ export interface MapperOutput {
   ownerFieldName: string;
   connections: {
     refFieldName: string;
+    entity: string;
+    embedded: boolean;
     name: string;
     fields: {
       name: string;
@@ -64,6 +66,8 @@ export function _mapper(
           sameEntity ? capitalize(f.name) : ''
         }`;
         return {
+          embedded: f.relation.embedded,
+          entity: f.relation.ref.entity,
           refFieldName: decapitalize(refFieldName),
           name: f.relation.fullName,
           fields: relFields,

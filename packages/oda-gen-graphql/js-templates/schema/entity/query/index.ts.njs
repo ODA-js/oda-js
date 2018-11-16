@@ -4,11 +4,12 @@
 
 <#-chunkStart(`./query/item/index.ts`); -#>
 import #{ctx.entry.singularEntry} from './#{ctx.entry.singularEntry}';
+import #{ctx.entry.singularEntry}UniqueKeys from './#{ctx.entry.singularEntry}UniqueKeys';
 import { Schema } from '../../../../common';
 
 export default new Schema({
   name: '#{ctx.entry.name}.queries.single',
-  items: [#{ctx.entry.singularEntry}],
+  items: [#{ctx.entry.singularEntry}, #{ctx.entry.singularEntry}UniqueKeys],
 });
 
 <#-chunkStart(`./query/list/index.ts`); -#>

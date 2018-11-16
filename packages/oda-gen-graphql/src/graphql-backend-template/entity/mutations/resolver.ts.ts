@@ -119,6 +119,7 @@ export function _mapper(
       field: f.name,
       name: f.relation.fullName,
       cField: capitalize(f.name),
+      embedded: f.relation.embedded,
       single: verb === 'BelongsTo' || verb === 'HasOne',
       fields,
       ref: {

@@ -5,6 +5,8 @@ import {
   persistentRelations,
   getFieldsForAcl,
   memoizeEntityMapper,
+  getFields,
+  idField,
 } from '../../../queries';
 
 export const template = 'entity/connections/mutations/resolver.ts.njs';
@@ -23,6 +25,7 @@ export function generate(
 export interface MapperOutput {
   name: string;
   ownerFieldName: string;
+  embedded: string[];
   connections: {
     opposite: string;
     relationName: string;
@@ -33,6 +36,8 @@ export interface MapperOutput {
     ref: {
       fields: string[];
     };
+    single: boolean;
+    embedded?: boolean | string;
   }[];
 }
 
@@ -48,9 +53,20 @@ export function _mapper(
   aclAllow,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
+  const mapToTSTypes = typeMapper.typescript;
+  let ids = getFields(entity).filter(idField);
+  let embedded = getFields(entity).filter(
+    f => f.relation && f.relation.embedded,
+  );
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
+    embedded: Object.keys(
+      embedded.map(f => f.relation.ref.entity).reduce((res, i) => {
+        res[i] = 1;
+        return res;
+      }, {}),
+    ),
     connections: getFieldsForAcl(role, pack)(aclAllow, entity)
       .filter(persistentRelations(pack))
       .map(f => {
@@ -66,14 +82,16 @@ export function _mapper(
         let addArgs = [
           {
             name: decapitalize(entity.name),
-            type: 'string',
+            type: mapToTSTypes(ids[0].type),
           },
           {
             name: decapitalize(refFieldName),
-            type: 'string',
+            type: f.relation.embedded
+              ? `Partial${f.relation.ref.entity}`
+              : mapToTSTypes(ids[0].type),
           },
         ];
-        let removeArgs = [...addArgs];
+        let removeArgs = f.relation.embedded ? [addArgs[0]] : [...addArgs];
 
         if (verb === 'BelongsToMany' && (f.relation as BelongsToMany).using) {
           if (f.relation.fields && f.relation.fields.size > 0) {
@@ -96,6 +114,8 @@ export function _mapper(
           addArgs,
           removeArgs,
           ref,
+          single: f.relation.single,
+          embedded: f.relation.embedded ? f.relation.ref.entity : false,
         };
       }),
   };

@@ -24,6 +24,7 @@ export interface MapperOutput {
     derived: boolean;
     persistent: boolean;
     field: string;
+    embedded: boolean;
     single: boolean;
     fields: any[];
     ref: {
@@ -99,6 +100,7 @@ export function _mapper(
         persistent: f.persistent,
         derived: f.derived,
         field: f.name,
+        embedded: f.relation.embedded,
         single: verb === 'BelongsTo' || verb === 'HasOne',
         fields,
         cField: capitalize(f.name),

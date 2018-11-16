@@ -39,58 +39,54 @@ export default new Mutation({
   ) => {
     logger.trace('delete#{entity.name}');
     let result;
-    try {
-      if (args.id) {
+    if (args.id) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-        await unlink#{entity.name}FromAll([{
-          key: 'id',
-          type: 'ID',
-          value: args.id,
-        }],
-          context,
-        );
+      await unlink#{entity.name}FromAll([{
+        key: 'id',
+        type: 'ID',
+        value: args.id,
+      }],
+        context,
+      );
 
-        result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
-      <#- for (let f of entity.args.remove.find) {#>
-      } else if (args.#{f.name}) {
+      result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
+    <#- for (let f of entity.args.remove.find) {#>
+    } else if (args.#{f.name}) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-        await unlink#{entity.name}FromAll([{
+      await unlink#{entity.name}FromAll([{
+        key: '#{f.name}',
+        type: '#{f.gqlType}',
+        value: args.#{f.name},
+      }],
+        context,
+      );
+
+      result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
+    <#-}#>
+    <#- for (let f of entity.complexUnique) {
+      let findBy = f.fields.map(f=>f.uName).join('And');
+      let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
+      let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
+      #>
+    } else if (#{condArgs}) {
+<# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
+      await unlink#{entity.name}FromAll([
+        <#-f.fields.forEach((f, i)=>{#>
+        <#-if(i>0){#>, <#}#>{
           key: '#{f.name}',
           type: '#{f.gqlType}',
           value: args.#{f.name},
-        }],
-          context,
-        );
+        }
+        <#-});-#>],
+        context,
+      );
 
-        result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
-      <#-}#>
-      <#- for (let f of entity.complexUnique) {
-        let findBy = f.fields.map(f=>f.uName).join('And');
-        let loadArgs = `${f.fields.map(f=>`args.${f.name}`).join(', ')}`;
-        let condArgs = `${f.fields.map(f=>`args.${f.name}`).join(' && ')}`;
-        #>
-      } else if (#{condArgs}) {
-<# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-        await unlink#{entity.name}FromAll([
-          <#-f.fields.forEach((f, i)=>{#>
-          <#-if(i>0){#>, <#}#>{
-            key: '#{f.name}',
-            type: '#{f.gqlType}',
-            value: args.#{f.name},
-          }
-          <#-});-#>],
-          context,
-        );
-
-        result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
-      <#-}#>
-      }
-    } catch (err) {
-      throw err;
+      result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
+    <#-}#>
     }
 
     if (!result) {
-      throw new Error('Specified item not found!');
+      throw new Error('item of type #{entity.name} is not found for delete');
     }
 
     if (context.pubsub) {

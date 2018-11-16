@@ -14,7 +14,7 @@ export default new Input({
   schema: gql`
     input addTo#{connection.name}Input {
       #{entity.ownerFieldName}:ID!
-      #{connection.refFieldName}:ID!
+      #{connection.refFieldName}:#{connection.embedded ? 'create'+connection.entity+'Input' :'ID'}!
       #additional Edge fields
     <# connection.fields.forEach(f=>{-#>
       #{f.name}: #{f.type}

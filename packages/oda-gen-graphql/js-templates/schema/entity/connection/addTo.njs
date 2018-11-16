@@ -15,7 +15,9 @@ import {
   Mutation,
 } from '../../../common';
 import gql from 'graphql-tag';
-
+<#entity.embedded.forEach(name=>{-#>
+import {Partial#{name}} from '../../../data/#{name}/types/model';
+<#})#>
 export default new Mutation({
   schema: gql`
     extend type RootMutation {

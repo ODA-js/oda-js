@@ -1,7 +1,17 @@
 <#@ alias 'type-resolver'#>
 <#@ context 'entity' #>
-
-<# for (let connection of entity.relations) {-#>
+<# for (let connection of entity.relations.filter(f=>f.embedded)) {-#>
+#{connection.field}: async ({#{connection.field}}, args: object, context: { connectors: RegisterConnectors }, info)=>{
+<#if(connection.single){#>
+  return context.connectors.#{connection.ref.entity}.ensureId(#{connection.field});
+<#} else {#>
+  return #{connection.field}.map(
+    context.connectors.#{connection.ref.entity}.ensureId.bind(context.connectors.#{connection.ref.entity}),
+  );
+<#}#>
+},
+<#}#>
+<# for (let connection of entity.relations.filter(f=>!f.embedded)) {-#>
     #{connection.field}: async (
       {id}, // owner id
       args:{

@@ -16,7 +16,9 @@ implements #{entity.implements.join(' & ')}
 <# if(rel.description){#>
   # #{rel.description}
 <#- }#>
-  <#-if(rel.single) {-#>
+  <#if(rel.embedded) {-#>
+  #{rel.name}#{rel.args}: <#if(!rel.single){#>[<#}#>#{rel.type}<#if(!rel.single){#>]<#}#>
+  <#-} else if(rel.single) {-#>
 
   #{rel.name}#{rel.args}: #{rel.type}
 

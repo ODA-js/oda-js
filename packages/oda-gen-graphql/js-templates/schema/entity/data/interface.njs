@@ -3,6 +3,9 @@
 
 import { Connector } from 'oda-api-graphql';
 import { Partial#{ entity.name } } from '../types/model';
+<#entity.embedded.forEach(name=>{#>
+import {Partial#{name}} from './../../#{name}/types/model';
+<#})#>
 
 export interface #{ entity.name }Connector extends Connector<Partial#{ entity.name }>{
 <#- for (let f of entity.args.update.find) {

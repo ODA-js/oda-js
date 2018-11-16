@@ -14,7 +14,9 @@ export default new Input({
   schema: gql`
     input removeFrom#{connection.name}Input {
       #{connection.refFieldName}:ID!
+<#if(!connection.embedded){-#>
       #{entity.ownerFieldName}:ID!
+<#-}#>
     }
   `,
 });
