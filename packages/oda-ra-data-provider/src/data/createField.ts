@@ -1,9 +1,7 @@
-import * as comparator from 'comparator.js';
-
-export default function(data: object, field: string) {
-  if (!comparator.looseEq(data[field])) {
+export default function(data: { [key: string]: any }, field: string) {
+  if (data[field] !== undefined) {
     return {
-      [field]: !comparator.looseEq(data[field]) ? data[field] : null,
+      [field]: data[field],
     };
   }
 }

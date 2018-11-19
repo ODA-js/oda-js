@@ -1,4 +1,3 @@
-import { SortOrder } from './../../constants';
 import {
   FilterByFunction,
   IResource,
@@ -11,7 +10,8 @@ import {
   VariablesFunction,
   FetchPolicyFunction,
 } from './interfaces';
-import { queries } from './resourceContainer';
+import { queries } from './consts';
+import { SortOrder } from '../../constants';
 
 export default abstract class implements IResourceOperation {
   public get query(): any {
@@ -44,24 +44,24 @@ export default abstract class implements IResourceOperation {
   public get filterBy() {
     return this._filterBy;
   }
-  public get refetchQueries() {
-    return this._refetchQueries;
+  public get reFetchQueries() {
+    return this._reFetchQueries;
   }
 
   public get shouldFakeExecute() {
     return this._shouldFakeExecute;
   }
 
-  protected _shouldFakeExecute: ShouldFakeExecuteFunction;
-  protected _resource: IResource;
-  protected _parseResponse: ResponseFunction;
-  protected _update: UpdateFunction;
-  protected _variables: VariablesFunction;
-  protected _type: queries;
-  protected _fetchPolicy: string | FetchPolicyFunction;
-  protected _orderBy: OrderByFunction;
-  protected _filterBy: FilterByFunction;
-  protected _refetchQueries: any;
+  protected _shouldFakeExecute!: ShouldFakeExecuteFunction;
+  protected _resource!: IResource;
+  protected _parseResponse!: ResponseFunction;
+  protected _update!: UpdateFunction;
+  protected _variables!: VariablesFunction;
+  protected _type!: queries;
+  protected _fetchPolicy!: string | FetchPolicyFunction;
+  protected _orderBy!: OrderByFunction;
+  protected _filterBy!: FilterByFunction;
+  protected _reFetchQueries: any;
 
   public override({
     parseResponse,
@@ -70,7 +70,7 @@ export default abstract class implements IResourceOperation {
     orderBy,
     filterBy,
     fetchPolicy = 'network-only',
-    refetchQueries,
+    reFetchQueries,
     shouldFakeExecute,
   }: IResourceOperationDefinition) {
     if (parseResponse) {
@@ -91,8 +91,8 @@ export default abstract class implements IResourceOperation {
     if (fetchPolicy) {
       this._fetchPolicy = fetchPolicy;
     }
-    if (refetchQueries) {
-      this._refetchQueries = refetchQueries;
+    if (reFetchQueries) {
+      this._reFetchQueries = reFetchQueries;
     }
     if (shouldFakeExecute) {
       this._shouldFakeExecute = shouldFakeExecute;
@@ -138,7 +138,7 @@ export default abstract class implements IResourceOperation {
     // insert into cache
   }
 
-  private defaultOrderBy(params) {
+  private defaultOrderBy(params: { sort: { field: string; order: string } }) {
     return params.sort.field !== 'id'
       ? `${params.sort.field}${SortOrder[params.sort.order]}`
       : undefined;

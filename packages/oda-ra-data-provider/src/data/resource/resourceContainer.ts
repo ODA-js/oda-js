@@ -7,10 +7,8 @@ import {
 } from './interfaces';
 import Resource from './resource';
 
-export { queries };
-
 export default class implements IResourceContainer {
-  public fragments: { [fragments: string]: IResource };
+  public fragments: { [fragments: string]: IResource } = {};
   private resources: { [resource: string]: IResource };
   constructor(options?: IResourceDefinition[] | IResourceDefinition) {
     this.resources = {};

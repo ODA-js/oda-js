@@ -6,11 +6,14 @@ export type ResponseFunction = (
 ) => { data: any };
 export type UpdateFunction = (store, response) => void;
 export type VariablesFunction = (params: any) => any;
-export type OrderByFunction = (field) => string | undefined;
-export type FilterByFunction = (field) => object | undefined;
-export type RefetchQueriesFunction = (variables) => any;
+export type OrderByFunction = (field: any) => string | undefined;
+export type FilterByFunction = (
+  field: any,
+  oparation: IResourceOperation,
+) => object | undefined;
+export type ReFetchQueriesFunction = (variables: any) => any;
 export type ShouldFakeExecuteFunction =
-  | ((variables: object) => boolean | object)
+  | ((variables: { input: object; files: any }) => boolean | object)
   | boolean;
 export type FetchPolicyFunction = (params: any) => any;
 
@@ -30,12 +33,13 @@ export enum fieldType {
 
 export interface IResourceReference {
   type: refType;
+  embedded?: boolean;
   resource: string;
 }
 
 export interface IField {
-  ref?: IResourceReference;
-  type?: fieldType;
+  ref: IResourceReference;
+  type: fieldType;
 }
 
 export interface INamedField extends IField {
@@ -46,7 +50,7 @@ export type FieldsDefinition = {
   [name: string]: IField;
 };
 
-export type FragmentsDefintions = {
+export type FragmentsDefinitions = {
   [name: string]: any;
 };
 
@@ -54,7 +58,7 @@ export type FragmentsDefintions = {
  * list of fields for specific Resource
  */
 export interface IResourceFields {
-  fields?: FieldsDefinition;
+  fields: FieldsDefinition;
 }
 
 export interface IResourceOperationsDefinition {
@@ -68,80 +72,80 @@ export interface IResourceOperationsDefinition {
 }
 
 export interface IResourceQueryDefinitions {
-  getList?: (
-    fragments: FragmentsDefintions,
+  getList: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getOne?: (
-    fragments: FragmentsDefintions,
+  getOne: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getMany?: (
-    fragments: FragmentsDefintions,
+  getMany: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  delete?: (
-    fragments: FragmentsDefintions,
+  delete: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  create?: (
-    fragments: FragmentsDefintions,
+  create: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  update?: (
-    fragments: FragmentsDefintions,
+  update: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getManyReference?: (
-    fragments: FragmentsDefintions,
+  getManyReference: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getListResult?: (
-    fragments: FragmentsDefintions,
+  getListResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getOneResult?: (
-    fragments: FragmentsDefintions,
+  getOneResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getManyResult?: (
-    fragments: FragmentsDefintions,
+  getManyResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  deleteResult?: (
-    fragments: FragmentsDefintions,
+  deleteResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  createResult?: (
-    fragments: FragmentsDefintions,
+  createResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  updateResult?: (
-    fragments: FragmentsDefintions,
+  updateResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getManyReferenceResult?: (
-    fragments: FragmentsDefintions,
+  getManyReferenceResult: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getManyReferenceResultOpposite?: (
-    fragments: FragmentsDefintions,
+  getManyReferenceResultOpposite: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
-  getManyReferenceResultRegular?: (
-    fragments: FragmentsDefintions,
+  getManyReferenceResultRegular: (
+    fragments: FragmentsDefinitions,
     queries: IResourceQueryDefinitions,
   ) => any;
 }
 
 export interface IResourceDefinition {
   name: string;
-  fields?: FieldsDefinition;
-  operations?: IResourceOperationsDefinition;
-  queries?: IResourceQueryDefinitions;
-  fragments?: (
-    frg: { [key: string]: FragmentsDefintions },
-  ) => FragmentsDefintions;
+  fields: FieldsDefinition;
+  operations: IResourceOperationsDefinition;
+  queries: IResourceQueryDefinitions;
+  fragments: (
+    frg: { [key: string]: FragmentsDefinitions },
+  ) => FragmentsDefinitions;
 }
 
 export interface IResourceOperationDefinition {
@@ -151,7 +155,7 @@ export interface IResourceOperationDefinition {
   fetchPolicy?: string | FetchPolicyFunction;
   orderBy?: OrderByFunction;
   filterBy?: FilterByFunction;
-  refetchQueries?: RefetchQueriesFunction;
+  reFetchQueries?: ReFetchQueriesFunction;
   shouldFakeExecute?: ShouldFakeExecuteFunction;
 }
 
@@ -161,8 +165,8 @@ export interface IResource extends IResourceDefinition {
   operations: IResourceOperationsDefinition;
   queries: IResourceQueryDefinitions;
   fragments: (
-    frg: { [key: string]: FragmentsDefintions },
-  ) => FragmentsDefintions;
+    frg: { [key: string]: FragmentsDefinitions },
+  ) => FragmentsDefinitions;
   resourceContainer: IResourceContainer;
   override: (overrides: IResourceDefinition) => IResource;
   connect: (resourceContainer: IResourceContainer) => IResource;
@@ -187,7 +191,7 @@ export interface IResourceOperation extends IResourceOperationDefinition {
   fetchPolicy: string | FetchPolicyFunction;
   orderBy: OrderByFunction;
   filterBy: FilterByFunction;
-  refetchQueries: RefetchQueriesFunction;
+  reFetchQueries: ReFetchQueriesFunction;
   override: (overrides: IResourceOperationDefinition) => IResourceOperation;
   connect: (resource: IResource) => IResourceOperation;
 }

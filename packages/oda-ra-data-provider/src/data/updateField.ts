@@ -1,13 +1,14 @@
-import * as comparator from 'comparator.js';
+import isEqual from 'lodash/isEqual';
+import isNil from 'lodash/isNil';
 
 export default function(
   data: object,
   previousData: object = {},
   field: string,
 ) {
-  if (!comparator.looseEq(data[field], previousData[field])) {
+  if (!isEqual(data[field], previousData[field])) {
     return {
-      [field]: !comparator.looseEq(data[field]) ? data[field] : null,
+      [field]: !isNil(data[field]) ? data[field] : null,
     };
   }
 }

@@ -1,6 +1,7 @@
 import { reshape } from 'oda-lodash';
 
 import ResourceOperation from '../resourceOperation';
+import { IResourceOperationDefinition, IResource } from '../interfaces';
 
 export default class extends ResourceOperation {
   public get query(): any {
@@ -11,11 +12,14 @@ export default class extends ResourceOperation {
   }
   public get resultQuery(): any {
     return this.resource.queries.deleteResult(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = response => {

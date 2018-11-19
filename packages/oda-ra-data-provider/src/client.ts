@@ -30,20 +30,9 @@ export default ({
    * @param {Object} payload Request parameters. Depends on the request type
    * @returns {Promise} the Promise for a REST response
    */
-  return async (type, resourceName, params) => {
-    // tslint:disable-next-line:no-console
+  return async (type: string, resourceName: string, params: object) => {
     let resource: IResource;
-    if (!role) {
-      resource = resources.resource(resourceName);
-    } else if (typeof role === 'string' && resources.hasOwnProperty(role)) {
-      resource = resources[role].resource(resourceName);
-    } else if (typeof role === 'function') {
-      const currentRole = await role();
-      if (resources.hasOwnProperty(currentRole)) {
-        resource = resources[currentRole].resource(resourceName);
-      }
-    }
-
+    resource = resources.resource(resourceName);
     if (!resource) {
       throw new Error(`No matching resource found for name ${resourceName}`);
     }
@@ -64,15 +53,15 @@ export default ({
         ? operation.shouldFakeExecute(variables)
         : operation.shouldFakeExecute;
 
-    const currentfetchPolicy =
+    const currentFetchPolicy =
       typeof operation.fetchPolicy === 'function'
         ? operation.fetchPolicy(params)
         : operation.fetchPolicy || fetchPolicy;
 
-    const refetchQueries =
-      typeof operation.refetchQueries === 'function'
-        ? operation.refetchQueries(variables)
-        : operation.refetchQueries;
+    const reFetchQueries =
+      typeof operation.reFetchQueries === 'function'
+        ? operation.reFetchQueries(variables)
+        : operation.reFetchQueries;
 
     const update =
       typeof operation.update === 'function' ? operation.update : false;
@@ -88,7 +77,7 @@ export default ({
           variables,
         };
         if (fetchPolicy) {
-          apolloQuery.fetchPolicy = currentfetchPolicy;
+          apolloQuery.fetchPolicy = currentFetchPolicy;
         }
         action = client.query(apolloQuery);
       } else {
@@ -97,8 +86,8 @@ export default ({
           variables,
         };
 
-        if (refetchQueries) {
-          apolloQuery.refetchQueries = refetchQueries;
+        if (reFetchQueries) {
+          apolloQuery.reFetchQueries = reFetchQueries;
         }
 
         if (update) {
@@ -107,11 +96,7 @@ export default ({
 
         action = client.mutate(apolloQuery);
       }
-      return action
-        .then(response => operation.parseResponse(response, params))
-        .catch(er => {
-          throw er;
-        });
+      return action.then(response => operation.parseResponse(response, params));
     } else {
       return Promise.resolve(shouldFakeExecute);
     }

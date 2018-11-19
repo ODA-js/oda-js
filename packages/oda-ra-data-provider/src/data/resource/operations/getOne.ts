@@ -1,21 +1,25 @@
 import { reshape } from 'oda-lodash';
 
 import ResourceOperation from '../resourceOperation';
+import { IResourceOperationDefinition, IResource } from '../interfaces';
 
 export default class extends ResourceOperation {
   public get query(): any {
     return this.resource.queries.getOne(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
   public get resultQuery(): any {
     return this.resource.queries.getOneResult(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = response => {

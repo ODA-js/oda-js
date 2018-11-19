@@ -17,7 +17,7 @@
   },
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "comparator.js": "0.0.11",
+    "lodash": "^4.17.11",
     "oda-isomorfic": "file:../oda-isomorfic",
     "oda-lodash": "file:../oda-lodash"
   },

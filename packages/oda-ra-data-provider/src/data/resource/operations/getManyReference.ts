@@ -1,27 +1,34 @@
 import { reshape } from 'oda-lodash';
 
-import { SortOrder } from '../../../constants';
-import { refType } from '../interfaces';
+import {
+  refType,
+  IResourceOperationDefinition,
+  IResource,
+} from '../interfaces';
 import ResourceOperation from '../resourceOperation';
+import { SortOrder } from '../../../constants';
 
 export default class extends ResourceOperation {
   public get query() {
-    return params =>
+    return (params: { target: string }) =>
       this.resource.queries.getManyReference(
-        this.resource.fragments,
+        this.resource.resourceContainer.fragments,
         this.resource.queries,
       )[params.target];
   }
 
   public get resultQuery() {
-    return params =>
+    return (params: { target: string }) =>
       this.resource.queries.getManyReferenceResult(
-        this.resource.fragments,
+        this.resource.resourceContainer.fragments,
         this.resource.queries,
       )[params.target];
   }
 
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = (response, params) => {
@@ -54,16 +61,14 @@ export default class extends ResourceOperation {
     }
 
     if (!this._variables) {
-      this._variables = params => {
-        return {
-          id: params.id,
-          target: params.target,
-          skip: (params.pagination.page - 1) * params.pagination.perPage,
-          limit: params.pagination.perPage,
-          orderBy: this.orderBy(params),
-          filter: this.filterBy(params),
-        };
-      };
+      this._variables = params => ({
+        id: params.id,
+        target: params.target,
+        skip: (params.pagination.page - 1) * params.pagination.perPage,
+        limit: params.pagination.perPage,
+        orderBy: this.orderBy(params),
+        filter: this.filterBy(params, this),
+      });
     }
   }
 }

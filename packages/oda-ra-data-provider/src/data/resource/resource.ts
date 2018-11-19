@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
 import {
-  FragmentsDefintions,
+  FragmentsDefinitions,
   IResourceOperationsDefinition,
   IResourceQueryDefinitions,
 } from './interfaces';
@@ -54,28 +54,30 @@ export default class implements IResource {
   public get resourceContainer(): IResourceContainer {
     return this._resourceContainer;
   }
-  protected _fragments: (
-    frg: { [key: string]: FragmentsDefintions },
-  ) => FragmentsDefintions;
+  protected _fragments!: ((
+    frg: {
+      [key: string]: FragmentsDefinitions;
+    },
+  ) => FragmentsDefinitions);
 
-  protected _queries: IResourceQueryDefinitions;
+  protected _queries!: IResourceQueryDefinitions;
 
   protected _fields: FieldsDefinition = {};
 
   /**
    * internal name store
    */
-  protected _name: string;
+  protected _name!: string;
 
   /**
    * internal store for resourceContainer
    */
-  private _resourceContainer: IResourceContainer;
+  private _resourceContainer!: IResourceContainer;
 
   /**
    * internal query storage
    */
-  private _operations: IResourceOperationsDefinition;
+  private _operations!: IResourceOperationsDefinition;
 
   /**
    * override existing Resource configuration
@@ -98,8 +100,8 @@ export default class implements IResource {
           ...this._fragments,
           ...overrides.fragments,
         } as (
-          frg: { [key: string]: FragmentsDefintions },
-        ) => FragmentsDefintions;
+          frg: { [key: string]: FragmentsDefinitions },
+        ) => FragmentsDefinitions;
       } else {
         this._fragments = overrides.fragments;
       }

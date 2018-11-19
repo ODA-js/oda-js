@@ -1,12 +1,13 @@
-export enum queries {
-  GET_LIST = 'GET_LIST',
-  GET_ONE = 'GET_ONE',
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-  GET_MANY = 'GET_MANY',
-  GET_MANY_REFERENCE = 'GET_MANY_REFERENCE',
-}
+import { Result } from 'graphql-tools';
+
+export type queries =
+  | 'GET_LIST'
+  | 'GET_ONE'
+  | 'CREATE'
+  | 'UPDATE'
+  | 'DELETE'
+  | 'GET_MANY'
+  | 'GET_MANY_REFERENCE';
 
 export const result = {
   GET_LIST: 'GET_LIST_RESULT',

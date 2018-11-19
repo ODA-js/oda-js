@@ -1,32 +1,25 @@
 import { IResourceContainer, INamedField } from './resource/interfaces';
-import { queries } from './resource/resourceContainer';
+import isPlainObject from 'lodash/isPlainObject';
 
 export default function(
-  data: object,
+  data: {
+    [key: string]: any;
+  },
   field: INamedField,
   resources: IResourceContainer,
 ) {
-  const fieldIds = field.name + 'Ids';
-  const fieldValues = field.name + 'Values';
-  if (
-    data[fieldIds] !== undefined &&
-    Array.isArray(data[fieldIds]) &&
-    data[fieldIds].length > 0
-  ) {
-    return {
-      [field.name]: data[fieldIds].map(f => ({ id: f })),
-    };
-  } else {
-    if (
-      data[fieldValues] !== undefined &&
-      Array.isArray(data[fieldValues]) &&
-      data[fieldValues].length > 0
-    ) {
+  const value = data[field.name];
+  if (value !== undefined && Array.isArray(value) && value.length > 0) {
+    if (!value.some(f => isPlainObject(f))) {
       return {
-        [field.name]: data[fieldValues].map(
-          value =>
+        [field.name]: data[field.name].map((f: string | number) => ({ id: f })),
+      };
+    } else {
+      return {
+        [field.name]: data[field.name].map(
+          (value: any) =>
             resources
-              .queries(field.ref.resource, queries.CREATE)
+              .queries(field.ref.resource, 'CREATE')
               .variables({ data: value }).input,
         ),
       };

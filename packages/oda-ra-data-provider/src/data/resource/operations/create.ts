@@ -1,6 +1,10 @@
 import { reshape } from 'oda-lodash';
 
-import { refType } from '../interfaces';
+import {
+  refType,
+  IResourceOperationDefinition,
+  IResource,
+} from '../interfaces';
 import ResourceOperation from '../resourceOperation';
 import createField from './../../createField';
 import createMany from './../../createMany';
@@ -9,17 +13,20 @@ import createSingle from './../../createSingle';
 export default class extends ResourceOperation {
   public get query(): any {
     return this.resource.queries.create(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
   public get resultQuery(): any {
     return this.resource.queries.createResult(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = response => {

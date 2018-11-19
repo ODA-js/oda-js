@@ -1,23 +1,27 @@
 import { set } from 'lodash';
 import { reshape } from 'oda-lodash';
 
-import { SortOrder } from '../../../constants';
 import ResourceOperation from '../resourceOperation';
+import { IResourceOperationDefinition, IResource } from '../interfaces';
+import { SortOrder } from '../../../constants';
 
 export default class extends ResourceOperation {
   public get query(): any {
     return this.resource.queries.getList(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
   public get resultQuery(): any {
     return this.resource.queries.getListResult(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = response => {
@@ -30,10 +34,11 @@ export default class extends ResourceOperation {
     }
 
     if (!this._orderBy) {
-      this._orderBy = params =>
-        params.sort.field !== 'id'
+      this._orderBy = (params: { sort: { field: string; order: string } }) => {
+        return params.sort.field !== 'id'
           ? `${params.sort.field}${SortOrder[params.sort.order]}`
           : undefined;
+      };
     }
 
     if (!this._filterBy) {
@@ -51,14 +56,12 @@ export default class extends ResourceOperation {
     }
 
     if (!this._variables) {
-      this._variables = params => {
-        return {
-          skip: (params.pagination.page - 1) * params.pagination.perPage,
-          limit: params.pagination.perPage,
-          orderBy: this.orderBy(params),
-          filter: this.filterBy(params),
-        };
-      };
+      this._variables = params => ({
+        skip: (params.pagination.page - 1) * params.pagination.perPage,
+        limit: params.pagination.perPage,
+        orderBy: this.orderBy(params),
+        filter: this.filterBy(params, this),
+      });
     }
   }
 }

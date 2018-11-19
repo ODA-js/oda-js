@@ -1,6 +1,10 @@
 import { reshape } from 'oda-lodash';
 
-import { refType } from '../interfaces';
+import {
+  refType,
+  IResourceOperationDefinition,
+  IResource,
+} from '../interfaces';
 import ResourceOperation from '../resourceOperation';
 import updateField from './../../updateField';
 import updateMany from './../../updateMany';
@@ -9,17 +13,20 @@ import updateSingle from './../../updateSingle';
 export default class extends ResourceOperation {
   public get query(): any {
     return this.resource.queries.update(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
   public get resultQuery(): any {
     return this.resource.queries.updateResult(
-      this.resource.fragments,
+      this.resource.resourceContainer.fragments,
       this.resource.queries,
     );
   }
-  constructor(options) {
+  constructor(options?: {
+    overrides?: IResourceOperationDefinition;
+    resource?: IResource;
+  }) {
     super(options);
     if (!this._parseResponse) {
       this._parseResponse = response => {
@@ -29,11 +36,10 @@ export default class extends ResourceOperation {
     }
 
     if (!this._shouldFakeExecute) {
-      this._shouldFakeExecute = (variables: { input: object; files: any }) => {
-        return Object.keys(variables.input).length === 1 && !variables.files
+      this._shouldFakeExecute = (variables: { input: object; files: any }) =>
+        Object.keys(variables.input).length === 1 && !variables.files
           ? { data: variables.input }
           : false;
-      };
     }
 
     if (!this._variables) {
