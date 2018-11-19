@@ -470,6 +470,7 @@ export function _mapper(
         cField: capitalize(f.name),
         label: humanize(f.title || f.name),
         verb,
+        embedded: f.relation.embedded,
         single: verb === 'BelongsTo' || verb === 'HasOne',
         ref: {
           ...ref,
