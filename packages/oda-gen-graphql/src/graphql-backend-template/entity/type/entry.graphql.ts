@@ -67,7 +67,7 @@ export function _mapper(
       if (!f.relation) {
         return true;
       }
-      if (!f.relation.stored) {
+      if (!((f.relation && f.relation.embedded) || f.relation.stored)) {
         return false;
       }
       let ref = pack.relations.get(entity.name).get(f.name);
@@ -81,9 +81,15 @@ export function _mapper(
       let field = entity.fields.get(k);
       let type;
       if (field.relation) {
-        let ref = pack.relations.get(entity.name).get(field.name);
-        let ent = pack.entities.get(ref.relation.ref.entity);
-        type = ent.fields.get(ref.relation.ref.field).type;
+        if (field.relation.embedded) {
+          let ref = pack.relations.get(entity.name).get(field.name);
+          let ent = pack.entities.get(ref.relation.ref.entity);
+          type = `${ent.name}Filter`;
+        } else {
+          let ref = pack.relations.get(entity.name).get(field.name);
+          let ent = pack.entities.get(ref.relation.ref.entity);
+          type = ent.fields.get(ref.relation.ref.field).type;
+        }
       } else {
         if (
           pack.entities.has(
@@ -100,10 +106,11 @@ export function _mapper(
         } else {
           type = field.type;
         }
+        type = `Where${idField(field) ? 'ID' : typeMapper.graphql(type)}`;
       }
       return {
         name: k,
-        type: `Where${idField(field) ? 'ID' : typeMapper.graphql(type)}`,
+        type,
       };
     })
     .map(i => `${i.name}: ${i.type}`);
