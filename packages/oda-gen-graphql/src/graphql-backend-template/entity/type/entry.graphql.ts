@@ -89,6 +89,7 @@ export function _mapper(
           let ref = pack.relations.get(entity.name).get(field.name);
           let ent = pack.entities.get(ref.relation.ref.entity);
           type = ent.fields.get(ref.relation.ref.field).type;
+          type = `Where${idField(field) ? 'ID' : typeMapper.graphql(type)}`;
         }
       } else {
         if (
