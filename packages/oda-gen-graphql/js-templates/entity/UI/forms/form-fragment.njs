@@ -472,6 +472,8 @@ filter: ({ source, uix, label }) => {
 <# end #>
 
 <# block 'bt-filter' : #>
+<#@ context 'ctx'#>
+<# const {entity, f} = ctx;#>
 filter: ({ source, uix }) => {
   source = source ? `${source}.` : '';
   return (classes, translate, uix) => [
