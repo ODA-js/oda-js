@@ -5,13 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 export const translation = {
-  en: {
-    enums: {
-      #{_enum.name}: {
+  enums: {
+    #{_enum.name}: {
 <# _enum.items.forEach(item=>{-#>
-        #{item.name}: '#{item.title}',
+      #{item.name}: '#{item.title}',
 <#})#>
-      },
     },
   },
 };
@@ -21,7 +19,7 @@ const choices = [
   { id: '#{item.name}', name: 'enums.#{_enum.name}.#{item.name}' },
 <#})#>
 ];
-const input = (props, uix) => (
+const input = (props, {uix}) => (
   <uix.SelectInput
     {...props}
     choices={choices}
@@ -32,7 +30,7 @@ input.contextTypes = {
   uix: PropTypes.object.isRequired,
 };
 
-const field = (props, uix) => (<uix.SelectField {...props} choices={choices}/>)
+const field = (props, {uix}) => (<uix.SelectField {...props} choices={choices}/>)
 
 field.contextTypes = {
   uix: PropTypes.object.isRequired,
@@ -40,5 +38,6 @@ field.contextTypes = {
 
 export default {
   input,
-  field, 
+  field,
+  choices,
 };
