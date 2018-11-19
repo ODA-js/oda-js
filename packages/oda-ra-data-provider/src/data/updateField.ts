@@ -1,5 +1,5 @@
-import isEqual from 'lodash/isEqual';
-import isNil from 'lodash/isNil';
+import { isEqual } from 'lodash';
+import { isNil } from 'lodash';
 
 export default function(
   data: object,

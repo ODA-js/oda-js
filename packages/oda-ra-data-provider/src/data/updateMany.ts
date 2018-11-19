@@ -1,13 +1,9 @@
-import difference from 'lodash/difference';
-import differenceBy from 'lodash/differenceBy';
-import intersection from 'lodash/intersection';
-import intersectionBy from 'lodash/intersectionBy';
-import isEqual from 'lodash/isEqual';
-import isPlainObject from 'lodash/isPlainObject';
+import { difference } from 'lodash';
+import { differenceBy } from 'lodash';
+import { isEqual } from 'lodash';
+import { isPlainObject } from 'lodash';
 
-import { actionType } from './../constants';
 import { INamedField, IResourceContainer } from './resource/interfaces';
-import { remove } from 'immutable';
 
 function sameId(a: { id: any }, b: { id: any }) {
   return a.id === b.id;

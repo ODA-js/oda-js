@@ -1,7 +1,7 @@
 import { INamedField, IResourceContainer } from './resource/interfaces';
-import isPlainObject from 'lodash/isPlainObject';
-import isEqual from 'lodash/isEqual';
-import isNil from 'lodash/isNil';
+import { isPlainObject } from 'lodash';
+import { isEqual } from 'lodash';
+import { isNil } from 'lodash';
 
 export default function(
   data: object,

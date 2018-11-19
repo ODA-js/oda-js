@@ -1,5 +1,5 @@
 import { IResourceContainer, INamedField } from './resource/interfaces';
-import isPlainObject from 'lodash/isPlainObject';
+import { isPlainObject } from 'lodash';
 
 export default function(
   data: {
