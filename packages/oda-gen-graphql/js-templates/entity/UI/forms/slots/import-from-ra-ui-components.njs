@@ -1,6 +1,5 @@
 <#@ context 'items' #>
 <#@ alias 
-  'import-from-ra-ui-components-show'
   'import-from-ra-ui-components-form'
 -#>
 <#- const separatedItems = Object.keys(items

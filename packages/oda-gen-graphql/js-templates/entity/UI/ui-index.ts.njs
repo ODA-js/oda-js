@@ -1,20 +1,12 @@
 <#@ context 'pack' -#>
 <#@ chunks '$$$main$$$' -#>
 
-<#- chunkStart(`./index.js`); -#>
+<#- chunkStart(`./resources.js`); -#>
 <# for(let entity of pack.entities){-#>
-import #{entity.name}Resource, {extension as #{entity.name}Extension } from './#{entity.name}/queries';
-<#}-#>
-
-<# for(let entity of pack.entities){-#>
-import #{entity.name}UIX from './#{entity.name}/uix';
+import #{entity.name}Resource from './#{entity.name}/queries';
 <#}-#>
 
 import { data } from 'oda-ra-data-provider';
-
-import Admin from './admin';
-
-export { Admin };
 
 export class Resources extends data.resource.ResourceContainer {
   constructor(...args){
@@ -23,16 +15,268 @@ export class Resources extends data.resource.ResourceContainer {
 <# for(let entity of pack.entities){-#>
       #{entity.name}Resource,
 <#}-#>
-<# for(let entity of pack.entities){-#>
-      ...#{entity.name}Extension,
-<#}-#>
     ]);
   }
 }
 
-export const uix = {
+<#- chunkStart(`./index.js`); -#>
+import React, {Fragment} from 'react';
 <# for(let entity of pack.entities){-#>
-  "#{pack.role}/#{entity.name}": #{entity.name}UIX,
+import #{entity.name}UIX from './#{entity.name}';
+<#}-#>
+<# for(let en_ of pack.enums){-#>
+import #{en_.name} from './#{en_.name}';
+<#}#>
+
+import Admin from './admin';
+import InputWithPreview from './InputWithPreview';
+import QuickCreateButton from './quickCreate';
+import {
+  DateInput as DateInputLib,
+  TimeInput as TimeInputLib,
+  DateTimeInput as DateTimeInputLib,
+} from '../../modules/DatePickers';
+
+import {
+  //primitives
+  //input
+  // DateInput,
+  TextInput,
+  BooleanInput,
+  DisabledInput,
+  ImageInput,
+  FileInput,
+  LongTextInput,
+  NumberInput,
+  //field
+  TextField,
+  DateField,
+  BooleanField,
+  NullableBooleanInput,
+  ImageField,
+  FileField,
+  NumberField,
+  RichTextField,
+  UrlField,
+  ChipField,
+  EmailField,
+  //complex
+  //input
+  // array
+  ArrayInput,
+  SimpleFormIterator,
+  FormDataConsumer,
+  // select from list
+  AutocompleteInput,
+  AutocompleteArrayInput,
+  CheckboxGroupInput,
+  RadioButtonGroupInput,
+  //
+  //reference
+  ReferenceArrayInput,
+  SelectArrayInput,
+  ReferenceInput,
+  SelectInput,
+  //field
+  ArrayField,
+  ReferenceManyField,
+  FunctionField,
+  SelectField,
+  ReferenceField,
+  ReferenceArrayField,
+  SimpleList,
+  // ref items
+  SingleFieldList,
+  Datagrid,
+  //layout single item
+  Show,
+  SimpleShowLayout,
+  TabbedShowLayout,
+  Tab,
+  Create,
+  Edit,
+  SimpleForm,
+  TabbedForm,
+  FormTab,
+  // layout list items
+  List,
+  // universal
+  Responsive,
+  //layput controls
+  Toolbar,
+  Filter,
+  Pagination,
+  CardActions,
+  // buttons
+  Button,
+  ShowButton,
+  EditButton,
+  DeleteButton,
+  CloneButton,
+  BulkDeleteButton,
+  SaveButton,
+  // functions
+  required,
+} from 'react-admin';
+import RichTextInput from 'ra-input-rich-text';
+import { Tree, NodeView, NodeActions } from 'ra-tree-ui-materialui';
+import * as moment from 'moment';
+
+const DateInput = props => (
+  <DateInputLib
+    options={{
+      format: 'dd/MM/yyyy',
+      clearable: true,
+    }}
+    format={v => (v ? moment(v, 'yyyy/MM/dd') : v)}
+    parse={v => (v ? moment(v).format('yyyy/MM/dd') : v)}
+    {...props}
+  />
+);
+
+const TimeInput = props => (
+  <TimeInputLib
+    options={{
+      format: 'HH:mm',
+      ampm: false,
+      clearable: true,
+    }}
+    format={v => (v ? moment(v, 'HH:mm') : v)}
+    parse={v => (v ? moment(v).format('HH:mm') : v)}
+    {...props}
+  />
+);
+
+const DateTimeInput = props => (
+  <DateTimeInputLib
+    options={{
+      format: 'dd/MM/YYYY, HH:mm:ss',
+      ampm: false,
+      clearable: true,
+    }}
+    {...props}
+  />
+);
+
+
+export const components = {
+  InputWithPreview,
+  QuickCreateButton,
+  primitive: {
+    Text: { input: TextInput, field: TextField },
+    LongText: { input: LongTextInput, field: TextField },
+    Number: { input: NumberInput, field: NumberField },
+    Date: { input: DateInput, field: DateField },
+    DateTime: { input: DateTimeInput, field: DateField },
+    Time: { input: TimeInput, field: TextField },
+    Boolean: { input: BooleanInput, field: BooleanField },
+    ID: { input: DisabledInput, field: TextField },
+    File: { input: FileInput, field: FileField },
+    Image: { input: ImageInput, field: ImageField },
+    RichText: { input: RichTextInput, field: RichTextField },
+    URL: { input: TextInput, field: UrlField },
+    Email: { input: TextInput, field: EmailField },
+    NullableBoolean: { input: NullableBooleanInput, field: BooleanField },
+    // сделать функцию для работы с типами...
+    Derived: field => ({ input: DisabledInput, field }),
+<# for(let en_ of pack.enums){-#>
+    #{en_.name},
+<#}#>
+  },
+  //primitives
+  //input
+  DateInput,
+  TextInput,
+  BooleanInput,
+  DisabledInput,
+  ImageInput,
+  FileInput,
+  LongTextInput,
+  NumberInput,
+  RichTextInput,
+  //field
+  TextField,
+  DateField,
+  BooleanField,
+  NullableBooleanInput,
+  ImageField,
+  FileField,
+  NumberField,
+  RichTextField,
+  UrlField,
+  ChipField,
+  EmailField,
+  //complex
+  //input
+  // array
+  ArrayInput,
+  SimpleFormIterator,
+  FormDataConsumer,
+  // select from list
+  AutocompleteInput,
+  AutocompleteArrayInput,
+  CheckboxGroupInput,
+  RadioButtonGroupInput,
+  //
+  //reference
+  ReferenceArrayInput,
+  SelectArrayInput,
+  ReferenceInput,
+  SelectInput,
+  //field
+  ArrayField,
+  ReferenceManyField,
+  FunctionField,
+  SelectField,
+  ReferenceField,
+  ReferenceArrayField,
+  SimpleList,
+  // ref items
+  SingleFieldList,
+  Datagrid,
+  //layout single item
+  Show,
+  SimpleShowLayout,
+  TabbedShowLayout,
+  Tab,
+  Create,
+  Edit,
+  SimpleForm,
+  TabbedForm,
+  FormTab,
+  // layout list items
+  List,
+  // universal
+  Responsive,
+  //layput controls
+  Toolbar,
+  Filter,
+  Pagination,
+  CardActions,
+  // buttons
+  Button,
+  ShowButton,
+  EditButton,
+  DeleteButton,
+  CloneButton,
+  BulkDeleteButton,
+  SaveButton,
+  //tree
+  Tree,
+  NodeView,
+  NodeActions,
+  // functions
+  required,
+};
+
+export { Admin };
+
+export const uix = {
+  Fragment,
+  ...components,
+<#
+ for(let entity of pack.entities){-#>
+  "#{entity.name}": #{entity.name}UIX,
 <#}-#>
 };
 
@@ -42,6 +286,10 @@ import {merge} from 'lodash';
 <# for(let entity of pack.entities){-#>
 import #{entity.name}Translate from './#{entity.name}';
 <#}-#>
+
+<# for(let en_ of pack.enums){-#>
+import { translation as #{en_.name} } from '../#{en_.name}';
+<#}#>
 
 const messages = {
   uix: {
@@ -57,6 +305,10 @@ const messages = {
       "imatch": "%{name}",
       "in": "%{name} in",
       "nin": "%{name} not in",
+    },
+    actions:{
+      "create_and_add": "Create more...",
+      "preview": "Quick View",
     },
     "actionType": {
       "CREATE": "Create",
@@ -75,76 +327,341 @@ export default
 <# for(let entity of pack.entities){-#>
     #{entity.name}Translate,
 <#}-#>
+<# for(let en_ of pack.enums){-#>
+    #{en_.name},
+<#}#>
   )
 
-<#- chunkStart(`./resources.js`); -#>
+<#- chunkStart(`./resource-menu-items.js`); -#>
 import React from 'react';
-import ListIcon from 'material-ui/svg-icons/action/view-list';
+import ListIcon from '@material-ui/icons/view-list';
 import { translate } from 'react-admin';
 
 export default {
-<# for(let entity of pack.entities){-#>
-  "#{pack.role}/#{entity.name}": { icon: <ListIcon />, visible: true, name: translate('resources.#{entity.name}.name', { smart_count:2 }) },
+<# for(let entity of pack.entities.filter(e=> !e.embedded && !e.abstract)){-#>
+  "#{entity.name}": { icon: <ListIcon />, visible: true, name: translate('resources.#{entity.name}.name', { smart_count:2 }) },
 <#}-#>
 };
 
 <#- chunkStart(`./admin.js`); -#>
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Loading from 'react-loading-animation'
-import { Admin, Resource, Delete } from 'react-admin';
-import { englishMessages } from 'react-admin';
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import englishMessages from 'ra-language-english';
 import translation from './i18n';
-import {merge} from 'lodash';
+import { merge } from 'lodash';
+import { uix as getUIX } from './';
+import UIXContextProvider from './UIXContextProvider';
 
 const messages = {
-  'en': {
-    ...merge(
-      {},
-      englishMessages,
-      translation
-    ),
+  en: {
+    ...merge({}, englishMessages, translation),
   },
 };
 
-const i18nProvider = locale => messages[locale];
+const i18nProviderGenerated = locale => messages[locale];
 
-class OdaClientApp extends Component {
+export default ({ title, dataProvider, authProvider, customSagas, i18nProvider,
+  locale, uix, history,}) => (
+  <UIXContextProvider  uix={uix || getUIX}>
+    <Admin
+      history={history}
+      i18nProvider={i18nProvider || i18nProviderGenerated}
+      title={title}
+      dataProvider={dataProvider}
+      authProvider={authProvider}
+      customSagas={customSagas}
+      locale={locale || 'en'} >
+    <# for(let entity of pack.entities.filter(e=> !(e.embedded || e.abstract))){-#>
+        <Resource
+          key={"#{entity.name}"}
+          show={(uix || getUIX).#{entity.name}.Show}
+          name={"#{entity.name}"}
+          edit={(uix || getUIX).#{entity.name}.Edit}
+          create={(uix || getUIX).#{entity.name}.Create}
+          list={(uix || getUIX).#{entity.name}.List}
+          options={{ label: `resources.${(uix || getUIX).#{entity.name}.name}.name` }}
+        />
+    <#}-#>
+    </Admin>
+  </UIXContextProvider>
+);
+
+<#- chunkStart(`./UIXContextProvider.js`); -#>
+
+import { Component } from 'react';
+import PropTypes from 'prop-types';
+import * as invariant from 'invariant';
+
+export default class UIXContextProvider extends Component {
+  constructor(props, context) {
+    super(props, context);
+    invariant(props.uix, 'expected `uix` prop initilization');
+  }
+  getChildContext() {
+    return {
+      uix: this.props.uix,
+    };
+  }
   render() {
-    const { restClient, authClient, uix } = this.context;
-    if (restClient === null || restClient === undefined) {
-      return <div className="loading-component"><Loading /></div>;
-    }
+    return this.props.children;
+  }
+}
 
+UIXContextProvider.childContextTypes = {
+  uix: PropTypes.object.isRequired,
+};
+
+<#- chunkStart(`./InputWithPreview.js`); -#>
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Drawer from '@material-ui/core/Drawer';
+
+import { Field } from 'redux-form';
+import IconImageEye from '@material-ui/icons/RemoveRedEye';
+import CloseIcon from '@material-ui/icons/Close';
+import { Button } from 'react-admin';
+import { ReferenceInput } from 'react-admin';
+import QuickCreateButton from './quickCreate';
+
+class PreviewButtonBase extends Component {
+  state = { showPanel: false };
+
+  handleClick = () => {
+    this.setState({ showPanel: true });
+  };
+
+  handleCloseClick = () => {
+    this.setState({ showPanel: false });
+  };
+
+  render() {
+    const { showPanel } = this.state;
+    const { id, resource, basePath, showForm: ShowForm } = this.props;
     return (
-      <Admin
-        {...this.props}
-        locale="en"
-        i18nProvider={i18nProvider}
-        authProvider={authClient}
-        dataProvider={restClient}>
-        {role => Object.keys(uix)
-          .filter(resource => uix[resource].role === role)
-          .map(resource => <Resource
-            key={resource}
-            show={uix[resource].Show}
-            name={resource}
-            edit={uix[resource].Edit}
-            create={uix[resource].Create}
-            list={uix[resource].List}
-            remove={Delete}
-            options={{ label: `resources.${uix[resource].name}.name` }}
-          />
-          )}
-      </Admin>
+      <Fragment>
+        <Button onClick={this.handleClick} label="ra.action.show">
+          <IconImageEye />
+        </Button>
+        <Drawer anchor="right" open={showPanel} onClose={this.handleCloseClick}>
+          <div>
+            <Button label="ra.action.cancel" onClick={this.handleCloseClick}>
+              <CloseIcon />
+            </Button>
+          </div>
+          <ShowForm id={id} basePath={basePath} resource={resource} />
+        </Drawer>
+      </Fragment>
     );
   }
 }
 
-OdaClientApp.contextTypes = {
+PreviewButtonBase.propTypes = {
+  showForm: PropTypes.any.isRequired,
+};
+
+const PreviewButton = connect()(PreviewButtonBase);
+
+const InputWithPreview = (
+  { optionText, preview, from, Select, ...props },
+  { uix },
+) => (
+  <Fragment>
+    <ReferenceInput {...props}>
+      <Select optionText={optionText} />
+    </ReferenceInput>
+    <QuickCreateButton
+      resource={props.reference}
+      source={props.source}
+      from={from}
+    />
+    <Field
+      name={props.source}
+      component={({ input }) =>
+        input.value && (
+          <PreviewButton
+            id={input.value}
+            basePath={`/${props.reference}`}
+            resource={props.reference}
+            showForm={uix[props.reference].Preview}
+          />
+        )
+      }
+    />
+    <Field
+      name={props.source}
+      component={({ input }) =>
+        input.value && (
+          <uix.EditButton
+            record={{ id: props.record[props.source] }}
+            basePath={`/${props.reference}`}
+            resource={props.reference}
+          />
+        )
+      }
+    />
+  </Fragment>
+);
+
+InputWithPreview.contextTypes = {
   uix: PropTypes.object.isRequired,
-  authClient: PropTypes.func.isRequired,
-  restClient: PropTypes.func.isRequired,
+};
+
+export default InputWithPreview;
+
+<#- chunkStart(`./quickCreate.js`); -#>
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { change, submit, isSubmitting } from 'redux-form';
+import {
+  fetchEnd,
+  fetchStart,
+  showNotification,
+  crudGetMatching,
+  Button,
+  SaveButton,
+  SimpleForm,
+  CREATE,
+  REDUX_FORM_NAME,
+} from 'react-admin';
+import IconContentAdd from '@material-ui/icons/Add';
+import IconCancel from '@material-ui/icons/Cancel';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+
+import { dataProvider } from './../../configure';
+
+class CreateButton extends Component {
+  state = {
+    error: false,
+    showDialog: false,
+  };
+
+  handleClick = () => {
+    this.setState({ showDialog: true });
+  };
+
+  handleCloseClick = () => {
+    this.setState({ showDialog: false });
+  };
+
+  handleSaveClick = () => {
+    const { submit } = this.props;
+
+    // Trigger a submit of our custom quick create form
+    // This is needed because our modal action buttons are oustide the form
+    submit(`quick-create`);
+  };
+
+  handleSubmit = values => {
+    const {
+      change,
+      crudGetMatching,
+      fetchStart,
+      fetchEnd,
+      showNotification,
+    } = this.props;
+    // Dispatch an action letting react-admin know a API call is ongoing
+    fetchStart();
+
+    // As we want to know when the new post has been created in order to close the modal, we use the
+    // dataProvider directly
+    dataProvider(CREATE, this.props.resource, { data: values })
+      .then(({ data }) => {
+        // Refresh the choices of the ReferenceInput to ensure our newly created post
+        // always appear, even after selecting another post
+        crudGetMatching(
+          this.props.resource,
+          `${this.props.from}@${this.props.source}`,
+          { page: 1, perPage: 25 },
+          { field: 'id', order: 'DESC' },
+          {},
+        );
+
+        // Update the main react-admin form (in this case, the comments creation form)
+        change(REDUX_FORM_NAME, this.props.source, data.id);
+        this.setState({ showDialog: false });
+      })
+      .catch(error => {
+        showNotification(error.message, 'error');
+      })
+      .finally(() => {
+        // Dispatch an action letting react-admin know a API call has ended
+        fetchEnd();
+      });
+  };
+
+  render() {
+    const { showDialog } = this.state;
+    const { isSubmitting } = this.props;
+    const { uix, translate } = this.context;
+    const formLabel = `${translate('ra.action.create')} ${translate(
+      `resources.${this.props.resource}.name`,
+      { smart_count: 1 },
+    )}`;
+    return (
+      <Fragment>
+        <Button onClick={this.handleClick} label="ra.action.create">
+          <IconContentAdd />
+        </Button>
+        <Dialog
+          fullWidth
+          open={showDialog}
+          onClose={this.handleCloseClick}
+          aria-label={formLabel}
+        >
+          <DialogTitle>{formLabel}</DialogTitle>
+          <DialogContent>
+            <SimpleForm
+              // We override the redux-form name to avoid collision with the react-admin main form
+              form={`quick-create`}
+              resource={this.props.resource}
+              // We override the redux-form onSubmit prop to handle the submission ourselves
+              onSubmit={this.handleSubmit}
+              // We want no toolbar at all as we have our modal actions
+              toolbar={null}
+            >
+              {uix[this.props.resource].getFields({
+                name: 'quick-create',
+                uix,
+                type: 'edit',
+              })}
+            </SimpleForm>
+          </DialogContent>
+          <DialogActions>
+            <SaveButton saving={isSubmitting} onClick={this.handleSaveClick} />
+            <Button label="ra.action.cancel" onClick={this.handleCloseClick}>
+              <IconCancel />
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Fragment>
+    );
+  }
 }
 
-export default OdaClientApp;
+CreateButton.contextTypes = {
+  uix: PropTypes.object.isRequired,
+  translate: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  isSubmitting: isSubmitting(`quick-create`)(state),
+});
+
+const mapDispatchToProps = {
+  change,
+  crudGetMatching,
+  fetchEnd,
+  fetchStart,
+  showNotification,
+  submit,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CreateButton);

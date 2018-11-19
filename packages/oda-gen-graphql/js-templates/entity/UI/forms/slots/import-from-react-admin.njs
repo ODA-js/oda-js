@@ -1,6 +1,6 @@
 <#@ context 'items' -#>
 <#@ alias 
-'import-from-react-admin-form'
+'import-from-react-admin-fragments'
 'import-from-react-admin-form-simple'
 'import-from-react-admin-form-tab'
 'import-from-react-admin-show'
@@ -9,7 +9,6 @@
 'import-from-react-admin'
 'import-from-react-admin-filter'
 'import-from-react-admin-grid-card-view'
-'import-from-react-admin-grid-view'
 -#>
 <#- 
 const separatedItems = Object.keys(items

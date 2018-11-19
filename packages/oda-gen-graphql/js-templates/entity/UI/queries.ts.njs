@@ -11,7 +11,7 @@ import {set} from 'lodash';
 export default {
   queries,
   fragments,
-  name: '#{entity.role}/#{entity.name}',
+  name: '#{entity.name}',
   role: '#{entity.role}',
   fields: {
   <#- entity.fields.forEach(f => {#>
@@ -20,7 +20,10 @@ export default {
   <#- entity.relations.forEach(f => {#>
     #{f.field}: {
       ref: {
-        resource: '#{entity.role}/#{f.ref.entity}',
+        resource: '#{f.ref.entity}',
+        <#-if(f.ref.embedded){#>
+        embedded:true,
+        <#-}#>
         type: data.resource.interfaces.refType.#{f.verb},
       },
     },
@@ -28,7 +31,7 @@ export default {
   },
   operations: {
     GET_LIST: {
-      filterBy: (params) => Object.keys(params.filter).reduce((acc, key) => {
+      filterBy: (params, operation) => Object.keys(params.filter).reduce((acc, key) => {
         if (key === 'ids') {
           return { ...acc, id: { in: params.filter[key] } };
         }
@@ -45,6 +48,12 @@ export default {
           return acc;
 <#-}#>
         }
+<#entity.relations.filter(f=>f.ref.embedded).forEach(f=>{#>
+        if(key === '#{f.name}'){
+          const filter = operation.resource.resourceContainer.resources.#{f.ref.entity}.operations.GET_LIST.filterBy({filter:params.filter[key]}, operation);
+          return set(acc, key, filter);
+        } 
+<#})#>
         return set(acc, key.replace('-', '.'), params.filter[key]);
       }, {}),
     },
@@ -57,69 +66,55 @@ export default {
   },
 };
 
-export const extension = [
-  <#- entity.relations.filter(f=> f.verb === 'BelongsToMany').forEach(f => {#>
-    {
-      name:'#{entity.role}/#{f.ref.entity}',
-      fields:{
-      <#- f.ref.fields.filter(fld => f.ref.using.UI.edit[fld.name] ).forEach(f => {#>
-        #{f.name}: { type: '#{f.resourceType}' },
-      <#-})#>
-      }
-    },
-  <#-})#>
-];
-
 <#- chunkStart(`../../../${entity.name}/queries/queries`); -#>
 import gql from 'graphql-tag';
 // fragments
 
 export const fragments = {
-  resultFragment: gql`fragment #{entity.name}Result on #{entity.name} {
+  #{entity.name}Result: (frg) => gql`fragment #{entity.name}Result on #{entity.name} {
 <# entity.fields.forEach( f=> {-#>
     #{f.name}
 <#})-#>
 <# entity.relations.forEach(f => {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
   let current = embedded && entity.UI.embedded.names[f.field];
--#><#-if(f.single) {#>
-    #{f.field}<#if(embedded) {#>Value<#} else {#>Id<#}#>: #{f.field} <#if(!embedded) {#>@_(get:"id")<#}#>
+-#>
+<#- if(f.ref.embedded){-#>
+    #{f.field}{
+      ...#{f.ref.entity}Result
+    }
+<#} else if(f.single) {#>
+    #{f.field}: #{f.field} <#if(!embedded) {#>@_(get:"id")<#}#>
      {
+<# if(embedded){#>
+      ...#{f.ref.entity}Result
+<#} else {-#>
       id
-<# if(embedded){
-  entity.UI.embedded.items[current].fields
-        .filter(f=> f.name !== 'id')
-        .forEach(f=>{-#>
-      #{f.name}
-<#
-        });
-  } 
--#>      
+<#}#>      
     }
 <#-} else {#>
-    #{f.field}<#if(embedded) {#>Values<#} else {#>Ids<#}#>: #{f.field} @_(get:"edges") {
+    #{f.field}: #{f.field} @_(get:"edges") {
       edges @_( <#if(embedded) {#>each: {assign:"node"}<#} else {#>map:"node"<#}#> ) {
 <#- embedded && f.ref.fields.forEach(fld=>{#>
         #{fld.name}
 <#-})#>
         node <#if(!embedded) {#>@_(get:"id") <#}#> {
+<# if(embedded){#>
+          ...#{f.ref.entity}Result
+<#} else {-#>
           id
-<# if(embedded){
-  entity.UI.embedded.items[current].fields
-        .filter(f=> f.name !== 'id')
-        .forEach(f=>{-#>
-          #{f.name}
-<#
-        });
-  } 
--#>
+<#}#>  
         }
       }
     }
 <#-}-#>
-<#-})#>
-  }`,
-  fullFragment: gql`fragment #{entity.name}Full on #{entity.name} {
+<#-})-#>
+  }
+<# entity.relations.filter(f=>entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f => {-#>
+  ${frg.#{f.ref.entity}Result(frg)}
+<#})#>
+  `,
+  #{entity.name}Full: (frg) => gql`fragment #{entity.name}Full on #{entity.name} {
 <# entity.fields.forEach( f=> {-#>
     #{f.name}
 <#})-#>
@@ -127,43 +122,40 @@ export const fragments = {
   const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
   let current = embedded && entity.UI.embedded.names[f.field];
 -#>
-    #{f.field} {<#if(f.single) {#>
+    #{f.field} {
+<# if(f.ref.embedded){#>
+      ...#{f.ref.entity}Full
+<#} else if(f.single) {#>
+<# if(embedded){-#>
+      ...#{f.ref.entity}Full
+<#} else {-#>
       id
-<# if(embedded){
-  entity.UI.embedded.items[current].fields
-        .filter(f=> f.name !== 'id')
-        .forEach(f=>{-#>
-      #{f.name}
-<#
-        });
-  } 
--#>  
+<#}-#>  
     <#} else {#>
       edges {
 <#- embedded && f.ref.fields.forEach(fld=>{#>
         #{fld.name}
 <#-})#>
         node {
+<# if(embedded){-#>
+          ...#{f.ref.entity}Full
+<#} else {-#>
           id
-<# if(embedded){
-  entity.UI.embedded.items[current].fields
-        .filter(f=> f.name !== 'id')
-        .forEach(f=>{-#>
-          #{f.name}
-<#
-        });
-  } 
--#>
+<#}-#>  
         }
       }
     <#}#>}
 <#})-#>
-  }`,
+  }
+<# entity.relations.filter(f=>entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f => {-#>
+  ${frg.#{f.ref.entity}Full(frg)}
+<#})#>
+  `,
 }
 
 export const queries = {
   // getList
-  getListResult: ({ resultFragment }) => gql`query getListOf#{entity.name}Result {
+  getListResult: (frg ) => gql`query getListOf#{entity.name}Result {
     items {
       total: pageInfo @_(get:"count") {
         count
@@ -175,9 +167,9 @@ export const queries = {
       }
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  getList: ({ fullFragment }) => gql`query getListOf#{entity.name}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter) {
+  getList: (frg) => gql`query getListOf#{entity.name}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter) {
     items: #{entity.listName}(skip:$skip, limit: $limit, orderBy: $orderBy, filter: $filter) {
       pageInfo {
         count
@@ -189,25 +181,25 @@ export const queries = {
       }
     }
   }
-  ${fullFragment}
+  ${frg.#{entity.name}Full(frg)}
   `,
   //getOne
-  getOneResult: ({ resultFragment }) => gql`{
+  getOneResult: (frg) => gql`{
     item {
       ...#{entity.name}Result
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  getOne: ({ fullFragment }) => gql`query #{entity.name}($id: ID) {
+  getOne: (frg) => gql`query #{entity.name}($id: ID) {
     item: #{entity.ownerFieldName}(id: $id) {
       ...#{entity.name}Full
     }
   }
-  ${fullFragment}
+  ${frg.#{entity.name}Full(frg)}
   `,
   // getMany
-  getManyResult: ({ resultFragment }) => gql`{
+  getManyResult: (frg) => gql`{
     items @_(get:"edges") {
       edges @_(map: "node")  {
         node {
@@ -216,9 +208,9 @@ export const queries = {
       }
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  getMany: ({ fullFragment }) => gql`query #{entity.plural}($filter: #{entity.name}ComplexFilter) {
+  getMany: (frg) => gql`query #{entity.plural}($filter: #{entity.name}ComplexFilter) {
     items: #{entity.listName}(filter: $filter) {
       edges {
         node {
@@ -227,29 +219,29 @@ export const queries = {
       }
     }
   }
-  ${fullFragment}
+  ${frg.#{entity.name}Full(frg)}
   `,
   //delete
-  deleteResult: ({ resultFragment }) => gql`{
+  deleteResult: (frg) => gql`{
     item @_(get:"node") {
       node {
         ...#{entity.name}Result
       }
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  delete: ({ fullFragment }) => gql`mutation delete#{entity.name} ($input : delete#{entity.name}Input!) {
+  delete: (frg) => gql`mutation delete#{entity.name} ($input : delete#{entity.name}Input!) {
     item: delete#{entity.name} (input: $input) {
       node: #{entity.ownerFieldName} {
         ...#{entity.name}Full
       }
     }
   }
-  ${fullFragment}
+  ${frg.#{entity.name}Full(frg)}
   `,
   //create
-  createResult: ({ resultFragment }) => gql`{
+  createResult: (frg) => gql`{
     item @_(get: "edge.node") {
       edge {
         node {
@@ -258,9 +250,9 @@ export const queries = {
       }
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  create: ({ fullFragment }) => gql`mutation create#{entity.name}($input: create#{entity.name}Input!) {
+  create: (frg) => gql`mutation create#{entity.name}($input: create#{entity.name}Input!) {
     item : create#{entity.name} (input : $input) {
       edge: #{entity.ownerFieldName} {
         node {
@@ -269,29 +261,29 @@ export const queries = {
       }
     }
   }
-  ${fullFragment}
+  ${frg.#{entity.name}Full(frg)}
   `,
   //update
-  updateResult: ({ resultFragment }) => gql`{
+  updateResult: (frg) => gql`{
     item @_(get:"node") {
       node {
         ...#{entity.name}Result
       }
     }
   }
-  ${resultFragment}
+  ${frg.#{entity.name}Result(frg)}
   `,
-  update: ({ fullFragment }) => gql`mutation update#{entity.name}($input: update#{entity.name}Input!) {
+  update: (frg) => gql`mutation update#{entity.name}($input: update#{entity.name}Input!) {
         item : update#{entity.name} (input : $input) {
           node: #{entity.ownerFieldName} {
             ...#{entity.name}Full
           }
         }
       }
-    ${fullFragment}
+    ${frg.#{entity.name}Full(frg)}
   `,
   //getManyReference
-  getManyReference: ({ fullFragment }) => ({
+  getManyReference: (frg) => ({
   <# entity.relations
   .forEach( f=> {
     if(f.verb === 'BelongsToMany') {
@@ -311,7 +303,7 @@ export const queries = {
         }
       }
     }
-    ${fullFragment}
+    ${frg.#{entity.name}Full(frg)}
   `,
   <#} else {#>
     #{f.field}: gql`query #{f.shortName}_#{f.ref.cField}($skip: Int, $limit: Int, $orderBy: [#{entity.name}SortOrder], $filter: #{entity.name}ComplexFilter) {
@@ -326,11 +318,11 @@ export const queries = {
         }
       }
     }
-    ${fullFragment}
+    ${frg.#{entity.name}Full(frg)}
   `,
   <#}})-#>
   }),
-  getManyReferenceResultOpposite: ({ resultFragment }) => gql`{
+  getManyReferenceResultOpposite: (frg) => gql`{
     items: opposite @_(get:"items") {
       items {
         total: pageInfo @_(get:"count") {
@@ -344,9 +336,9 @@ export const queries = {
       }
     }
   }
-    ${resultFragment}
+    ${frg.#{entity.name}Result(frg)}
   `,
-  getManyReferenceResultRegular: ({ resultFragment }) => gql`{
+  getManyReferenceResultRegular: (frg) => gql`{
     items {
       total: pageInfo @_(get:"count") {
         count
@@ -358,15 +350,15 @@ export const queries = {
       }
     }
   }
-    ${resultFragment}
+    ${frg.#{entity.name}Result(frg)}
   `,
-  getManyReferenceResult: ({ resultFragment }, { getManyReferenceResultOpposite, getManyReferenceResultRegular }) => ({
+  getManyReferenceResult: (frg, { getManyReferenceResultOpposite, getManyReferenceResultRegular }) => ({
 <# entity.relations
   .forEach(f => {
     if( f.verb === 'BelongsToMany' ) {-#>
-    #{f.field}: getManyReferenceResultOpposite({ resultFragment }),
+    #{f.field}: getManyReferenceResultOpposite(frg),
 <#} else {-#>
-    #{f.field}: getManyReferenceResultRegular({ resultFragment }),
+    #{f.field}: getManyReferenceResultRegular(frg),
 <#}})-#>
   }),
 }

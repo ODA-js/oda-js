@@ -3,7 +3,15 @@
 <#-
   const {entity, f} = ctx;
 -#>
-<#- slot('import-from-react-admin-show','ArrayField') -#>
-<ArrayField addLabel={false} source="#{f.field}Values" >
-  <#{f.ref.entity}.Grid />
-</ArrayField>
+<#-if(f.inheritedFrom){-#>
+  uix.#{f.inheritedFrom}.Fragments.#{f.name}.show({uix, source})
+<#-} else {-#>
+<uix.ArrayField 
+  key="resources.#{entity.name}.fields.#{f.field}"
+  label="resources.#{entity.name}.fields.#{f.field}"
+  filter={{}}
+  source={`${source}#{f.field}`}
+  >
+  < uix.#{f.ref.entity}.Grid fields={'!#{f.field}'}/>
+</uix.ArrayField>
+<#-}-#>

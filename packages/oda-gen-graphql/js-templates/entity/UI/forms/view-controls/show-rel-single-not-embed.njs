@@ -1,17 +1,19 @@
 <#@ context "ctx" -#>
 <#@ alias 'show-rel-single-not-embed' -#>
 <#-
-  const {entity, f, current} = ctx;
+  const {entity, f} = ctx;
 -#>
-<#- slot('import-from-react-admin-show','ReferenceField') -#>
-<ReferenceField 
-  addLabel={false} 
-  source="#{f.field}Id" 
-  reference="#{entity.role}/#{f.ref.entity}"
+<#-if(f.inheritedFrom){-#>
+  uix.#{f.inheritedFrom}.ShowFragments.#{f.name}.show({uix, source})
+<#-} else {-#>
+<uix.ReferenceField
+  key="resources.#{entity.name}.fields.#{f.name}" 
+  label="resources.#{entity.name}.fields.#{f.name}" 
+  source={`${source}#{f.source}`}
+  filter={{}}
+  reference="#{f.ref.entity}"
   linkType="show"
 >
-<#- slot('import-from-react-admin-show',`${f.ref.listLabel.type}Field`) #>
-  <#{f.ref.listLabel.type}Field 
-    source="#{f.ref.listLabel.source}"
-  />
-</ReferenceField>
+  <uix.#{f.ref.entity}.SelectTitle />
+</uix.ReferenceField>
+<#-}-#>
