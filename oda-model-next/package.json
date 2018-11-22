@@ -23,7 +23,7 @@
     "global": "^4.3.2",
     "immutable": "^4.0.0-rc.9",
     "inflected": "^2.0.4",
-    "oda-isomorfic": "file:../oda-isomorfic",
+    "oda-isomorfic": "^1.0.0-23",
     "yup": "^0.24.1"
   },
   "peerDependencies": {
@@ -48,5 +48,6 @@
   },
   "devDependencies": {
     "typescript": "^3.0.1"
-  }
+  },
+  "gitHead": "47f9d838e3b861c018f3a5f3fc5b53418af1b391"
 }
