@@ -20,6 +20,7 @@ export default class implements Rule<IRelationContext> {
               if (found.type !== field.type) {
                 const update = found.toJSON();
                 update.type = field.type;
+                update.entity = context.entity.name;
                 found.updateWith(update);
                 result.push({
                   message: `type of relation field '${
@@ -30,7 +31,10 @@ export default class implements Rule<IRelationContext> {
               }
             } else {
               const update = (<Entity>entity).toJSON();
-              update.fields.push(field.toJSON());
+              update.fields.push({
+                ...field.toJSON(),
+                entity: context.entity.name,
+              });
               (<Entity>entity).updateWith(update);
               result.push({
                 message: `${field.name} is not met in using entity`,

@@ -11,6 +11,7 @@ export default class implements Rule<IRelationContext> {
     if (!context.relation.ref.backField && !context.field.indexed) {
       const update = (<Field>context.field).toJSON();
       update.indexed = true;
+      update.entity = context.entity.name;
       (<Field>context.field).updateWith(update);
       result.push({
         message: this.description,

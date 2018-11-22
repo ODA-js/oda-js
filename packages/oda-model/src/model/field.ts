@@ -190,9 +190,7 @@ export class Field extends FieldBase implements IField {
           }
           result.relation = relation;
         }
-      }
-
-      if (obj.relation && !isIdentity) {
+      } else if (obj.relation && !isIdentity) {
         let $relation = obj.relation;
         let relation: RelationBase;
 

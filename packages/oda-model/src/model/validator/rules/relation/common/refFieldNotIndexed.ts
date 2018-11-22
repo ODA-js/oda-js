@@ -13,6 +13,7 @@ export default class implements Rule<IRelationContext> {
       if (refField && !refField.indexed) {
         const update = refField.toJSON();
         update.indexed = true;
+        update.entity = context.entity.name;
         refField.updateWith(update);
         result.push({
           message: this.description,

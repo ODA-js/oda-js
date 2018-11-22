@@ -17,6 +17,7 @@ import {
 import { ModelBase } from './modelbase';
 import { ModelPackage } from './modelpackage';
 import { Operation } from './operation';
+import { timesSeries } from 'async';
 
 /**
  * 1. тип объекта который входит на updateWith
@@ -324,6 +325,17 @@ export class EntityBase extends ModelBase implements IEntityBase {
       result.operations = operations;
       this.$obj = result;
     }
+  }
+
+  public ensureIndexes() {
+    this.setMetadata('storage.indexes', {});
+    this.fields.forEach(f => {
+      if (f.identity) {
+        this.updateUniqueIndex(f);
+      } else if (f.indexed) {
+        this.updateIndex(f);
+      }
+    });
   }
 
   public toObject(modelPackage?: ModelPackage) {

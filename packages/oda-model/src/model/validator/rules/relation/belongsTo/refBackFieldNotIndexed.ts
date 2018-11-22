@@ -12,6 +12,7 @@ export default class implements Rule<IRelationContext> {
       if (bf && !bf.indexed) {
         const update = bf.toJSON();
         update.indexed = true;
+        update.entity = context.entity.name;
         bf.updateWith(update);
         result.push({
           message: this.description,

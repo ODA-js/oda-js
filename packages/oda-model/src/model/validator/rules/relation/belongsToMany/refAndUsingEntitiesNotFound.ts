@@ -18,6 +18,7 @@ export default class implements Rule<IRelationContext> {
         if (!refEntity) {
           const update = (<Field>context.field).toJSON();
           delete update.relation;
+          update.entity = context.entity.name;
           (<Field>context.field).updateWith(update);
           result.push({
             message: this.description,
