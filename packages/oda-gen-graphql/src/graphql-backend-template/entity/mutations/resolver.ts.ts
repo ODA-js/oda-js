@@ -84,6 +84,7 @@ import {
   idField,
   relations as filterRels,
   memoizeEntityMapper,
+  canUpdateBy,
 } from '../../queries';
 
 export const mapper = memoizeEntityMapper(template, _mapper);
@@ -129,6 +130,34 @@ export function _mapper(
     };
   });
 
+  const complexUnique = complexUniqueIndex(entity)
+    .map(i => {
+      let fields = Object.keys(i.fields)
+        .map(fn => entity.fields.get(fn))
+        .map(f => ({
+          name: f.name,
+          uName: capitalize(f.name),
+          type: mapToTSTypes(f.type),
+          gqlType: mapToGQLTypes(f.type),
+        }))
+        .sort((a, b) => {
+          if (a.name > b.name) {
+            return 1;
+          } else if (a.name < b.name) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+      return {
+        name: i.name,
+        fields,
+      };
+    })
+    .filter(
+      f => !f.fields.some(fld => !canUpdateBy(entity.fields.get(fld.name))),
+    );
+
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -153,68 +182,26 @@ export function _mapper(
             .filter(f => persistentFields(f) || (filterRels(f) && !f.derived))
             .map(f => ({
               name: f.name,
-              type: typeMapper.typescript(f.type),
+              type: mapToTSTypes(f.type),
             })),
           unique: {
             find: [
               ...fieldsEntityAcl
                 .filter(identityFields)
                 .filter(oneUniqueInIndex(e))
+                .filter(canUpdateBy)
                 .map(f => ({
                   name: f.name,
-                  type: typeMapper.graphql(f.type),
+                  type: mapToGQLTypes(f.type),
                   cName: capitalize(f.name),
                 })),
             ],
-            complex: complexUniqueIndex(e).map(i => {
-              let fields = Object.keys(i.fields)
-                .map(fn => e.fields.get(fn))
-                .map(f => ({
-                  name: f.name,
-                  uName: capitalize(f.name),
-                  type: typeMapper.graphql(f.type),
-                }))
-                .sort((a, b) => {
-                  if (a.name > b.name) {
-                    return 1;
-                  } else if (a.name < b.name) {
-                    return -1;
-                  } else {
-                    return 0;
-                  }
-                });
-              return {
-                name: i.name,
-                fields,
-              };
-            }),
+            complex: complexUnique,
           },
         };
       }),
 
-    complexUnique: complexUniqueIndex(entity).map(i => {
-      let fields = Object.keys(i.fields)
-        .map(fn => entity.fields.get(fn))
-        .map(f => ({
-          name: f.name,
-          uName: capitalize(f.name),
-          type: mapToTSTypes(f.type),
-          gqlType: mapToGQLTypes(f.type),
-        }))
-        .sort((a, b) => {
-          if (a.name > b.name) {
-            return 1;
-          } else if (a.name < b.name) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-      return {
-        name: i.name,
-        fields,
-      };
-    }),
+    complexUnique,
     relations,
     persistent: relations.filter(f => f.persistent),
     fields: [...ids, ...fieldsAcl.filter(f => mutableFields(f))].map(f => ({

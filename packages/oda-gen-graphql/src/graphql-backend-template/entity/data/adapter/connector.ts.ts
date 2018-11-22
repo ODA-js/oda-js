@@ -111,6 +111,7 @@ export function _mapper(
   adapter?: string,
 ): MapperOutput {
   const mapToTSTypes = typeMapper.typescript;
+  const mapToGQLTypes = typeMapper.graphql;
   const singleStoredRelations = singleStoredRelationsExistingIn(pack);
   const persistentRelation = persistentRelations(pack);
   let aclRead = get(entity.metadata, 'acl.read');
@@ -156,7 +157,7 @@ export function _mapper(
       .map(f => ({
         name: f.name,
         type: mapToTSTypes(f.type),
-        gqlType: typeMapper.graphql(f.type),
+        gqlType: mapToGQLTypes(f.type),
       })),
     search: [
       ...ids,
@@ -166,7 +167,7 @@ export function _mapper(
     ].map(f => ({
       name: f.name,
       type: mapToTSTypes(f.type),
-      gqlType: typeMapper.graphql(f.type),
+      gqlType: mapToGQLTypes(f.type),
       rel: !!f.relation,
       _name: f['_name'] || f.name,
     })),

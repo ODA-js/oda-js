@@ -99,7 +99,7 @@ export function _mapper(
               ref.fields.push(field.name);
               addArgs.push({
                 name: field.name,
-                type: typeMapper.typescript(field.type),
+                type: mapToTSTypes(field.type),
               });
             });
           }

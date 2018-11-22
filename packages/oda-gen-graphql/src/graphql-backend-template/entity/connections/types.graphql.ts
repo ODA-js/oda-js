@@ -50,6 +50,7 @@ export function _mapper(
   aclAllow,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: entity.name,
     plural: entity.plural,
@@ -63,7 +64,7 @@ export function _mapper(
         let relFields = [];
         if (f.relation.fields && f.relation.fields.size > 0) {
           f.relation.fields.forEach(field => {
-            let argsString = printArguments(field, typeMapper.graphql);
+            let argsString = printArguments(field, mapToGQLTypes);
             relFields.push({
               name: field.name,
               description: field.description
@@ -74,7 +75,7 @@ export function _mapper(
                     })
                     .join('\n')
                 : field.description,
-              type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
+              type: `${mapToGQLTypes(field.type)}${printRequired(field)}`,
               argsString: argsString ? `(${argsString})` : '',
             });
           });

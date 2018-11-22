@@ -39,15 +39,16 @@ export function mapper(
   pack: ModelPackage,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: mutation.name,
     args: mutation.args.map(arg => ({
       name: arg.name,
-      type: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
+      type: `${mapToGQLTypes(arg.type)}${printRequired(arg)}`,
     })),
     payload: mutation.payload.map(arg => ({
       name: arg.name,
-      type: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
+      type: `${mapToGQLTypes(arg.type)}${printRequired(arg)}`,
     })),
   };
 }

@@ -51,6 +51,7 @@ export function mapper(
   pack: ModelPackage,
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
+  const mapToGQLTypes = typeMapper.graphql;
   let relList = new Map(pack.relations.entries());
   relList.forEach((rels, entity) => {
     rels.forEach((rel, fields) => {
@@ -110,15 +111,13 @@ export function mapper(
         .map(f => ({
           name: f.name,
           type:
-            (f.relation && f.relation.ref.toString()) ||
-            typeMapper.graphql(f.type),
+            (f.relation && f.relation.ref.toString()) || mapToGQLTypes(f.type),
         })),
       queries: getFields(e)
         .filter(derivedFieldsAndRelations)
         .map(f => ({
           name: f.name,
-          type:
-            (f.relation && f.relation.ref.entity) || typeMapper.graphql(f.type),
+          type: (f.relation && f.relation.ref.entity) || mapToGQLTypes(f.type),
           args: (
             (f.args && f.args.map(a => `${a.name}: ${a.type}`)) ||
             []

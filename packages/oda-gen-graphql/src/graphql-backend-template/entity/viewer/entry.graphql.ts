@@ -41,6 +41,7 @@ export function _mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   let ids = getFields(entity).filter(idField);
+  const mapToGQLTypes = typeMapper.graphql;
 
   let unique = [
     ...ids.map(f => ({
@@ -51,7 +52,7 @@ export function _mapper(
   ]
     .map(f => ({
       name: f.name,
-      type: typeMapper.graphql(f.type),
+      type: mapToGQLTypes(f.type),
     }))
     .map(i => `${i.name}: ${i.type}`)
     .join(', ');

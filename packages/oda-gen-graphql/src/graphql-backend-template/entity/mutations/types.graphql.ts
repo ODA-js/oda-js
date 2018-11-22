@@ -68,6 +68,7 @@ export function _mapper(
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToGQLTypes = typeMapper.graphql;
+  const mapToGQLInputTypes = typeMapper.graphqlInput;
 
   return {
     name: entity.name,
@@ -119,7 +120,7 @@ export function _mapper(
       ...fieldsAcl.filter(mutableFields),
     ].map(f => ({
       name: f.name,
-      type: `${typeMapper.graphql(f.type)}${printRequired(f)}`,
+      type: `${mapToGQLTypes(f.type)}${printRequired(f)}`,
     })),
     update: [
       ...ids.map(f => ({
@@ -130,7 +131,7 @@ export function _mapper(
       ...fieldsAcl.filter(mutableFields),
     ].map(f => ({
       name: f.name,
-      type: `${typeMapper.graphql(f.type)}`,
+      type: `${mapToGQLTypes(f.type)}`,
     })),
     unique: [
       ...[
@@ -141,7 +142,7 @@ export function _mapper(
         ...fieldsAcl.filter(identityFields),
       ].map(f => ({
         name: f.name,
-        type: typeMapper.graphql(f.type),
+        type: mapToGQLTypes(f.type),
       })),
     ],
   };

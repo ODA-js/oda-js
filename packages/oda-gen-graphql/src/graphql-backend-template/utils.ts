@@ -27,11 +27,16 @@ export type possibleTypes =
   | 'date'
   | 'time'
   | 'datetime'
+  | 'fixeddatetime'
+  | 'fixeddate'
+  | 'fixedtime'
   | 'bool'
   | 'boolean'
   | 'text'
   | 'email'
   | 'url'
+  | 'imageupload'
+  | 'fileupload'
   | 'image'
   | 'file'
   | 'object'
@@ -60,10 +65,15 @@ export const defaultTypeMapper: {
     Date: ['date'],
     Time: ['time'],
     DateTime: ['datetime'],
+    FixedDate: ['fixeddate'],
+    FixedTime: ['fixedtime'],
+    FixedDateTime: ['fixeddatetime'],
     Boolean: ['bool', 'boolean'],
     LongText: ['text'],
     File: ['file'],
     Image: ['image'],
+    ImageUpload: ['imageupload'],
+    FileUpload: ['fileupload'],
     Email: ['email'],
     URL: ['url'],
     ID: ['uuid', 'id', 'identity'],
@@ -81,14 +91,28 @@ export const defaultTypeMapper: {
       'richtext',
       'time',
     ],
-    date: ['date', 'datetime'],
+    date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     boolean: ['bool', 'boolean'],
   },
   aorFilter: {
     Number: ['int', 'integer', 'number', 'float', 'double'],
     Text: ['string', 'text', '*', 'richtext', 'time'],
     ID: ['uuid', 'id', 'identity'],
-    Date: ['date', 'datetime'],
+    Date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     Boolean: ['bool', 'boolean'],
     File: ['file'],
     Image: ['image'],
@@ -99,17 +123,49 @@ export const defaultTypeMapper: {
     Float: ['number', 'float', 'double'],
     String: ['string', 'text', '*', 'uuid', 'richtext', 'time'],
     JSON: ['object', 'json'],
-    Date: ['date', 'datetime'],
+    Date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     Boolean: ['bool', 'boolean'],
     ID: ['id', 'identity'],
     $type: ['entity()', 'enum()'],
+  },
+  graphqlInput: {
+    Int: ['int', 'integer'],
+    Float: ['number', 'float', 'double'],
+    String: ['string', 'text', '*', 'uuid', 'richtext', 'time'],
+    JSON: ['object', 'json'],
+    Date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
+    Boolean: ['bool', 'boolean'],
+    ID: ['id', 'identity'],
+    $type: ['entity()', 'enum()'],
+    Upload: ['imageupload', 'fileupload'],
   },
   mongoose: {
     Number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
     String: ['string', 'text', '*', 'uuid', 'richtext'],
     'mongoose.Schema.Types.Mixed': ['object', 'json'],
     Boolean: ['bool', 'boolean'],
-    Date: ['date', 'datetime'],
+    Date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     'mongoose.Schema.Types.ObjectId': ['id'],
   },
   sequelize: {
@@ -117,7 +173,14 @@ export const defaultTypeMapper: {
     'DataTypes.FLOAT': ['number', 'float', 'double'],
     'DataTypes.STRING(1000)': ['string', 'text', '*', 'richtext', 'time'],
     'DataTypes.BOOLEAN': ['bool', 'boolean'],
-    'DataTypes.DATE': ['date', 'datetime'],
+    'DataTypes.DATE': [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     'DataTypes.CHAR(24)': ['id'],
     'DataTypes.INTEGER, autoIncrement: true': ['identity_pk'],
     'DataTypes.UUID': ['uuid'],
@@ -132,7 +195,14 @@ export const defaultTypeMapper: {
     number: ['int', 'integer', 'number', 'float', 'double', 'identity'],
     string: ['string', 'text', 'id', '*', 'uuid', 'richtext', 'time'],
     boolean: ['bool', 'boolean'],
-    Date: ['date', 'datetime'],
+    Date: [
+      'date',
+      'datetime',
+      'time',
+      'fixeddate',
+      'fixedtime',
+      'fixeddatetime',
+    ],
     object: ['json', 'object'],
   },
 };

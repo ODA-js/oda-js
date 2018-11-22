@@ -27,10 +27,11 @@ export function mapper(
   adapter: string,
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: entity.name,
     fields: fieldsAcl.filter(fields).map(f => {
-      let args = printArguments(f, typeMapper.graphql);
+      let args = printArguments(f, mapToGQLTypes);
       return {
         name: f.name,
         description: f.description
@@ -41,9 +42,7 @@ export function mapper(
               })
               .join('\n')
           : f.description,
-        type: `${idField(f) ? 'ID' : typeMapper.graphql(f.type)}${printRequired(
-          f,
-        )}`,
+        type: `${idField(f) ? 'ID' : mapToGQLTypes(f.type)}${printRequired(f)}`,
         args: args ? `(${args})` : '',
       };
     }),

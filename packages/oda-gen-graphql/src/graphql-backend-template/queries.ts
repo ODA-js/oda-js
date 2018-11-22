@@ -53,6 +53,19 @@ export const getQueries = (pack: ModelPackage): Query[] =>
 
 const falseFilter = () => false;
 
+export const canUpdateBy = (f: Field): boolean => {
+  let result: boolean;
+  if (typeof f.type === 'string') {
+    const type = f.type.toLocaleLowerCase();
+    result = type !== 'fileupload' && type !== 'imageupload';
+  } else if (f.type && typeof f.type === 'object') {
+    result = f.type.type === 'enum';
+  } else {
+    result = true;
+  }
+  return result;
+};
+
 export const oneUniqueInIndex = (entity: Entity) => {
   let indexList = entity.getMetadata('storage.indexes');
   if (indexList !== null && typeof indexList === 'object') {

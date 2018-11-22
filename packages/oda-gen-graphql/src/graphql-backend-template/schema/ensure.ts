@@ -22,6 +22,8 @@ export function _mapper(
   adapter: string,
 ) {
   let fieldsEntityAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
+  const mapToGQLTypes = typeMapper.graphql;
+  const mapToTSTypes = typeMapper.typescript;
   return {
     name: entity.name,
     findQuery: decapitalize(entity.name),
@@ -31,7 +33,7 @@ export function _mapper(
       .filter(f => persistentFields(f) || (relations(f) && !f.derived))
       .map(f => ({
         name: f.name,
-        type: typeMapper.typescript(f.type),
+        type: mapToTSTypes(f.type),
       })),
     unique: {
       find: [
@@ -40,7 +42,7 @@ export function _mapper(
           .filter(oneUniqueInIndex(entity))
           .map(f => ({
             name: f.name,
-            type: typeMapper.graphql(f.type),
+            type: mapToGQLTypes(f.type),
             cName: capitalize(f.name),
           })),
       ],
@@ -50,7 +52,7 @@ export function _mapper(
           .map(f => ({
             name: f.name,
             uName: capitalize(f.name),
-            type: typeMapper.graphql(f.type),
+            type: mapToGQLTypes(f.type),
           }))
           .sort((a, b) => {
             if (a.name > b.name) {

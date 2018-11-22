@@ -66,6 +66,7 @@ export function _mapper(
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
+  const mapToGQLTypes = typeMapper.graphql;
 
   return {
     name: entity.name,
@@ -101,7 +102,7 @@ export function _mapper(
       ...fieldsAcl.filter(identityFields).filter(oneUniqueInIndex(entity)),
     ].map(f => ({
       name: f.name,
-      type: typeMapper.graphql(f.type),
+      type: mapToGQLTypes(f.type),
       cName: capitalize(f.name),
     })),
     fields: [

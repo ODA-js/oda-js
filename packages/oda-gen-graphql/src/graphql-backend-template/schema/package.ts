@@ -56,6 +56,7 @@ export function mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
   adapter: string,
 ): MapperOutput {
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: capitalize(pack.name),
     entities: getRealEntities(pack).map(e => ({
@@ -67,7 +68,7 @@ export function mapper(
     })),
     directives: getDirvectives(pack).map(s => ({
       name: s.name,
-      args: printArguments(s, typeMapper.graphql),
+      args: printArguments(s, mapToGQLTypes),
       on: s.on.join('|'),
     })),
     enums: getEnums(pack).map(s => ({

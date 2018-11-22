@@ -69,6 +69,7 @@ export function _mapper(
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: entity.name,
     ownerFieldName: decapitalize(entity.name),
@@ -79,7 +80,7 @@ export function _mapper(
         .map(fn => entity.fields.get(fn))
         .map(f => ({
           name: f.name,
-          type: typeMapper.graphql(f.type),
+          type: mapToGQLTypes(f.type),
           uName: capitalize(f.name),
         }))
         .sort((a, b) => {
@@ -104,7 +105,7 @@ export function _mapper(
       ...fieldsAcl.filter(identityFields).filter(oneUniqueInIndex(entity)),
     ].map(f => ({
       name: f.name,
-      type: typeMapper.graphql(f.type),
+      type: mapToGQLTypes(f.type),
       cName: capitalize(f.name),
     })),
     fields: [...ids, ...fieldsAcl.filter(f => mutableFields(f))].map(f => ({

@@ -61,6 +61,8 @@ export function _mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
+  const mapToGQLTypes = typeMapper.graphql;
+
   let filter = filterForAcl(role, pack)(aclAllow, entity)
     .filter(k => {
       let f = entity.fields.get(k);
@@ -89,7 +91,7 @@ export function _mapper(
           let ref = pack.relations.get(entity.name).get(field.name);
           let ent = pack.entities.get(ref.relation.ref.entity);
           type = ent.fields.get(ref.relation.ref.field).type;
-          type = `Where${idField(field) ? 'ID' : typeMapper.graphql(type)}`;
+          type = `Where${idField(field) ? 'ID' : mapToGQLTypes(type)}`;
         }
       } else {
         if (
@@ -107,7 +109,7 @@ export function _mapper(
         } else {
           type = field.type;
         }
-        type = `Where${idField(field) ? 'ID' : typeMapper.graphql(type)}`;
+        type = `Where${idField(field) ? 'ID' : mapToGQLTypes(type)}`;
       }
       return {
         name: k,
@@ -138,7 +140,7 @@ export function _mapper(
         let ent = pack.entities.get(ref.relation.ref.entity);
         type = `${field.relation.single ? '' : 'Embed'}${ent.name}Filter`;
       } else {
-        type = `Where${idField(field) ? 'ID' : typeMapper.graphql(field.type)}`;
+        type = `Where${idField(field) ? 'ID' : mapToGQLTypes(field.type)}`;
       }
       return {
         name: k,
@@ -152,9 +154,7 @@ export function _mapper(
       // если что можно восстановить поиск по встроенным полям от реляций
       // нужно продумать.
       let field = entity.fields.get(k);
-      let type = `Where${
-        idField(field) ? 'ID' : typeMapper.graphql(field.type)
-      }`;
+      let type = `Where${idField(field) ? 'ID' : mapToGQLTypes(field.type)}`;
       return {
         name: k,
         type,
@@ -177,7 +177,7 @@ export function _mapper(
     filterEmbed,
     filterSubscriptions,
     fields: fieldsAcl.filter(fields).map(f => {
-      let args = printArguments(f, typeMapper.graphql);
+      let args = printArguments(f, mapToGQLTypes);
       return {
         name: f.name,
         description: f.description
@@ -188,15 +188,13 @@ export function _mapper(
               })
               .join('\n')
           : f.description,
-        type: `${idField(f) ? 'ID' : typeMapper.graphql(f.type)}${printRequired(
-          f,
-        )}`,
+        type: `${idField(f) ? 'ID' : mapToGQLTypes(f.type)}${printRequired(f)}`,
         args: args ? `(${args})` : '',
       };
     }),
     relations: fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
       let single = f.relation.single;
-      let args = printArguments(f, typeMapper.graphql);
+      let args = printArguments(f, mapToGQLTypes);
       if (args) {
         if (single) {
           args = `(${args})`;
@@ -221,7 +219,7 @@ export function _mapper(
         single,
         embedded: f.relation.embedded,
         args,
-        type: `${typeMapper.graphql(f.relation.ref.entity)}${printRequired(f)}`,
+        type: `${mapToGQLTypes(f.relation.ref.entity)}${printRequired(f)}`,
         connectionName: `${
           f.derived ? refe.plural : f.relation.fullName
         }Connection${printRequired(f)}`,

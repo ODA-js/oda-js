@@ -32,20 +32,21 @@ export function mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MutationQueryOutput {
   const mapToTSTypes = typeMapper.typescript;
+  const mapToGQLTypes = typeMapper.graphql;
   return {
     name: mutation.name,
     args: mutation.args.map(arg => ({
       name: arg.name,
       type: {
         ts: mapToTSTypes(arg.type),
-        gql: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
+        gql: `${mapToGQLTypes(arg.type)}${printRequired(arg)}`,
       },
     })),
     payload: mutation.payload.map(arg => ({
       name: arg.name,
       type: {
         ts: mapToTSTypes(arg.type),
-        gql: `${typeMapper.graphql(arg.type)}${printRequired(arg)}`,
+        gql: `${mapToGQLTypes(arg.type)}${printRequired(arg)}`,
       },
     })),
   };

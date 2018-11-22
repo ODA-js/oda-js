@@ -89,6 +89,7 @@ export function _mapper(
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
   const mapToTSTypes = typeMapper.typescript;
+  const mapToGQLTypes = typeMapper.graphql;
   const relations = fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
     let verb = f.relation.verb;
     let ref = {
@@ -184,7 +185,7 @@ export function _mapper(
             name: f.name,
             uName: capitalize(f.name),
             type: mapToTSTypes(f.type),
-            gqlType: typeMapper.graphql(f.type),
+            gqlType: mapToGQLTypes(f.type),
           }))
           .sort((a, b) => {
             if (a.name > b.name) {

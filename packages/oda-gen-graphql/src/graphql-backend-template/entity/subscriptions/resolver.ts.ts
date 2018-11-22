@@ -55,6 +55,7 @@ export function _mapper(
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   let ids = getFields(entity).filter(idField);
+  const mapToGQLTypes = typeMapper.graphql;
 
   return {
     name: entity.name,
@@ -73,7 +74,7 @@ export function _mapper(
         f.relation.fields.forEach(field => {
           relFields.push({
             name: field.name,
-            type: `${typeMapper.graphql(field.type)}${printRequired(field)}`,
+            type: `${mapToGQLTypes(field.type)}${printRequired(field)}`,
           });
         });
       }
