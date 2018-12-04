@@ -18,6 +18,7 @@ export function generate(
 
 export interface MapperOutput {
   name: string;
+  adapter: string;
   description: string;
   ownerFieldName: string;
   fields: any;
@@ -65,11 +66,13 @@ export function _mapper(
   role: string,
   aclAllow,
   typeMapper: { [key: string]: (i: FieldType) => string },
+  adapter: string,
 ): MapperOutput {
   let fieldsAcl = getFieldsForAcl(role, pack)(aclAllow, entity);
   const fieldMap = getFieldsForAcl(role, pack);
   return {
     name: entity.name,
+    adapter,
     ownerFieldName: decapitalize(entity.name),
     description: entity.description,
     relations: fieldsAcl.filter(relationFieldsExistsIn(pack)).map(f => {
