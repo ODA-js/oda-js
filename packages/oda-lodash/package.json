@@ -1,6 +1,6 @@
 {
   "name": "oda-lodash",
-  "version": "1.0.0-28",
+  "version": "1.0.0-29",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
