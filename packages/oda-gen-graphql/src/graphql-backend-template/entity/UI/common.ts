@@ -26,11 +26,7 @@ export interface EmbeddedRel {
 }
 
 export interface Embedded {
-  name: string;
   entity: string;
-  single: boolean;
-  fields: EmbeddedRel[];
-  UI?: UIView;
 }
 
 export interface UIView {
@@ -241,58 +237,8 @@ function visibility(
       )
       .map((f: Field) => {
         const lRes: Embedded = {
-          name: f.name,
-          single: f.relation.single,
           entity: f.relation.ref.entity,
-          fields: [],
         };
-        const re = pack.entities.get(f.relation.ref.entity);
-        const reUI = visibility(pack, re, aclAllow, role, aor);
-        const fList = (Array.from(re.fields.values()) as Field[])
-          // потом беру все поля которые редактируются,
-          .filter(
-            fld =>
-              (f.relation && f.relation.embedded) ||
-              reUI.edit[fld.name] ||
-              reUI.list[fld.name] ||
-              reUI.show[fld.name],
-          )
-          // проверяю что это не связи,
-          .filter(
-            fld =>
-              !fld.relation ||
-              (f.relation &&
-                f.relation.embedded &&
-                fld.relation &&
-                fld.relation.ref.entity !== entity.name),
-          )
-          // формирую список полей и возвращаю
-          .map(fld => ({
-            ref: fld.relation
-              ? {
-                  single: fld.relation.single,
-                  entity: fld.relation.ref.entity,
-                  // listLabel: guessListLabel(
-                  //   fld.relation.ref.entity,
-                  //   aclAllow,
-                  //   role,
-                  //   pack,
-                  //   aor,
-                  // ),
-                }
-              : undefined,
-            field: f.name,
-            name: fld.name,
-            source: f.name,
-            defaultValue: fld.defaultValue,
-            cName: capitalize(fld.name),
-            label: humanize(fld.name),
-            type: aor(fld.type),
-            required: fld.required,
-          }));
-
-        lRes.fields.push(...fList);
-        lRes.UI = reUI;
         return lRes;
       });
 
