@@ -9,6 +9,7 @@ import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
+// internal usage only
 export interface UIResult {
   // listName: string;
   quickSearch: string[];
@@ -19,13 +20,8 @@ export interface UIResult {
   embedded?: string[];
 }
 
-export interface EmbeddedRel {
-  name: string;
-  type: string;
-  required: boolean;
-}
-
 export interface Embedded {
+  name: string;
   entity: string;
 }
 
@@ -191,16 +187,18 @@ function visibility(
     }, {}),
   };
 
-  res.list = result.list.filter(f => !res.hidden[f]).reduce((r, c) => {
-    if (r[c] !== false) {
-      if (!/\^/.test(c)) {
-        r[c] = true;
-      } else {
-        r[c.slice(1)] = false;
+  res.list = result.list
+    .filter(f => !res.hidden[f])
+    .reduce((r, c) => {
+      if (r[c] !== false) {
+        if (!/\^/.test(c)) {
+          r[c] = true;
+        } else {
+          r[c.slice(1)] = false;
+        }
       }
-    }
-    return r;
-  }, {});
+      return r;
+    }, {});
 
   res.edit = result.edit
     .filter(f => !res.hidden[f] && !res.list[f])
@@ -229,7 +227,7 @@ function visibility(
     }, {});
 
   if (first) {
-    const embedItems = allFields
+    const embedItems: Embedded[] = allFields
       .filter(
         f =>
           f.relation &&
@@ -237,6 +235,7 @@ function visibility(
       )
       .map((f: Field) => {
         const lRes: Embedded = {
+          name: f.name,
           entity: f.relation.ref.entity,
         };
         return lRes;
