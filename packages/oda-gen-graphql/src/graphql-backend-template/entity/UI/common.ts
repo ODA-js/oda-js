@@ -10,7 +10,7 @@ import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
 export interface UIView {
-  // listName: string;
+  listName: string[];
   quickSearch: string[];
   hidden?: { [key: string]: boolean };
   edit?: { [key: string]: boolean };
@@ -94,7 +94,7 @@ function visibility(
   aor,
 ): UIView {
   const result: {
-    // listName: string;
+    listName: string[];
     quickSearch: string[];
     hidden?: string[];
     edit?: string[];
@@ -102,7 +102,7 @@ function visibility(
     list?: string[];
     embedded?: string[];
   } = {
-    // listName: guessListLabel(entity.name, aclAllow, role, pack, aor).source,
+    listName: guessListLabel(entity.name, aclAllow, role, pack),
     quickSearch: guessQuickSearch(entity, aclAllow, role, pack, aor),
     hidden: [],
     edit: [],
@@ -156,7 +156,7 @@ function visibility(
   }
 
   const res: UIView = {
-    // listName: result.listName,
+    listName: result.listName,
     quickSearch: result.quickSearch.reduce((r, c) => {
       if (r.indexOf(c) === -1) {
         r.push(c);
@@ -241,7 +241,6 @@ function guessListLabel(
   aclAllow,
   role,
   pack: ModelPackage,
-  aor,
 ) {
   const entity = pack.entities.get(entityName);
   let UI = entity.getMetadata('UI');
@@ -454,7 +453,7 @@ export function _mapper(
     titlePlural: entity.titlePlural,
     UI,
     plural: entity.plural,
-    listLabel: guessListLabel(entity.name, aclAllow, role, pack, mapAORTypes),
+    listLabel: guessListLabel(entity.name, aclAllow, role, pack),
     listName: decapitalize(entity.plural),
     ownerFieldName: decapitalize(entity.name),
     relations,
