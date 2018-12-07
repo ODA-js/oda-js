@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 list=(oda-isomorfic oda-gen-common
-oda-model oda-model-next 
+oda-model
 oda-api-graphql oda-api-common 
 oda-api-graphql-dynamodb 
 oda-api-graphql-mongoose 
@@ -13,6 +13,6 @@ oda-ra-ui)
 for i in ${list[*]}; do
   echo ${i%%/};
   pushd packages/${i%%/}
-  yarn
+  npm i
   popd
 done

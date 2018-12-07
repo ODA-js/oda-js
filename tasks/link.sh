@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
-for i in $(ls -d packages/*/); do
+list=(oda-isomorfic oda-gen-common
+oda-model
+oda-api-graphql oda-api-common 
+oda-api-graphql-dynamodb 
+oda-api-graphql-mongoose 
+oda-api-graphql-sequelize 
+oda-gen-graphql 
+oda-lodash 
+oda-ra-data-provider 
+oda-ra-ui)
+
+for i in ${list[*]}; do
   echo ${i%%/};
-  pushd ${i%%/}
-  yarn link
-  if [ -f link.sh ]; then ./link.sh; fi
+  pushd packages/${i%%/}
+  npm link
   popd
 done

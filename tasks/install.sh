@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-yarn
+npm i
 lerna bootstrap
