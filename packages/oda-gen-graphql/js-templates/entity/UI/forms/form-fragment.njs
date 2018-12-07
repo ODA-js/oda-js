@@ -85,22 +85,22 @@ export const FieldSets = {
 <#-}-#>
 <#-})#>
   ],
-  summary: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)) ).forEach(f=>{-#>
+  summary: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && f.single && !entity.UI.embedded.hasOwnProperty(f.field)) ).forEach(f=>{-#>
     '#{f.name}',
   <#})#>],
   preview: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref).forEach(f=>{-#>
     '#{f.name}',
   <#})#>],
-  create: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)) ).forEach(f=>{-#>
+  create: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && f.single && !entity.UI.embedded.hasOwnProperty(f.field)) ).forEach(f=>{-#>
     '#{f.name}',
   <#})#>],
-  createSimple: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && (f.ref.embedded ||(f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)))) ).forEach(f=>{-#>
+  createSimple: [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref || (f.ref && (f.ref.embedded ||(f.single && !entity.UI.embedded.hasOwnProperty(f.field)))) ).forEach(f=>{-#>
     '#{f.name}',
   <#})#>],
   'quick-create': [<#entity.props.filter(f=>(!entity.dictionary && f.name!== "id") || entity.dictionary).filter(f=> !f.ref ).forEach(f=>{-#>
     '#{f.name}',
   <#})#>],
-  <#- entity.relations.filter(f=> !(f.single && !entity.UI.embedded.names.hasOwnProperty(f.field)))
+  <#- entity.relations.filter(f=> !(f.single && !entity.UI.embedded.hasOwnProperty(f.field)))
 .forEach(f => {
 #>
   #{f.field}Fields:['#{f.field}'],
@@ -137,7 +137,7 @@ export const Fragments = {
         #{content('field-filter', ctx)}
 <#-
   } else { 
-    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+    const embedded = entity.UI.embedded.hasOwnProperty(f.field);
 -#>
 <#   if ( f.single ) {-#>
 <#     if(embedded) {
@@ -474,7 +474,7 @@ filter: ({ source, uix, label }) => {
 <# block 'bt-filter' : #>
 <#@ context 'ctx'#>
 <# const {entity, f} = ctx;#>
-filter: ({ source, uix }) => {
+filter: ({ source, uix, label  }) => {
   source = source ? `${source}.` : '';
   return (classes, translate, uix) => [
     <uix.NullableBooleanInput 

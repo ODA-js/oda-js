@@ -3,10 +3,7 @@
 <#-
   const {entity, f} = ctx;
 -#>
-<#- let current = entity.UI.embedded.names[f.field]; -#>
-<#-
-  let embededEntity = entity.UI.embedded.items[current].entity;
--#>
+<#- let embededEntity = entity.UI.embedded[f.field]; -#>
 <#-if(f.inheritedFrom){-#>
 uix.#{f.inheritedFrom}.Fragments.#{f.name}.edit({uix, source})
 <#-} else {-#>

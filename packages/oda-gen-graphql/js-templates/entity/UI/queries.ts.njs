@@ -76,8 +76,7 @@ export const fragments = {
     #{f.name}
 <#})-#>
 <# entity.relations.forEach(f => {
-  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
-  let current = embedded && entity.UI.embedded.names[f.field];
+  const embedded = entity.UI.embedded.hasOwnProperty(f.field);
 -#>
 <#- if(f.ref.embedded){-#>
     #{f.field}{
@@ -110,7 +109,7 @@ export const fragments = {
 <#-}-#>
 <#-})-#>
   }
-<# entity.relations.filter(f=>entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f => {-#>
+<# entity.relations.filter(f=>entity.UI.embedded.hasOwnProperty(f.field)).forEach(f => {-#>
   ${frg.#{f.ref.entity}Result(frg)}
 <#})#>
   `,
@@ -119,8 +118,7 @@ export const fragments = {
     #{f.name}
 <#})-#>
 <# entity.relations.forEach( f=> {
-  const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
-  let current = embedded && entity.UI.embedded.names[f.field];
+  const embedded = entity.UI.embedded.hasOwnProperty(f.field);
 -#>
     #{f.field} {
 <# if(f.ref.embedded){#>
@@ -147,7 +145,7 @@ export const fragments = {
     <#}#>}
 <#})-#>
   }
-<# entity.relations.filter(f=>entity.UI.embedded.names.hasOwnProperty(f.field)).forEach(f => {-#>
+<# entity.relations.filter(f=>entity.UI.embedded.hasOwnProperty(f.field)).forEach(f => {-#>
   ${frg.#{f.ref.entity}Full(frg)}
 <#})#>
   `,

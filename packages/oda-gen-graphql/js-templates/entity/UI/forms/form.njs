@@ -130,7 +130,7 @@ export const CreateFormTabbed = (props, {uix}) => {
 <#- entity.relations
   .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
   .forEach(f => {
-    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+    const embedded = entity.UI.embedded.hasOwnProperty(f.field);
     if (((f.single && !embedded )|| !f.single) && !f.ref.embedded) {
       return;
     }
@@ -158,7 +158,7 @@ export const EditFormTabbed = (props, {uix}) => {
 <#- entity.relations
   .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
   .forEach(f => {
-    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+    const embedded = entity.UI.embedded.hasOwnProperty(f.field);
     if ( f.single && !embedded ) {
       return;
     }
@@ -200,7 +200,7 @@ export const ShowTabbedView = (props, {uix}) => {
 <#- entity.relations
   .filter(f => (entity.UI.edit[f.field] || entity.UI.list[f.field] || entity.UI.show[f.field]) && entity.UI.edit[f.field]!== false)
   .forEach(f => {
-    const embedded = entity.UI.embedded.names.hasOwnProperty(f.field);
+    const embedded = entity.UI.embedded.hasOwnProperty(f.field);
     if ( f.single && !embedded ) {
       return;
     }

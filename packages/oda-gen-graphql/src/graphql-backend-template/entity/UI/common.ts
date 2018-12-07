@@ -9,22 +9,6 @@ import { capitalize, decapitalize } from '../../utils';
 import * as humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
-// internal usage only
-export interface UIResult {
-  // listName: string;
-  quickSearch: string[];
-  hidden?: string[];
-  edit?: string[];
-  show?: string[];
-  list?: string[];
-  embedded?: string[];
-}
-
-export interface Embedded {
-  name: string;
-  entity: string;
-}
-
 export interface UIView {
   // listName: string;
   quickSearch: string[];
@@ -32,10 +16,7 @@ export interface UIView {
   edit?: { [key: string]: boolean };
   show?: { [key: string]: boolean };
   list?: { [key: string]: boolean };
-  embedded?: {
-    names: { [key: string]: number };
-    items: Embedded[];
-  };
+  embedded?: { [key: string]: string };
 }
 
 export interface MapperOutput {
@@ -111,9 +92,16 @@ function visibility(
   aclAllow,
   role,
   aor,
-  first = false,
 ): UIView {
-  const result: UIResult = {
+  const result: {
+    // listName: string;
+    quickSearch: string[];
+    hidden?: string[];
+    edit?: string[];
+    show?: string[];
+    list?: string[];
+    embedded?: string[];
+  } = {
     // listName: guessListLabel(entity.name, aclAllow, role, pack, aor).source,
     quickSearch: guessQuickSearch(entity, aclAllow, role, pack, aor),
     hidden: [],
@@ -226,29 +214,24 @@ function visibility(
       return r;
     }, {});
 
-  if (first) {
-    const embedItems: Embedded[] = allFields
-      .filter(
-        f =>
-          f.relation &&
-          (f.relation.embedded || result.embedded.indexOf(f.name) > -1),
-      )
-      .map((f: Field) => {
-        const lRes: Embedded = {
-          name: f.name,
-          entity: f.relation.ref.entity,
-        };
-        return lRes;
-      });
+  const embedItems = allFields
+    .filter(
+      f =>
+        f.relation &&
+        (f.relation.embedded || result.embedded.indexOf(f.name) > -1),
+    )
+    .map((f: Field) => {
+      const lRes = {
+        name: f.name,
+        entity: f.relation.ref.entity,
+      };
+      return lRes;
+    });
 
-    res.embedded = {
-      items: embedItems,
-      names: embedItems.reduce((r, f, index) => {
-        r[f.name] = index;
-        return r;
-      }, {}),
-    };
-  }
+  res.embedded = embedItems.reduce((r, f) => {
+    r[f.name] = f.entity;
+    return r;
+  }, {});
 
   return res;
 }
@@ -309,7 +292,7 @@ export function _mapper(
   const mapAORTypes = typeMapper.aor;
   const mapResourceTypes = typeMapper.resource;
   const mapAORFilterTypes = typeMapper.aorFilter;
-  const UI = visibility(pack, entity, aclAllow, role, mapAORTypes, true);
+  const UI = visibility(pack, entity, aclAllow, role, mapAORTypes);
   const mapFields = f => ({
     order: f.order,
     name: f.name,
@@ -392,7 +375,6 @@ export function _mapper(
         }
         if (f.relation.fields && f.relation.fields.size > 0) {
           const using = pack.entities.get(ref.using.entity);
-          ref.using.UI = visibility(pack, using, aclAllow, role, mapAORTypes);
           f.relation.fields.forEach(field => {
             ref.fields.push(mapFields(using.fields.get(field.name)));
           });

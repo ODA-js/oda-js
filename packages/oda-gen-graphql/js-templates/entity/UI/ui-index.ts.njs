@@ -20,7 +20,7 @@ export class Resources extends data.resource.ResourceContainer {
 }
 
 <#- chunkStart(`./index.js`); -#>
-import React, {Fragment} from 'react';
+import {Fragment} from 'react';
 <# for(let entity of pack.entities){-#>
 import #{entity.name}UIX from './#{entity.name}';
 <#}-#>
@@ -31,16 +31,16 @@ import #{en_.name} from './#{en_.name}';
 import Admin from './admin';
 import InputWithPreview from './InputWithPreview';
 import QuickCreateButton from './quickCreate';
-import {
-  DateInput as DateInputLib,
-  TimeInput as TimeInputLib,
-  DateTimeInput as DateTimeInputLib,
-} from '../../modules/DatePickers';
+import TimeInput from '../../modules/TimeInput';
+import TimeField from '../../modules/TimeField';
+import FixedTimeInput from '../../modules/FixedTimeInput';
+import FixedTimeField from '../../modules/FixedTimeField';
 
 import {
   //primitives
   //input
-  // DateInput,
+  DateInput,
+  DateTimeInput,
   TextInput,
   BooleanInput,
   DisabledInput,
@@ -120,44 +120,6 @@ import {
 } from 'react-admin';
 import RichTextInput from 'ra-input-rich-text';
 import { Tree, NodeView, NodeActions } from 'ra-tree-ui-materialui';
-import * as moment from 'moment';
-
-const DateInput = props => (
-  <DateInputLib
-    options={{
-      format: 'dd/MM/yyyy',
-      clearable: true,
-    }}
-    format={v => (v ? moment(v, 'yyyy/MM/dd') : v)}
-    parse={v => (v ? moment(v).format('yyyy/MM/dd') : v)}
-    {...props}
-  />
-);
-
-const TimeInput = props => (
-  <TimeInputLib
-    options={{
-      format: 'HH:mm',
-      ampm: false,
-      clearable: true,
-    }}
-    format={v => (v ? moment(v, 'HH:mm') : v)}
-    parse={v => (v ? moment(v).format('HH:mm') : v)}
-    {...props}
-  />
-);
-
-const DateTimeInput = props => (
-  <DateTimeInputLib
-    options={{
-      format: 'dd/MM/YYYY, HH:mm:ss',
-      ampm: false,
-      clearable: true,
-    }}
-    {...props}
-  />
-);
-
 
 export const components = {
   InputWithPreview,
@@ -168,7 +130,8 @@ export const components = {
     Number: { input: NumberInput, field: NumberField },
     Date: { input: DateInput, field: DateField },
     DateTime: { input: DateTimeInput, field: DateField },
-    Time: { input: TimeInput, field: TextField },
+    Time: { input: TimeInput, field: TimeField },
+    FixedTime: { input: FixedTimeInput, field: FixedTimeField },
     Boolean: { input: BooleanInput, field: BooleanField },
     ID: { input: DisabledInput, field: TextField },
     File: { input: FileInput, field: FileField },
@@ -186,6 +149,8 @@ export const components = {
   //primitives
   //input
   DateInput,
+  TimeInput,
+  FixedTimeInput,
   TextInput,
   BooleanInput,
   DisabledInput,
@@ -196,6 +161,8 @@ export const components = {
   RichTextInput,
   //field
   TextField,
+  TimeField,
+  FixedTimeField,
   DateField,
   BooleanField,
   NullableBooleanInput,
