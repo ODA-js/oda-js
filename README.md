@@ -1,6 +1,6 @@
 # oda-js
 
-lerna publish preprelease
+lerna publish prerelease
 
 [documentation will be there soon](https://oda-js.github.io/oda-js-documentation/)
 
@@ -11,7 +11,7 @@ Package organization:
   - main
   -
 - server libraries should compiles to `dist` folder
-  components that can be used both on client and the server side shuold compiles to
+  components that can be used both on client and the server side should compiles to
 
 TODO
 обновить log4js до крайней версии
