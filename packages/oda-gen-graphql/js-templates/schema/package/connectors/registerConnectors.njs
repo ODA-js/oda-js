@@ -86,7 +86,7 @@ export default class RegisterConnectors {
       userGQL?,
       systemGQL?,
     }) {
-    this.securityContext = acls && {
+    this.securityContext = {
       user,
       group: userGroup,
       acls: {
@@ -94,25 +94,33 @@ export default class RegisterConnectors {
           acls: acls ? {
             "*": this._defaultAccess,
             ...acls.read
-          } : undefined
+          } : {
+            "*": this._defaultAccess,
+          }
         }),
         update: new acl.secureAny.Secure<ACLCheck>({
           acls: acls ? {
             "*": this._defaultAccess,
             ...acls.update
-          } : undefined
+          } : {
+            "*": this._defaultAccess,
+          }
         }),
         create: new acl.secureAny.Secure<ACLCheck>({
           acls: acls ? {
             "*": this._defaultCreate,
             ...acls.create
-          } : undefined
+          } : {
+            "*": this._defaultAccess,
+          }
         }),
         remove: new acl.secureAny.Secure<ACLCheck>({
           acls: acls ? {
             "*": this._defaultAccess,
             ...acls.remove
-          } : undefined
+          } : {
+            "*": this._defaultAccess,
+          }
         }),
       }
     }
