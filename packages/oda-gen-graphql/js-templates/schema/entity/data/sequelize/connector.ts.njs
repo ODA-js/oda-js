@@ -7,7 +7,7 @@ import { SequelizeApi } from 'oda-api-graphql-sequelize';
 import { SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
-import * as Dataloader from 'dataloader';
+import Dataloader from 'dataloader' from 'dataloader';
 import { Partial#{ entity.name }, #{ entity.name } as DTO } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
