@@ -3,16 +3,8 @@
   "version": "1.0.0-59",
   "description": "",
   "main": "dist/index.js",
-  "scripts": {
-    "test": "jest",
-    "watch": "tsc -w -p .",
-    "prepare": "npm run clean && npm run compile",
-    "compile": "tsc -p ./",
-    "wipe": "./clean.sh",
-    "clean": "rm -rf dist",
-    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
-  },
   "author": "Alex Vedmedenko <vedmalex@gmail.com>",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "dependencies": {
     "fs-extra": "^7.0.1",
@@ -22,32 +14,7 @@
     "mem-fs-editor": "^5.1.0",
     "oda-gen-common": "file:../oda-gen-common",
     "oda-model": "file:../oda-model",
-    "prettier": "^1.15.2",
+    "prettier": "^1.17.0",
     "string-humanize": "^1.0.0"
-  },
-  "typescript": {
-    "definition": "dist/index.d.ts"
-  },
-  "typings": "dist/index.d.ts",
-  "peerDependencies": {
-    "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
-    "lodash": "^4.17.10"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
   }
 }

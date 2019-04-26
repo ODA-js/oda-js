@@ -1,12 +1,5 @@
 import { change, formValueSelector } from 'redux-form';
-import {
-  put,
-  select,
-  take,
-  TakeEffect,
-  PutEffect,
-  SelectEffect,
-} from 'redux-saga/effects';
+import { put, select, take } from 'redux-saga/effects';
 
 import { FORM_EMBED_RELATION } from './../consts';
 

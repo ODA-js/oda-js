@@ -1,9 +1,6 @@
-.vscode
-node_modules
-src
-*.log
-*.sh
-.editorconfig
-todo.md
-yarn.lock
-tsconfig.json
+*
+!src/**/*
+!dist/**/*
+dist/**/*.test.*
+!package.json
+!README.md

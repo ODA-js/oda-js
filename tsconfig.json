@@ -15,6 +15,7 @@
     "removeComments": true,
     "strict": false,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "lib": ["es2018", "esnext.asynciterable"],
     "types": ["@types/node"]
   },

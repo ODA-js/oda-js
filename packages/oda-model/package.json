@@ -3,43 +3,12 @@
   "version": "1.0.0-38",
   "description": "",
   "main": "dist/model/index.js",
-  "typescript": {
-    "definition": "dist/model/index.d.ts"
-  },
-  "typings": "dist/model/index.d.ts",
-  "scripts": {
-    "test": "jest",
-    "prepare": "npm run clean && npm run compile",
-    "compile": "tsc -p ./",
-    "wipe": "./clean.sh",
-    "watch": "tsc -w -p ./",
-    "clean": "rm -rf dist",
-    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
-  },
+  "types": "dist/index.d.ts",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "camelcase": "^5.0.0",
-    "inflected": "^2.0.4"
-  },
-  "peerDependencies": {
+    "inflected": "^2.0.4",
     "lodash": "^4.17.10"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
   }
 }

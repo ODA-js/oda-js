@@ -1,6 +1,19 @@
 {
   "version": "1.0.0",
   "name": "oda-js",
+  "dependencies": {
+    "oda-api-common": "file:packages/oda-api-common",
+    "oda-api-graphql": "file:packages/oda-api-graphql",
+    "oda-api-graphql-mongoose": "file:packages/oda-api-graphql-mongoose",
+    "oda-api-graphql-sequelize": "file:packages/oda-api-graphql-sequelize",
+    "oda-gen-common": "file:packages/oda-gen-common",
+    "oda-gen-graphql": "file:packages/oda-gen-graphql",
+    "oda-isomorfic": "file:packages/oda-isomorfic",
+    "oda-lodash": "file:packages/oda-lodash",
+    "oda-logger": "file:packages/oda-logger",
+    "oda-model": "file:packages/oda-model",
+    "oda-ra-data-provider": "file:packages/oda-ra-data-provider"
+  },
   "devDependencies": {
     "@types/camelcase": "4.1.0",
     "@types/decamelize": "1.2.0",
@@ -8,71 +21,72 @@
     "@types/fs-extra": "^5.0.4",
     "@types/graphql": "^14.0.3",
     "@types/jest": "^23.3.9",
-    "@types/node": "^10.12.9",
+    "@types/node": "^11.13.7",
     "@types/passport": "^0.4.7",
     "@types/passport-local": "^1.0.33",
     "@types/react": "^16.7.6",
     "@types/sequelize": "^4.27.30",
-    "apollo-server-core": "^1.3.6",
     "apollo-cache-inmemory": "^1.3.9",
     "apollo-client": "^2.4.5",
     "apollo-link": "^1.2.3",
     "apollo-link-http": "^1.5.5",
+    "apollo-server-core": "^1.3.6",
     "fte.js": "^0.8.1",
-    "graphql": "^14.0.2",
-    "graphql-tag": "^2.10.0",
+    "graphql": "^14.2.1",
+    "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.3",
-    "jest": "^23.6.0",
-    "lint-staged": "8.0.4",
+    "jest": "^24.7.1",
+    "lint-staged": "^8.1.5",
     "lodash": "4.17.11",
-    "log4js": "^1.1.1",
-    "mongoose": "^5.3.12",
+    "mongoose": "^5.5.4",
     "muri": "^1.3.0",
     "pre-commit": "1.2.2",
-    "prettier": "1.15.2",
+    "prettier": "1.17.0",
+    "prettier-check": "^2.0.0",
     "prop-types": "^15.6.2",
     "ra-core": "^2.4.2",
     "react-admin": "^2.4.2",
     "recompose": "~0.30.0",
     "redux-form": "^7.4.2",
     "redux-saga": "^0.16.2",
-    "ts-jest": "^23.10.4",
-    "tslint": "5.11.0",
-    "typescript": "3.2.1"
+    "ts-jest": "^24.0.2",
+    "tslint": "5.16.0",
+    "typescript": "3.4.5"
   },
   "scripts": {
-    "tsc": "tsc --build tsconfig.build.json",
+    "compile": "tsc --build tsconfig.build.json",
     "compile:clean": "tsc --build tsconfig.build.json --clean",
-    "postinstall": "npm run compile",
-    "prelint": "npm run lint-fix",
-    "lint": "lerna run lint",
-    "lint-fix": "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write \"packages/*/{src,tests,test,benchmark}/**/*.{j,t}s*\"",
-    "lint-staged": "lint-staged",
-    "compile": "./tasks/compile.sh",
-    "clean": "./tasks/clean.sh",
+    "watch": "tsc --build tsconfig.build.json --watch",
+    "clean": "git clean -dfqX -- ./node_modules **/{dist,node_modules}/ ./packages/*/tsconfig*tsbuildinfo",
+    "postinstall___": "lerna run prepare && npm run compile",
+    "lint": "prettier-check '**/*.{js,ts}'",
+    "lint-fix": "prettier '**/*.{js,ts}' --write",
     "link": "./tasks/link.sh",
-    "install-it": "./tasks/install.sh",
     "run-publish": "lerna publish",
-    "bootstrap": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "test": "jest --verbose"
   },
   "lint-staged": {
     "*.tsx$": [
-      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "prettier --write",
       "git add"
     ],
     "*.jsx$": [
-      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "prettier --write",
       "git add"
     ],
     "*.ts$": [
-      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "prettier --write",
       "git add"
     ],
     "*.js$": [
-      "prettier --ignore-path \"./config/prettierignore\" --trailing-comma all --single-quote --write",
+      "prettier --write",
       "git add"
     ]
   },
-  "pre-commit": "lint-staged",
-  "dependencies": {}
+  "jest": {
+    "projects": [
+      "<rootDir>/packages/*"
+    ]
+  }
 }

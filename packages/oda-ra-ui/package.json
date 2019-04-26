@@ -2,52 +2,19 @@
   "name": "oda-ra-ui",
   "version": "1.0.0-25",
   "main": "dist/index.js",
-  "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
+  "author": "Alex Vedmedenko <vedmalex@gmail.com>",
   "license": "MIT",
-  "scripts": {
-    "test": "jest",
-    "prepare": "npm run clean && npm run compile",
-    "compile": "tsc -p ./",
-    "wipe": "./clean.sh",
-    "clean": "rm -rf dist",
-    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
-  },
-  "typescript": {
-    "definition": "dist/index.d.ts"
-  },
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@material-ui/core": "~1.0.0",
     "@material-ui/icons": "~1.0.0",
-    "react-json-view": "^1.19.0"
-  },
-  "peerDependencies": {
-    "apollo-cache-inmemory": "^1.2.8",
-    "apollo-client": "^2.4.0",
-    "apollo-link": "^1.2.2",
-    "apollo-link-http": "^1.5.4",
+    "react-json-view": "^1.19.1",
     "prop-types": "^15.6.1",
     "ra-core": "^2.0.3",
     "react-admin": "^2.1.2",
     "recompose": "~0.26.0",
     "redux-form": "^7.4.2",
+    "lodash": "^4.17.11",
     "redux-saga": "^0.16.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
   }
 }

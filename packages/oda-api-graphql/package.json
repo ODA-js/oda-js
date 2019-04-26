@@ -3,46 +3,16 @@
   "version": "1.0.0-27",
   "description": "",
   "main": "dist/index.js",
-  "scripts": {
-    "test": "jest",
-    "prepare": "npm run clean && npm run compile",
-    "compile": "tsc -p ./",
-    "wipe": "./clean.sh",
-    "clean": "rm -rf dist",
-    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
-  },
-  "typescript": {
-    "definition": "dist/index.d.ts"
-  },
-  "typings": "dist/index.d.ts",
-  "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
+  "types": "dist/index.d.ts",
+  "author": "Alex Vedmedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "core-js": "^2.5.3",
     "graphql-anywhere": "^4.1.14",
     "isomorphic-fetch": "^2.2.1",
-    "oda-isomorfic": "file:../oda-isomorfic"
-  },
-  "peerDependencies": {
-    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0",
+    "oda-isomorfic": "file:../oda-isomorfic",
     "graphql-tag": "^2.9.2",
-    "graphql-tools": "^3.0.4"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
+    "graphql-tools": "^3.0.4",
+    "graphql": "^14.2.1"
   }
 }

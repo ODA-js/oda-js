@@ -1,8 +1,6 @@
 import {
   GraphQLNonNull,
   GraphQLID,
-  GraphQLFieldConfig,
-  GraphQLScalarType,
 } from 'graphql';
 import { toGlobalId } from 'oda-isomorfic';
 

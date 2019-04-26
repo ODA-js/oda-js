@@ -21,9 +21,6 @@
       "path": "./packages/oda-api-common"
     },
     {
-      "path": "./packages/oda-api-graphql-dynamodb"
-    },
-    {
       "path": "./packages/oda-api-graphql-mongoose"
     },
     {
@@ -37,9 +34,6 @@
     },
     {
       "path": "./packages/oda-ra-data-provider"
-    },
-    {
-      "path": "./packages/oda-ra-ui"
     },
     {
       "path": "./packages/oda-logger"

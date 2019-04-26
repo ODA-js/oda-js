@@ -1,8 +1,7 @@
 // tslint:disable:no-unused-variable
 import express from 'express';
 import path from 'path';
-import http from 'http';
-import log4js from 'log4js';
+import log4js from 'oda-logger';
 import fs from 'fs-extra';
 import cors from 'cors';
 import PrettyError from 'pretty-error';
