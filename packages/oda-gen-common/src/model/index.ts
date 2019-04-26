@@ -266,7 +266,7 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
                 }
               }
               case ModelType.schema:
-                return;
+                return undefined;
               case ModelType.directive:
                 return new Directive(typedef);
               default:
@@ -701,8 +701,8 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
         this._resolversClean = this._resolvers = merge(
           this._resolver,
           ...this._items
-            .map(
-              i => (i instanceof Schema ? (i as Schema).resolvers : i.resolver),
+            .map(i =>
+              i instanceof Schema ? (i as Schema).resolvers : i.resolver,
             )
             .filter(i => i),
         );

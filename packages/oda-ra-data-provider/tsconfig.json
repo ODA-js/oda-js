@@ -1,12 +1,19 @@
 {
-  "extends": "../../tsconfig",
+  "extends": "../../tsconfig.base",
   "compilerOptions": {
-    "target": "es5",
-    "rootDir": "src",
-    "outDir": "dist"
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "**/__tests__",
+    "**/__mocks__"
+  ],
+  "references": [
+    {
+      "path": "../oda-lodash"
+    }
   ]
 }

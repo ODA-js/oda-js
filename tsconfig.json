@@ -1,23 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "rootDir": "src",
-    "outDir": "dist",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "declaration": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "pretty": true,
-    "removeComments": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "lib": ["es2018", "esnext.asynciterable"],
-    "types": ["@types/node"]
+    "composite": true
   },
-  "exclude": ["node_modules", "dist"]
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.build.json"
+    },
+    {
+      "path": "./tsconfig.test.json"
+    },
+  ]
 }

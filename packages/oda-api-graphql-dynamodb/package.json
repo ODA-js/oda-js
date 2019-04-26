@@ -8,9 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "oda-api-graphql": "file:../oda-api-graphql",
-    "mongoose": "^5.5.4"
-  },
-  "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "mongoose": "^5.5.4",
+     "graphql": "^14.2.1"
   }
 }

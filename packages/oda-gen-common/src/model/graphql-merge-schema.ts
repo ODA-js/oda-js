@@ -1,10 +1,8 @@
 // NOTE: Currently using a slightly modified print instead of the exported graphql version.
-import { parse, print } from 'graphql';
-import { getDescription } from 'graphql/utilities/buildASTSchema';
+import { parse, print, ASTNode } from 'graphql';
 import _ from 'lodash';
 
 import { Kind } from 'graphql';
-import { strictEqual } from 'assert';
 
 const isObjectTypeDefinition = def =>
   def.kind === Kind.OBJECT_TYPE_DEFINITION ||
@@ -81,11 +79,11 @@ function nodeMerger(objValue, srcValue, key, object, source, stack) {
 
 const _makeMergedDefinitions = defs => {
   // TODO: This function can be cleaner!
-  const groupedMergableDefinitions = defs
+  const groupedMergeableDefinitions = defs
     .filter(def => isObjectTypeDefinition(def))
-    .reduce((mergableDefs, def) => {
+    .reduce((mergeableDefs, def) => {
       return _.mergeWith(
-        mergableDefs,
+        mergeableDefs,
         {
           [def.kind !== Kind.SCHEMA_DEFINITION
             ? def.name.value
@@ -95,7 +93,7 @@ const _makeMergedDefinitions = defs => {
       );
     }, {});
 
-  return Object.values(groupedMergableDefinitions).reduce(
+  return Object.values(groupedMergeableDefinitions).reduce(
     (array: {}[], def) => (def ? [...array, def] : array),
     [],
   );
@@ -106,7 +104,8 @@ const _makeDocumentWithDefinitions = definitions => ({
   definitions: definitions instanceof Array ? definitions : [definitions],
 });
 
-const printDefinitions = defs => print(_makeDocumentWithDefinitions(defs));
+const printDefinitions = defs =>
+  print(_makeDocumentWithDefinitions(defs) as ASTNode);
 
 const mergeTypes = types => {
   const allDefs = types

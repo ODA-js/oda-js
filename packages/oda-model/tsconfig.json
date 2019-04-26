@@ -1,25 +1,15 @@
 {
+  "extends": "../../tsconfig.base",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es5",
-    "lib": [
-      "es2017",
-      "esnext.asynciterable"
-    ],
-    "baseUrl": ".",
-    "downlevelIteration": true,
-    "sourceMap": true,
-    "declaration": true,
-    "noImplicitAny": false,
-    "rootDir": "src",
-    "outDir": "dist",
-    "allowSyntheticDefaultImports": true,
-    "removeComments": true,
-    "pretty": true
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "**/__tests__",
+    "**/__mocks__"
+  ],
+  "references": []
 }

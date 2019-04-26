@@ -58,7 +58,7 @@
     "compile:clean": "tsc --build tsconfig.build.json --clean",
     "watch": "tsc --build tsconfig.build.json --watch",
     "clean": "git clean -dfqX -- ./node_modules **/{dist,node_modules}/ ./packages/*/tsconfig*tsbuildinfo",
-    "postinstall___": "lerna run prepare && npm run compile",
+    "postinstall___": "npm run compile",
     "lint": "prettier-check '**/*.{js,ts}'",
     "lint-fix": "prettier '**/*.{js,ts}' --write",
     "link": "./tasks/link.sh",
@@ -66,7 +66,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "jest --verbose"
   },
-  "lint-staged": {
+  "lint-staged_": {
     "*.tsx$": [
       "prettier --write",
       "git add"

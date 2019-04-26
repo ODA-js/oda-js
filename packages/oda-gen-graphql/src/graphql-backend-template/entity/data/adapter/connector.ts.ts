@@ -229,10 +229,12 @@ export function _mapper(
       })),
     },
     embedded: Object.keys(
-      embedded.map(f => f.relation.ref.entity).reduce((res, i) => {
-        res[i] = 1;
-        return res;
-      }, {}),
+      embedded
+        .map(f => f.relation.ref.entity)
+        .reduce((res, i) => {
+          res[i] = 1;
+          return res;
+        }, {}),
     ),
     relations: getFields(entity)
       .filter(persistentRelation)

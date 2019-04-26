@@ -3,7 +3,6 @@ import {
   IResource,
   IResourceContainer,
   IResourceDefinition,
-  IResourceOperation,
 } from './interfaces';
 import Resource from './resource';
 

@@ -143,9 +143,9 @@ export interface IResourceDefinition {
   fields: FieldsDefinition;
   operations: IResourceOperationsDefinition;
   queries: IResourceQueryDefinitions;
-  fragments: (
-    frg: { [key: string]: FragmentsDefinitions },
-  ) => FragmentsDefinitions;
+  fragments: (frg: {
+    [key: string]: FragmentsDefinitions;
+  }) => FragmentsDefinitions;
 }
 
 export interface IResourceOperationDefinition {
@@ -164,9 +164,9 @@ export interface IResource extends IResourceDefinition {
   fields: FieldsDefinition;
   operations: IResourceOperationsDefinition;
   queries: IResourceQueryDefinitions;
-  fragments: (
-    frg: { [key: string]: FragmentsDefinitions },
-  ) => FragmentsDefinitions;
+  fragments: (frg: {
+    [key: string]: FragmentsDefinitions;
+  }) => FragmentsDefinitions;
   resourceContainer: IResourceContainer;
   override: (overrides: IResourceDefinition) => IResource;
   connect: (resourceContainer: IResourceContainer) => IResource;

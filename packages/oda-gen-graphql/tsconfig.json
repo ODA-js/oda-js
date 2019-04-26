@@ -13,7 +13,10 @@
   ],
   "references": [
     {
-      "path": "../oda-api-graphql"
+      "path": "../oda-gen-common"
+    },
+    {
+      "path": "../oda-model"
     }
   ]
 }
