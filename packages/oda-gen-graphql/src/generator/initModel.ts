@@ -1,6 +1,6 @@
 import { lib } from 'oda-gen-common';
 import { MetaModel, ModelPackage } from 'oda-model';
-import * as path from 'path';
+import path from 'path';
 
 import { initPackages, pushToAppropriate } from './utils';
 import { expandConfig } from './utils';

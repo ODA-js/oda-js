@@ -6,7 +6,7 @@ import {
   FieldType,
 } from 'oda-model';
 import { capitalize, decapitalize } from '../../utils';
-import * as humanize from 'string-humanize';
+import humanize from 'string-humanize';
 import { constantify, camelize } from 'inflected';
 
 export interface UIView {

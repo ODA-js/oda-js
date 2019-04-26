@@ -1,5 +1,5 @@
 <#@ context 'entity' -#>
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 export default () => {
   let $#{entity.name} = new mongoose.Schema({

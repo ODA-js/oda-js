@@ -9,7 +9,7 @@ import {
   detectCursorDirection,
 } from 'oda-api-graphql';
 
-import * as Sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 import { FilterSequelize } from './filter';
 
 const { forward } = listIterator;

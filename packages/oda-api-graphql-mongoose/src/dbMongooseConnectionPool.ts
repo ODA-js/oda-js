@@ -1,9 +1,9 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 // hack to remove error from typescript
 let p = 'Promise';
 mongoose[p] = global.Promise;
 
-import * as muri from 'muri';
+import muri from 'muri';
 
 // session specific connection pool
 export default class DbMongooseConnectionPool {

@@ -1,7 +1,5 @@
 import 'jest';
 import { fromGlobalId, toGlobalId } from './globalIds';
-import base64 from './base64';
-import unbase64 from './unbase64';
 
 describe('globalId', () => {
   it('convert global id from global id', () => {

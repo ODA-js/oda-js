@@ -1,6 +1,6 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/connector/mongoose' #>
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
 import { MongooseApi } from 'oda-api-graphql-mongoose';
@@ -348,7 +348,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     }
     return entity;
   }
-  
+
   public ensureId(obj){
     if(obj) {
       let result = super.ensureId(obj);

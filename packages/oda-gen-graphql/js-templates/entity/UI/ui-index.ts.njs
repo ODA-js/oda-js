@@ -357,7 +357,7 @@ export default ({ title, dataProvider, authProvider, customSagas, i18nProvider,
 
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as invariant from 'invariant';
+import invariant from 'invariant';
 
 export default class UIXContextProvider extends Component {
   constructor(props, context) {

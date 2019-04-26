@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import { Component } from 'react';
 import { SimpleShowLayout } from 'react-admin';
-import * as PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 /**
  * A container component that shows embedded array elements as a list of input sets

@@ -22,7 +22,7 @@ export class #{pack.name}Entities extends common.types.GQLModule {
 }
 
 <# chunkStart(`../dataPump/index.ts`); -#>
-import * as _ from 'lodash';
+import _ from 'lodash';
 <# for(let entity of pack.entities){-#>
 import #{entity.name} from './#{entity.name}';
 <#}-#>

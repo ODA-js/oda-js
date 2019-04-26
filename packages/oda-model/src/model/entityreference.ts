@@ -1,5 +1,5 @@
-import * as camelcase from 'camelcase';
-import * as inflected from 'inflected';
+import camelcase from 'camelcase';
+import inflected from 'inflected';
 import decapitalize from './../lib/decapitalize';
 
 import clean from '../lib/json/clean';

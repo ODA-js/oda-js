@@ -43,8 +43,6 @@ import { invertBy } from 'lodash';
 import { keys } from 'lodash';
 import { values } from 'lodash';
 import { omit } from 'lodash';
-import { debug } from 'util';
-import { PageInfoType } from 'oda-gen-common/dist/types/pageInfo';
 
 function getType(v): String {
   return Object.prototype.toString

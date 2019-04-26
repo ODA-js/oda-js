@@ -20,10 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "camelcase": "^5.0.0",
-    "decamelize": "^2.0.0",
-    "global": "^4.3.2",
-    "inflected": "^2.0.4",
-    "oda-isomorfic": "file:../oda-isomorfic"
+    "inflected": "^2.0.4"
   },
   "peerDependencies": {
     "lodash": "^4.17.10"

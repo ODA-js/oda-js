@@ -18,12 +18,11 @@
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "oda-api-graphql": "file:../oda-api-graphql",
-    "oda-isomorfic": "file:../oda-isomorfic"
+    "oda-api-graphql": "file:../oda-api-graphql"
   },
   "peerDependencies": {
     "graphql": "^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
-    "mongoose": "^5.2.9"
+    "mongoose": "^5.5.4"
   },
   "jest": {
     "testEnvironment": "node",

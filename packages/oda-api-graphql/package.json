@@ -20,9 +20,7 @@
   "dependencies": {
     "core-js": "^2.5.3",
     "graphql-anywhere": "^4.1.14",
-    "inflected": "^2.0.4",
     "isomorphic-fetch": "^2.2.1",
-    "iterall": "^1.2.2",
     "oda-isomorfic": "file:../oda-isomorfic"
   },
   "peerDependencies": {

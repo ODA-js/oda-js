@@ -1,5 +1,5 @@
 <#@ context 'entity' -#>
-import * as Sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 import { IdGenerator } from 'oda-isomorfic';
 
 export default (sequelize, DataTypes: Sequelize.DataTypes) => {

@@ -16,3 +16,7 @@ Package organization:
 TODO
 обновить log4js до крайней версии
 посмотреть повнимательней на правила tslint
+
+проверка неиспользованных зависимостей
+
+depcheck [directory] [arguments]

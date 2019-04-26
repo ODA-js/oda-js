@@ -1,5 +1,5 @@
 <#@ context 'entity' -#>
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
 import gql from 'graphql-tag';
 import RegisterConnectors from '../../../../data/registerConnectors';

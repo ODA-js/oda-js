@@ -1,7 +1,7 @@
 // Init passport
-import * as config from 'config';
+import config from 'config';
 
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 export const verifyToken = async (
   getUserById: (id: string) => Promise<{ enabled: boolean }>,

@@ -1,5 +1,5 @@
 import httpProxy from 'http-proxy';
-import * as url from 'url';
+import url from 'url';
 
 const serviceProviderList = [];
 

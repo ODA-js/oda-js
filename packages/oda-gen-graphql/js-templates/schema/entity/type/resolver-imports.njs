@@ -1,7 +1,7 @@
 <#@ context 'entity'#>
 <#@ alias 'type-resolver-imports'#>
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { get } from 'lodash';
 
 <#- if(entity.relations.length > 0){#>
@@ -21,7 +21,7 @@ import gql from 'graphql-tag';
   if(cur.ref && cur.ref.using){
     res[cur.ref.using.entity] = true;
   }
-  
+
   return res;
   },{}))) {-#>
 import { Partial#{usingEntity} } from '../../../data/#{usingEntity}/types/model';

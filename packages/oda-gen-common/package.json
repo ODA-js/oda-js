@@ -10,8 +10,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -w -p ./",
     "wipe": "./clean.sh",
-    "clean": "rm -rf dist",
-    "lint": "tslint -c \"../../config/tslint.json\" -p tsconfig.json src/*.ts"
+    "clean": "rm -rf dist"
   },
   "typescript": {
     "definition": "dist/index.d.ts"
@@ -20,7 +19,6 @@
   "dependencies": {
     "immutable": "^4.0.0-rc.9",
     "invariant": "^2.2.2",
-    "oda-isomorfic": "file:../oda-isomorfic",
     "warning": "^3.0.0"
   },
   "peerDependencies": {

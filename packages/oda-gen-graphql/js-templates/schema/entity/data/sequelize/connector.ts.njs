@@ -1,6 +1,6 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/connector/sequelize' #>
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
 import { SequelizeApi } from 'oda-api-graphql-sequelize';

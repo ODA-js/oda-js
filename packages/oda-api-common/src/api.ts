@@ -1,11 +1,11 @@
 // tslint:disable:no-unused-variable
-import * as express from 'express';
-import * as path from 'path';
-import * as http from 'http';
-import * as log4js from 'log4js';
-import * as fs from 'fs-extra';
-import * as cors from 'cors';
-import * as PrettyError from 'pretty-error';
+import express from 'express';
+import path from 'path';
+import http from 'http';
+import log4js from 'log4js';
+import fs from 'fs-extra';
+import cors from 'cors';
+import PrettyError from 'pretty-error';
 
 const pretty = new PrettyError();
 

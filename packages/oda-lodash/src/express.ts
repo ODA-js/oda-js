@@ -7,7 +7,7 @@ import {
   ExpressGraphQLOptionsFunction,
   ExpressHandler,
 } from 'apollo-server-express';
-import * as express from 'express';
+import express from 'express';
 
 import { graphqlLodash } from './gql';
 

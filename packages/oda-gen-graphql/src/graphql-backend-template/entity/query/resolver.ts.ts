@@ -1,5 +1,5 @@
 import { Entity, ModelPackage, BelongsToMany, FieldType } from 'oda-model';
-import * as inflect from 'inflected';
+import inflect from 'inflected';
 
 import { Factory } from 'fte.js';
 import { capitalize, decapitalize } from '../../utils';

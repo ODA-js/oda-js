@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 
 import deepMerge from '../lib/json/deepMerge';
 import fold from '../lib/json/fold';

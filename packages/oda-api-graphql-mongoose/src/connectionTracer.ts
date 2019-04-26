@@ -1,6 +1,6 @@
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('db:connections');
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 let connections = 0;
 let openConnections = 0;

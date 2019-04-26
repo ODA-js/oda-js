@@ -4,7 +4,8 @@
   },
   "files": [],
   "include": [],
-  "references": [{
+  "references": [
+    {
       "path": "./packages/oda-isomorfic"
     },
     {
@@ -12,9 +13,6 @@
     },
     {
       "path": "./packages/oda-model"
-    },
-    {
-      "path": "./packages/oda-model-next"
     },
     {
       "path": "./packages/oda-api-graphql"
@@ -43,5 +41,8 @@
     {
       "path": "./packages/oda-ra-ui"
     },
+    {
+      "path": "./packages/oda-logger"
+    }
   ]
 }

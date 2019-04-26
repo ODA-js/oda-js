@@ -1,7 +1,7 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/schema/mongoose' #>
 
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 <#entity.embedded.forEach(name=>{#>
 import #{name} from './../../#{name}/adapter/schema';
 <#})#>
@@ -42,9 +42,9 @@ $#{entity.name}.add({
       <#-}#>
     },
 <#} else {#>
-    #{rel.name}:<#if(!rel.single){#>[<#}#>#{rel.embedded}({ 
-      schema: $#{entity.name}, 
-      fieldName: ()=> args && args.fieldName ? [args.fieldName(),'#{rel.name}'].join('.') : '#{rel.name}', 
+    #{rel.name}:<#if(!rel.single){#>[<#}#>#{rel.embedded}({
+      schema: $#{entity.name},
+      fieldName: ()=> args && args.fieldName ? [args.fieldName(),'#{rel.name}'].join('.') : '#{rel.name}',
       single: #{rel.single?'true':'false'}})<#if(!rel.single){#>]<#}#>,
 <#}#>
 });

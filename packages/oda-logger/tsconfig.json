@@ -1,21 +1,9 @@
 {
+  "extends": "../../tsconfig",
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "lib": ["dom", "esnext"],
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "declaration": true,
-    "noImplicitAny": false,
-    "rootDir": "./",
-    "outDir": "./",
-    "pretty": true,
-    "removeComments": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "typeRoots": ["node_modules/@types"],
-    "types": ["@types/node"]
+    "target": "es5",
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "exclude": ["node_modules", "dist"]
 }

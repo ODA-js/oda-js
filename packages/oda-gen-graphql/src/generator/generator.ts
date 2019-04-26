@@ -1,6 +1,6 @@
 import { IValidationResult } from 'oda-model';
-import * as fs from 'fs-extra';
-import * as path from 'path';
+import fs from 'fs-extra';
+import path from 'path';
 import * as template from '../graphql-backend-template';
 import AclDefault from '../acl';
 

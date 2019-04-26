@@ -23,7 +23,7 @@ export * from './entities/#{ent.name}/helpers';
 <#-})#>
 
 <# chunkStart(`./dataPump/index.ts`); -#>
-import * as _ from 'lodash';
+import _ from 'lodash';
 <# for(let entity of pkg.entities){-#>
 import #{entity.name} from './#{entity.name}';
 <#}-#>
@@ -87,7 +87,7 @@ export default new Schema({
 
 <#- chunkStart(`./common.ts`); -#>
 
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('graphql:query');
 import { get } from 'lodash';
 

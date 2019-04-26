@@ -1,6 +1,6 @@
 declare var window: any;
 
-import * as md5Hex from 'md5-hex';
+import md5Hex from 'md5-hex';
 import { toGlobalId, fromGlobalId, ResolvedGlobalId } from './globalIds';
 
 function decimalToHex(d, padding) {

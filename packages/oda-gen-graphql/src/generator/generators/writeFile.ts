@@ -1,4 +1,4 @@
-// import * as fs from 'fs-extra';
+// import fs from 'fs-extra';
 const prettier = require('prettier');
 const memFs = require('mem-fs');
 const editor = require('mem-fs-editor');
@@ -19,8 +19,8 @@ export function writeFile(fn, data, format: boolean = true) {
             parser: fType[0].match(/js?$/)
               ? 'babylon'
               : fType[0].match(/ts?$/)
-                ? 'typescript'
-                : 'graphql',
+              ? 'typescript'
+              : 'graphql',
           })
         : data;
 

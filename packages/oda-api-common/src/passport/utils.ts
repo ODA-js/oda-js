@@ -1,5 +1,5 @@
-import * as crypto from 'crypto';
-import * as config from 'config';
+import crypto from 'crypto';
+import config from 'config';
 
 export const hashPassword = password => {
   let salt = crypto.randomBytes(16).toString('base64');

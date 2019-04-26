@@ -38,7 +38,7 @@ export interface #{ entity.name }Connector extends Connector<Partial#{ entity.na
 }
 
 <# chunkStart('connector'); #>
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('api:connector:#{entity.name}');
 
 import { SequelizeApi } from 'oda-api-graphql-sequelize';

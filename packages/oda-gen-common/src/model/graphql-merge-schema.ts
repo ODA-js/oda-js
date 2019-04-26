@@ -1,7 +1,7 @@
 // NOTE: Currently using a slightly modified print instead of the exported graphql version.
 import { parse, print } from 'graphql';
 import { getDescription } from 'graphql/utilities/buildASTSchema';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { Kind } from 'graphql';
 import { strictEqual } from 'assert';
@@ -87,7 +87,9 @@ const _makeMergedDefinitions = defs => {
       return _.mergeWith(
         mergableDefs,
         {
-          [def.kind !== Kind.SCHEMA_DEFINITION ? def.name.value : 'schema']: def,
+          [def.kind !== Kind.SCHEMA_DEFINITION
+            ? def.name.value
+            : 'schema']: def,
         },
         nodeMerger,
       );

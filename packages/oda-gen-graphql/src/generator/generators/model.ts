@@ -1,7 +1,7 @@
 import { lib } from 'oda-gen-common';
 import { Factory } from 'fte.js';
 import * as template from '../../graphql-backend-template';
-import * as path from 'path';
+import path from 'path';
 import { writeFile } from './writeFile';
 
 const { get, deepMerge } = lib;

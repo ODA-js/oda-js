@@ -1,5 +1,5 @@
 <#@ context 'mutation' -#>
-import * as log4js from 'log4js';
+import log4js from 'log4js';
 let logger = log4js.getLogger('graphql:mutation:#{mutation.name}:');
 
 import { mutateAndGetPayload } from 'oda-api-graphql';

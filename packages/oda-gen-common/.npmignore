@@ -6,5 +6,4 @@ src
 .editorconfig
 todo.md
 yarn.lock
-tslint.json
 tsconfig.json

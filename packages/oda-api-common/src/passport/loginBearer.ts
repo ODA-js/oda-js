@@ -1,8 +1,8 @@
 // Init passport
-import * as config from 'config';
+import config from 'config';
 import { verifyPasswordWithSalt } from './utils';
 
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 export const loginBearer = async (
   payload,

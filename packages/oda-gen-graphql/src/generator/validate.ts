@@ -4,7 +4,7 @@ import {
   ValidationResultType,
   Validator,
 } from 'oda-model';
-import * as path from 'path';
+import path from 'path';
 
 import AclDefault from '../acl';
 import initModel from './initModel';

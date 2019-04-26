@@ -1,5 +1,5 @@
-import * as url from 'url';
-import * as Sequelize from 'sequelize';
+import url from 'url';
+import Sequelize from 'sequelize';
 // session specific connection pool
 export default class DbSequelizeConnectionPool {
   public defaultConnection: string;

@@ -3,7 +3,7 @@ import {
   common as entities,
   pkg as templatePkg,
 } from '../graphql-backend-template/schema';
-import * as path from 'path';
+import path from 'path';
 import { writeFile } from './writeFile';
 import { ModelPackage } from 'oda-model';
 

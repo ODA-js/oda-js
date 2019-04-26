@@ -1,6 +1,6 @@
 import { lib } from 'oda-gen-common';
 import { MetaModel } from 'oda-model';
-import * as pathLib from 'path';
+import pathLib from 'path';
 import AclDefault from '../acl';
 
 const { get } = lib;

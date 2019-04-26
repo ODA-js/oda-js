@@ -1,4 +1,4 @@
-import * as inflected from 'inflected';
+import inflected from 'inflected';
 
 import clean from '../lib/json/clean';
 import deepMerge from './../lib/json/deepMerge';
