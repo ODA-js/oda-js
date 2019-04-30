@@ -52,15 +52,15 @@ export function mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   const mapToGQLTypes = typeMapper.graphql;
-  let relList = new Map(pack.relations.entries());
-  relList.forEach((rels, entity) => {
+  let relList = new Map<string, any>(pack.relations.entries());
+  relList.forEach((rels: any, entity) => {
     rels.forEach((rel, fields) => {
       if (rel.relation.opposite) {
         relList.get(rel.relation.ref.entity).delete(rel.relation.opposite);
       } else {
         let ent = pack.entities.get(rel.relation.ref.entity);
-        let opposites = Array.from(ent.fields.values()).filter(
-          f =>
+        let opposites = Array.from<any>(ent.fields.values()).filter(
+          (f: any) =>
             (f.relation &&
               f.relation.ref.entity === entity &&
               f.relation.ref.field === rel.name) ||
@@ -82,7 +82,7 @@ export function mapper(
   let relations: RelationsList[] = Array.from(relList).reduce(
     (result: RelationsList[], curEntity) => {
       let src = curEntity[0];
-      Array.from(curEntity[1].entries()).reduce((res, cur) => {
+      Array.from<any>(curEntity[1].entries()).reduce((res, cur) => {
         res.push({
           src,
           field: cur[0],
@@ -104,7 +104,7 @@ export function mapper(
   return {
     name: pack.name,
     relations,
-    entities: getRealEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map((e: any) => ({
       name: e.name,
       fields: getFields(e)
         .filter(f => persistentFields(f) || storedRelationsExistingIn(pack)(f))

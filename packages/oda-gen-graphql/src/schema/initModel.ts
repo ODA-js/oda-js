@@ -187,7 +187,7 @@ export default function({
     }
   }
   let packages = new Map(
-    Array.from(modelStore.packages.entries()).filter(i => {
+    Array.from<any>(modelStore.packages.entries()).filter(i => {
       return packageList.indexOf(i[0]) !== -1;
     }),
   );

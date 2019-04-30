@@ -33,13 +33,13 @@ export function mapper(
   return {
     name: capitalize(pack.name),
     role: pack.name,
-    entities: getUIEntities(pack).map(e => ({
+    entities: getUIEntities(pack).map((e: any) => ({
       name: e.name,
       entry: decapitalize(e.name),
       embedded: e.embedded,
       abstract: e.abstract,
     })),
-    enums: getEnums(pack).map(p => ({
+    enums: getEnums(pack).map((p: any) => ({
       name: p.name,
     })),
   };

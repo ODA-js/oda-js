@@ -26,8 +26,8 @@ export function mapper(
 ): MapperOutput {
   return {
     packageList: getPackages(model)
-      .filter(p => !p.abstract)
-      .map(e => ({
+      .filter((p: any) => !p.abstract)
+      .map((e: any) => ({
         name: e.name,
         entry: 'entry' + e.name,
       })),

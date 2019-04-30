@@ -23,8 +23,8 @@ export default function generator(
   prepared.push(templatePkg.prepare(pkg, role, allow, typeMapper, adapter));
   prepared.push(
     ...Array.from(pkg.entities.values())
-      .filter(f => !f.abstract)
-      .map(entity => {
+      .filter((f: any) => !f.abstract)
+      .map((entity: any) => {
         return {
           entity: entity.name,
           ...entities.prepare(entity, pkg, role, allow, typeMapper, adapter),

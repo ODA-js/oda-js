@@ -25,7 +25,7 @@ export function mapper(
   typeMapper: { [key: string]: (i: FieldType) => string },
 ): MapperOutput {
   return {
-    entities: getRealEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map((e: any) => ({
       name: e.name,
       adapter: e.getMetadata('storage.adapter', 'mongoose'),
     })),

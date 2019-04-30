@@ -59,19 +59,19 @@ export function mapper(
   const mapToGQLTypes = typeMapper.graphql;
   return {
     name: capitalize(pack.name),
-    entities: getRealEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map((e: any) => ({
       name: e.name,
       adapter: e.getMetadata('storage.adapter', 'mongoose'),
     })),
-    scalars: getScalars(pack).map(s => ({
+    scalars: getScalars(pack).map((s: any) => ({
       name: s.name,
     })),
-    directives: getDirvectives(pack).map(s => ({
+    directives: getDirvectives(pack).map((s: any) => ({
       name: s.name,
       args: printArguments(s, mapToGQLTypes),
       on: s.on.join('|'),
     })),
-    enums: getEnums(pack).map(s => ({
+    enums: getEnums(pack).map((s: any) => ({
       name: s.name,
       items: s.items,
       hasCustomValue: s.items.some(i => !!i.value),
@@ -82,7 +82,7 @@ export function mapper(
     queries: getQueries(pack).map(q =>
       mutation__query__mapper(q, pack, typeMapper),
     ),
-    unions: getUnions(pack).map(u => ({
+    unions: getUnions(pack).map((u: any) => ({
       name: u.name,
       items: u.items,
     })),

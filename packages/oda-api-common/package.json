@@ -14,7 +14,6 @@
     "http-proxy": "^1.16.2",
     "jsonwebtoken": "^8.2.0",
     "oda-api-graphql": "file:../oda-api-graphql",
-    "oda-logger": "file:../oda-logger",
     "passport-http-bearer": "^1.0.1",
     "pretty-error": "^2.1.1",
     "graphql-tag": "^2.10.1",

@@ -1,5 +1,5 @@
-import log4js from 'log4js';
-let logger = log4js.getLogger('db:connections');
+import { Logger } from 'oda-logger';
+let logger = new Logger('db:connections');
 import mongoose from 'mongoose';
 
 let connections = 0;

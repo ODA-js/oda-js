@@ -1,5 +1,6 @@
 import { types, Scalar, Input, Directive, Enum, Schema } from 'oda-gen-common';
 import gql from 'graphql-tag';
+import { ValueNode } from 'graphql';
 
 const lodashProps = `
 map: Path
@@ -98,7 +99,9 @@ export const Path = new Scalar({
   resolver: {
     serialize: String,
     parseValue: String,
-    parseLiteral: x => x.value,
+    parseLiteral: (x: ValueNode) => {
+      if (x.kind === 'StringValue') return x.value;
+    },
   },
 });
 
@@ -129,7 +132,7 @@ export const Predicate = new Input({
 });
 
 export const Directives = new Directive({
-  schema: gql`      
+  schema: gql`
     directive @_(
       ${lodashProps}
     ) on FIELD | QUERY

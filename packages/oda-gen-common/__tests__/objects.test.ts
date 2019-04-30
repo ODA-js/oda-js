@@ -1,8 +1,16 @@
 import 'jest';
-import { Enum, Query, GQLType, Schema, Type, Mutation, Union } from '.';
+import {
+  Enum,
+  Query,
+  GQLType,
+  Schema,
+  Type,
+  Mutation,
+  Union,
+} from '../src/model';
 import gql from 'graphql-tag';
 import { makeExecutableSchema } from 'graphql-tools';
-import { runQuery } from 'apollo-server-core';
+import { execute } from 'graphql';
 
 describe('Enum', () => {
   it('parse name from schema as ast', () => {
@@ -465,9 +473,9 @@ describe('Merge', () => {
       typeDefs: res.schema,
       resolvers: res.resolvers,
     });
-    const result = await runQuery({
+    const result = await execute({
       schema: _schema,
-      query: gql`
+      document: gql`
         mutation create {
           createPicture {
             ... on Picture {

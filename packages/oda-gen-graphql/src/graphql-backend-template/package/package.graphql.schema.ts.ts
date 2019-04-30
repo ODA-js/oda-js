@@ -25,7 +25,7 @@ export function mapper(
 ): MapperOutput {
   return {
     name: capitalize(pack.name),
-    entities: getRealEntities(pack).map(e => ({
+    entities: getRealEntities(pack).map((e: any) => ({
       name: e.name,
     })),
   };

@@ -2,18 +2,16 @@ import {
   GraphQLOptions,
   HttpQueryError,
   runHttpQuery,
+  convertNodeHttpToRequest,
 } from 'apollo-server-core';
-import {
-  ExpressGraphQLOptionsFunction,
-  ExpressHandler,
-} from 'apollo-server-express';
+import { ExpressGraphQLOptionsFunction } from 'apollo-server-express/dist/expressApollo';
 import express from 'express';
 
 import { graphqlLodash } from './gql';
 
 export function graphqlLodashExpress(
   options: GraphQLOptions | ExpressGraphQLOptionsFunction,
-): ExpressHandler {
+): express.Handler {
   if (!options) {
     throw new Error('Apollo Server requires options.');
   }
@@ -46,33 +44,44 @@ export function graphqlLodashExpress(
       method: req.method,
       options: options,
       query: originalQuery,
+      request: convertNodeHttpToRequest(req),
     })
-      .then(gqlResponse => {
+      .then(({ graphqlResponse, responseInit }) => {
         if (isBatch) {
-          const result = JSON.parse(gqlResponse) as object[];
-          return JSON.stringify(
-            result.map((r, i) => {
-              if (apply[i]) {
-                return transform[i](r);
-              } else {
-                return r;
-              }
-            }),
-          );
+          const result = JSON.parse(graphqlResponse) as object[];
+          return {
+            graphqlResponse: JSON.stringify(
+              result.map((r, i) => {
+                if (apply[i]) {
+                  return transform[i](r);
+                } else {
+                  return r;
+                }
+              }),
+            ),
+            responseInit,
+          };
         } else {
           if (apply) {
-            return JSON.stringify({
-              data: transform(JSON.parse(gqlResponse).data),
-            });
+            return {
+              graphqlResponse: JSON.stringify({
+                data: transform(JSON.parse(graphqlResponse).data),
+              }),
+              responseInit,
+            };
           } else {
-            return gqlResponse;
+            return { graphqlResponse, responseInit };
           }
         }
       })
       .then(
-        gqlResponse => {
-          res.setHeader('Content-Type', 'application/json');
-          res.write(gqlResponse);
+        ({ graphqlResponse, responseInit }) => {
+          if (responseInit.headers) {
+            for (const [name, value] of Object.entries(responseInit.headers)) {
+              res.setHeader(name, value);
+            }
+          }
+          res.write(graphqlResponse);
           res.end();
         },
         (error: HttpQueryError) => {
@@ -80,9 +89,9 @@ export function graphqlLodashExpress(
             return next(error);
           }
           if (error.headers) {
-            Object.keys(error.headers).forEach(header => {
-              res.setHeader(header, error.headers[header]);
-            });
+            for (const [name, value] of Object.entries(error.headers)) {
+              res.setHeader(name, value);
+            }
           }
 
           res.statusCode = error.statusCode;

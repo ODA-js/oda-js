@@ -1,16 +1,21 @@
-import { runQuery } from 'apollo-server-core';
-import {
-  GraphQLResponse,
-  QueryOptions,
-} from 'apollo-server-core/dist/runQuery';
+import { execute, ExecutionArgs } from 'graphql';
+import { FetchResult } from 'apollo-link';
+import { removeDirectivesFromDocument } from 'apollo-utilities';
 
 import { graphqlLodash } from './gql';
+// заменить на execute.... на прямую? продумать
+/// посмотреть подробнее, они что-то добавили хорошее
+export function runQueryLodash(options: ExecutionArgs): Promise<FetchResult> {
+  const { transform, apply } = graphqlLodash(
+    options.document,
+    options.operationName,
+  );
 
-export function runQueryLodash(
-  options: QueryOptions,
-): Promise<GraphQLResponse> {
-  const { transform, apply } = graphqlLodash(options.query);
   if (apply) {
+    options.document = removeDirectivesFromDocument(
+      [{ name: '_', remove: true }],
+      options.document,
+    );
     return runQuery(options).then(result => ({
       ...result,
       data: transform(result.data),
@@ -18,4 +23,8 @@ export function runQueryLodash(
   } else {
     return runQuery(options);
   }
+}
+
+async function runQuery(options: ExecutionArgs) {
+  return execute(options);
 }

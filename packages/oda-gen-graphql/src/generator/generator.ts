@@ -128,7 +128,7 @@ export default (args: Generator) => {
     }
 
     // generate per package
-    packages.forEach(pkg => {
+    packages.forEach((pkg: any) => {
       let generate = $generateGraphql.bind(
         null,
         pkg,

@@ -93,7 +93,7 @@ export default function({
       modelStore.addPackage(p);
     });
 
-  const packageNames = Array.from(modelStore.packages.keys());
+  const packageNames = Array.from<string>(modelStore.packages.keys());
 
   config = expandConfig(config, packageNames);
 
@@ -103,7 +103,7 @@ export default function({
   }, {});
 
   let packages = new Map(
-    Array.from(modelStore.packages.entries()).filter(i => {
+    Array.from<any>(modelStore.packages.entries()).filter(i => {
       return generatedPackages[i[0]];
     }),
   );

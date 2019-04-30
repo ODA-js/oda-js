@@ -21,7 +21,9 @@ export const getPackages = (model: MetaModel) =>
   Array.from(model.packages.values());
 
 export const getRealEntities = (pack: ModelPackage) =>
-  Array.from(pack.entities.values()).filter(f => !f.abstract);
+  Array.from(pack.entities.values()).filter(
+    (f: { abstract: boolean }) => !f.abstract,
+  );
 
 export const getUIEntities = (pack: ModelPackage) =>
   Array.from(pack.entities.values());
@@ -38,7 +40,9 @@ export const getUnions = (pack: ModelPackage) =>
 
 export const getMixins = (pack: ModelPackage) => [
   ...Array.from(pack.mixins.values()),
-  ...(Array.from(pack.entities.values()).filter(e => e.abstract) as IMixin[]),
+  ...(Array.from(pack.entities.values()).filter(
+    (e: { abstract: boolean }) => e.abstract,
+  ) as IMixin[]),
 ];
 
 export const fields = (f: Field): boolean => !f.relation;

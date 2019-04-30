@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "oda-api-graphql": "file:../oda-api-graphql",
+    "oda-logger": "file:../oda-logger",
     "mongoose": "^5.2.9",
     "muri": "^1.3.0",
      "graphql": "^14.2.1"

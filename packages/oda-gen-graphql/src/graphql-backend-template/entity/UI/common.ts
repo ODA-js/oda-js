@@ -424,7 +424,7 @@ export function _mapper(
     (a, b) => (a.order || -1) - (b.order || -1),
   );
 
-  const actions = Array.from(entity.operations.values()).map(a => ({
+  const actions = Array.from(entity.operations.values()).map((a: any) => ({
     name: a.name,
     actionType: a.actionType,
     title: a.title,

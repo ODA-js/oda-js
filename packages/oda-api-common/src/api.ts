@@ -1,7 +1,6 @@
 // tslint:disable:no-unused-variable
 import express from 'express';
 import path from 'path';
-import log4js from 'oda-logger';
 import fs from 'fs-extra';
 import cors from 'cors';
 import PrettyError from 'pretty-error';
@@ -77,31 +76,6 @@ export class Server {
         `${name}.log`,
       );
       fs.ensureFileSync(logFileName);
-      log4js.configure({
-        appenders: [
-          {
-            type: 'console',
-          },
-          {
-            type: 'file',
-            filename: logFileName,
-          },
-        ],
-        levels: {
-          '[all]': 'INFO',
-          'db:connections': 'INFO',
-          'api:web': 'INFO',
-        },
-        replaceConsole: true,
-      });
-      let logger = log4js.getLogger(`${name}:web`);
-      this.app.use(
-        log4js.connectLogger(logger, {
-          level:
-            log4js.levels
-              .INFO /*, format: ':remote-addr :url :response-time' */,
-        }),
-      );
     }
   }
   public initStatics() {

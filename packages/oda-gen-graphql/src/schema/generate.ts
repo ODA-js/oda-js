@@ -64,8 +64,8 @@ export default function generate({
     fs.ensureDirSync(rootDir);
     // generate per package
     [...packages.values()]
-      .filter(p => !p.abstract)
-      .forEach(pkg => {
+      .filter((p: any) => !p.abstract)
+      .forEach((pkg: any) => {
         console.time('gql');
         generator(
           pkg,

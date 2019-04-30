@@ -55,3 +55,28 @@ export default function<T extends void | Promise<any>>(
 ) {
   return new Logger<T>(name, config);
 }
+
+export function connectLogger<T extends void | Promise<any>>(
+  name: string,
+  config: Config<T>,
+  middleware?: (
+    logger: Logger<T>,
+    req: object,
+    res: object,
+    next: () => void,
+  ) => void,
+) {
+  const logger = new Logger(name, config);
+  return (req, res, next) => {
+    let nextCalled = false;
+    if (middleware) {
+      middleware(logger, req, res, () => {
+        nextCalled = true;
+        next();
+      });
+    }
+    if (!nextCalled) {
+      next();
+    }
+  };
+}
