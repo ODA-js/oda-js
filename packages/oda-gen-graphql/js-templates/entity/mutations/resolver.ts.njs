@@ -54,7 +54,7 @@ async function ensure#{relEntity.name}({
           }
           `,
       variables,
-    }).then(r => r.data.#{relEntity.findQuery});
+    }).then(r => r.data && r.data.#{relEntity.findQuery});
   }
 
   if (!#{relEntity.findQuery}) {
@@ -77,7 +77,7 @@ async function ensure#{relEntity.name}({
 <#-})#>
           },
         }
-      }).then(r => r.data.create#{relEntity.name}.#{relEntity.findQuery}.node);
+      }).then(r => r.data && r.data.create#{relEntity.name} && r.data.create#{relEntity.name}.#{relEntity.findQuery} && r.data.create#{relEntity.name}.#{relEntity.findQuery}.node);
     }
   } else {
     // update
@@ -97,7 +97,7 @@ async function ensure#{relEntity.name}({
 <#-})#>
         },
       }
-    }).then(r => r.data.update#{relEntity.name}.#{relEntity.findQuery});
+    }).then(r => r.data && r.data.update#{relEntity.name} && r.data.update#{relEntity.name}.#{relEntity.findQuery});
   }
   return #{relEntity.findQuery};
 }
@@ -210,7 +210,7 @@ async function unlink#{entity.name}FromAll(args:{
         ${unlinkFragment}
         `,
       variables,
-    }).then(r => r.data || r.data.input);
+    }).then(r => r.data && r.data.input);
 
     if(input){
       await context.userGQL({

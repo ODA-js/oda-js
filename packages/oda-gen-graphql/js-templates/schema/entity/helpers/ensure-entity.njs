@@ -53,7 +53,7 @@ export default async function ensure#{entity.name}({
           }
           `,
       variables,
-    }).then(r => r.data.#{entity.findQuery});
+    }).then(r => r.data && r.data.#{entity.findQuery});
   }
 
   if (!#{entity.findQuery}) {
@@ -76,7 +76,7 @@ export default async function ensure#{entity.name}({
 <#-})#>
           },
         }
-      }).then(r => r.data.create#{entity.name}.#{entity.findQuery}.node);
+      }).then(r => r.data && r.data.create#{entity.name} && r.data.create#{entity.name}.#{entity.findQuery} && r.data.create#{entity.name}.#{entity.findQuery}.node);
     }
   } else {
     // update
@@ -96,7 +96,7 @@ export default async function ensure#{entity.name}({
 <#-})#>
         },
       }
-    }).then(r => r.data.update#{entity.name}.#{entity.findQuery});
+    }).then(r =>r.data && r.data.update#{entity.name} && r.data.update#{entity.name}.#{entity.findQuery});
   }
   return #{entity.findQuery};
 }
