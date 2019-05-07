@@ -1,11 +1,13 @@
 <#@ context 'items' #>
-<#@ alias 
+<#@ alias
   'import-connection-index-slot'
   'import-helpers-index-slot'
   'import-subscriptions-slot'
   'import-query-list-index-slot'
   'import-embed-entity-create-rel-mutation-types'
   'import-embed-entity-update-rel-mutation-types'
+  'import-embed-entity-create-many-rel-mutation-types'
+  'import-embed-entity-update-many-rel-mutation-types'
 -#>
 <#- const separatedItems = Object.keys(items
   .reduce((res, it) => {

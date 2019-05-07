@@ -7,7 +7,7 @@ const {entity, f} = ctx;
   uix.#{f.inheritedFrom}.Fragments.#{f.name}.edit({uix, source})
 <#} else {#>
 <#-
-const type = `${f.derived ? 'Derived(${f.type})' :f.type}`;
+const type = `${f.derived ? 'Derived' + f.type :f.type}`;
 -#>
 <uix.primitive.#{type}.input
   <#-if(f.defaultValue){#>
@@ -17,6 +17,6 @@ const type = `${f.derived ? 'Derived(${f.type})' :f.type}`;
   source={`${source}#{f.source}`}
   <# if (!f.required){-#>
   allowEmpty<#} else {-#>
-  validate={uix.required()}<#}#> 
+  validate={uix.required()}<#}#>
 />
 <#-}-#>

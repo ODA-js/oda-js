@@ -1,14 +1,14 @@
 <#@ chunks "$$$main$$$" -#>
-<#@ alias 'mutations-delete-types'#>
+<#@ alias 'mutations-delete-many-types'#>
 <#@ context 'entity'#>
 
-<#- chunkStart(`./mutations/delete/delete${entity.name}Input.ts`); -#>
+<#- chunkStart(`./mutations/deleteMany/deleteMany${entity.name}Input.ts`); -#>
 import { Input } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Input({
   schema: gql`
-    input delete#{entity.name}Input {
+    input deleteMany#{entity.name}Input {
 <#- for (let field of entity.unique){#>
       #{field.name}: #{field.type}
 <#-}#>
@@ -16,14 +16,14 @@ export default new Input({
   `,
 });
 
-<#- chunkStart(`./mutations/delete/delete${entity.name}Payload.ts`); -#>
+<#- chunkStart(`./mutations/deleteMany/deleteMany${entity.name}Payload.ts`); -#>
 
 import { Type } from '../../../../common';
 import gql from 'graphql-tag';
 
 export default new Type({
   schema: gql`
-    type delete#{entity.name}Payload {
+    type deleteMany#{entity.name}Payload {
       deletedItemId: ID
       #{entity.payloadName}: #{entity.name}
     }

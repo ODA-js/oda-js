@@ -98,6 +98,7 @@ import {
   complexUniqueIndex,
   idField,
   memoizeEntityMapper,
+  relations as filterRels,
 } from '../../../queries';
 
 export const mapper = memoizeEntityMapper('data.adapter.connector', _mapper);
@@ -190,6 +191,7 @@ export function _mapper(
         ].map(f => ({
           name: f.name,
           type: mapToTSTypes(f.type),
+          relation: filterRels(f) ? f.relation : false,
         })),
       ],
       update: {

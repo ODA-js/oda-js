@@ -11,6 +11,6 @@
     "oda-logger": "file:../oda-logger",
     "mongoose": "^5.2.9",
     "muri": "^1.3.0",
-     "graphql": "^14.2.1"
+    "graphql": "^14.2.1"
   }
 }

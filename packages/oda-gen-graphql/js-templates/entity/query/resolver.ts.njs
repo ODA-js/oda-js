@@ -1,6 +1,6 @@
 <#@ context 'entity' -#>
-import log4js from 'log4js';
-let logger = log4js.getLogger('graphql:query');
+import getLogger from 'oda-logger';
+let logger = getLogger('graphql:query');
 import {get} from 'lodash';
 
 import RegisterConnectors from '../../../../data/registerConnectors';

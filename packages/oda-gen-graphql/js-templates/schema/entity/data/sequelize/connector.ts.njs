@@ -1,13 +1,13 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/connector/sequelize' #>
-import log4js from 'log4js';
-let logger = log4js.getLogger('api:connector:#{entity.name}');
+import getLogger from 'oda-logger';
+let logger = getLogger('api:connector:#{entity.name}');
 
 import { SequelizeApi } from 'oda-api-graphql-sequelize';
 import { SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
-import Dataloader from 'dataloader' from 'dataloader';
+import Dataloader from 'dataloader';
 import { Partial#{ entity.name }, #{ entity.name } as DTO } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 

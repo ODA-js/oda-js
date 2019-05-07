@@ -1,15 +1,15 @@
 <#@ context 'entity' -#>
 <#@ alias 'data/connector/mongoose' #>
-import log4js from 'log4js';
-let logger = log4js.getLogger('api:connector:#{entity.name}');
+import getLogger from 'oda-logger';
+let logger = getLogger('api:connector:#{entity.name}');
 
 import { MongooseApi } from 'oda-api-graphql-mongoose';
 import { SecurityContext } from 'oda-api-graphql';
 import #{ entity.name }Schema from './schema';
 import RegisterConnectors from '../../registerConnectors';
-import Dataloader from 'dataloader' from 'dataloader';
+import Dataloader from 'dataloader';
 
-import { Partial#{ entity.name }, #{ entity.name } as DTO } from '../types/model';
+import { Partial#{ entity.name }, Partial#{ entity.name }Input, #{ entity.name } as DTO } from '../types/model';
 import { #{ entity.name }Connector } from './interface';
 
 <#entity.embedded.forEach(name=>{#>
@@ -105,7 +105,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     };
   }
 
-  public async create(payload: Partial#{entity.name}) {
+  public async create(payload: Partial#{entity.name} | Partial#{entity.name}Input) {
     logger.trace('create');
     let entity = this.getPayload(payload);
     let result = await this.createSecure(entity);
@@ -117,7 +117,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   let type = f.type;
 #>
 
-  public async findOneBy#{f.cName}AndUpdate(#{ukey}: #{type}, payload: any) {
+  public async findOneBy#{f.cName}AndUpdate(#{ukey}: #{type}, payload: Partial#{entity.name} | Partial#{entity.name}Input) {
     logger.trace(`findOneBy#{f.cName}AndUpdate`);
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
@@ -137,7 +137,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   let loadArgs = `{${f.fields.map(f=>`${f.name}`).join(', ')}}`;
   let withArgsTypeof = f.fields.map(f=>'${'+`typeof args.${f.name}`+'}').join(', ');
     #>
-  public async findOneBy#{findBy}AndUpdate(#{findArgs}, payload: any) {
+  public async findOneBy#{findBy}AndUpdate(#{findArgs}, payload: Partial#{entity.name} | Partial#{entity.name}Input) {
     logger.trace(`findOneBy#{findBy}AndUpdate with #{withArgs} `);
     let entity = this.getPayload(payload, true);
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
@@ -184,7 +184,7 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
   }
 <#-});#>
 
-<#- for (let connection of entity.relations) {#>
+<#- for (let connection of entity.relations.filter(r=>!r.embedded)) {#>
   public async addTo#{ connection.shortName }(args: {
     <#- for (let f of connection.addArgs) {#>
       #{f.name}?: #{f.type},
@@ -330,11 +330,19 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
 
 <#-});-#>
 
-  public getPayload(args: Partial#{entity.name}, update?: boolean): Partial#{ entity.name } {
+  public getPayload(args: Partial#{entity.name} | Partial#{entity.name}Input, update?: boolean): Partial#{ entity.name } {
     let entity: any = {};
     <#- for (let f of entity.args.create) {#>
       if (args.#{f.name} !== undefined) {
+        <#if(f.relation && !f.relation.embedded){#>
+        if(typeof args.#{f.name} === 'object'){
+          entity.#{f.name} = args.#{f.name}.#{f.relation.ref.field};
+        } else {
+        <#}#>
         entity.#{f.name} = args.#{f.name};
+        <#if(f.relation && !f.relation.embedded){#>
+        }
+        <#}#>
       }
     <#-}#>
     if (update) {

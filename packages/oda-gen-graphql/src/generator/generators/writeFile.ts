@@ -17,7 +17,7 @@ export function writeFile(fn, data, format: boolean = true) {
             bracketSpacing: true,
             jsxBracketSameLine: true,
             parser: fType[0].match(/js?$/)
-              ? 'babylon'
+              ? 'babel'
               : fType[0].match(/ts?$/)
               ? 'typescript'
               : 'graphql',

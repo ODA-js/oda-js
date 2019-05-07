@@ -1,6 +1,6 @@
 <#@ context 'entity' -#>
-import log4js from 'log4js';
-let logger = log4js.getLogger('graphql:mutations:#{entity.name}');
+import getLogger from 'oda-logger';
+let logger = getLogger('graphql:mutations:#{entity.name}');
 import gql from 'graphql-tag';
 import RegisterConnectors from '../../../../data/registerConnectors';
 import { mutateAndGetPayload } from 'oda-api-graphql';

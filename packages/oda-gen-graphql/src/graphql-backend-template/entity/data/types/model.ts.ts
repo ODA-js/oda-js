@@ -23,6 +23,7 @@ export interface MapperOutput {
   plural: string;
   description: string;
   embedded: string[];
+  externalImport: string[];
   fields: {
     name: string;
     type: string;
@@ -35,6 +36,7 @@ import {
   mutableFields,
   idField,
   memoizeEntityMapper,
+  relations as filterRels,
 } from '../../../queries';
 
 export const mapper = memoizeEntityMapper(template, _mapper);
@@ -53,6 +55,12 @@ export function _mapper(
   let embedded = getFields(entity).filter(
     f => f.relation && f.relation.embedded,
   );
+  const fields = [
+    ...ids,
+    ...getFields(entity).filter(f => relations(f) || mutableFields(f)),
+  ];
+  const externalImport = fields.filter(f => f.relation && !f.relation.embedded);
+
   return {
     name: entity.name,
     plural: entity.plural,
@@ -65,15 +73,31 @@ export function _mapper(
           return res;
         }, {}),
     ),
-    fields: [
-      ...ids,
-      ...getFields(entity).filter(f => relations(f) || mutableFields(f)),
-    ].map(f => {
+    externalImport: Object.keys(
+      externalImport
+        .map(f => f.relation.ref.entity)
+        .reduce((res, i) => {
+          res[i] = 1;
+          return res;
+        }, {}),
+    ),
+    fields: fields.map(f => {
       return {
         name: f.name,
         type: `${
           f.relation && f.relation.embedded
             ? 'I' + f.relation.ref.entity
+            : mapToTSTypes(f.type)
+        }${f.relation && !f.relation.single ? '[]' : ''}`,
+        inputType: `${
+          f.relation && f.relation.embedded
+            ? 'I' + f.relation.ref.entity
+            : f.relation
+            ? mapToTSTypes({
+                type: 'entity',
+                name: f.relation.ref.entity,
+                multiplicity: f.relation.single ? 'single' : 'many',
+              })
             : mapToTSTypes(f.type)
         }${f.relation && !f.relation.single ? '[]' : ''}`,
         required: f.required,

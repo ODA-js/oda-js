@@ -20,3 +20,11 @@ TODO
 проверка неиспользованных зависимостей
 
 depcheck [directory] [arguments]
+
+для отладки
+
+npm i
+
+./link.sh
+
+npm link graphql

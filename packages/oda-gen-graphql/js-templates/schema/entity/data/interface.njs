@@ -25,7 +25,7 @@ export interface #{ entity.name }Connector extends Connector<Partial#{ entity.na
   findOneBy#{findBy}AndRemove:(#{findArgs}) => Promise<Partial#{entity.name}>
   <#});-#>
 
-<#- for (let connection of entity.relations) {#>
+<#- for (let connection of entity.relations.filter(r=>!r.embedded)) {#>
   addTo#{ connection.shortName }(args: {
     <#- for (let f of connection.addArgs) {#>
       #{f.name}?: #{f.type},

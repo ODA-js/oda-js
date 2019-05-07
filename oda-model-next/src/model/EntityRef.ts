@@ -1,6 +1,6 @@
 import camelcase from 'camelcase';
 import { Record } from 'immutable';
-import inflected from 'inflected';
+import * as inflected from 'inflected';
 
 import { DEFAULT_ID_FIELDNAME, REF_PATTERN } from '../definitions';
 import {

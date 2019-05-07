@@ -1,5 +1,5 @@
 import { Entity, ModelPackage, FieldType } from 'oda-model';
-import inflect from 'inflected';
+import * as inflect from 'inflected';
 import { Factory } from 'fte.js';
 
 export const template = 'entity/viewer/entry.graphql.njs';

@@ -45,6 +45,7 @@ export type possibleTypes =
   | 'uuid_pk'
   | 'id_pk'
   | 'many()'
+  | 'single()'
   | 'enum()'
   | 'entity()';
 
@@ -204,6 +205,7 @@ export const defaultTypeMapper: {
       'fixeddatetime',
     ],
     object: ['json', 'object'],
+    $typeInput: ['entity()'],
   },
 };
 
@@ -220,6 +222,7 @@ export function prepareMapper(
 
   const hasEnums = specificMapper.hasOwnProperty('enum()');
   const hasMany = specificMapper.hasOwnProperty('many()');
+  const hasSingle = specificMapper.hasOwnProperty('single()');
   const hasEntity = specificMapper.hasOwnProperty('entity()');
   return (type: FieldType | void) => {
     let result;
