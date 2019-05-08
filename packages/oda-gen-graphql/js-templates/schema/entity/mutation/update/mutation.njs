@@ -79,13 +79,18 @@ export default new Mutation({
       });
     }
 
-    <#- for (let r of entity.relations.filter(f=>!f.embedded)) {#>
+  <# const relations = entity.relations.filter(f=>!f.embedded)#>
+
+  <# if(relations.length >0) { #>
+  let resActions = [];
+    <#- for (let r of relations) {#>
     if (args.#{r.field}Unlink<#if(!r.single){#> && Array.isArray(args.#{r.field}Unlink) && args.#{r.field}Unlink.length > 0<#}#> ) {
     <#if(!r.single){#>
       for (let i = 0, len = args.#{r.field}Unlink.length; i < len; i++) {
     <#}#>
       let $item = args.#{r.field}Unlink<#if(!r.single){#>[i]<#}#>;
       if ($item) {
+          resActions.push(async() => {
 <# slot('import-common-mutation-update-slot',`ensure${r.ref.entity}`) -#>
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -93,10 +98,11 @@ export default new Mutation({
           create: false,
         });
 <# slot('import-common-mutation-update-slot',`unlink${entity.name}From${r.cField}`) -#>
-        await unlink#{entity.name}From#{r.cField}({
+        return unlink#{entity.name}From#{r.cField}({
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
+        });
         });
       }
     <#if(!r.single){#>
@@ -110,6 +116,7 @@ export default new Mutation({
     <#}#>
       let $item = args.#{r.field}Create<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
+          resActions.push(async() => {
 <# slot('import-common-mutation-update-slot',`ensure${r.ref.entity}`) -#>
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -118,13 +125,14 @@ export default new Mutation({
         });
 
 <# slot('import-common-mutation-update-slot',`link${entity.name}To${r.cField}`) -#>
-        await link#{entity.name}To#{r.cField}({
+        return link#{entity.name}To#{r.cField}({
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
           <#-r.fields.forEach(f=>{#>
           #{f.name}: $item.#{f.name},
           <#-})#>
+        });
         });
       }
     <#if(!r.single){#>
@@ -138,7 +146,7 @@ export default new Mutation({
     <#}#>
       let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
-
+          resActions.push(async() => {
 <# slot('import-common-mutation-update-slot',`ensure${r.ref.entity}`) -#>
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -147,13 +155,14 @@ export default new Mutation({
         });
 
 <# slot('import-common-mutation-update-slot',`link${entity.name}To${r.cField}`) -#>
-        await link#{entity.name}To#{r.cField}({
+        return link#{entity.name}To#{r.cField}({
           context,
           #{r.field},
           #{entity.ownerFieldName}: result,
           <#-r.fields.forEach(f=>{#>
           #{f.name}: $item.#{f.name},
           <#-})#>
+        });
         });
       }
     <#if(!r.single){#>
@@ -162,6 +171,10 @@ export default new Mutation({
     }
 
     <#-}#>
+      if(resActions.length > 0){
+        await Promise.all(resActions);
+      }
+<#-}#>
     return {
       #{entity.ownerFieldName}: result,
     };

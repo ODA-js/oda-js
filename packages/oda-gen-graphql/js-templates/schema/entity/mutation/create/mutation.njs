@@ -52,8 +52,11 @@ export default new Mutation({
       node: result,
     };
 
-    <#- for (let r of entity.relations.filter(f=>!f.embedded)) {#>
+  <# const relations = entity.relations.filter(f=>!f.embedded)#>
 
+  <# if(relations.length >0) { #>
+      let resActions = [];
+    <#- for (let r of relations) {#>
     if (args.#{r.field}<#if(!r.single){#> && Array.isArray(args.#{r.field}) && args.#{r.field}.length > 0<#}#> ) {
     <#if(!r.single && !r.embedded){#>
       for (let i = 0, len = args.#{r.field}.length; i < len; i++) {
@@ -61,6 +64,7 @@ export default new Mutation({
 <#if(!r.embedded){#>
       let $item = args.#{r.field}<#if(!r.single){#>[i]<#}#> as { id,<#r.fields.forEach(f=>{#> #{f.name},<#})#> };
       if ($item) {
+          resActions.push(async()=>{
 <#- slot('import-common-mutation-create-slot',`ensure${r.ref.entity}`) -#>
         let #{r.field} = await ensure#{r.ref.entity}({
           args: $item,
@@ -69,7 +73,7 @@ export default new Mutation({
         });
 <#}#>
 <#- slot('import-common-mutation-create-slot',`link${entity.name}To${r.cField}`) -#>
-        await link#{entity.name}To#{r.cField}({
+        return link#{entity.name}To#{r.cField}({
           context,
           #{r.field}<#if(r.embedded){#>: args.#{r.field}<#}#>,
           #{entity.ownerFieldName}: result,
@@ -77,6 +81,7 @@ export default new Mutation({
           #{f.name}: $item.#{f.name},
           <#-})#>
         });
+      });
 <#-if(!r.embedded){#>
       }
 <#-}#>
@@ -84,8 +89,11 @@ export default new Mutation({
       }
     <#}#>
     }
-
     <#-}#>
+      if(resActions.length > 0){
+        await Promise.all(resActions);
+      }
+  <#-}#>
     return {
       #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
     };

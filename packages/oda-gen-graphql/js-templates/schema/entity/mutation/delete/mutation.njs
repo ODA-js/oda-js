@@ -39,29 +39,31 @@ export default new Mutation({
   ) => {
     logger.trace('delete#{entity.name}');
     let result;
+    let deletePromise = [];
     if (args.id) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-      await unlink#{entity.name}FromAll([{
-        key: 'id',
-        type: 'ID',
-        value: args.id,
-      }],
-        context,
-      );
-
-      result = await context.connectors.#{entity.name}.findOneByIdAndRemove(args.id);
+  deletePromise.push(
+    unlink#{entity.name}FromAll([{
+      key: 'id',
+      type: 'ID',
+      value: args.id,
+    }],
+      context,
+    )
+  )
+  deletePromise.push(context.connectors.#{entity.name}.findOneByIdAndRemove(args.id).then(res => result = res))
     <#- for (let f of entity.args.remove.find) {#>
     } else if (args.#{f.name}) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-      await unlink#{entity.name}FromAll([{
+    deletePromise.push(
+      unlink#{entity.name}FromAll([{
         key: '#{f.name}',
         type: '#{f.gqlType}',
         value: args.#{f.name},
       }],
         context,
-      );
-
-      result = await context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name});
+      ));
+      deletePromise.push(context.connectors.#{entity.name}.findOneBy#{f.cName}AndRemove(args.#{f.name}).then(res => result = res));
     <#-}#>
     <#- for (let f of entity.complexUnique) {
       let findBy = f.fields.map(f=>f.uName).join('And');
@@ -70,7 +72,8 @@ export default new Mutation({
       #>
     } else if (#{condArgs}) {
 <# slot('import-common-mutation-delete-slot',`unlink${entity.name}FromAll`) -#>
-      await unlink#{entity.name}FromAll([
+  deletePromise.push(
+    unlink#{entity.name}FromAll([
         <#-f.fields.forEach((f, i)=>{#>
         <#-if(i>0){#>, <#}#>{
           key: '#{f.name}',
@@ -79,11 +82,13 @@ export default new Mutation({
         }
         <#-});-#>],
         context,
-      );
-
-      result = await context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs});
+      ));
+     deletePromise.push(context.connectors.#{entity.name}.findOneBy#{findBy}AndRemove(#{loadArgs}).then(res => result = res)));
     <#-}#>
     }
+
+    await Promise.all(deletePromise)
+      ;
 
     if (!result) {
       throw new Error('item of type #{entity.name} is not found for delete');
