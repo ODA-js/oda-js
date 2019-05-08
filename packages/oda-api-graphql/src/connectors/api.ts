@@ -119,6 +119,8 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     if (this.securityContext) {
       if (this.secure('create', { payload })) {
         return this._create(payload);
+      } else {
+        throw new Error(`can't create item due to security issue`);
       }
     } else {
       return this._create(payload);
@@ -133,6 +135,8 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     if (this.securityContext) {
       if (this.secure('update', { source, payload })) {
         return this._update(source, payload);
+      } else {
+        throw new Error(`can't update item due to security issue`);
       }
     } else {
       return this._update(source, payload);
@@ -147,6 +151,8 @@ export default class ConnectorsApiBase<Connectors, Payload extends object> {
     if (this.securityContext) {
       if (this.secure('remove', { source })) {
         return this._remove(source);
+      } else {
+        throw new Error(`can't remove item due to security issue`);
       }
     } else {
       return this._remove(source);
