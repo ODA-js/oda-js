@@ -41,12 +41,12 @@ export class Logger<T extends void | Promise<any>> {
       this.fatal = tracer(name, logType.fatal);
     }
   }
-  public trace: (obj: any) => T;
-  public debug: (obj: any) => T;
-  public info: (obj: any) => T;
-  public warn: (obj: any) => T;
-  public error: (obj: any) => T;
-  public fatal: (obj: any) => T;
+  public trace: (...obj: any) => T;
+  public debug: (...obj: any) => T;
+  public info: (...obj: any) => T;
+  public warn: (...obj: any) => T;
+  public error: (...obj: any) => T;
+  public fatal: (...obj: any) => T;
 }
 
 export default function<T extends void | Promise<any>>(
