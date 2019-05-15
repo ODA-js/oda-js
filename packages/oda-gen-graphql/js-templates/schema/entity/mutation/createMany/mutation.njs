@@ -31,14 +31,26 @@ export default new Mutation({
       connectors: RegisterConnectors;
       pubsub: PubSubEngine;
       resolvers:any;
-      },
+    },
     info
   ) => {
+    const needCommit = await context.connectors.ensureTransaction();
+    const txn = await context.connectors.transaction;
     logger.trace('createMany#{entity.name}');
     const result = args.map((input) => {
       return context.resolvers.RootMutation.createPerson(undefined, {input}, context, info);
     });
 
-    return Promise.all(result);
+    try {
+      const res = await Promise.all(result);
+      if(needCommit){
+        return txn.commit().then(() => res);
+      } else {
+        return res;
+      }
+    } catch (err) {
+      await txn.abort()
+      throw err;
+    }
   }),
 });

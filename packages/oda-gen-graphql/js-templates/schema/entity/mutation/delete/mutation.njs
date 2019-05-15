@@ -37,7 +37,10 @@ export default new Mutation({
       userGQL: (args: any)=>Promise<any> },
     info,
   ) => {
+    const needCommit = await context.connectors.ensureTransaction();
+    const txn = await context.connectors.transaction;
     logger.trace('delete#{entity.name}');
+    try {
     let result;
     let deletePromise = [];
     if (args.id) {
@@ -106,9 +109,20 @@ export default new Mutation({
       });
     }
 
-    return {
-      deletedItemId: result.id,
-      #{entity.ownerFieldName}: result,
-    };
+    if(needCommit) {
+      return txn.commit().then(() => ({
+        deletedItemId: result.id,
+        #{entity.ownerFieldName}: result,
+      }));
+    } else {
+      return {
+        deletedItemId: result.id,
+        #{entity.ownerFieldName}: result,
+      };
+    }
+    } catch (e) {
+      await txn.abort()
+      throw e;
+    }
   }),
 })

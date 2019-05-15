@@ -8,7 +8,9 @@ import { #{entity.name}Connector } from './#{entity.name}/adapter/interface';
 
 import { acl, ACLCheck, SecurityContext } from 'oda-api-graphql';
 
-export default class RegisterConnectors {
+import { RegisterConnectorsBase } from 'oda-api-graphql'
+
+export default class RegisterConnectors extends RegisterConnectorsBase {
 <#- for(let entity of pack.entities){#>
   public get #{entity.name}(): #{entity.name}Connector {
     return this.Init#{entity.name}();
@@ -27,8 +29,6 @@ export default class RegisterConnectors {
   protected _#{entity.name}: #{entity.name}Connector;
 <#- }#>
 
-  public mongoose;
-  public sequelize;
   public userGQL;
   public systemGQL;
 
@@ -86,6 +86,7 @@ export default class RegisterConnectors {
       userGQL?,
       systemGQL?,
     }) {
+    super();
     this.securityContext = {
       user,
       group: userGroup,

@@ -57,11 +57,13 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
 #>
 
     const by#{loaderName} = async (keys) => {
+      logger.trace('loader #{loaderName} start with %o', keys)
       let result = await this._getList({ filter: { #{field}: { in: keys } } });
       let map = result.reduce((_map, item) => {
         _map[item.#{field}] = item;
         return _map;
       }, {});
+      logger.trace('loader #{loaderName} finish with %o', map)
       return keys.map(id => map[id]);
     };
 <#-}-#>
@@ -113,7 +115,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       this.storeToCache([result]);
       return this.ensureId(result.toJSON ? result.toJSON() : result);
     } else {
-      throw new Error(`can't create item due to some issue`)
+      const err = `connector for '#{entity.name}': can't create item due to some issue`;
+      logger.error(err);
+      throw new Error(err);
     }
   }
 <#- for (let f of entity.args.update.find) {
@@ -129,7 +133,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       result = await this.updateSecure(result, entity);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't update item due to some issue`)
+      const err = `connector for '#{entity.name}': can't update item due to some issue`;
+      logger.error(err)
+      throw new Error(err)
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -151,7 +157,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       result = await this.updateSecure(result, entity);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't update item due to some issue`)
+      const err = `connector for '#{entity.name}': can't update item due to some issue`;
+      logger.error(err)
+      throw new Error(err)
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -169,7 +177,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       result = await this.removeSecure(result);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't remove item due to some issue`)
+      const err = `connector for '#{entity.name}': can't remove item due to some issue`;
+      logger.error(err)
+      throw new Error(err)
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -190,7 +200,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       result = await this.removeSecure(result);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't remove item due to some issue`)
+      const err = `connector for '#{entity.name}': can't remove item due to some issue`;
+      logger.error(err)
+      throw new Error(err)
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -218,7 +230,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
         args.#{connection.refFieldName},
         { #{connection.ref.field}: current.#{connection.ref.backField} });
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } item not found`;
+      logger.error(err)
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'HasMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
@@ -227,7 +241,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
         args.#{connection.refFieldName},
         { #{connection.ref.field}: current.#{connection.ref.backField} });
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } item not found`;
+      logger.error(err)
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'BelongsTo') {#>
     let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName});
@@ -235,7 +251,9 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName},
       { #{connection.ref.backField || connection.field}: opposite.#{connection.ref.field} });
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } opposite not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } opposite not found`;
+      logger.error(err)
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
@@ -270,10 +288,18 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
         await this.connectors.#{connection.ref.using.entity}.create(update);
       }
     } else {
-      if(!opposite)
-        throw new Error(`can't addTo#{ connection.shortName } opposite not found`);
-      if(!current)
-        throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      let err, err2;
+      if(!opposite){
+        err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } opposite not found`;
+        logger.error(err)
+      }
+      if(!current){
+        err2 = `connector for '#{entity.name}': can't create item due to some issue`;
+        logger.error(err2)
+      }
+      if(err || err2){
+        throw new Error([err, err2].filter(e=>e).join('\n'));
+      }
     }
 <#}-#>
   }
@@ -319,11 +345,19 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
         await this.connectors.#{connection.ref.using.entity}.findOneByIdAndRemove(connection[0].id);
       }
     } else {
-      if(!opposite)
-        throw new Error(`can't removeFrom#{ connection.shortName } opposite not found`);
-      if(!current)
-        throw new Error(`can't removeFrom#{ connection.shortName } item not found`);
-    }
+      let err, err2;
+      if(!opposite){
+        err = `connector for '#{entity.name}': can't removeFrom#{ connection.shortName } opposite not found`;
+        logger.error(err)
+      }
+      if(!current){
+        err2 = `connector for '#{entity.name}': can't removeFrom#{ connection.shortName } item not found`;
+        logger.error(err2)
+      }
+      if(err || err2 ){
+        throw new Error([err, err2].filter(e=>e).join('\n'));
+      }
+     }
 <#}-#>
   }
 <#}-#>
@@ -338,8 +372,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
       let result = await this.loaders.by#{f.cName}.load(#{ukey});
       if (result){
         return this.ensureId(result.toJSON ? result.toJSON() : result);
-      } else {
-        throw new Error(`can't findOneBy#{f.cName} with ${#{ukey}}`);
       }
     }
   }
@@ -359,8 +391,6 @@ export default class #{ entity.name } extends MongooseApi<RegisterConnectors, Pa
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if (result) {
       return this.ensureId(result.toJSON ? result.toJSON() : result);
-    } else {
-      throw new Error(`can't findOneBy#{f.cName} with ${#{ukey}}`);
     }
   }
 

@@ -2,6 +2,7 @@
 <#@ context 'entity' #>
 <# for (let connection of entity.relations.filter(f=>f.embedded)) {-#>
 #{connection.field}: async ({#{connection.field}}, args: object, context: { connectors: RegisterConnectors }, info)=>{
+logger.trace('#{entity.name}.#{connection.field}');
 <#if(connection.single){#>
   return context.connectors.#{connection.ref.entity}.ensureId(#{connection.field});
 <#} else {#>
@@ -28,6 +29,7 @@
       },
       context: { connectors: RegisterConnectors },
       info) => {
+      logger.trace('#{entity.name}.#{connection.field}');
       let result;
       let selectionSet = traverse(info);
 
@@ -99,6 +101,9 @@
       //BelongsTo
       if (#{entity.ownerFieldName} && #{entity.ownerFieldName}.#{connection.ref.backField || connection.field}) {
         result = await context.connectors.#{connection.ref.entity}.findOneBy#{connection.ref.cField}(#{entity.ownerFieldName}.#{connection.ref.backField || connection.field});
+        if(!result){
+          logger.warn('Possibly inconsistent connection for #{entity.name}.#{connection.field} with id %s to %s', id, #{entity.ownerFieldName}.#{connection.ref.backField || connection.field});
+        }
 <#} else if (connection.verb === 'BelongsToMany') {#>
       //BelongsToMany
 
@@ -146,6 +151,10 @@
               <#-}#>
                 });
             } else {
+              // inconsistent link
+              if(!result) {
+                logger.warn('Possibly inconsistent link connection for #{entity.name}.#{connection.field} with id %s', id);
+              }
               return false;
             }
           }
@@ -214,6 +223,7 @@
       args,
       context: { connectors: RegisterConnectors },
       info) => {
+      logger.trace('#{entity.name}.#{connection.field}');
       let result;
 <# if(!connection.derived){#>
       // let #{entity.ownerFieldName} = await context.connectors.#{entity.name}.findOneById(id);

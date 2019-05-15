@@ -108,7 +108,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       this.storeToCache([result]);
       return this.ensureId(result.toJSON ? result.toJSON() : result);
     } else {
-      throw new Error(`can't create item due to some issue`)
+      const err = `connector for '#{entity.name}': can't create item due to some issue`;
+      loggger.error(err);
+      throw new Error(err);
     }
   }
 <#- for (let f of entity.args.update.find) {
@@ -124,7 +126,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       await this.updateSecure(result, entity);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't update item due to some issue`)
+      const err = `connector for '#{entity.name}': can't update item due to some issue`;
+      loggger.error(err);
+      throw new Error(err);
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -146,7 +150,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       await this.updateSecure(result, entity);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't update item due to some issue`)
+      const err = `connector for '#{entity.name}': can't update item due to some issue`;
+      loggger.error(err);
+      throw new Error(err);
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -164,7 +170,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       result = this.removeSecure(result);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't remove item due to some issue`)
+      const err = `connector for '#{entity.name}': can't remove item due to some issue`;
+      loggger.error(err);
+      throw new Error(err)
     }
     return this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -185,7 +193,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       result = this.removeSecure(result);
       this.storeToCache([result]);
     } else {
-      throw new Error(`can't remove item due to some issue`)
+      const err = `connector for '#{entity.name}': can't remove item due to some issue`;
+      loggger.error(err);
+      throw new Error(err)
     }
     result this.ensureId(result.toJSON ? result.toJSON() : result);
   }
@@ -205,7 +215,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
         args.#{connection.refFieldName},
         { #{connection.ref.field}: current.#{connection.ref.backField} });
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } item not found`;
+      loggger.error(err);
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'HasMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
@@ -214,7 +226,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
         args.#{connection.refFieldName},
         { #{connection.ref.field}: current.#{connection.ref.backField}});
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } item not found`;
+      loggger.error(err);
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'BelongsTo') {#>
     let opposite = await this.connectors.#{connection.ref.entity}.findOneById(args.#{connection.refFieldName} );
@@ -222,7 +236,9 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
       await this.findOneByIdAndUpdate(args.#{entity.ownerFieldName},
       { #{connection.field}: opposite.#{connection.ref.field} });
     } else {
-      throw new Error(`can't addTo#{ connection.shortName } opposite not found`);
+      const err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } opposite not found`;
+      loggger.error(err);
+      throw new Error(err);
     }
 <#} else if (connection.verb === 'BelongsToMany') {#>
     let current = await this.findOneById(args.#{entity.ownerFieldName});
@@ -257,10 +273,18 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
         await this.connectors.#{connection.ref.using.entity}.create(update);
       }
     } else {
-      if(!opposite)
-        throw new Error(`can't addTo#{ connection.shortName } opposite not found`);
-      if(!current)
-        throw new Error(`can't addTo#{ connection.shortName } item not found`);
+      let err, err2;
+      if(!opposite){
+        err = `connector for '#{entity.name}': can't addTo#{ connection.shortName } opposite not found`;
+        logger.error(err)
+      }
+      if(!current){
+        err2 = `connector for '#{entity.name}': can't addTo#{ connection.shortName } item not found`;
+        logger.error(err2)
+      }
+      if(err || err2){
+        throw new Error([err, err2].filter(e=>e).join('\n'));
+      }
     }
 <#}-#>
   }
@@ -298,10 +322,18 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
         await this.connectors.#{connection.ref.using.entity}.findOneByIdAndRemove(connection[0].id);
       }
     } else {
-      if(!opposite)
-        throw new Error(`can't removeFrom#{ connection.shortName } opposite not found`);
-      if(!current)
-        throw new Error(`can't removeFrom#{ connection.shortName } item not found`);
+      let err, err2;
+      if(!opposite){
+        err = `connector for '#{entity.name}': can't removeFrom#{ connection.shortName } opposite not found`;
+        logger.error(err)
+      }
+      if(!current){
+        err2 = `connector for '#{entity.name}': can't removeFrom#{ connection.shortName } item not found`;
+        logger.error(err2)
+      }
+      if(err || err2){
+        throw new Error([err, err2].filter(e=>e).join('\n'));
+      }
     }
 <#}-#>
   }
@@ -316,8 +348,6 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     let result = await this.loaders.by#{f.cName}.load(#{ukey});
       if (result){
         return this.ensureId(result.toJSON ? result.toJSON() : result);
-      } else {
-        throw new Error(`can't findOneBy#{f.cName} with ${#{ukey}}`);
       }
   }
 
@@ -336,8 +366,6 @@ export default class #{ entity.name } extends SequelizeApi<RegisterConnectors, P
     let result = await this.loaders.by#{findBy}.load(#{loadArgs});
     if (result) {
       return this.ensureId(result.toJSON ? result.toJSON() : result);
-    } else {
-      throw new Error(`can't findOneBy#{f.cName} with ${#{ukey}}`);
     }
   }
 

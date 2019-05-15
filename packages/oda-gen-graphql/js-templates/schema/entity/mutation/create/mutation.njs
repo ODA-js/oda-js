@@ -30,7 +30,10 @@ export default new Mutation({
     context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
   ) => {
+    const needCommit = await context.connectors.ensureTransaction();
+    const txn = await context.connectors.transaction;
     logger.trace('create#{entity.name}');
+    try {
     let create = context.connectors.#{entity.name}.getPayload(args, false);
 
     let result = await context.connectors.#{entity.name}.create(create);
@@ -94,8 +97,18 @@ export default new Mutation({
         await Promise.all(resActions);
       }
   <#-}#>
-    return {
-      #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
-    };
+      if(needCommit) {
+        return txn.commit().then(() => ({
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
+        }));
+      } else {
+        return {
+          #{entity.ownerFieldName}: #{entity.ownerFieldName}Edge,
+        };
+      }
+      } catch (e) {
+        await txn.abort()
+        throw e;
+      }
   }),
 });
