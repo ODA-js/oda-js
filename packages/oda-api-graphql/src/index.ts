@@ -10,7 +10,7 @@ import * as utils from './utils';
 import * as dataPump from './dataPump';
 import * as listIterator from './connectors/listIterator';
 import ConnectorsApiBase, { ACLCheck, SecurityContext } from './connectors/api';
-import { Connector } from './connector';
+import { Connector, RegisterConnectorsBase } from './connector';
 import { CursorType } from './cursor';
 import detectCursorDirection from './direction';
 import * as Filter from './filter';
@@ -27,6 +27,7 @@ export {
   getWithType,
   CursorType,
   Connector,
+  RegisterConnectorsBase,
   detectCursorDirection,
   isType,
   mutateAndGetPayload,

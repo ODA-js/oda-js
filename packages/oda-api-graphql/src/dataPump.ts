@@ -1,5 +1,6 @@
 import { filter } from 'graphql-anywhere';
 import gql from 'graphql-tag';
+import { ExecutionArgs } from 'graphql';
 
 // tslint:disable-next-line:no-var-requires
 require('isomorphic-fetch');
@@ -87,7 +88,7 @@ async function processItemsDirect<I>(
   },
   schema,
   context,
-  runQuery,
+  runQuery: (options: ExecutionArgs) => Promise<any>,
 ) {
   for (let i = 0, len = data.length; i < len; i++) {
     const keys = Object.keys(findVars);
@@ -99,10 +100,10 @@ async function processItemsDirect<I>(
       variables = findVars[key](data[i]);
       if (variables) {
         res = await runQuery({
-          query: queries[findQuery[key]],
-          variables,
+          document: queries[findQuery[key]],
+          variableValues: variables,
           schema,
-          context,
+          contextValue: context,
         });
         if (res.data[dataPropName]) {
           break;
@@ -113,22 +114,22 @@ async function processItemsDirect<I>(
     if (!(res && res.data[dataPropName])) {
       //2. если нет создать
       await runQuery({
-        query: queries[createQuery],
-        variables: {
+        document: queries[createQuery],
+        variableValues: {
           [dataPropName]: data[i],
         },
         schema,
-        context,
+        contextValue: context,
       });
     } else {
       //3. если есть обновить текущими данными из набора.
       await runQuery({
-        query: queries[updateQuery],
-        variables: {
+        document: queries[updateQuery],
+        variableValues: {
           [dataPropName]: data[i],
         },
         schema,
-        context,
+        contextValue: context,
       });
     }
   }
@@ -215,7 +216,7 @@ export let dumpDataDirect = async (
   queries,
   schema,
   context,
-  runQuery,
+  runQuery: (options: ExecutionArgs) => Promise<any>,
 ) => {
   let result = {};
   let exportQueries = config.export.queries;
@@ -225,9 +226,9 @@ export let dumpDataDirect = async (
     result = {
       ...result,
       ...(await runQuery({
-        query: queries[exportQueries[entityName].query],
+        document: queries[exportQueries[entityName].query],
         schema,
-        context,
+        contextValue: context,
       }).then(res => {
         if (exportQueries[entityName].process) {
           return exportQueries[entityName].process(res.data)[entityName];
