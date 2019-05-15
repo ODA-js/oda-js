@@ -1,5 +1,7 @@
 import { fromGlobalId } from 'oda-isomorfic';
 import { set, get } from 'lodash';
+import getLogger from 'oda-logger';
+let logger = getLogger('oda-api-graphql:api-mongoose');
 
 import {
   ConnectorsApiBase,
@@ -9,6 +11,7 @@ import {
   pagination,
   detectCursorDirection,
   Filter as FilterBase,
+  RegisterConnectorsBase,
 } from 'oda-api-graphql';
 
 const { forward } = listIterator;
@@ -21,6 +24,7 @@ function unfoldQuery(
   parent: string[],
   res?: object,
 ) {
+  logger.trace('unfoldQuery');
   if (typeof obj === 'object') {
     if (Array.isArray(obj)) {
       return obj.map(item => unfoldQuery(item, operations, parent));
@@ -53,6 +57,7 @@ function unfoldQuery(
 
 export class FilterMongoose {
   public static parse(node, idMap = { id: '_id' }, id: boolean = false) {
+    logger.trace('parse %o', node);
     let result = Filter.parse(node, idMap, id);
     if (typeof result === 'object') {
       return unfoldQuery(result, Filter.types, []);
@@ -62,7 +67,7 @@ export class FilterMongoose {
 }
 
 export default class MongooseApi<
-  RegisterConnectors,
+  RegisterConnectors extends RegisterConnectorsBase,
   Payload extends object
 > extends ConnectorsApiBase<RegisterConnectors, Payload> {
   public mongoose: any;
@@ -83,6 +88,7 @@ export default class MongooseApi<
   }
 
   protected initSchema(name, schema) {
+    logger.trace('%s unfoldQuery', name);
     this.schema = schema;
     if (!this.mongoose.models[name]) {
       this.model = this.mongoose.model(name, schema);
@@ -91,11 +97,19 @@ export default class MongooseApi<
     }
   }
   public async getCount(args) {
+    logger.trace('getCount %o', args);
     let query = this.getFilter(args);
-    return await this.model.count(query);
+    if (query.hasOwnProperty().length > 0) {
+      logger.trace('getCount use countDocuments %o', query);
+      return await this.model.countDocuments(query);
+    } else {
+      logger.trace('getCount use estimatedDocumentCount');
+      return await this.model.estimatedDocumentCount();
+    }
   }
 
   public getFilter(args: { filter: any; idMap: any }) {
+    logger.trace('getFilter %o', args);
     if (args.filter) {
       return FilterMongoose.parse(args.filter, args.idMap);
     } else {
@@ -104,10 +118,12 @@ export default class MongooseApi<
   }
 
   public toJSON(obj): Payload {
+    logger.trace('%s toJSON', this.name);
     return super.toJSON(obj && obj.toObject ? obj.toObject() : obj);
   }
 
   public ensureId(obj) {
+    logger.trace('%s ensureId', this.name);
     if (obj) {
       return this.toJSON({
         ...obj,
@@ -119,6 +135,7 @@ export default class MongooseApi<
   }
 
   protected async _getList(args, checkExtraCriteria?) {
+    logger.trace('%s _getList', this.name);
     let hasExtraCondition = typeof checkExtraCriteria !== 'undefined';
     let query: any = this.getFilter(args);
     let sort = detectCursorDirection(args);
@@ -185,19 +202,33 @@ export default class MongooseApi<
 
     let pageSize = 10;
     let iterator = forward(async (step: number) => {
+      logger.trace('%s _getList:forward', this.name);
+
       return await new Promise<any[]>((res, rej) => {
-        this.model
+        let rz = this.model
           .find(query)
           .sort(sort)
           .skip(cursor.skip + step * pageSize)
-          .limit(pageSize)
-          .exec((err, data) => {
-            if (err) {
-              rej(err);
-            } else {
-              res(data);
-            }
-          });
+          .limit(pageSize);
+
+        if (
+          this.connectors &&
+          this.connectors.transaction &&
+          this.connectors.transaction.session &&
+          this.connectors.transaction.session.mongoose
+        ) {
+          rz = rz.session(this.connectors.transaction.session.mongoose);
+        }
+
+        rz.exec((err, data) => {
+          if (err) {
+            logger.error('%s _getList:forward:error', this.name);
+            rej(err);
+          } else {
+            logger.trace('%s _getList:forward:done', this.name);
+            res(data);
+          }
+        });
       });
     }, pageSize);
 
@@ -206,6 +237,7 @@ export default class MongooseApi<
         (cursor.limit && result.length < cursor.limit) ||
         (!cursor.limit || cursor.limit <= 0)
       ) {
+        logger.trace('%s _getList:more', this.name);
         if (await this.readSecure(source)) {
           if (hasExtraCondition) {
             if (await checkExtraCriteria(this.toJSON(source))) {
@@ -216,33 +248,68 @@ export default class MongooseApi<
           }
         }
       } else {
+        logger.trace('%s _getList:limit', this.name);
         break;
       }
     }
 
     this.storeToCache(result);
-
     return result;
   }
 
   protected async _create(obj: Payload) {
-    return await new this.model(obj).save();
+    logger.trace('%s _create', this.name);
+    let res = new this.model(obj);
+    if (
+      this.connectors &&
+      this.connectors.transaction &&
+      this.connectors.transaction.session &&
+      this.connectors.transaction.session.mongoose
+    ) {
+      res.$session(this.connectors.transaction.session.mongoose);
+    } else {
+      res.$session(undefined);
+    }
+    return await res.save();
   }
 
   protected async _update(record, obj: Payload) {
+    logger.trace('%s _update', this.name);
     for (let f in obj) {
       if (obj.hasOwnProperty(f)) {
         record.set(f, obj[f]);
       }
     }
+    if (
+      this.connectors &&
+      this.connectors.transaction &&
+      this.connectors.transaction.session &&
+      this.connectors.transaction.session.mongoose
+    ) {
+      record.$session(this.connectors.transaction.session.mongoose);
+    } else {
+      record.$session(undefined);
+    }
     return await record.save();
   }
 
   protected async _remove(record) {
+    logger.trace('%s _remove', this.name);
+    if (
+      this.connectors &&
+      this.connectors.transaction &&
+      this.connectors.transaction.session &&
+      this.connectors.transaction.session.mongoose
+    ) {
+      record.$session(this.connectors.transaction.session.mongoose);
+    } else {
+      record.$session(undefined);
+    }
     return await record.remove();
   }
 
   public async sync({ force = false }: { force?: boolean }) {
+    logger.trace('%s sync empty', this.name);
     return;
   }
 }
