@@ -1,7 +1,7 @@
 import { IResolvers, IEnumResolver } from 'graphql-tools';
 import { merge } from 'lodash';
 import mergeTypes from './graphql-merge-schema';
-import * as jsonUtils from '../lib';
+import { get, set } from 'lodash';
 
 import {
   parse,
@@ -9,10 +9,8 @@ import {
   DocumentNode,
   DefinitionNode,
   visit,
-  TypeDefinitionNode,
   Kind,
   GraphQLScalarType,
-  DirectiveDefinitionNode,
   NamedTypeNode,
 } from 'graphql';
 import _ = require('lodash');
@@ -25,7 +23,7 @@ export type ResolverFunction = (
 ) => Promise<any> | any;
 
 export type ResolverHookFunction = (
-  target: ResolverFunction,
+  target: ResolverFunction | IResolvers,
 ) => ResolverFunction;
 
 export type ResolverHook = { [key: string]: ResolverHookFunction };
@@ -185,25 +183,26 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
   public get schemaAST(): DocumentNode {
     return this._schemaAST;
   }
-  public get resolver(): null | IResolvers {
+  public get resolver(): undefined | IResolvers {
     return this._resolver;
   }
   public get valid(): boolean {
     return !!this._schema && !!this._name;
   }
   public complex: boolean = false;
-  protected _isExtend: boolean;
-  protected _type: ModelType;
-  protected _name: string;
-  protected _schema: string;
-  protected _schemaAST: DocumentNode;
+  protected _isExtend!: boolean;
+  protected _type!: ModelType;
+  protected _name!: string;
+  protected _schema!: string;
+  protected _schemaAST!: DocumentNode;
   protected _resolver?: any;
-  protected node: DefinitionNode[] | DefinitionNode;
+  protected node!: DefinitionNode[] | DefinitionNode;
   public static create(
     inp: IGQLInput | string | DocumentNode,
-  ): GQLType | GQLType[] {
+  ): GQLType | GQLType[] | any {
     if (isValidInput(inp)) {
-      let schema, type: ModelTypes;
+      let schema;
+      let type: ModelTypes | undefined;
       if (isIGQLInput(inp)) {
         schema = inp.schema;
         type = inp.type;
@@ -266,7 +265,7 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
                 }
               }
               case ModelType.schema:
-                return undefined;
+                return;
               case ModelType.directive:
                 return new Directive(typedef);
               default:
@@ -280,12 +279,13 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
     } else {
       throw new Error('not valid input');
     }
+    return;
   }
-  protected resolveName(schema: string | DocumentNode) {
+  protected resolveName(schema: string | DocumentNode | undefined) {
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
-    if (parsed.definitions) {
+    if (parsed && parsed.definitions) {
       return ((parsed.definitions[0] as any) as NamedTypeNode).name.value;
-    } else if (parsed.hasOwnProperty('name')) {
+    } else if (parsed && parsed.hasOwnProperty('name')) {
       return ((parsed as any) as NamedTypeNode).name.value;
     } else {
       throw new Error('nonsence');
@@ -305,7 +305,7 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
       }
     }
   }
-  public attachResolver(resolver: Reslvr) {
+  public attachResolver(resolver: Reslvr | undefined) {
     this._resolver = resolver;
   }
 
@@ -321,7 +321,7 @@ export abstract class GQLType<Reslvr = any> implements Readonly<IGQLTypeDef> {
     }
   }
 
-  public attachSchema(value: string | DocumentNode) {
+  public attachSchema(value: string | DocumentNode | undefined) {
     if (isValidSchema(value)) {
       if (typeof value === 'string') {
         this._schema = value;
@@ -422,7 +422,7 @@ export class Type extends GQLType<ResolverFunction | ObjectResolver>
     const parsed = typeof schema === 'string' ? parse(schema) : schema;
     let extend = false;
     visit(parsed, {
-      [Kind.OBJECT_TYPE_EXTENSION](node) {
+      [Kind.OBJECT_TYPE_EXTENSION]() {
         extend = true;
       },
     });
@@ -533,7 +533,7 @@ export class Scalar extends GQLType<ScalarResolver>
 
 export class Enum extends GQLType<IEnumResolver>
   implements Readonly<IGQLTypeDef> {
-  public get resolver(): IResolvers {
+  public get resolver(): IResolvers | undefined {
     return this._resolver && this.name
       ? { [this.name]: this._resolver }
       : undefined;
@@ -556,6 +556,7 @@ function isValidSchemaInput(inp: any): inp is SchemaInput {
   if (typeof inp === 'object' && inp.hasOwnProperty('name')) {
     return true;
   }
+  return false;
 }
 
 export interface SchemaInput extends IGQLBaseInput<IResolvers> {
@@ -597,7 +598,7 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
   public get hooks(): ResolverHook[] {
     return [
       ...(this._hooks.length > 0 ? this._hooks : []),
-      ...(this._isBuilt && this._compiledHooks.length > 0
+      ...(this._isBuilt && this._compiledHooks && this._compiledHooks.length > 0
         ? this._compiledHooks
         : []),
     ];
@@ -618,10 +619,10 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
   public get schema(): string {
     return this._isBuilt ? this._schema : '';
   }
-  protected _compiledHooks: ResolverHook[];
+  protected _compiledHooks!: ResolverHook[];
   protected _hooks: ResolverHook[] = [];
-  protected _resolversClean: IResolvers;
-  protected _resolvers: IResolvers;
+  protected _resolversClean!: IResolvers;
+  protected _resolvers!: IResolvers;
   /**
    * All entries for this schema
    * note: available after schema is built
@@ -631,23 +632,35 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * All queries for schema
    * note: available after schema is built
    */
-  protected _queries: Query[];
+  /**
+   * All queries for schema
+   * note: available after schema is built
+   */
+  protected _queries!: Query[];
   /**
    * All mutations for schema
    * note: available after schema is built
    */
-  protected _mutations: Mutation[];
+  /**
+   * All mutations for schema
+   * note: available after schema is built
+   */
+  protected _mutations!: Mutation[];
   /**
    * All subscriptions for schema.
    * note: available after schema is built
    */
-  protected _subscriptions: Subscription[];
+  /**
+   * All subscriptions for schema.
+   * note: available after schema is built
+   */
+  protected _subscriptions!: Subscription[];
   /**
    * check is schema build
    */
   protected _isBuilt: boolean = false;
 
-  protected _initialSchema: string;
+  protected _initialSchema!: string;
 
   protected _rootQuery?: string = 'Query';
   protected _rootMutation?: string = 'Mutation';
@@ -657,7 +670,7 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * create item
    * @param inp the item must be
    */
-  public create(inp: PossibleInitType): GQLType | GQLType[] {
+  public create(inp: PossibleInitType): GQLType | GQLType[] | undefined {
     if (isValidInput(inp)) {
       return GQLType.create(inp);
     } else {
@@ -668,12 +681,12 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
    * add existing item to schema
    * @param inp
    */
-  public add(inp: GQLType | GQLType[]) {
+  public add(inp: GQLType | GQLType[] | undefined) {
     if (Array.isArray(inp)) {
       return inp.map(i => {
         return this.add(i);
       });
-    } else {
+    } else if (inp) {
       if (this._items.indexOf(inp) === -1) {
         this._items.push(inp);
         return inp;
@@ -714,6 +727,9 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
             res.push(...curr);
             return res;
           }, []);
+        this._isBuilt = true;
+      } else {
+        this._resolversClean = this._resolvers = this._resolver;
         this._isBuilt = true;
       }
     }
@@ -781,11 +797,8 @@ export class Schema extends GQLType<IResolvers> implements IGQLTypeDef {
       let hookList = Object.keys(modelHooks[i]);
       for (let j = 0, jLen = hookList.length; j < jLen; j++) {
         let key = hookList[j];
-        jsonUtils.set(
-          this.resolvers,
-          key,
-          modelHooks[i][key](jsonUtils.get(this.resolvers, key)),
-        );
+        const resoler = get(this.resolvers, key);
+        set(this.resolvers, key, modelHooks[i][key](resoler as any));
       }
     }
   }
@@ -803,7 +816,7 @@ const needToFix = def =>
   def.kind === Kind.UNION_TYPE_EXTENSION;
 
 // optimize!!! it!!
-function cloneCustomizer(value, index, object, stack) {
+function cloneCustomizer(value) {
   if (value && value.kind && needToFix(value)) {
     return {
       ...value,

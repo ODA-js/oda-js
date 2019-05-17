@@ -50,7 +50,7 @@ describe('Query', () => {
 
   it('not throws to create with right schema', () => {
     let query = new Query(gql`
-      extend type RootQuery {
+      extend type Query {
         user(id: String): String
       }
     `);
@@ -63,7 +63,7 @@ describe('Query', () => {
 describe('GQLType', () => {
   it('creates Query', () => {
     const item = GQLType.create(gql`
-      extend type RootQuery {
+      extend type Query {
         user(id: String): String
       }
     `);
@@ -72,7 +72,7 @@ describe('GQLType', () => {
   });
   it('creates Mutation', () => {
     const item = GQLType.create(gql`
-      extend type RootMutation {
+      extend type Mutation {
         updateUser(id: String, payload: UserPayload): String
       }
     `);
@@ -110,12 +110,12 @@ describe('Schema', () => {
       name: 'Person',
       items: [
         gql`
-          extend type RootMutation {
+          extend type Mutation {
             updateUser(id: String, payload: UserPayload): String
           }
         `,
         `
-        extend type RootMutation {
+        extend type Mutation {
           deleteUser(id: String, payload: UserPayload): String
         }
       `,
@@ -137,13 +137,13 @@ describe('Schema', () => {
       items: [
         gql`
           schema {
-            query: RootQuery
-            mutation: RootMutation
+            query: Query
+            mutation: Mutation
           }
-          extend type RootMutation {
+          extend type Mutation {
             updateUser(id: String, payload: UserPayload): String
           }
-          extend type RootMutation {
+          extend type Mutation {
             deleteUser(id: String, payload: UserPayload): String
           }
           type Image {
@@ -155,10 +155,10 @@ describe('Schema', () => {
             username: String
           }
 
-          extend type RootMutation {
+          extend type Mutation {
             login(user: String): String
           }
-          extend type RootQuery {
+          extend type Query {
             viewer(user: String): Viewer
           }
         `,
@@ -178,7 +178,7 @@ describe('Schema', () => {
             }),
           ],
           schema: gql`
-            extend type RootMutation {
+            extend type Mutation {
               createPicture: String
             }
             extend type Picture {
@@ -186,7 +186,7 @@ describe('Schema', () => {
             }
           `,
           resolver: {
-            RootMutation: {
+            Mutation: {
               createPicture: () => null,
             },
             Picture: {
@@ -196,12 +196,12 @@ describe('Schema', () => {
         }),
       ],
       resolver: {
-        RootMutation: {
+        Mutation: {
           login: () => null,
           deleteUser: () => null,
           updateUser: () => null,
         },
-        RootQuery: {
+        Query: {
           viewer: () => null,
         },
         Viewer: () => ({
@@ -246,17 +246,17 @@ describe('Merge', () => {
       items: [
         gql`
           schema {
-            query: RootQuery
-            mutation: RootMutation
+            query: Query
+            mutation: Mutation
           }
           directive @example on FIELD
           interface Node {
             id: ID!
           }
-          extend type RootMutation {
+          extend type Mutation {
             updateUser(id: String, payload: UserPayload): String
           }
-          extend type RootMutation {
+          extend type Mutation {
             deleteUser(id: String, payload: UserPayload): String
           }
           union Images = Image
@@ -269,10 +269,10 @@ describe('Merge', () => {
             username: String
           }
 
-          extend type RootMutation {
+          extend type Mutation {
             login(user: String): String
           }
-          extend type RootQuery {
+          extend type Query {
             viewer(user: String): Viewer
           }
         `,
@@ -295,12 +295,12 @@ describe('Merge', () => {
             directive @example on FIELD_DEFINITION | ARGUMENT_DEFINITION
             union Images = Picture
             schema {
-              mutation: RootMutation
+              mutation: Mutation
             }
             type Viewer {
               username(short: Boolean): String
             }
-            extend type RootMutation {
+            extend type Mutation {
               createPicture: String
             }
             interface INode {
@@ -311,7 +311,7 @@ describe('Merge', () => {
             }
           `,
           resolver: {
-            RootMutation: {
+            Mutation: {
               createPicture: () => null,
             },
             Picture: {
@@ -321,12 +321,12 @@ describe('Merge', () => {
         }),
       ],
       resolver: {
-        RootMutation: {
+        Mutation: {
           login: () => null,
           deleteUser: () => null,
           updateUser: () => null,
         },
-        RootQuery: {
+        Query: {
           viewer: () => null,
         },
         Viewer: () => ({
@@ -352,8 +352,8 @@ describe('Merge', () => {
         }),
         gql`
           schema {
-            query: RootQuery
-            mutation: RootMutation
+            query: Query
+            mutation: Mutation
           }
           input UserPayload {
             name: String
@@ -363,10 +363,10 @@ describe('Merge', () => {
           interface INode {
             id: ID!
           }
-          extend type RootMutation {
+          extend type Mutation {
             updateUser(id: String, payload: UserPayload): String
           }
-          extend type RootMutation {
+          extend type Mutation {
             deleteUser(id: String, payload: UserPayload): String
           }
           type Image implements INode {
@@ -374,17 +374,17 @@ describe('Merge', () => {
             name: String
             size: ImageSize
           }
-          extend type RootQuery {
+          extend type Query {
             images: [Image]
           }
           type Viewer {
             username: String
           }
 
-          extend type RootMutation {
+          extend type Mutation {
             login(user: String): String
           }
-          extend type RootQuery {
+          extend type Query {
             viewer(user: String): Viewer
           }
         `,
@@ -412,13 +412,13 @@ describe('Merge', () => {
               gif
             }
             schema {
-              mutation: RootMutation
-              query: RootQuery
+              mutation: Mutation
+              query: Query
             }
             type Viewer {
               username(short: Boolean): String
             }
-            extend type RootMutation {
+            extend type Mutation {
               createPicture: Picture
             }
             interface INode {
@@ -430,7 +430,7 @@ describe('Merge', () => {
             }
           `,
           resolver: {
-            RootMutation: {
+            Mutation: {
               createPicture: () => ({
                 id: 'Images',
                 name: 'cool',
@@ -443,7 +443,7 @@ describe('Merge', () => {
         }),
         new Mutation({
           schema: gql`
-            extend type RootMutation {
+            extend type Mutation {
               createPicture: Images
             }
           `,
@@ -454,12 +454,12 @@ describe('Merge', () => {
         }),
       ],
       resolver: {
-        RootMutation: {
+        Mutation: {
           login: () => null,
           deleteUser: () => null,
           updateUser: () => null,
         },
-        RootQuery: {
+        Query: {
           viewer: () => null,
         },
         Viewer: () => ({
@@ -495,5 +495,34 @@ describe('Merge', () => {
 
     expect(res.schema).toMatchSnapshot();
     expect(result).toMatchSnapshot();
+  });
+  it('defines Schema using new Schema function', () => {
+    const schema = new Schema({
+      name: 'Person.mutation.create.safe',
+      schema: gql`
+        extend type Mutation {
+          createManyPersonSafe(name: [String]): [String]
+          createPersonSafe(input: String!): String
+        }
+      `,
+      resolver: {
+        Mutation: {
+          createManyPersonSafe: () => {
+            return 'create.many.safe';
+          },
+          createPersonSafe: () => {
+            return 'create.many.safe';
+          },
+        },
+      },
+    });
+
+    const schema2 = new Schema({
+      name: 'Person.mutation',
+      items: [schema],
+    });
+    schema2.build();
+    expect(schema.isBuilt).toBeTruthy();
+    expect(schema).toMatchSnapshot();
   });
 });

@@ -50,7 +50,7 @@ export const Viewer = new Type({
 
 export const viewer = new Query({
   schema: gql`
-    extend type RootQuery {
+    extend type Query {
       viewer: Viewer
     }
   `,

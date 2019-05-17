@@ -40,7 +40,6 @@ export class RegisterConnectorsBase {
         commit: async () => {
           if (this.transaction) {
             transactionLogger.trace('commit transaction');
-            debugger;
             if (session.transaction.state === 'TRANSACTION_IN_PROGRESS') {
               await session.commitTransaction();
               await new Promise(res => session.endSession(() => res()));
@@ -53,11 +52,8 @@ export class RegisterConnectorsBase {
         abort: async () => {
           if (this.transaction) {
             transactionLogger.trace('abort transaction');
-            debugger;
             if (session.transaction.state === 'TRANSACTION_IN_PROGRESS') {
-              // await new Promise((res, rej) =>
-              //   session.abortTransaction(err => (err ? rej(err) : res())),
-              // );
+              await session.abortTransaction();
               await new Promise(res => session.endSession(() => res()));
             }
             delete this.transaction;

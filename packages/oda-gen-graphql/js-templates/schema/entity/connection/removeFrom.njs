@@ -2,7 +2,7 @@
 <#@ alias 'connection-mutations-removeFrom'#>
 <#@ context 'ctx'#>
 
-<#- 
+<#-
 const {entity, connection} = ctx;
 chunkStart(`./connections/removeFrom${connection.relationName}.ts`); -#>
 <# slot('import-connection-index-slot',`removeFrom${connection.relationName}`) #>
@@ -18,7 +18,7 @@ import gql from 'graphql-tag';
 
 export default new Mutation({
   schema: gql`
-    extend type RootMutation {
+    extend type Mutation {
       removeFrom#{connection.relationName}(
         input: removeFrom#{connection.relationName}Input
       ): removeFrom#{connection.relationName}Payload

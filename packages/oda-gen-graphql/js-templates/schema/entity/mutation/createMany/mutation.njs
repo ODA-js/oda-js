@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 
 export default new Mutation({
   schema: gql`
-    extend type RootMutation {
+    extend type Mutation {
       createMany#{entity.name}(input: [createMany#{entity.name}Input!]): [createMany#{entity.name}Payload]
     }
   `,
@@ -34,23 +34,11 @@ export default new Mutation({
     },
     info
   ) => {
-    const needCommit = await context.connectors.ensureTransaction();
-    const txn = await context.connectors.transaction;
     logger.trace('createMany#{entity.name}');
     const result = args.map((input) => {
-      return context.resolvers.RootMutation.createPerson(undefined, {input}, context, info);
+      return context.resolvers.Mutation.create#{entity.name}(undefined, {input}, context, info);
     });
 
-    try {
-      const res = await Promise.all(result);
-      if(needCommit){
-        return txn.commit().then(() => res);
-      } else {
-        return res;
-      }
-    } catch (err) {
-      await txn.abort()
-      throw err;
-    }
+    return await Promise.all(result);
   }),
 });

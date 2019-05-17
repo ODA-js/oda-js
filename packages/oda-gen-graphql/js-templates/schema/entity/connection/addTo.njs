@@ -2,7 +2,7 @@
 <#@ alias 'connection-mutations-addTo'#>
 <#@ context 'ctx'#>
 
-<#- 
+<#-
 const {entity, connection} = ctx;
 chunkStart(`./connections/addTo${connection.relationName}.ts`); -#>
 <# slot('import-connection-index-slot',`addTo${connection.relationName}`) #>
@@ -20,7 +20,7 @@ import {Partial#{name}} from '../../../data/#{name}/types/model';
 <#})#>
 export default new Mutation({
   schema: gql`
-    extend type RootMutation {
+    extend type Mutation {
       addTo#{connection.relationName}(
         input: addTo#{connection.relationName}Input
       ): addTo#{connection.relationName}Payload

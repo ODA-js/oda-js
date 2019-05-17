@@ -24,7 +24,7 @@ import gql from 'graphql-tag';
 
 export default new Query({
   schema: gql`
-    extend type RootQuery {
+    extend type Query {
       #{ctx.entry.singularEntry}(#{ctx.entry.unique}): #{ctx.entry.name}
     }
   `,

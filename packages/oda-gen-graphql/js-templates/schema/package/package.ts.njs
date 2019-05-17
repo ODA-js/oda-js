@@ -67,9 +67,9 @@ export default new Schema({
   name: '#{pkg.name}',
   schema: gql`
     schema {
-      query: RootQuery
-      mutation: RootMutation
-      subscription: RootSubscription
+      query: Query
+      mutation: Mutation
+      subscription: Subscription
     }
   `,
   items: [
@@ -103,6 +103,7 @@ import {
   detectCursorDirection,
   consts,
   mutateAndGetPayload,
+  mutateSafe,
   Filter,
 } from 'oda-api-graphql';
 import { lib } from 'oda-gen-common';
@@ -202,6 +203,7 @@ export {
   Filter,
   pubsub,
   mutateAndGetPayload,
+  mutateSafe,
 };
 
 #{partial(pkg,'scalars/index')}

@@ -17,7 +17,7 @@ import { merge } from 'lodash';
 
 export default new Mutation({
   schema: gql`
-    extend type RootMutation {
+    extend type Mutation {
       update#{entity.name}(input: update#{entity.name}Input!): update#{entity.name}Payload
     }
   `,
@@ -34,10 +34,7 @@ export default new Mutation({
     context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
     info,
   ) => {
-    const needCommit = await context.connectors.ensureTransaction();
-    const txn = await context.connectors.transaction;
     logger.trace('update#{entity.name}');
-    try {
     let payload = context.connectors.#{entity.name}.getPayload(args);
 
     let result;
@@ -178,18 +175,8 @@ export default new Mutation({
         await Promise.all(resActions);
       }
 <#-}#>
-    if(needCommit) {
-      return txn.commit().then(() => ({
-        #{entity.ownerFieldName}: result,
-      }));
-    } else {
-      return {
-        #{entity.ownerFieldName}: result,
-      };
-    }
-    } catch (e) {
-      await txn.abort()
-      throw e;
-    }
+    return {
+      #{entity.ownerFieldName}: result,
+    };
   }),
 });

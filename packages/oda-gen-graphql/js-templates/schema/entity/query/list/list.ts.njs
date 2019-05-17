@@ -14,7 +14,7 @@ import gql from 'graphql-tag';
 
 export default new Query({
   schema: gql`
-    extend type RootQuery {
+    extend type Query {
       #{ctx.entry.singularEntry}Items( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): [#{ctx.entry.name}]
     }
   `,
@@ -66,7 +66,7 @@ import gql from 'graphql-tag';
 
 export default new Query({
   schema: gql`
-    extend type RootQuery {
+    extend type Query {
       #{ctx.entry.pluralEntry}( after: String, first: Int, before: String, last: Int, limit: Int, skip: Int, orderBy: [#{ctx.entry.name}SortOrder], filter: #{ctx.entry.name}ComplexFilter): #{ctx.entry.plural}Connection
     }
   `,

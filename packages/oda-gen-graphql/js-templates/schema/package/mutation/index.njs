@@ -35,7 +35,7 @@ import gql from 'graphql-tag';
 
 export default new Mutation({
   schema:gql`
-    extend type RootMutation {
+    extend type Mutation {
       #{s.name}(input: #{s.name}Input!): #{s.name}Payload
     }
   `,

@@ -16,6 +16,7 @@ import detectCursorDirection from './direction';
 import * as Filter from './filter';
 import { fromGlobalId, toGlobalId, base64, unbase64 } from 'oda-isomorfic';
 import { globalIdField } from './globalId';
+import mutateSafe from './mutateSafe';
 
 export {
   acl,
@@ -31,6 +32,7 @@ export {
   detectCursorDirection,
   isType,
   mutateAndGetPayload,
+  mutateSafe,
   pagination,
   projection,
   dataPump,

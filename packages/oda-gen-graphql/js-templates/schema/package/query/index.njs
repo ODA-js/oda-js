@@ -35,7 +35,7 @@ import gql from 'graphql-tag';
 
 export default new Query({
   schema:gql`
-    extend type RootQuery {
+    extend type Query {
       #{s.name}(input: #{s.name}Input!): #{s.name}Payload
     }
   `,
