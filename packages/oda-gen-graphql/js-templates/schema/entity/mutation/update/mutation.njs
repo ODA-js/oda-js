@@ -98,11 +98,17 @@ export default new Mutation({
           create: false,
         });
 <# slot('import-common-mutation-update-slot',`unlink${entity.name}From${r.cField}`) -#>
-        return unlink#{entity.name}From#{r.cField}({
-          context,
-          #{r.field},
-          #{entity.ownerFieldName}: result,
-        });
+      if(#{r.field}){
+          return unlink#{entity.name}From#{r.cField}({
+            context,
+            #{r.field},
+            #{entity.ownerFieldName}: result,
+          });
+        } else {
+          const err = `can't unlink#{entity.name}To#{r.cField} item not found`;
+          logger.error(err);
+          throw new Error(err);
+        }
         });
       }
     <#if(!r.single){#>
@@ -125,14 +131,20 @@ export default new Mutation({
         });
 
 <# slot('import-common-mutation-update-slot',`link${entity.name}To${r.cField}`) -#>
-        return link#{entity.name}To#{r.cField}({
-          context,
-          #{r.field},
-          #{entity.ownerFieldName}: result,
-          <#-r.fields.forEach(f=>{#>
-          #{f.name}: $item.#{f.name},
-          <#-})#>
-        });
+        if(#{r.field}){
+          return link#{entity.name}To#{r.cField}({
+            context,
+            #{r.field},
+            #{entity.ownerFieldName}: result,
+            <#-r.fields.forEach(f=>{#>
+            #{f.name}: $item.#{f.name},
+            <#-})#>
+          });
+        } else {
+          const err = `can't link#{entity.name}To#{r.cField} item not found`;
+          logger.error(err);
+          throw new Error(err);
+        }
         });
       }
     <#if(!r.single){#>
@@ -155,14 +167,20 @@ export default new Mutation({
         });
 
 <# slot('import-common-mutation-update-slot',`link${entity.name}To${r.cField}`) -#>
-        return link#{entity.name}To#{r.cField}({
-          context,
-          #{r.field},
-          #{entity.ownerFieldName}: result,
-          <#-r.fields.forEach(f=>{#>
-          #{f.name}: $item.#{f.name},
-          <#-})#>
-        });
+        if(#{r.field}){
+          return link#{entity.name}To#{r.cField}({
+            context,
+            #{r.field},
+            #{entity.ownerFieldName}: result,
+            <#-r.fields.forEach(f=>{#>
+            #{f.name}: $item.#{f.name},
+            <#-})#>
+          });
+        } else {
+          const err = `can't link#{entity.name}To#{r.cField} item not found`;
+          logger.error(err);
+          throw new Error(err);
+        }
         });
       }
     <#if(!r.single){#>

@@ -42,7 +42,7 @@ import gql from 'graphql-tag';
 <# slot('import-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
 <# slot('export-helpers-index-slot',`unlink${entity.name}From${r.cField}`) #>
 export default async function unlink#{entity.name}From#{r.cField}({
-  context, 
+  context,
   #{r.field},
   #{entity.ownerFieldName},
 }) {
@@ -143,6 +143,10 @@ export default async function unlink#{entity.name}FromAll(args:{
         `,
         variables: {input}
       });
+    } else {
+      const err = `connector for '#{entity.name}': can't unlink from not existing item`;
+      logger.error(err);
+      throw new Error(err);
     }
   }
 }

@@ -73,6 +73,7 @@ export default new Mutation({
         });
 <#}#>
 <#- slot('import-common-mutation-create-slot',`link${entity.name}To${r.cField}`) -#>
+        if(#{r.field}){
         return link#{entity.name}To#{r.cField}({
           context,
           #{r.field}<#if(r.embedded){#>: args.#{r.field}<#}#>,
@@ -81,6 +82,11 @@ export default new Mutation({
           #{f.name}: $item.#{f.name},
           <#-})#>
         });
+        } else {
+          const err = `can't link#{entity.name}To#{r.cField} item not created`;
+          logger.error(err);
+          throw new Error(err);
+        }
       });
 <#-if(!r.embedded){#>
       }
