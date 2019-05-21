@@ -1,6 +1,6 @@
 {
   "name": "oda-ra-ui",
-  "version": "1.0.0-25",
+  "version": "1.0.0-26",
   "main": "dist/index.js",
   "author": "Alex Vedmedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -8,13 +8,13 @@
   "dependencies": {
     "@material-ui/core": "~1.0.0",
     "@material-ui/icons": "~1.0.0",
-    "react-json-view": "^1.19.1",
+    "lodash": "^4.17.11",
     "prop-types": "^15.6.1",
     "ra-core": "^2.0.3",
     "react-admin": "^2.1.2",
+    "react-json-view": "^1.19.1",
     "recompose": "~0.26.0",
     "redux-form": "^7.4.2",
-    "lodash": "^4.17.11",
     "redux-saga": "^0.16.0"
   }
 }

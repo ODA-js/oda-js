@@ -1,6 +1,6 @@
 {
   "name": "oda-api-graphql",
-  "version": "1.0.0-27",
+  "version": "1.0.0-28",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,12 +8,12 @@
   "license": "MIT",
   "dependencies": {
     "core-js": "^2.5.3",
+    "graphql": "^14.2.1",
     "graphql-anywhere": "^4.1.14",
-    "isomorphic-fetch": "^2.2.1",
-    "oda-isomorfic": "file:../oda-isomorfic",
-    "oda-logger": "file:../oda-logger",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.4",
-    "graphql": "^14.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "oda-isomorfic": "file:../oda-isomorfic",
+    "oda-logger": "file:../oda-logger"
   }
 }

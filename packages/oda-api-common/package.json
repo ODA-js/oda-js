@@ -1,6 +1,6 @@
 {
   "name": "oda-api-common",
-  "version": "1.0.0-27",
+  "version": "1.0.0-28",
   "main": "dist/index.js",
   "author": "Alex Vedmedenko <vedmalex@gmail.com>",
   "license": "MIT",
@@ -11,12 +11,12 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "fs-extra": "^7.0.1",
+    "graphql-tag": "^2.10.1",
+    "graphql-tools": "^4.0.4",
     "http-proxy": "^1.16.2",
     "jsonwebtoken": "^8.2.0",
     "oda-api-graphql": "file:../oda-api-graphql",
     "passport-http-bearer": "^1.0.1",
-    "pretty-error": "^2.1.1",
-    "graphql-tag": "^2.10.1",
-    "graphql-tools": "^4.0.4"
+    "pretty-error": "^2.1.1"
   }
 }

@@ -1,15 +1,15 @@
 {
   "name": "oda-ra-data-provider",
-  "version": "1.0.0-33",
+  "version": "1.0.0-34",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "lodash": "^4.17.11",
-    "oda-lodash": "file:../oda-lodash",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
-    "apollo-link-http": "^1.5.14"
+    "apollo-link-http": "^1.5.14",
+    "lodash": "^4.17.11",
+    "oda-lodash": "file:../oda-lodash"
   }
 }
