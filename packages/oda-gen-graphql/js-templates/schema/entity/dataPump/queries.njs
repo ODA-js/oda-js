@@ -71,7 +71,7 @@ fragment View#{entity.name}Full on #{entity.name} {
   #{fld.name}
   <#-}#>
   <#- for(let fld of entity.relations){ #>
-  #{fld.field} <#-if(fld.single){#>{
+  #{fld.field} <#-if(fld.single || fld.embedded){#>{
     ...Embed#{fld.ref.entity}WithId
   }
 <#-} else {#>@_(get: "edges"){

@@ -36,6 +36,7 @@ export interface MapperOutput {
     persistent: boolean;
     field: string;
     single: boolean;
+    embedded: boolean;
     name: string;
     ref: {
       entity: string;
@@ -121,6 +122,7 @@ export function _mapper(
           field: f.name,
           name: f.relation.fullName,
           cField: capitalize(f.name),
+          embedded: f.relation.embedded,
           single: verb === 'BelongsTo' || verb === 'HasOne',
           ref: {
             entity: f.relation.ref.entity,
