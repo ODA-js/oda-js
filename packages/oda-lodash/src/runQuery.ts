@@ -13,7 +13,7 @@ export function runQueryLodash(options: ExecutionArgs): Promise<FetchResult> {
 
   if (apply) {
     options.document = removeDirectivesFromDocument(
-      [{ name: '_', remove: true }],
+      [{ name: '_' }],
       options.document,
     );
     return runQuery(options).then(result => ({
