@@ -79,5 +79,6 @@ export default function generate({
         console.timeEnd('gql');
       });
   }
-  commit().then(() => console.log('finish'));
+  console.time('format & save');
+  commit().then(() => console.timeEnd('format & save'));
 }

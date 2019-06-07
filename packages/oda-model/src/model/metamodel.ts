@@ -74,7 +74,7 @@ export class MetaModel extends ModelPackage implements IModel {
   }
 
   constructor(name: string = 'default') {
-    super(name);
+    super({ name });
     this.ensureDefaultPackage();
   }
 
@@ -454,7 +454,7 @@ export class MetaModel extends ModelPackage implements IModel {
     if (this.packages.has(name)) {
       throw new Error(`Package "${name}" already exists`);
     }
-    let pack = new ModelPackage(name);
+    let pack = new ModelPackage({ name });
     this.packages.set(name, pack);
     pack.connect(this);
     return pack;

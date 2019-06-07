@@ -1,6 +1,7 @@
 import clean from '../lib/json/clean';
 import { Entity } from './entity';
 import { Field } from './field';
+import { merge } from 'lodash';
 import {
   EntityInput,
   IPackage,
@@ -19,10 +20,25 @@ import { Union } from './union';
 import { Enum } from './enum';
 import { Scalar } from './scalar';
 import { Directive } from './directive';
+import { Metadata } from './metadata';
+
+const defaultPackage = {
+  metadata: {
+    acl: {
+      read: true,
+      create: true,
+      update: true,
+      delete: true,
+      subscribe: true,
+      type: false,
+      relations: true,
+    },
+  },
+};
 
 // tslint:disable-next-line:no-unused-variable
 /** Model package is the storage place of Entities */
-export class ModelPackage implements IValidate, IPackage {
+export class ModelPackage extends Metadata implements IValidate, IPackage {
   public modelType: MetaModelType = 'package';
   /** name of the package */
   public name: string;
@@ -52,22 +68,15 @@ export class ModelPackage implements IValidate, IPackage {
     return validator.check(this);
   }
 
-  constructor(
-    name?: string | ModelPackageInput,
-    title?: string,
-    description?: string,
-  ) {
-    if (typeof name === 'string') {
-      this.name = name;
-      this.title = title || this.name;
-      this.description = description || this.name;
-    } else if (!name) {
+  constructor(input?: ModelPackageInput) {
+    super(input ? merge({}, input, defaultPackage) : defaultPackage);
+    if (!input) {
       this.name = 'DefaultPackage';
     } else {
-      this.name = name.name;
-      this.title = name.title;
-      this.description = name.description;
-      this.abstract = this.abstract || name.abstract;
+      this.name = input.name;
+      this.title = input.title;
+      this.description = input.description;
+      this.abstract = input.abstract;
     }
   }
 

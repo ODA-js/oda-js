@@ -402,14 +402,14 @@ export interface ModelPackageInput extends ModelBaseInput {
   title?: string;
   description?: string;
   abstract?: boolean;
-  entities: string[];
-  mutations: any[];
-  queries: any[];
-  directives: any[];
-  scalars: any[];
-  enums: any[];
-  mixins: any[];
-  unions: any[];
+  entities?: string[];
+  mutations?: any[];
+  queries?: any[];
+  directives?: any[];
+  scalars?: any[];
+  enums?: any[];
+  mixins?: any[];
+  unions?: any[];
 }
 
 export interface ModelPackageStore {

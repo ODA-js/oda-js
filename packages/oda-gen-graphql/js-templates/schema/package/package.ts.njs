@@ -117,7 +117,9 @@ import RegisterConnectors from './data/registerConnectors';
 
 const { validId } = utils;
 
+<#if(pkg.entities.length > 0){#>
 export * from './helpers';
+<#}#>
 
 import {
   Enum,

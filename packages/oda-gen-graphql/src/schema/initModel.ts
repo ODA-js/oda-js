@@ -79,6 +79,13 @@ export default function({
   modelStore.entities.forEach((entity, key) => {
     pushToAppropriate({
       item: entity,
+      acl: get(entity, 'metadata.acl.type'),
+      path: 'entities',
+      packages: pckgs,
+    });
+
+    pushToAppropriate({
+      item: entity,
       acl: get(entity, 'metadata.acl.create'),
       path: 'entities',
       packages: pckgs,
@@ -90,18 +97,28 @@ export default function({
       path: 'entities',
       packages: pckgs,
     });
+
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.update'),
       path: 'entities',
       packages: pckgs,
     });
+
     pushToAppropriate({
       item: entity,
       acl: get(entity, 'metadata.acl.delete'),
       path: 'entities',
       packages: pckgs,
     });
+
+    pushToAppropriate({
+      item: entity,
+      acl: get(entity, 'metadata.acl.subscribe'),
+      path: 'entities',
+      packages: pckgs,
+    });
+
     // if we didn't setup hooks at all
     pushToAppropriate({
       item: entity,
