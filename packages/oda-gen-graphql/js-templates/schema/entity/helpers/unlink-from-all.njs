@@ -102,7 +102,7 @@ export default async function unlink#{entity.name}FromAll(args:{
     const unlinkFragment = gql`
       fragment Unlink#{entity.name} on #{entity.name} {
         id
-        <#- for(let fld of entity.relations){ #>
+        <#- for(let fld of entity.relations.filter(f=>!f.embedded)){ #>
         #{fld.field}Unlink: #{fld.field}<#-if(fld.single){#>{
           id
         }
