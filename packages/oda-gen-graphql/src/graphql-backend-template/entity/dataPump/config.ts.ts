@@ -120,6 +120,7 @@ export function _mapper(
           derived: f.derived,
           field: f.name,
           name: f.relation.fullName,
+          embedded: f.relation.embedded,
           cField: capitalize(f.name),
           single: verb === 'BelongsTo' || verb === 'HasOne',
           ref: {

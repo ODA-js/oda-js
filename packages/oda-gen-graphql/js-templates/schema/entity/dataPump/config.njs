@@ -104,7 +104,7 @@ export default {
         /*process: (f) => ({
           #{entity.name}: f.viewer.#{entity.dcPlural} ? f.viewer.#{entity.dcPlural}.edges.map(e => ({
             ...e.node,
-          <#- for(let fld of entity.relations){ #>
+          <#- for(let fld of entity.relations.filter(f=>!f.embedded)){ #>
           <#-if(!fld.single){#>
             #{fld.field} : e.node.#{fld.field} ? e.node.#{fld.field}.edges.map(s => ({
               ...s.node,
