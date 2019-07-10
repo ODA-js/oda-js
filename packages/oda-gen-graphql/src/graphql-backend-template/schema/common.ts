@@ -259,8 +259,8 @@ export function mapper(
   adapter: string,
 ): MapperOutput {
   const eACL = expandEntityACL(entity);
+  entity.metadata.acl = eACL;
   const acl = buildACL(entity.metadata.acl, role, pack.metadata.acl);
-
   return {
     name: entity.name,
     acl,

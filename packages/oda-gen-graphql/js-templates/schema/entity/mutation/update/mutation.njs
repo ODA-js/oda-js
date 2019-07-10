@@ -27,8 +27,10 @@ export default new Mutation({
     <#-}#>
     <#- for (let r of entity.relations) {#>
       #{r.field}?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
+<#- if(!r.embedded){#>
       #{r.field}Unlink?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
       #{r.field}Create?: object/*#{r.ref.entity}*/<#if(!r.single){#>[]<#}#>,
+<#-}#>
     <#-}#>
     },
     context: { connectors: RegisterConnectors, pubsub: PubSubEngine },
