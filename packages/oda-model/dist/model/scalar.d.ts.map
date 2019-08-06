@@ -1,0 +1,1 @@
+{"version":3,"file":"scalar.d.ts","sourceRoot":"","sources":["../../src/model/scalar.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,WAAW,EAAE,MAAM,cAAc,CAAC;AAC1D,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAExC,qBAAa,MAAO,SAAQ,SAAS;IAC5B,SAAS,EAAE,aAAa,CAAY;gBAC/B,GAAG,EAAE,WAAW;IAGrB,UAAU,CAAC,GAAG,EAAE,WAAW;CAOnC"}

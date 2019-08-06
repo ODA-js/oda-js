@@ -1,0 +1,1 @@
+{"version":3,"file":"secureMutations.d.ts","sourceRoot":"","sources":["../../src/acl/secureMutations.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,aAAa,CAAC;AAErC,qBAAa,cAAe,SAAQ,MAAM,CAAC,OAAO,CAAC;IAC1C,SAAS,EAAE,CAAC,OAAO,KAAA,KAAK,MAAM,CAAC;gBAC1B,IAAI,KAAA;IAOT,eAAe,CAAC,IAAI,KAAA;;;;IAOpB,cAAc;CAiBtB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"default.js","sourceRoot":"","sources":["../../../../../src/model/validator/rules/relation/default.ts"],"names":[],"mappings":";;AAIA,MAAa,YAAY;IAGhB,QAAQ,CAAC,OAAsB;QACpC,MAAM,IAAI,KAAK,CAAC,yBAAyB,CAAC,CAAC;IAC7C,CAAC;IACD,YAAY,IAAY;QACtB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACnB,CAAC;CACF;AATD,oCASC"}

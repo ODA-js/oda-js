@@ -1,0 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function clean(obj) {
+    if (Array.isArray(obj)) {
+        return obj.map(clean);
+    }
+    else if (typeof obj === 'object') {
+        if (obj.toJSON) {
+            return obj.toJSON();
+        }
+        else {
+            return Object.keys(obj).reduce((res, cur) => {
+                if (obj[cur] !== undefined) {
+                    res[cur] = clean(obj[cur]);
+                }
+                return res;
+            }, obj);
+        }
+    }
+    else {
+        return obj;
+    }
+}
+exports.default = clean;
+//# sourceMappingURL=clean.js.map

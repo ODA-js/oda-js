@@ -1,0 +1,28 @@
+import ownerFieldIsIdentity from './belongsTo/ownerFieldIsIdentity';
+import ownerFieldNotIndexed from './belongsTo/ownerFieldNotIndexed';
+import refBackFieldIsIdentity from './belongsTo/refBackFieldIsIdentity';
+import BTRefBackFieldNotExists from './belongsTo/refBackFieldNotExists';
+import refBackFieldNotIndexed from './belongsTo/refBackFieldNotIndexed';
+import refFieldNotIdentity from './belongsTo/refFieldNotIdentity';
+import BTMRefEntityNotFound from './belongsToMany/refEntityNotFound';
+import usingBackFieldNotExists from './belongsToMany/usingBackFieldNotExists';
+import usingBackFieldNotIdentity from './belongsToMany/usingBackFieldNotIdentity';
+import usingEntityNotFound from './belongsToMany/usingEntityNotFound';
+import usingFieldNotExists from './belongsToMany/usingFieldNotExists';
+import usingFieldsCheck from './belongsToMany/usingFieldsCheck';
+import usingNotExists from './belongsToMany/usingNotExists';
+import notCompatibleRelationEnds from './common/notCompatibleRelationEnds';
+import oppositeNotFound from './common/oppositeNotFound';
+import ownerFieldUnnecesseryIndexed from './common/ownerFieldUnnecesseryIndexed';
+import possibleOppositeNotFound from './common/possibleOppositeNotFound';
+import refBackFieldNotExists from './common/refBackFieldNotExists';
+import refBackFieldNotIdentity from './common/refBackFieldNotIdentity';
+import refEntityNotFound from './common/refEntityNotFound';
+import refFieldNotFound from './common/refFieldNotFound';
+import refFieldNotIndexed from './common/refFieldNotIndexed';
+export declare const common: (refFieldNotFound | notCompatibleRelationEnds | oppositeNotFound | possibleOppositeNotFound)[];
+export declare const belongsTo: (refBackFieldNotIndexed | ownerFieldIsIdentity | ownerFieldNotIndexed | BTRefBackFieldNotExists | refBackFieldIsIdentity | refEntityNotFound | refFieldNotIdentity)[];
+export declare const belongsToMany: (BTMRefEntityNotFound | refFieldNotIdentity | ownerFieldUnnecesseryIndexed | refBackFieldNotIdentity | refBackFieldNotExists | usingBackFieldNotExists | usingBackFieldNotIdentity | usingEntityNotFound | usingFieldNotExists | usingFieldsCheck | usingNotExists)[];
+export declare const hasOne: (refEntityNotFound | ownerFieldUnnecesseryIndexed | refBackFieldNotIdentity | refBackFieldNotExists | refFieldNotIndexed)[];
+export declare const hasMany: (refEntityNotFound | ownerFieldUnnecesseryIndexed | refBackFieldNotIdentity | refBackFieldNotExists | refFieldNotIndexed)[];
+//# sourceMappingURL=index.d.ts.map

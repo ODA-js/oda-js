@@ -1,0 +1,1 @@
+{"version":3,"file":"authenticateAsAnonymous.js","sourceRoot":"","sources":["../../src/passport/authenticateAsAnonymous.ts"],"names":[],"mappings":";;;;;AAAA,oEAAwC;AAExC,MAAa,QAAQ;IAArB;QACS,SAAI,GAAW,2BAA2B,CAAC;IAQpD,CAAC;IANQ,OAAO,CAAC,IAAI,EAAE,IAAK;QACxB,OAAO;IACT,CAAC;IACM,YAAY;QACjB,IAAI,CAAC,OAAO,CAAC,uBAAS,EAAE,CAAC,CAAC;IAC5B,CAAC;CACF;AATD,4BASC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"imageSize.d.ts","sourceRoot":"","sources":["../../src/types/imageSize.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,SAAS,CAAC;AAEpC,qBAAa,aAAc,SAAQ,SAAS;IAC1C,SAAS,CAAC,KAAK,SAAmB;IAClC,SAAS,CAAC,SAAS,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAA;KAAE,CAoBzC;IAEF,SAAS,CAAC,QAAQ;;MAUhB;CACH"}

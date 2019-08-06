@@ -1,0 +1,1 @@
+{"version":3,"file":"createMany.d.ts","sourceRoot":"","sources":["../../src/data/createMany.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,kBAAkB,EAAE,WAAW,EAAE,MAAM,uBAAuB,CAAC;AAGxE,MAAM,CAAC,OAAO,WACZ,IAAI,EAAE;IACJ,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAC;CACpB,EACD,KAAK,EAAE,WAAW,EAClB,SAAS,EAAE,kBAAkB;;EAmB9B"}

@@ -1,8 +1,0 @@
-dist
-logs
-.DS_Store
-node_modules
-data/schema.json
-data/schema.graphql
-data/seed-queries.json
-./logs

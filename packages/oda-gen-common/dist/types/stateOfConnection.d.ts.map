@@ -1,0 +1,1 @@
+{"version":3,"file":"stateOfConnection.d.ts","sourceRoot":"","sources":["../../src/types/stateOfConnection.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,SAAS,CAAC;AAEpC,qBAAa,oBAAqB,SAAQ,SAAS;IACjD,SAAS,CAAC,KAAK,SAA0B;IACzC,SAAS,CAAC,SAAS,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,GAAG,CAAA;KAAE,CAezC;IAEF,SAAS,CAAC,QAAQ;;MAUhB;CACH"}

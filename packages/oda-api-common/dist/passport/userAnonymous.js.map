@@ -1,0 +1,1 @@
+{"version":3,"file":"userAnonymous.js","sourceRoot":"","sources":["../../src/passport/userAnonymous.ts"],"names":[],"mappings":";;AAAA,qDAA6C;AAE7C,kBAAe,GAAG,EAAE,CAAC,CAAC;IACpB,EAAE,EAAE,4BAAU,CAAC,MAAM,EAAE,0BAA0B,CAAC;IAClD,QAAQ,EAAE,WAAW;IACrB,WAAW,EAAE,IAAI;IACjB,KAAK,EAAE,4BAAU,CAAC,MAAM,EAAE,0BAA0B,CAAC;IACrD,OAAO,EAAE,IAAI;IACb,WAAW,EAAE,QAAQ;CACtB,CAAC,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"secureField.js","sourceRoot":"","sources":["../../src/acl/secureField.ts"],"names":[],"mappings":";;;;;AAAA,kEAA0C;AAE1C,kBAAe,YAAY,CAAC,EAAE;IAC5B,IAAI,OAAO,YAAY,CAAC,OAAO,KAAK,UAAU,EAAE;QAC9C,YAAY,CAAC,OAAO,GAAG,sBAAY,CAAC,YAAY,CAAC,OAAO,CAAC,CAAC;KAC3D;IACD,OAAO,YAAY,CAAC;AACtB,CAAC,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"emptyConnection.js","sourceRoot":"","sources":["../src/emptyConnection.ts"],"names":[],"mappings":";;AAAA,kBAAe,GAAG,EAAE;IAClB,OAAO;QACL,KAAK,EAAE,EAAE;QACT,QAAQ,EAAE;YACR,WAAW,EAAE,IAAI;YACjB,SAAS,EAAE,IAAI;YACf,eAAe,EAAE,KAAK;YACtB,WAAW,EAAE,KAAK;YAClB,KAAK,EAAE,CAAC;SACT;KACF,CAAC;AACJ,CAAC,CAAC"}

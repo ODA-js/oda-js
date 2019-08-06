@@ -1,0 +1,1 @@
+{"version":3,"file":"acl.d.ts","sourceRoot":"","sources":["../src/acl.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,UAAU;IAE7B,SAAgB,KAAK,EAAE,MAAM,EAAE,CAAC;gBACb,KAAK,GAAE,MAAM,EAAe;IAGxC,KAAK,CAAC,IAAI,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM,GAAG,MAAM,EAAE,GAAG,OAAO;CAO/D"}

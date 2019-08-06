@@ -1,0 +1,1 @@
+{"version":3,"file":"createField.js","sourceRoot":"","sources":["../../src/data/createField.ts"],"names":[],"mappings":";;AAAA,mBAAwB,IAA4B,EAAE,KAAa;IACjE,IAAI,IAAI,CAAC,KAAK,CAAC,KAAK,SAAS,EAAE;QAC7B,OAAO;YACL,CAAC,KAAK,CAAC,EAAE,IAAI,CAAC,KAAK,CAAC;SACrB,CAAC;KACH;AACH,CAAC;AAND,4BAMC"}

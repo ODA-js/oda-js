@@ -1,0 +1,1 @@
+{"version":3,"file":"aclGroupDiscovery.js","sourceRoot":"","sources":["../../src/middleware/aclGroupDiscovery.ts"],"names":[],"mappings":";;;;;;;;;;AAAa,QAAA,iBAAiB,GAAG,CAAC,WAAwC,EAAE,EAAE;IAC5E,OAAO,CAAO,GAAG,EAAE,GAAG,EAAE,IAAI,EAAE,EAAE;QAC9B,GAAG,CAAC,QAAQ,GAAG,MAAM,WAAW,CAAC,GAAG,CAAC,IAAI,CAAC,EAAE,CAAC,CAAC;QAC9C,IAAI,EAAE,CAAC;IACT,CAAC,CAAA,CAAC;AACJ,CAAC,CAAC"}
