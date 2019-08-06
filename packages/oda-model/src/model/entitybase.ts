@@ -214,10 +214,10 @@ export class EntityBase extends ModelBase implements IEntityBase {
 
       const fields = new Map<string, Field>();
       const operations = new Map<string, Operation>();
-      const relations = new Set();
-      const identity = new Set();
-      const required = new Set();
-      const indexed = new Set();
+      const relations = new Set<string>();
+      const identity = new Set<string>();
+      const required = new Set<string>();
+      const indexed = new Set<string>();
 
       let traverse = (fld, index) => {
         let field = new Field({
@@ -231,9 +231,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
 
         if (fields.has(field.name)) {
           throw new Error(
-            `the same field ${field.name} is already exists in ${
-              obj.name
-            } entry`,
+            `the same field ${field.name} is already exists in ${obj.name} entry`,
           );
         }
 
@@ -269,9 +267,7 @@ export class EntityBase extends ModelBase implements IEntityBase {
         });
         if (fields.has(operation.name)) {
           throw new Error(
-            `the same field ${operation.name} is already exists in ${
-              obj.name
-            } entry`,
+            `the same field ${operation.name} is already exists in ${obj.name} entry`,
           );
         }
         operations.set(operation.name, operation);

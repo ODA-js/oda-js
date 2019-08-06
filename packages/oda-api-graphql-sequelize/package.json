@@ -9,6 +9,6 @@
   "dependencies": {
     "graphql": "^14.4.2",
     "oda-api-graphql": "file:../oda-api-graphql",
-    "sequelize": "^4.35.2"
+    "sequelize": "^5.12.3"
   }
 }
