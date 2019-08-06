@@ -7,7 +7,7 @@
   "author": "Alex Vedmedenko <vedmalex@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "graphql": "^14.2.1",
+    "graphql": "^14.4.2",
     "oda-api-graphql": "file:../oda-api-graphql",
     "sequelize": "^4.35.2"
   }

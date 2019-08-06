@@ -6,12 +6,12 @@
   "license": "MIT",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "graphql": "14.2.1",
+    "graphql": "^14.4.2",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.4",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "warning": "^4.0.3"
   }
 }

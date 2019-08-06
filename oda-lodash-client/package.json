@@ -19,7 +19,7 @@
   "dependencies": {
     "graphql-anywhere": "^4.2.1",
     "oda-gen-common": "file:../oda-gen-common",
-     "graphql": "^14.2.1"
+     "graphql": "^14.4.2"
   },
   "peerDependencies": {
     "graphql-tag": "^2.10.1",

@@ -9,7 +9,7 @@
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link-http": "^1.5.14",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "oda-lodash": "file:../oda-lodash"
   }
 }

@@ -11,12 +11,12 @@
     "apollo-server-core": "^2.4.8",
     "apollo-server-express": "^2.4.8",
     "apollo-utilities": "^1.2.1",
-    "graphql": "14.2.1",
-    "graphql-anywhere": "^4.1.5",
+    "graphql": "^14.4.2",
+    "graphql-anywhere": "^4.2.4",
     "graphql-extensions": "^0.5.7",
     "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.4",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.15",
     "oda-gen-common": "file:../oda-gen-common"
   }
 }

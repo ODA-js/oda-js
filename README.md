@@ -28,3 +28,6 @@ npm i
 ./link.sh
 
 npm link graphql
+
+обновление зависимостей между пакетами
+ npm install --save-dev lerna-update-wizard
