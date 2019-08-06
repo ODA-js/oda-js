@@ -1,6 +1,6 @@
 {
   "name": "oda-ra-data-provider",
-  "version": "1.0.0-35",
+  "version": "1.0.0-36",
   "main": "dist/index.js",
   "author": "Alex Vedmdedenko <vedmalex@gmail.com>",
   "license": "MIT",
