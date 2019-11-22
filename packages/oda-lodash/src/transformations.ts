@@ -30,6 +30,8 @@ import { maxBy } from 'lodash';
 import { meanBy } from 'lodash';
 import { sumBy } from 'lodash';
 import { join } from 'lodash';
+import { concat } from 'lodash';
+import { compact } from 'lodash';
 
 import { get } from 'lodash';
 import { set } from 'lodash';
@@ -85,6 +87,12 @@ const transformations = {
     meanBy,
     sumBy,
     join,
+    concat: (src, args) => (obj, key) => {
+      debugger;
+      set(obj, key, concat(src, get(obj, args)));
+      unset(obj, args);
+    },
+    compact,
   },
   object: {
     get,

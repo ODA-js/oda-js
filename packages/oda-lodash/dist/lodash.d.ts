@@ -46,6 +46,6 @@ export declare class ConvertTypeArgument extends types.GQLModule {
 }
 export declare class LodashModule extends types.GQLModule {
     protected _name: string;
-    protected _composite: (RegularExpression | Path | Predicate | DirectiveLodash | LodashOperations | DummyArgument | ConvertTypeArgument)[];
+    protected _composite: (Path | RegularExpression | Predicate | DirectiveLodash | LodashOperations | DummyArgument | ConvertTypeArgument)[];
 }
 //# sourceMappingURL=lodash.d.ts.map

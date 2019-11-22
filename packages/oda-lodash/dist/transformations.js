@@ -44,6 +44,8 @@ const lodash_41 = require("lodash");
 const lodash_42 = require("lodash");
 const lodash_43 = require("lodash");
 const lodash_44 = require("lodash");
+const lodash_45 = require("lodash");
+const lodash_46 = require("lodash");
 function getType(v) {
     return Object.prototype.toString
         .call(v)
@@ -84,25 +86,31 @@ const transformations = {
         meanBy: lodash_30.meanBy,
         sumBy: lodash_31.sumBy,
         join: lodash_32.join,
+        concat: (src, args) => (obj, key) => {
+            debugger;
+            lodash_36.set(obj, key, lodash_33.concat(src, lodash_35.get(obj, args)));
+            lodash_37.unset(obj, args);
+        },
+        compact: lodash_34.compact,
     },
     object: {
-        get: lodash_33.get,
+        get: lodash_35.get,
         assign: (src, args) => (Array.isArray(args) ? args : [args]).reduce((obj, path) => {
-            const source = lodash_33.get(obj, path);
+            const source = lodash_35.get(obj, path);
             if (source && typeof source === 'object') {
-                return lodash_44.omit(lodash_36.assign(obj, lodash_33.get(obj, path)), path);
+                return lodash_46.omit(lodash_38.assign(obj, lodash_35.get(obj, path)), path);
             }
             else {
                 return obj;
             }
         }, src),
-        mapValues: lodash_37.mapValues,
-        at: lodash_38.at,
-        toPairs: lodash_39.toPairs,
-        invert: lodash_40.invert,
-        invertBy: lodash_41.invertBy,
-        keys: lodash_42.keys,
-        values: lodash_43.values,
+        mapValues: lodash_39.mapValues,
+        at: lodash_40.at,
+        toPairs: lodash_41.toPairs,
+        invert: lodash_42.invert,
+        invertBy: lodash_43.invertBy,
+        keys: lodash_44.keys,
+        values: lodash_45.values,
     },
     number: {
         lt: lodash_5.lt,
@@ -170,8 +178,8 @@ const transformations = {
             }
         },
         dive: (src, args) => (obj, key) => {
-            lodash_35.unset(obj, key);
-            lodash_34.set(obj, args, src);
+            lodash_37.unset(obj, key);
+            lodash_36.set(obj, args, src);
         },
     },
 };
